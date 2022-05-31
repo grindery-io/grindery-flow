@@ -1,0 +1,55 @@
+{
+    "name": "Google Sheets",
+    "version": "1.0.0",
+    "platformVersion": "1",
+    "triggers": [
+        {
+            "key": "newSpreadsheetRow",
+            "name": "New spreadsheet row",
+            "display": {
+                "label": "New spreadsheet row",
+                "description": "",
+                "instructions": ""
+            },
+            "operation": {
+                "type": "polling",
+                "operation": {},
+                "inputFields": [
+                    {
+                        "key": "spreadsheetName",
+                        "label": "Spreadsheet name",
+                        "helpText": "",
+                        "type": "string",
+                        "required": true,
+                        "placeholder": "Select spreadsheet"
+                    },
+                    {
+                        "key": "spreadsheetListName",
+                        "label": "Spreadsheet list",
+                        "helpText": "",
+                        "type": "string",
+                        "required": true,
+                        "placeholder": "Select spreadsheet list"
+                    }
+                ],
+                "outputFields": [
+                    {
+                        "key": "newRowCells",
+                        "type": "string",
+                        "list": true
+                    }
+                ],
+                "sample": {
+                    "newRowCells": [
+                        "Cell A data",
+                        "Cell B data",
+                        "Cell C data",
+                        "Cell D data"
+                    ]
+                }
+            }
+        }
+    ],
+    "actions": [],
+    "authentication": {}
+}
