@@ -1,49 +1,54 @@
 {
-    "name": "Google Sheets",
+    "name": "Moloch for xDai",
     "version": "1.0.0",
     "platformVersion": "1",
-    "triggers": [
+    "triggers": [],
+    "actions": [
         {
-            "key": "newSpreadsheet",
-            "name": "New spreadsheet",
+            "key": "withdrawBalance",
+            "name": "withdrawBalance",
             "display": {
-                "label": "New spreadsheet",
+                "label": "withdrawBalance",
                 "description": "",
                 "instructions": ""
             },
-            "operation": {
-                
-            }
+            "operation": {}
         },
         {
-            "key": "newWorksheet",
-            "name": "New Worksheet",
+            "key": "ragequit",
+            "name": "ragequit",
             "display": {
-                "label": "New Worksheet",
+                "label": "ragequit",
                 "description": "",
                 "instructions": ""
             },
-            "operation": {
-                
-            }
+            "operation": {}
         },
         {
-            "key": "newOrUpdatedSpreadsheetRowTD",
-            "name": "New or Updated Spreadsheet Row (Team Drive)",
+            "key": "updateDelegateKey",
+            "name": "updateDelegateKey",
             "display": {
-                "label": "New or Updated Spreadsheet Row (Team Drive)",
+                "label": "updateDelegateKey",
                 "description": "",
                 "instructions": ""
             },
-            "operation": {
-                
-            }
+            "operation": {}
         },
         {
-            "key": "newSpreadsheetRow",
-            "name": "New spreadsheet row",
+            "key": "withdrawBalances",
+            "name": "withdrawBalances",
             "display": {
-                "label": "New spreadsheet row",
+                "label": "withdrawBalances",
+                "description": "",
+                "instructions": ""
+            },
+            "operation": {}
+        },
+        {
+            "key": "submitProposal",
+            "name": "submitProposal",
+            "display": {
+                "label": "submitProposal",
                 "description": "",
                 "instructions": ""
             },
@@ -84,20 +89,7 @@
                     ]
                 }
             }
-        },
-        {
-            "key": "newOrUpdatedSpreadsheetRow",
-            "name": "New or Updated Spreadsheet Row",
-            "display": {
-                "label": "New or Updated Spreadsheet Row",
-                "description": "",
-                "instructions": ""
-            },
-            "operation": {
-                
-            }
         }
     ],
-    "actions": [],
     "authentication": {}
 }
