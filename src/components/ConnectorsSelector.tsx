@@ -62,9 +62,10 @@ const ConnectorsSelector = (props: Props) => {
         borderRadius: 10,
       }}
     >
-      {title && <h2 style={{ textAlign: "center" }}>{title}</h2>}
+      {title && <h2 style={{ textAlign: "center", margin: 0 }}>{title}</h2>}
       <div
         style={{
+          marginTop: 40,
           display: "flex",
           flexDirection: "row",
           alignItems: "flex-start",
@@ -73,10 +74,20 @@ const ConnectorsSelector = (props: Props) => {
           gap: "88px",
         }}
       >
-        <div>
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 470,
+          }}
+        >
           <label>
             <span style={{ display: "block" }}>Connect this...</span>
             <select
+              style={{
+                width: "100%",
+                maxWidth: 470,
+                padding: 10,
+              }}
               value={
                 (workflow && workflow.trigger && workflow.trigger.connector) ||
                 ""
@@ -88,6 +99,7 @@ const ConnectorsSelector = (props: Props) => {
                     ...workflow.trigger,
                     connector: e.target.value,
                     operation: "",
+                    input: {},
                   },
                 });
               }}
@@ -101,10 +113,20 @@ const ConnectorsSelector = (props: Props) => {
             </select>
           </label>
         </div>
-        <div>
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 470,
+          }}
+        >
           <label>
             <span style={{ display: "block" }}>With that...</span>
             <select
+              style={{
+                width: "100%",
+                maxWidth: 470,
+                padding: 10,
+              }}
               value={
                 (workflow &&
                   workflow.action &&
@@ -119,6 +141,7 @@ const ConnectorsSelector = (props: Props) => {
                     ...workflow.action,
                     connector: e.target.value,
                     operation: "",
+                    input: {},
                   },
                 });
               }}
@@ -145,10 +168,20 @@ const ConnectorsSelector = (props: Props) => {
             gap: "88px",
           }}
         >
-          <div>
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 470,
+            }}
+          >
             <label>
               <span style={{ display: "block" }}>When this happens...</span>
               <select
+                style={{
+                  width: "100%",
+                  maxWidth: 470,
+                  padding: 10,
+                }}
                 value={
                   (workflow &&
                     workflow.trigger &&
@@ -171,8 +204,18 @@ const ConnectorsSelector = (props: Props) => {
                     key: any;
                     name: any;
                     display: { label: any };
+                    operation: any;
                   }) => (
-                    <option key={trigger.key} value={trigger.name}>
+                    <option
+                      key={trigger.key}
+                      value={trigger.name}
+                      disabled={
+                        !trigger ||
+                        !trigger.operation ||
+                        !trigger.operation.inputFields ||
+                        trigger.operation.inputFields.length < 1
+                      }
+                    >
                       {trigger.display.label}
                     </option>
                   )
@@ -180,10 +223,20 @@ const ConnectorsSelector = (props: Props) => {
               </select>
             </label>
           </div>
-          <div>
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 470,
+            }}
+          >
             <label>
               <span style={{ display: "block" }}>Then do this...</span>
               <select
+                style={{
+                  padding: 10,
+                  width: "100%",
+                  maxWidth: 470,
+                }}
                 value={
                   (workflow &&
                     workflow.action &&
@@ -207,8 +260,18 @@ const ConnectorsSelector = (props: Props) => {
                     key: any;
                     name: any;
                     display: { label: any };
+                    operation: any;
                   }) => (
-                    <option key={action.key} value={action.name}>
+                    <option
+                      key={action.key}
+                      value={action.name}
+                      disabled={
+                        !action ||
+                        !action.operation ||
+                        !action.operation.inputFields ||
+                        action.operation.inputFields.length < 1
+                      }
+                    >
                       {action.display.label}
                     </option>
                   )
