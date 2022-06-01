@@ -70,17 +70,17 @@
                 ],
                 "outputFields": [
                     {
-                        "key": "newRowCells",
+                        "key": "newRowColumns",
                         "type": "string",
                         "list": true
                     }
                 ],
                 "sample": {
-                    "newRowCells": [
-                        "Cell A data",
-                        "Cell B data",
-                        "Cell C data",
-                        "Cell D data"
+                    "newRowColumns": [
+                        "Column A data",
+                        "Column B data",
+                        "Column C data",
+                        "Column D data"
                     ]
                 }
             }

@@ -57,36 +57,82 @@
                 "operation": {},
                 "inputFields": [
                     {
-                        "key": "spreadsheetName",
-                        "label": "Spreadsheet name",
+                        "key": "applicant",
+                        "label": "Applicant",
                         "helpText": "",
                         "type": "string",
                         "required": true,
-                        "placeholder": "Select spreadsheet"
+                        "placeholder": "0x..."
                     },
                     {
-                        "key": "spreadsheetListName",
-                        "label": "Spreadsheet list",
+                        "key": "sharesRequested",
+                        "label": "SharesRequested",
                         "helpText": "",
                         "type": "string",
                         "required": true,
-                        "placeholder": "Select spreadsheet list"
+                        "placeholder": "0x..."
+                    },
+                    {
+                        "key": "sharesRequested256",
+                        "label": "SharesRequested",
+                        "helpText": "",
+                        "type": "string",
+                        "required": true,
+                        "placeholder": "Enter an uint256 value"
+                    },
+                    {
+                        "key": "lootRequested",
+                        "label": "lootRequested",
+                        "helpText": "",
+                        "type": "string",
+                        "required": true,
+                        "placeholder": "Enter an uint256 value"
+                    },
+                    {
+                        "key": "tributeOffered",
+                        "label": "tributeOffered",
+                        "helpText": "",
+                        "type": "string",
+                        "required": true,
+                        "placeholder": "Enter an uint256 value"
+                    },
+                    {
+                        "key": "tributeToken",
+                        "label": "tributeToken",
+                        "helpText": "",
+                        "type": "string",
+                        "required": true,
+                        "placeholder": "0x..."
+                    },
+                    {
+                        "key": "paymentRequested",
+                        "label": "paymentRequested",
+                        "helpText": "",
+                        "type": "string",
+                        "required": true,
+                        "placeholder": "Enter an uint256 value"
+                    },
+                    {
+                        "key": "paymentToken",
+                        "label": "paymentToken",
+                        "helpText": "",
+                        "type": "string",
+                        "required": true,
+                        "placeholder": "0x..."
+                    },
+                    {
+                        "key": "details",
+                        "label": "Details",
+                        "helpText": "",
+                        "type": "text",
+                        "placeholder": "Enter s string value"
                     }
                 ],
                 "outputFields": [
-                    {
-                        "key": "newRowCells",
-                        "type": "string",
-                        "list": true
-                    }
+                    
                 ],
                 "sample": {
-                    "newRowCells": [
-                        "Cell A data",
-                        "Cell B data",
-                        "Cell C data",
-                        "Cell D data"
-                    ]
+                   
                 }
             }
         }
