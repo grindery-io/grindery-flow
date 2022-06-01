@@ -1,13 +1,13 @@
-import React from 'react';
-import AppHeader from './components/AppHeader';
-import AppContextProvider from './context/AppContext';
+import React from "react";
+import AppHeader from "./components/AppHeader";
+import WorkflowConstructor from "./components/WorkflowConstructor";
+import AppContextProvider from "./context/AppContext";
 
 function App() {
   return (
     <AppContextProvider>
-      <div className="app">
-        <AppHeader />
-      </div>
+      <AppHeader />
+      <WorkflowConstructor />
     </AppContextProvider>
   );
 }

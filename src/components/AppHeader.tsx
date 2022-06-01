@@ -1,14 +1,14 @@
-import React from 'react'
-import Logo from './Logo'
+import React from "react";
+import Logo from "./Logo";
 
-type Props = {}
+type Props = {};
 
 const AppHeader = (props: Props) => {
   return (
     <div className="header">
-        <Logo />
+      <Logo />
     </div>
-  )
-}
+  );
+};
 
-export default AppHeader
+export default AppHeader;

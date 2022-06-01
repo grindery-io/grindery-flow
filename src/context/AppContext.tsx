@@ -1,10 +1,11 @@
-import React, { useState, createContext, useContext } from 'react';
-import gsheetConnector from '../samples/gsheet-connector.json';
+import React, { useState, createContext, useContext } from "react";
+import gsheetConnector from "../samples/gsheet-connector.json";
+import molochXdaiConnector from "../samples/moloch-xdai-connector.json";
 
 type ContextProps = {
-    state: any;
-    setState?: (a: any) => void;
-    connectors?: any[];
+  state: any;
+  setState?: (a: any) => void;
+  connectors?: any[];
 };
 
 type AppContextProps = {
@@ -13,21 +14,21 @@ type AppContextProps = {
 
 export const AppContext = createContext<Partial<ContextProps>>({});
 
-export const AppContextProvider = ({children}: AppContextProps) => {
-  const [state, setState] = useState({})
-  const connectors = [
-    gsheetConnector
-  ]
+export const AppContextProvider = ({ children }: AppContextProps) => {
+  const [state, setState] = useState({});
+  const connectors = [gsheetConnector, molochXdaiConnector];
 
   return (
-    <AppContext.Provider value={{ 
-      state,
-      setState,
-      connectors
-    }}>
+    <AppContext.Provider
+      value={{
+        state,
+        setState,
+        connectors,
+      }}
+    >
       {children}
     </AppContext.Provider>
-  )
+  );
 };
 
 export const useAppContext = () => useContext(AppContext);
