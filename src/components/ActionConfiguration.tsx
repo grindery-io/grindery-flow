@@ -1,33 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAppContext } from "../context/AppContext";
 
 type Props = {};
 
 const ActionConfiguration = (props: Props) => {
-  const { connectors, workflow, setWorkflow } = useAppContext();
+  const {
+    workflow,
+    setWorkflow,
+    action,
+    trigger,
+    triggerConnector,
+    actionConnector,
+    setTriggerConfigSubmitted,
+  } = useAppContext();
+
+  const [showResult, setShowResult] = useState(false);
+
   if (!workflow || !setWorkflow) {
     return null;
   }
-  const workflowActionConnector = workflow?.actions[0].connector;
-  const workflowTriggerConnector = workflow?.trigger.connector;
-  const workflowActionOperation = workflow?.actions[0].operation;
-  const workflowTriggerOperation = workflow?.trigger.operation;
-  const actionConnector = connectors?.find(
-    (connector) =>
-      connector && connector.name && connector.name === workflowActionConnector
-  );
-  const triggerConnector = connectors?.find(
-    (connector) =>
-      connector && connector.name && connector.name === workflowTriggerConnector
-  );
-  const action = actionConnector.actions.find(
-    (connectorAction: { name: any }) =>
-      connectorAction && connectorAction.name === workflowActionOperation
-  );
-  const trigger = triggerConnector.triggers.find(
-    (connectorTrigger: { name: any }) =>
-      connectorTrigger && connectorTrigger.name === workflowTriggerOperation
-  );
 
   const handleFieldChange = (
     e: React.ChangeEvent<
@@ -54,10 +45,22 @@ const ActionConfiguration = (props: Props) => {
     });
   };
 
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setShowResult(true);
+  };
+
+  const handleBackClick = () => {
+    if (setTriggerConfigSubmitted) {
+      setTriggerConfigSubmitted(false);
+    }
+    setShowResult(false);
+  };
+
   return (
     <div
       style={{
-        maxWidth: 1028,
+        maxWidth: 816,
         margin: "54px auto 0",
         padding: "80px 100px",
         border: "1px solid #DCDCDC",
@@ -67,84 +70,150 @@ const ActionConfiguration = (props: Props) => {
       <h2 style={{ textAlign: "center", margin: 0 }}>
         Map fields from {triggerConnector.name} into {actionConnector.name}
       </h2>
-      {action &&
-        action.operation &&
-        action.operation.inputFields &&
-        action.operation.inputFields.map(
-          (inputField: {
-            label: any;
-            key: any;
-            placeholder: any;
-            type: any;
-          }) => (
-            <React.Fragment key={inputField.key}>
-              {!!inputField && (
-                <div
-                  style={{
-                    width: "100%",
-                    marginTop: 40,
-                  }}
-                >
-                  <label>
-                    <span style={{ display: "block" }}>{inputField.label}</span>
-                    {inputField.type === "string" && (
-                      <select
-                        style={{
-                          width: "100%",
-                          padding: 10,
-                        }}
-                        value={workflow?.actions[0].input[inputField.key] || ""}
-                        onChange={(e) => {
-                          handleFieldChange(e, inputField);
-                        }}
-                      >
-                        <option value="">{inputField.placeholder || ""}</option>
-                        {Object.keys(trigger.operation.sample).map(
-                          (sampleKey) => {
-                            if (
-                              Array.isArray(trigger.operation.sample[sampleKey])
-                            ) {
-                              return trigger.operation.sample[sampleKey].map(
-                                (v: any, i: any) => (
-                                  <option key={v} value={v}>
-                                    {sampleKey} {i}: {v}
-                                  </option>
-                                )
-                              );
-                            } else {
-                              return (
-                                <option
-                                  key={trigger.operation.sample[sampleKey]}
-                                  value={trigger.operation.sample[sampleKey]}
-                                >
-                                  {sampleKey}:{" "}
-                                  {trigger.operation.sample[sampleKey]}
-                                </option>
-                              );
-                            }
+      <form onSubmit={handleFormSubmit}>
+        {action &&
+          action.operation &&
+          action.operation.inputFields &&
+          action.operation.inputFields.map(
+            (inputField: {
+              label: any;
+              key: any;
+              placeholder: any;
+              type: any;
+              required: any;
+            }) => (
+              <React.Fragment key={inputField.key}>
+                {!!inputField && (
+                  <div
+                    style={{
+                      width: "100%",
+                      marginTop: 40,
+                    }}
+                  >
+                    <label>
+                      <span style={{ display: "block" }}>
+                        {inputField.label}
+                      </span>
+                      {inputField.type === "string" && (
+                        <select
+                          style={{
+                            width: "100%",
+                            padding: 10,
+                          }}
+                          value={
+                            workflow?.actions[0].input[inputField.key] || ""
                           }
-                        )}
-                      </select>
-                    )}
-                    {inputField.type === "text" && (
-                      <textarea
-                        style={{
-                          width: "100%",
-                          padding: 10,
-                        }}
-                        value={workflow?.actions[0].input[inputField.key] || ""}
-                        onChange={(e) => {
-                          handleFieldChange(e, inputField);
-                        }}
-                        placeholder={inputField.placeholder || ""}
-                      />
-                    )}
-                  </label>
-                </div>
-              )}
-            </React.Fragment>
-          )
-        )}
+                          onChange={(e) => {
+                            handleFieldChange(e, inputField);
+                          }}
+                          required={!!inputField.required}
+                        >
+                          <option value="">
+                            {inputField.placeholder || ""}
+                          </option>
+                          {Object.keys(trigger.operation.sample).map(
+                            (sampleKey) => {
+                              if (
+                                Array.isArray(
+                                  trigger.operation.sample[sampleKey]
+                                )
+                              ) {
+                                return trigger.operation.sample[sampleKey].map(
+                                  (v: any, i: any) => (
+                                    <option
+                                      key={v}
+                                      value={`{{${trigger.key}__${sampleKey}[${i}]}}`}
+                                    >
+                                      {sampleKey} {i}: {v}
+                                    </option>
+                                  )
+                                );
+                              } else {
+                                return (
+                                  <option
+                                    key={trigger.operation.sample[sampleKey]}
+                                    value={`{{${trigger.key}__${sampleKey}}}`}
+                                  >
+                                    {sampleKey}:{" "}
+                                    {trigger.operation.sample[sampleKey]}
+                                  </option>
+                                );
+                              }
+                            }
+                          )}
+                        </select>
+                      )}
+                      {inputField.type === "text" && (
+                        <textarea
+                          style={{
+                            width: "100%",
+                            padding: 10,
+                          }}
+                          value={
+                            workflow?.actions[0].input[inputField.key] || ""
+                          }
+                          onChange={(e) => {
+                            handleFieldChange(e, inputField);
+                          }}
+                          placeholder={inputField.placeholder || ""}
+                          required={!!inputField.required}
+                        />
+                      )}
+                    </label>
+                  </div>
+                )}
+              </React.Fragment>
+            )
+          )}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            flexWrap: "nowrap",
+            flexDirection: "row",
+          }}
+        >
+          <button
+            style={{
+              display: "block",
+              margin: "40px auto 0 0",
+              padding: 10,
+              textAlign: "center",
+              width: "100%",
+              maxWidth: 150,
+            }}
+            onClick={handleBackClick}
+          >
+            Back
+          </button>
+          <button
+            style={{
+              display: "block",
+              margin: "40px 0 0 auto",
+              padding: 10,
+              textAlign: "center",
+              width: "100%",
+              maxWidth: 150,
+            }}
+            type="submit"
+          >
+            Next
+          </button>
+        </div>
+      </form>
+      {showResult && (
+        <div
+          style={{
+            margin: "80px 0 0",
+          }}
+        >
+          <h3 style={{ textAlign: "center", margin: "0 0 20px", padding: 0 }}>
+            Workflow JSON
+          </h3>
+          <pre>{JSON.stringify(workflow, null, 2)}</pre>
+        </div>
+      )}
     </div>
   );
 };
