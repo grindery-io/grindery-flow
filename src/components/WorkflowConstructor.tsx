@@ -1,36 +1,31 @@
 import React from "react";
-import TriggerConfiguration from "./TriggerConfiguration";
+import TriggerAuthentication from "./TriggerAuthentication";
 import ConnectorsSelector from "./ConnectorsSelector";
 import ActionConfiguration from "./ActionConfiguration";
 import { useAppContext } from "../context/AppContext";
+import TriggerConfiguration from "./TriggerConfiguration";
 
 type Props = {};
 
 const WorkflowConstructor = (props: Props) => {
-  const { workflow } = useAppContext();
-
-  const triggerIsSet = Boolean(
-    workflow && workflow.trigger && workflow.trigger.operation
-  );
-
-  const actionIsSet = Boolean(
-    workflow &&
-      workflow.actions &&
-      workflow.actions[0] &&
-      workflow.actions[0].operation
-  );
-
-  const triggerIsConfigured = Boolean(
-    workflow && workflow.trigger && workflow.trigger.authentication
-  );
+  const {
+    triggerIsSet,
+    actionIsSet,
+    triggerIsAuthenticated,
+    triggerIsConfigured,
+  } = useAppContext();
 
   return (
     <div style={{ padding: "0 20px 50px" }}>
       <ConnectorsSelector title="Create your own workflow" />
-      {triggerIsSet && actionIsSet && <TriggerConfiguration />}
-      {triggerIsSet && actionIsSet && triggerIsConfigured && (
-        <ActionConfiguration />
+      {triggerIsSet && actionIsSet && <TriggerAuthentication />}
+      {triggerIsSet && actionIsSet && triggerIsAuthenticated && (
+        <TriggerConfiguration />
       )}
+      {triggerIsSet &&
+        actionIsSet &&
+        triggerIsAuthenticated &&
+        triggerIsConfigured && <ActionConfiguration />}
     </div>
   );
 };
