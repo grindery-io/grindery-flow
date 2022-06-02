@@ -52,20 +52,20 @@
                 "operation": {},
                 "inputFields": [
                     {
-                        "key": "spreadsheetName",
-                        "label": "Spreadsheet name",
+                        "key": "spreadsheet",
+                        "label": "Spreadsheet",
                         "helpText": "",
                         "type": "string",
                         "required": true,
-                        "placeholder": "Select spreadsheet"
+                        "placeholder": "Enter spreadsheet name"
                     },
                     {
-                        "key": "spreadsheetListName",
-                        "label": "Spreadsheet list",
+                        "key": "worksheet",
+                        "label": "Worksheet",
                         "helpText": "",
                         "type": "string",
                         "required": true,
-                        "placeholder": "Select spreadsheet list"
+                        "placeholder": "Enter worksheet name"
                     }
                 ],
                 "outputFields": [
