@@ -2,9 +2,9 @@ type WorkflowTrigger = {
   type: string;
   connector: string;
   operation: string;
-  input: {};
-  display: {};
-  authentication: any;
+  input: any;
+  display?: any;
+  authentication?: any;
 };
 
 type WorkflowAction = {
@@ -12,8 +12,8 @@ type WorkflowAction = {
   connector: string;
   operation: string;
   input: any;
-  display: {};
-  authentication: any;
+  display?: any;
+  authentication?: any;
 };
 
 export type Workflow = {
@@ -21,5 +21,5 @@ export type Workflow = {
   trigger: WorkflowTrigger;
   actions: WorkflowAction[];
   creator: string;
-  signature: string;
+  signature?: string;
 };
