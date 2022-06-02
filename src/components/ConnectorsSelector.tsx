@@ -11,6 +11,10 @@ const ConnectorsSelector = (props: Props) => {
     setWorkflow,
     connectorsWithActions,
     connectorsWithTriggers,
+    triggerConnectorIsSet,
+    actionConnectorIsSet,
+    availableTriggers,
+    availableActions,
   } = useAppContext();
 
   if (!workflow || !setWorkflow) {
@@ -18,42 +22,6 @@ const ConnectorsSelector = (props: Props) => {
   }
 
   const { title } = props;
-
-  const triggerIsSet = Boolean(
-    workflow && workflow.trigger && workflow.trigger.connector
-  );
-  const actionIsSet = Boolean(
-    workflow &&
-      workflow.actions &&
-      workflow.actions[0] &&
-      workflow.actions[0].connector
-  );
-
-  const selectedTriggerConnector = connectorsWithTriggers?.find(
-    (connector) =>
-      connector &&
-      connector.name &&
-      connector.name === workflow?.trigger.connector
-  );
-
-  const selectedActionConnector = connectorsWithActions?.find(
-    (connector) =>
-      connector &&
-      connector.name &&
-      connector.name === workflow?.actions[0].connector
-  );
-
-  const availableTriggers =
-    (triggerIsSet &&
-      selectedTriggerConnector &&
-      selectedTriggerConnector.triggers) ||
-    [];
-
-  const availableActions =
-    (triggerIsSet &&
-      selectedActionConnector &&
-      selectedActionConnector.actions) ||
-    [];
 
   const handleTriggerConnectorChange = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -192,7 +160,7 @@ const ConnectorsSelector = (props: Props) => {
           </label>
         </div>
       </div>
-      {triggerIsSet && actionIsSet && (
+      {triggerConnectorIsSet && actionConnectorIsSet && (
         <div
           style={{
             marginTop: 40,
@@ -227,7 +195,7 @@ const ConnectorsSelector = (props: Props) => {
                 onChange={handleTriggerChange}
               >
                 <option value="">Select a Trigger</option>
-                {availableTriggers.map(
+                {availableTriggers?.map(
                   (trigger: {
                     key: any;
                     name: any;
