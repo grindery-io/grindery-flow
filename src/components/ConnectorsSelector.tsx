@@ -23,7 +23,10 @@ const ConnectorsSelector = (props: Props) => {
     workflow && workflow.trigger && workflow.trigger.connector
   );
   const actionIsSet = Boolean(
-    workflow && workflow.action && workflow.action.connector
+    workflow &&
+      workflow.actions &&
+      workflow.actions[0] &&
+      workflow.actions[0].connector
   );
 
   const selectedTriggerConnector = connectorsWithTriggers?.find(
@@ -37,7 +40,7 @@ const ConnectorsSelector = (props: Props) => {
     (connector) =>
       connector &&
       connector.name &&
-      connector.name === workflow.action.connector
+      connector.name === workflow.actions[0].connector
   );
 
   const availableTriggers =
@@ -129,20 +132,23 @@ const ConnectorsSelector = (props: Props) => {
               }}
               value={
                 (workflow &&
-                  workflow.action &&
-                  workflow.action &&
-                  workflow.action.connector) ||
+                  workflow.actions &&
+                  workflow.actions &&
+                  workflow.actions[0] &&
+                  workflow.actions[0].connector) ||
                 ""
               }
               onChange={(e) => {
                 setWorkflow({
                   ...workflow,
-                  action: {
-                    ...workflow.action,
-                    connector: e.target.value,
-                    operation: "",
-                    input: {},
-                  },
+                  actions: [
+                    {
+                      ...workflow.actions[0],
+                      connector: e.target.value,
+                      operation: "",
+                      input: {},
+                    },
+                  ],
                 });
               }}
             >
@@ -239,18 +245,20 @@ const ConnectorsSelector = (props: Props) => {
                 }}
                 value={
                   (workflow &&
-                    workflow.action &&
-                    workflow.action &&
-                    workflow.action.operation) ||
+                    workflow.actions &&
+                    workflow.actions[0] &&
+                    workflow.actions[0].operation) ||
                   ""
                 }
                 onChange={(e) => {
                   setWorkflow({
                     ...workflow,
-                    action: {
-                      ...workflow.action,
-                      operation: e.target.value,
-                    },
+                    actions: [
+                      {
+                        ...workflow.actions[0],
+                        operation: e.target.value,
+                      },
+                    ],
                   });
                 }}
               >

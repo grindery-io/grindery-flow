@@ -16,14 +16,16 @@ const WorkflowConstructor = (props: Props) => {
       display: {},
       authentication: "",
     },
-    action: {
-      type: "action",
-      connector: "",
-      operation: "",
-      input: {},
-      display: {},
-      authentication: "",
-    },
+    actions: [
+      {
+        type: "action",
+        connector: "",
+        operation: "",
+        input: {},
+        display: {},
+        authentication: "",
+      },
+    ],
     creator: "demo:user",
     signature: "",
   });
@@ -34,7 +36,10 @@ const WorkflowConstructor = (props: Props) => {
     workflow && workflow.trigger && workflow.trigger.operation
   );
   const actionIsSet = Boolean(
-    workflow && workflow.action && workflow.action.operation
+    workflow &&
+      workflow.actions &&
+      workflow.actions[0] &&
+      workflow.actions[0].operation
   );
 
   return (

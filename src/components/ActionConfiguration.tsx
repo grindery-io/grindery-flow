@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAppContext } from "../context/AppContext";
 
 type Props = {
@@ -8,9 +8,9 @@ type Props = {
 
 const ActionConfiguration = (props: Props) => {
   const { connectors } = useAppContext();
-  const workflowActionConnector = props.workflow.action.connector;
+  const workflowActionConnector = props.workflow.actions[0].connector;
   const workflowTriggerConnector = props.workflow.trigger.connector;
-  const workflowActionOperation = props.workflow.action.operation;
+  const workflowActionOperation = props.workflow.actions[0].operation;
   const workflowTriggerOperation = props.workflow.trigger.operation;
   const actionConnector = connectors?.find(
     (connector) =>
@@ -28,8 +28,6 @@ const ActionConfiguration = (props: Props) => {
     (connectorTrigger: { name: any }) =>
       connectorTrigger && connectorTrigger.name === workflowTriggerOperation
   );
-
-  console.log("action", action);
 
   return (
     <div
@@ -54,10 +52,9 @@ const ActionConfiguration = (props: Props) => {
             placeholder: any;
             type: any;
           }) => (
-            <>
+            <React.Fragment key={inputField.key}>
               {!!inputField && (
                 <div
-                  key={inputField.key}
                   style={{
                     width: "100%",
                     marginTop: 40,
@@ -72,18 +69,20 @@ const ActionConfiguration = (props: Props) => {
                           padding: 10,
                         }}
                         value={
-                          props.workflow.action.input[inputField.key] || ""
+                          props.workflow.actions[0].input[inputField.key] || ""
                         }
                         onChange={(e) => {
                           props.setWorkflow({
                             ...props.workflow,
-                            action: {
-                              ...props.workflow.action,
-                              input: {
-                                ...props.workflow.action.input,
-                                [inputField.key]: e.target.value,
+                            actions: [
+                              {
+                                ...props.workflow.actions[0],
+                                input: {
+                                  ...props.workflow.actions[0].input,
+                                  [inputField.key]: e.target.value,
+                                },
                               },
-                            },
+                            ],
                           });
                         }}
                       >
@@ -122,18 +121,20 @@ const ActionConfiguration = (props: Props) => {
                           padding: 10,
                         }}
                         value={
-                          props.workflow.action.input[inputField.key] || ""
+                          props.workflow.actions[0].input[inputField.key] || ""
                         }
                         onChange={(e) => {
                           props.setWorkflow({
                             ...props.workflow,
-                            action: {
-                              ...props.workflow.action,
-                              input: {
-                                ...props.workflow.action.input,
-                                [inputField.key]: e.target.value,
+                            actions: [
+                              {
+                                ...props.workflow.actions[0],
+                                input: {
+                                  ...props.workflow.actions[0].input,
+                                  [inputField.key]: e.target.value,
+                                },
                               },
-                            },
+                            ],
                           });
                         }}
                         placeholder={inputField.placeholder || ""}
@@ -142,7 +143,7 @@ const ActionConfiguration = (props: Props) => {
                   </label>
                 </div>
               )}
-            </>
+            </React.Fragment>
           )
         )}
     </div>
