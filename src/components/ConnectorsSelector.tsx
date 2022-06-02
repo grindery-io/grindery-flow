@@ -3,21 +3,16 @@ import { useAppContext } from "../context/AppContext";
 
 type Props = {
   title?: string;
-  workflow: any;
-  setWorkflow: (a: any) => void;
 };
 
 const ConnectorsSelector = (props: Props) => {
-  const { connectors } = useAppContext();
-  const { title, workflow, setWorkflow } = props;
-  const connectorsWithTriggers = connectors?.filter(
-    (connector) =>
-      connector && connector.triggers && connector.triggers.length > 0
-  );
-  const connectorsWithActions = connectors?.filter(
-    (connector) =>
-      connector && connector.actions && connector.actions.length > 0
-  );
+  const {
+    workflow,
+    setWorkflow,
+    connectorsWithActions,
+    connectorsWithTriggers,
+  } = useAppContext();
+  const { title } = props;
 
   const triggerIsSet = Boolean(
     workflow && workflow.trigger && workflow.trigger.connector
@@ -33,14 +28,14 @@ const ConnectorsSelector = (props: Props) => {
     (connector) =>
       connector &&
       connector.name &&
-      connector.name === workflow.trigger.connector
+      connector.name === workflow?.trigger.connector
   );
 
   const selectedActionConnector = connectorsWithActions?.find(
     (connector) =>
       connector &&
       connector.name &&
-      connector.name === workflow.actions[0].connector
+      connector.name === workflow?.actions[0].connector
   );
 
   const availableTriggers =
@@ -55,7 +50,7 @@ const ConnectorsSelector = (props: Props) => {
       selectedActionConnector.actions) ||
     [];
 
-  return (
+  return workflow && !!setWorkflow ? (
     <div
       style={{
         maxWidth: 1240,
@@ -290,7 +285,7 @@ const ConnectorsSelector = (props: Props) => {
         </div>
       )}
     </div>
-  );
+  ) : null;
 };
 
 export default ConnectorsSelector;

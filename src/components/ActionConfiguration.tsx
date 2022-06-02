@@ -1,17 +1,14 @@
 import React from "react";
 import { useAppContext } from "../context/AppContext";
 
-type Props = {
-  workflow: any;
-  setWorkflow: (a: any) => void;
-};
+type Props = {};
 
 const ActionConfiguration = (props: Props) => {
-  const { connectors } = useAppContext();
-  const workflowActionConnector = props.workflow.actions[0].connector;
-  const workflowTriggerConnector = props.workflow.trigger.connector;
-  const workflowActionOperation = props.workflow.actions[0].operation;
-  const workflowTriggerOperation = props.workflow.trigger.operation;
+  const { connectors, workflow, setWorkflow } = useAppContext();
+  const workflowActionConnector = workflow?.actions[0].connector;
+  const workflowTriggerConnector = workflow?.trigger.connector;
+  const workflowActionOperation = workflow?.actions[0].operation;
+  const workflowTriggerOperation = workflow?.trigger.operation;
   const actionConnector = connectors?.find(
     (connector) =>
       connector && connector.name && connector.name === workflowActionConnector
@@ -29,7 +26,7 @@ const ActionConfiguration = (props: Props) => {
       connectorTrigger && connectorTrigger.name === workflowTriggerOperation
   );
 
-  return (
+  return workflow && !!setWorkflow ? (
     <div
       style={{
         maxWidth: 1028,
@@ -68,17 +65,15 @@ const ActionConfiguration = (props: Props) => {
                           width: "100%",
                           padding: 10,
                         }}
-                        value={
-                          props.workflow.actions[0].input[inputField.key] || ""
-                        }
+                        value={workflow?.actions[0].input[inputField.key] || ""}
                         onChange={(e) => {
-                          props.setWorkflow({
-                            ...props.workflow,
+                          setWorkflow({
+                            ...workflow,
                             actions: [
                               {
-                                ...props.workflow.actions[0],
+                                ...workflow?.actions[0],
                                 input: {
-                                  ...props.workflow.actions[0].input,
+                                  ...workflow?.actions[0].input,
                                   [inputField.key]: e.target.value,
                                 },
                               },
@@ -120,17 +115,15 @@ const ActionConfiguration = (props: Props) => {
                           width: "100%",
                           padding: 10,
                         }}
-                        value={
-                          props.workflow.actions[0].input[inputField.key] || ""
-                        }
+                        value={workflow?.actions[0].input[inputField.key] || ""}
                         onChange={(e) => {
-                          props.setWorkflow({
-                            ...props.workflow,
+                          setWorkflow({
+                            ...workflow,
                             actions: [
                               {
-                                ...props.workflow.actions[0],
+                                ...workflow?.actions[0],
                                 input: {
-                                  ...props.workflow.actions[0].input,
+                                  ...workflow?.actions[0].input,
                                   [inputField.key]: e.target.value,
                                 },
                               },
@@ -147,7 +140,7 @@ const ActionConfiguration = (props: Props) => {
           )
         )}
     </div>
-  );
+  ) : null;
 };
 
 export default ActionConfiguration;
