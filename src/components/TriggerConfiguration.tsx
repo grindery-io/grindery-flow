@@ -1,42 +1,104 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAppContext } from "../context/AppContext";
 
 type Props = {};
 
 const TriggerConfiguration = (props: Props) => {
-  const { workflow, setWorkflow } = useAppContext();
-  const [authenticated, setAuthenticated] = useState(false);
+  const { workflow, setWorkflow, trigger, setTriggerConfigSubmitted } =
+    useAppContext();
 
   if (!workflow || !setWorkflow) {
     return null;
   }
 
-  const handleNextClick = () => {
+  const handleFieldChange = (
+    e: React.ChangeEvent<
+      HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
+    >,
+    inputField: {
+      label: any;
+      key: any;
+      placeholder: any;
+      type: any;
+    }
+  ) => {
+    if (setTriggerConfigSubmitted) {
+      setTriggerConfigSubmitted(false);
+    }
     setWorkflow({
       ...workflow,
       trigger: {
-        ...workflow.trigger,
-        authentication: true,
+        ...workflow?.trigger,
+        input: {
+          ...workflow?.trigger.input,
+          [inputField.key]: e.target.value,
+        },
       },
     });
   };
 
-  const handleAuthClick = () => {
-    setAuthenticated(true);
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (setTriggerConfigSubmitted) {
+      setTriggerConfigSubmitted(true);
+    }
   };
 
   return (
     <div
       style={{
-        maxWidth: 1240,
+        maxWidth: 816,
         margin: "54px auto 0",
         padding: "80px 100px",
         border: "1px solid #DCDCDC",
         borderRadius: 10,
       }}
     >
-      <h2 style={{ textAlign: "center", margin: 0 }}>Connect your account</h2>
-      {!authenticated && (
+      <h2 style={{ textAlign: "center", margin: 0 }}>Set up trigger</h2>
+      <form onSubmit={handleFormSubmit}>
+        {trigger &&
+          trigger.operation &&
+          trigger.operation.inputFields &&
+          trigger.operation.inputFields.map(
+            (inputField: {
+              label: any;
+              key: any;
+              placeholder: any;
+              type: any;
+              required: any;
+            }) => (
+              <React.Fragment key={inputField.key}>
+                {!!inputField && (
+                  <div
+                    style={{
+                      width: "100%",
+                      marginTop: 40,
+                    }}
+                  >
+                    <label>
+                      <span style={{ display: "block" }}>
+                        {inputField.label}
+                      </span>
+                      <input
+                        name={inputField.key}
+                        style={{
+                          width: "100%",
+                          padding: 10,
+                        }}
+                        type="text"
+                        placeholder={inputField.placeholder || ""}
+                        required={!!inputField.required}
+                        value={workflow?.trigger.input[inputField.key] || ""}
+                        onChange={(e) => {
+                          handleFieldChange(e, inputField);
+                        }}
+                      />
+                    </label>
+                  </div>
+                )}
+              </React.Fragment>
+            )
+          )}
         <button
           style={{
             display: "block",
@@ -44,52 +106,13 @@ const TriggerConfiguration = (props: Props) => {
             padding: 10,
             textAlign: "center",
             width: "100%",
-            maxWidth: 470,
+            maxWidth: 604,
           }}
-          onClick={handleAuthClick}
+          type="submit"
         >
-          Sign in to Google Sheets
+          Continue
         </button>
-      )}
-      {authenticated && (
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 470,
-            margin: "40px auto 0",
-            textAlign: "center",
-          }}
-        >
-          <label style={{ textAlign: "left", display: "block" }}>
-            Google Sheets account
-          </label>
-          <input
-            style={{
-              width: "100%",
-              padding: "10px 20px",
-              boxSizing: "border-box",
-            }}
-            type="text"
-            value="Google Sheets email@example.com"
-            readOnly
-          />
-        </div>
-      )}
-      <button
-        style={{
-          display: "block",
-          margin: "20px auto 0",
-          padding: 10,
-          textAlign: "center",
-          width: "100%",
-          maxWidth: 470,
-        }}
-        disabled={!authenticated}
-        onClick={handleNextClick}
-      >
-        {!authenticated && <>To continue, finish required fields</>}
-        {authenticated && <>Continue</>}
-      </button>
+      </form>
     </div>
   );
 };
