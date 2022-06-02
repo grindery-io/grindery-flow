@@ -1,32 +1,7 @@
 import React, { useState, createContext, useContext } from "react";
 import gsheetConnector from "../samples/gsheet-connector.json";
 import molochXdaiConnector from "../samples/moloch-xdai-connector.json";
-
-type WorkflowTrigger = {
-  type: string;
-  connector: string;
-  operation: string;
-  input: {};
-  display: {};
-  authentication: {};
-};
-
-type WorkflowAction = {
-  type: string;
-  connector: string;
-  operation: string;
-  input: any;
-  display: {};
-  authentication: {};
-};
-
-type Workflow = {
-  title: string;
-  trigger: WorkflowTrigger;
-  actions: WorkflowAction[];
-  creator: string;
-  signature: string;
-};
+import { Workflow } from "../types/Workflow";
 
 type ContextProps = {
   state: any;
