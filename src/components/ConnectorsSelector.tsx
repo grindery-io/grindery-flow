@@ -12,6 +12,11 @@ const ConnectorsSelector = (props: Props) => {
     connectorsWithActions,
     connectorsWithTriggers,
   } = useAppContext();
+
+  if (!workflow || !setWorkflow) {
+    return null;
+  }
+
   const { title } = props;
 
   const triggerIsSet = Boolean(
@@ -50,7 +55,59 @@ const ConnectorsSelector = (props: Props) => {
       selectedActionConnector.actions) ||
     [];
 
-  return workflow && !!setWorkflow ? (
+  const handleTriggerConnectorChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setWorkflow({
+      ...workflow,
+      trigger: {
+        ...workflow.trigger,
+        connector: e.target.value,
+        operation: "",
+        input: {},
+      },
+    });
+  };
+
+  const handleActionConnectorChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setWorkflow({
+      ...workflow,
+      actions: [
+        {
+          ...workflow.actions[0],
+          connector: e.target.value,
+          operation: "",
+          input: {},
+        },
+      ],
+    });
+  };
+
+  const handleTriggerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setWorkflow({
+      ...workflow,
+      trigger: {
+        ...workflow.trigger,
+        operation: e.target.value,
+      },
+    });
+  };
+
+  const handleActionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setWorkflow({
+      ...workflow,
+      actions: [
+        {
+          ...workflow.actions[0],
+          operation: e.target.value,
+        },
+      ],
+    });
+  };
+
+  return (
     <div
       style={{
         maxWidth: 1240,
@@ -90,17 +147,7 @@ const ConnectorsSelector = (props: Props) => {
                 (workflow && workflow.trigger && workflow.trigger.connector) ||
                 ""
               }
-              onChange={(e) => {
-                setWorkflow({
-                  ...workflow,
-                  trigger: {
-                    ...workflow.trigger,
-                    connector: e.target.value,
-                    operation: "",
-                    input: {},
-                  },
-                });
-              }}
+              onChange={handleTriggerConnectorChange}
             >
               <option value="">Search for an App</option>
               {connectorsWithTriggers?.map((connector) => (
@@ -133,19 +180,7 @@ const ConnectorsSelector = (props: Props) => {
                   workflow.actions[0].connector) ||
                 ""
               }
-              onChange={(e) => {
-                setWorkflow({
-                  ...workflow,
-                  actions: [
-                    {
-                      ...workflow.actions[0],
-                      connector: e.target.value,
-                      operation: "",
-                      input: {},
-                    },
-                  ],
-                });
-              }}
+              onChange={handleActionConnectorChange}
             >
               <option value="">Search for protocol</option>
               {connectorsWithActions?.map((connector) => (
@@ -189,15 +224,7 @@ const ConnectorsSelector = (props: Props) => {
                     workflow.trigger.operation) ||
                   ""
                 }
-                onChange={(e) => {
-                  setWorkflow({
-                    ...workflow,
-                    trigger: {
-                      ...workflow.trigger,
-                      operation: e.target.value,
-                    },
-                  });
-                }}
+                onChange={handleTriggerChange}
               >
                 <option value="">Select a Trigger</option>
                 {availableTriggers.map(
@@ -245,17 +272,7 @@ const ConnectorsSelector = (props: Props) => {
                     workflow.actions[0].operation) ||
                   ""
                 }
-                onChange={(e) => {
-                  setWorkflow({
-                    ...workflow,
-                    actions: [
-                      {
-                        ...workflow.actions[0],
-                        operation: e.target.value,
-                      },
-                    ],
-                  });
-                }}
+                onChange={handleActionChange}
               >
                 <option value="">Select an Action</option>
                 {availableActions?.map(
@@ -285,7 +302,7 @@ const ConnectorsSelector = (props: Props) => {
         </div>
       )}
     </div>
-  ) : null;
+  );
 };
 
 export default ConnectorsSelector;

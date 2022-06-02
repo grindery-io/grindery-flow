@@ -4,7 +4,7 @@ type WorkflowTrigger = {
   operation: string;
   input: {};
   display: {};
-  authentication: {};
+  authentication: any;
 };
 
 type WorkflowAction = {
@@ -13,7 +13,7 @@ type WorkflowAction = {
   operation: string;
   input: any;
   display: {};
-  authentication: {};
+  authentication: any;
 };
 
 export type Workflow = {

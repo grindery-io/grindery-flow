@@ -5,6 +5,9 @@ type Props = {};
 
 const ActionConfiguration = (props: Props) => {
   const { connectors, workflow, setWorkflow } = useAppContext();
+  if (!workflow || !setWorkflow) {
+    return null;
+  }
   const workflowActionConnector = workflow?.actions[0].connector;
   const workflowTriggerConnector = workflow?.trigger.connector;
   const workflowActionOperation = workflow?.actions[0].operation;
@@ -26,7 +29,32 @@ const ActionConfiguration = (props: Props) => {
       connectorTrigger && connectorTrigger.name === workflowTriggerOperation
   );
 
-  return workflow && !!setWorkflow ? (
+  const handleFieldChange = (
+    e: React.ChangeEvent<
+      HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
+    >,
+    inputField: {
+      label: any;
+      key: any;
+      placeholder: any;
+      type: any;
+    }
+  ) => {
+    setWorkflow({
+      ...workflow,
+      actions: [
+        {
+          ...workflow?.actions[0],
+          input: {
+            ...workflow?.actions[0].input,
+            [inputField.key]: e.target.value,
+          },
+        },
+      ],
+    });
+  };
+
+  return (
     <div
       style={{
         maxWidth: 1028,
@@ -67,18 +95,7 @@ const ActionConfiguration = (props: Props) => {
                         }}
                         value={workflow?.actions[0].input[inputField.key] || ""}
                         onChange={(e) => {
-                          setWorkflow({
-                            ...workflow,
-                            actions: [
-                              {
-                                ...workflow?.actions[0],
-                                input: {
-                                  ...workflow?.actions[0].input,
-                                  [inputField.key]: e.target.value,
-                                },
-                              },
-                            ],
-                          });
+                          handleFieldChange(e, inputField);
                         }}
                       >
                         <option value="">{inputField.placeholder || ""}</option>
@@ -117,18 +134,7 @@ const ActionConfiguration = (props: Props) => {
                         }}
                         value={workflow?.actions[0].input[inputField.key] || ""}
                         onChange={(e) => {
-                          setWorkflow({
-                            ...workflow,
-                            actions: [
-                              {
-                                ...workflow?.actions[0],
-                                input: {
-                                  ...workflow?.actions[0].input,
-                                  [inputField.key]: e.target.value,
-                                },
-                              },
-                            ],
-                          });
+                          handleFieldChange(e, inputField);
                         }}
                         placeholder={inputField.placeholder || ""}
                       />
@@ -140,7 +146,7 @@ const ActionConfiguration = (props: Props) => {
           )
         )}
     </div>
-  ) : null;
+  );
 };
 
 export default ActionConfiguration;

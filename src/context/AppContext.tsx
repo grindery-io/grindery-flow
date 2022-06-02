@@ -30,7 +30,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       operation: "",
       input: {},
       display: {},
-      authentication: {},
+      authentication: false,
     },
     actions: [
       {
@@ -39,7 +39,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         operation: "",
         input: {},
         display: {},
-        authentication: {},
+        authentication: false,
       },
     ],
     creator: "demo:user",

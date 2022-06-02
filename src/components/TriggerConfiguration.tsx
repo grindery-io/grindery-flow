@@ -1,11 +1,30 @@
 import React, { useState } from "react";
+import { useAppContext } from "../context/AppContext";
 
-type Props = {
-  setTriggerIsConfigured: (a: any) => void;
-};
+type Props = {};
 
 const TriggerConfiguration = (props: Props) => {
+  const { workflow, setWorkflow } = useAppContext();
   const [authenticated, setAuthenticated] = useState(false);
+
+  if (!workflow || !setWorkflow) {
+    return null;
+  }
+
+  const handleNextClick = () => {
+    setWorkflow({
+      ...workflow,
+      trigger: {
+        ...workflow.trigger,
+        authentication: true,
+      },
+    });
+  };
+
+  const handleAuthClick = () => {
+    setAuthenticated(true);
+  };
+
   return (
     <div
       style={{
@@ -27,9 +46,7 @@ const TriggerConfiguration = (props: Props) => {
             width: "100%",
             maxWidth: 470,
           }}
-          onClick={() => {
-            setAuthenticated(true);
-          }}
+          onClick={handleAuthClick}
         >
           Sign in to Google Sheets
         </button>
@@ -68,9 +85,7 @@ const TriggerConfiguration = (props: Props) => {
           maxWidth: 470,
         }}
         disabled={!authenticated}
-        onClick={() => {
-          props.setTriggerIsConfigured(true);
-        }}
+        onClick={handleNextClick}
       >
         {!authenticated && <>To continue, finish required fields</>}
         {authenticated && <>Continue</>}
