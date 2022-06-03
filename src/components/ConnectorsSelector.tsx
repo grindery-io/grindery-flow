@@ -1,77 +1,54 @@
 import React from "react";
 import { useAppContext } from "../context/AppContext";
 
-type Props = {
-  title?: string;
-};
+type Props = {};
 
 const ConnectorsSelector = (props: Props) => {
   const {
     workflow,
-    setWorkflow,
     connectorsWithActions,
     connectorsWithTriggers,
     triggerConnectorIsSet,
     actionConnectorIsSet,
     availableTriggers,
     availableActions,
+    updateWorkflow,
   } = useAppContext();
 
-  if (!workflow || !setWorkflow) {
+  if (!workflow || !updateWorkflow) {
     return null;
   }
-
-  const { title } = props;
 
   const handleTriggerConnectorChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setWorkflow({
-      ...workflow,
-      trigger: {
-        ...workflow.trigger,
-        connector: e.target.value,
-        operation: "",
-        input: {},
-      },
+    updateWorkflow({
+      "trigger.connector": e.target.value,
+      "trigger.operation": "",
+      "trigger.input": {},
+      "trigger.credentials": undefined,
     });
   };
 
   const handleActionConnectorChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setWorkflow({
-      ...workflow,
-      actions: [
-        {
-          ...workflow.actions[0],
-          connector: e.target.value,
-          operation: "",
-          input: {},
-        },
-      ],
+    updateWorkflow({
+      "actions[0].connector": e.target.value,
+      "actions[0].operation": "",
+      "actions[0].input": {},
     });
   };
 
   const handleTriggerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setWorkflow({
-      ...workflow,
-      trigger: {
-        ...workflow.trigger,
-        operation: e.target.value,
-      },
+    updateWorkflow({
+      "trigger.operation": e.target.value,
     });
   };
 
   const handleActionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setWorkflow({
-      ...workflow,
-      actions: [
-        {
-          ...workflow.actions[0],
-          operation: e.target.value,
-        },
-      ],
+    updateWorkflow({
+      "actions[0].operation": e.target.value,
     });
   };
 
@@ -85,7 +62,7 @@ const ConnectorsSelector = (props: Props) => {
         borderRadius: 10,
       }}
     >
-      {title && <h2 style={{ textAlign: "center", margin: 0 }}>{title}</h2>}
+      <h2 style={{ textAlign: "center", margin: 0 }}>Connect Apps and dApps</h2>
       <div
         style={{
           marginTop: 40,
@@ -104,7 +81,7 @@ const ConnectorsSelector = (props: Props) => {
           }}
         >
           <label>
-            <span style={{ display: "block" }}>Connect this...</span>
+            <span style={{ display: "block" }}>This...</span>
             <select
               style={{
                 width: "100%",
@@ -133,7 +110,7 @@ const ConnectorsSelector = (props: Props) => {
           }}
         >
           <label>
-            <span style={{ display: "block" }}>With that...</span>
+            <span style={{ display: "block" }}>With...</span>
             <select
               style={{
                 width: "100%",
