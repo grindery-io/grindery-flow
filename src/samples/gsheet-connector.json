@@ -57,7 +57,19 @@
                         "helpText": "",
                         "type": "string",
                         "required": true,
-                        "placeholder": "Enter spreadsheet name"
+                        "placeholder": "Enter spreadsheet name",
+                        "choices": [
+                            {
+                                "value": "demo_sheet_1",
+                                "label": "Demo Sheet 1",
+                                "sample": "demo_sheet_1"
+                            },
+                            {
+                                "value": "demo_sheet_2",
+                                "label": "Demo Sheet 2",
+                                "sample": "demo_sheet_2"
+                            }
+                        ]
                     },
                     {
                         "key": "worksheet",
@@ -65,7 +77,24 @@
                         "helpText": "",
                         "type": "string",
                         "required": true,
-                        "placeholder": "Enter worksheet name"
+                        "placeholder": "Enter worksheet name",
+                        "choices": [
+                            {
+                                "value": "demo_worksheet_1",
+                                "label": "Demo Worksheet 1",
+                                "sample": "demo_worksheet_1"
+                            },
+                            {
+                                "value": "demo_worksheet_2",
+                                "label": "Demo Worksheet 2",
+                                "sample": "demo_worksheet_2"
+                            },
+                            {
+                                "value": "demo_worksheet_3",
+                                "label": "Demo Worksheet 3",
+                                "sample": "demo_worksheet_3"
+                            }
+                        ]
                     }
                 ],
                 "outputFields": [
@@ -99,5 +128,14 @@
         }
     ],
     "actions": [],
-    "authentication": {}
+    "authentication": {
+        "type": "oauth2",
+        "test": {},
+        "fields": [{
+            "key": "access_token",
+            "type": "string",
+            "required": true,
+            "computed": true
+        }]
+    }
 }
