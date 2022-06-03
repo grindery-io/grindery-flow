@@ -25,6 +25,8 @@ type ContextProps = {
   actionConnectorIsSet: boolean;
   triggerConfigSubmitted: boolean;
   setTriggerConfigSubmitted: (a: any) => void;
+  isTriggerAuthenticationRequired: boolean;
+  triggerAuthenticationField: any;
 };
 
 type AppContextProps = {
@@ -35,7 +37,7 @@ export const AppContext = createContext<Partial<ContextProps>>({});
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
   const [state, setState] = useState({});
-  const connectors = [gsheetConnector, molochXdaiConnector];
+  const connectors: any[] = [gsheetConnector, molochXdaiConnector];
   const [workflow, setWorkflow] = useState<Workflow>({
     title: "New workflow",
     trigger: {
@@ -66,17 +68,6 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       connector && connector.actions && connector.actions.length > 0
   );
 
-  const triggerIsSet = Boolean(
-    workflow && workflow.trigger && workflow.trigger.operation
-  );
-
-  const actionIsSet = Boolean(
-    workflow &&
-      workflow.actions &&
-      workflow.actions[0] &&
-      workflow.actions[0].operation
-  );
-
   const triggerConnectorIsSet = Boolean(
     workflow && workflow.trigger && workflow.trigger.connector
   );
@@ -88,8 +79,15 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       workflow.actions[0].connector
   );
 
-  const triggerIsAuthenticated = Boolean(
-    workflow && workflow.trigger && workflow.trigger.authentication
+  const triggerIsSet = Boolean(
+    workflow && workflow.trigger && workflow.trigger.operation
+  );
+
+  const actionIsSet = Boolean(
+    workflow &&
+      workflow.actions &&
+      workflow.actions[0] &&
+      workflow.actions[0].operation
   );
 
   const workflowTriggerConnector = workflow?.trigger.connector;
@@ -103,8 +101,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   );
 
   const trigger = triggerConnector?.triggers.find(
-    (connectorTrigger: { name: any }) =>
-      connectorTrigger && connectorTrigger.name === workflowTriggerOperation
+    (connectorTrigger: { key: any }) =>
+      connectorTrigger && connectorTrigger.key === workflowTriggerOperation
   );
 
   const actionConnector = connectors?.find(
@@ -113,8 +111,24 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   );
 
   const action = actionConnector?.actions.find(
-    (connectorAction: { name: any }) =>
-      connectorAction && connectorAction.name === workflowActionOperation
+    (connectorAction: { key: any }) =>
+      connectorAction && connectorAction.key === workflowActionOperation
+  );
+
+  const triggerIsAuthenticated = Boolean(
+    (triggerConnector && !triggerConnector.authentication) ||
+      (workflow &&
+        workflow.trigger &&
+        workflow.trigger.input &&
+        workflow.trigger.authentication &&
+        triggerConnector &&
+        triggerConnector.authentication &&
+        triggerConnector.authentication.fields &&
+        triggerConnector.authentication.fields.length > 0 &&
+        triggerConnector.authentication.fields[0].key &&
+        workflow.trigger.authentication[
+          triggerConnector.authentication.fields[0].key
+        ])
   );
 
   const requiredTriggerFields =
@@ -163,6 +177,19 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       selectedActionConnector.actions) ||
     [];
 
+  const isTriggerAuthenticationRequired = Boolean(
+    triggerConnector && triggerConnector.authentication
+  );
+
+  const triggerAuthenticationField =
+    (triggerConnector &&
+      triggerConnector.authentication &&
+      triggerConnector.authentication.fields &&
+      triggerConnector.authentication.fields.length > 0 &&
+      triggerConnector.authentication.fields[0] &&
+      triggerConnector.authentication.fields[0].key) ||
+    null;
+
   console.log("workflow", workflow);
 
   return (
@@ -189,6 +216,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         actionConnectorIsSet,
         triggerConfigSubmitted,
         setTriggerConfigSubmitted,
+        isTriggerAuthenticationRequired,
+        triggerAuthenticationField,
       }}
     >
       {children}
