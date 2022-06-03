@@ -59,46 +59,79 @@ const TriggerConfiguration = (props: Props) => {
         {trigger &&
           trigger.operation &&
           trigger.operation.inputFields &&
-          trigger.operation.inputFields.map(
-            (inputField: {
-              label: any;
-              key: any;
-              placeholder: any;
-              type: any;
-              required: any;
-            }) => (
-              <React.Fragment key={inputField.key}>
-                {!!inputField && (
-                  <div
-                    style={{
-                      width: "100%",
-                      marginTop: 40,
-                    }}
-                  >
-                    <label>
-                      <span style={{ display: "block" }}>
-                        {inputField.label}
-                      </span>
-                      <input
-                        name={inputField.key}
-                        style={{
-                          width: "100%",
-                          padding: 10,
-                        }}
-                        type="text"
-                        placeholder={inputField.placeholder || ""}
-                        required={!!inputField.required}
-                        value={workflow?.trigger.input[inputField.key] || ""}
-                        onChange={(e) => {
-                          handleFieldChange(e, inputField);
-                        }}
-                      />
-                    </label>
-                  </div>
-                )}
-              </React.Fragment>
+          trigger.operation.inputFields
+            .filter(
+              (inputField: { computed: any }) =>
+                inputField && !inputField.computed
             )
-          )}
+            .map(
+              (inputField: {
+                label: any;
+                key: any;
+                placeholder: any;
+                type: any;
+                required: any;
+                choices?: any[];
+              }) => (
+                <React.Fragment key={inputField.key}>
+                  {!!inputField && (
+                    <div
+                      style={{
+                        width: "100%",
+                        marginTop: 40,
+                      }}
+                    >
+                      <label>
+                        <span style={{ display: "block" }}>
+                          {inputField.label}
+                        </span>
+                        {inputField.choices && inputField.choices.length > 0 ? (
+                          <select
+                            style={{
+                              width: "100%",
+                              padding: 10,
+                            }}
+                            value={
+                              workflow?.trigger.input[inputField.key] || ""
+                            }
+                            onChange={(e) => {
+                              handleFieldChange(e, inputField);
+                            }}
+                            required={!!inputField.required}
+                          >
+                            <option value="">
+                              {inputField.placeholder || ""}
+                            </option>
+                            {inputField.choices.map((choice) => (
+                              <option key={choice.value} value={choice.value}>
+                                {choice.label}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            name={inputField.key}
+                            style={{
+                              width: "100%",
+                              padding: 10,
+                            }}
+                            type="text"
+                            placeholder={inputField.placeholder || ""}
+                            required={!!inputField.required}
+                            value={
+                              workflow?.trigger.input[inputField.key] || ""
+                            }
+                            onChange={(e) => {
+                              handleFieldChange(e, inputField);
+                            }}
+                          />
+                        )}
+                      </label>
+                    </div>
+                  )}
+                </React.Fragment>
+              )
+            )}
         <button
           style={{
             display: "block",
