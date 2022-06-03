@@ -21,7 +21,7 @@ const WorkflowConstructor = (props: Props) => {
       {triggerIsSet &&
         actionIsSet &&
         triggerIsAuthenticated &&
-        triggerIsConfigured && <ActionConfiguration />}
+        triggerIsConfigured && <ActionConfiguration index={0} />}
     </div>
   );
 };

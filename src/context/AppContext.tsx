@@ -1,14 +1,15 @@
 import React, { useState, createContext, useContext } from "react";
 import _ from "lodash";
+import { Workflow } from "../types/Workflow";
+import { Connector, Field } from "../types/Connector";
 import gsheetConnector from "../samples/gsheet-connector.json";
 import molochXdaiConnector from "../samples/moloch-xdai-connector.json";
 import molochEthereumConnector from "../samples/moloch-ethereum-connector.json";
-import { Workflow } from "../types/Workflow";
 
 type ContextProps = {
   state: any;
   setState?: (a: any) => void;
-  connectors?: any[];
+  connectors?: Connector[];
   workflow?: Workflow;
   setWorkflow: (a: any) => void;
   connectorsWithTriggers: any[];
@@ -40,7 +41,7 @@ export const AppContext = createContext<Partial<ContextProps>>({});
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
   const [state, setState] = useState({});
-  const connectors: any[] = [
+  const connectors: Connector[] = [
     gsheetConnector,
     molochXdaiConnector,
     molochEthereumConnector,
@@ -62,6 +63,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       },
     ],
     creator: "demo:user",
+    signature: "",
   });
 
   const [triggerConfigSubmitted, setTriggerConfigSubmitted] = useState(false);
@@ -107,7 +109,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       connector && connector.name && connector.name === workflowTriggerConnector
   );
 
-  const trigger = triggerConnector?.triggers.find(
+  const trigger = triggerConnector?.triggers?.find(
     (connectorTrigger: { key: any }) =>
       connectorTrigger && connectorTrigger.key === workflowTriggerOperation
   );
@@ -117,7 +119,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       connector && connector.name && connector.name === workflowActionConnector
   );
 
-  const action = actionConnector?.actions.find(
+  const action = actionConnector?.actions?.find(
     (connectorAction: { key: any }) =>
       connectorAction && connectorAction.key === workflowActionOperation
   );
@@ -143,8 +145,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       trigger.operation &&
       trigger.operation.inputFields &&
       trigger.operation.inputFields
-        .filter((field: { required: any }) => field && field.required)
-        .map((field: { key: any }) => field.key)) ||
+        .filter((field: Field) => field && field.required)
+        .map((field: Field) => field.key)) ||
     [];
 
   const triggerIsConfigured = Boolean(

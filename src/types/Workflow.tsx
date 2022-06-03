@@ -1,27 +1,17 @@
-type WorkflowTrigger = {
-  type: string;
-  connector: string;
-  operation: string;
-  input: any;
-  display?: any;
-  authentication?: any;
-  credentials?: any;
-};
-
-type WorkflowAction = {
-  type: string;
-  connector: string;
-  operation: string;
-  input: any;
-  display?: any;
-  authentication?: any;
-  credentials?: any;
-};
-
 export type Workflow = {
   title: string;
-  trigger: WorkflowTrigger;
-  actions: WorkflowAction[];
+  trigger: Operation;
+  actions: Operation[];
   creator: string;
-  signature?: string;
+  signature: string;
+};
+
+export type Operation = {
+  type: "action" | "trigger";
+  connector: string;
+  operation: string;
+  input: { [key: string]: string | number | boolean };
+  display?: { [key: string]: string };
+  authentication?: string;
+  credentials?: { [key: string]: string | number | boolean };
 };

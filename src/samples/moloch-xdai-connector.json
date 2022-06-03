@@ -11,8 +11,7 @@
                 "label": "withdrawBalance",
                 "description": "",
                 "instructions": ""
-            },
-            "operation": {}
+            }
         },
         {
             "key": "ragequit",
@@ -21,8 +20,7 @@
                 "label": "ragequit",
                 "description": "",
                 "instructions": ""
-            },
-            "operation": {}
+            }
         },
         {
             "key": "updateDelegateKey",
@@ -31,8 +29,7 @@
                 "label": "updateDelegateKey",
                 "description": "",
                 "instructions": ""
-            },
-            "operation": {}
+            }
         },
         {
             "key": "withdrawBalances",
@@ -41,8 +38,7 @@
                 "label": "withdrawBalances",
                 "description": "",
                 "instructions": ""
-            },
-            "operation": {}
+            }
         },
         {
             "key": "submitPaymentRequestProposal",
@@ -54,7 +50,7 @@
             },
             "operation": {
                 "type": "blockchain:call",
-                "accounts": [],
+                "accounts": ["123"],
                 "inputFields": [
                     {
                         "key": "applicant",
@@ -87,13 +83,7 @@
                         "type": "text",
                         "placeholder": "Enter s string value"
                     }
-                ],
-                "outputFields": [
-                    
-                ],
-                "sample": {
-                   
-                }
+                ]
             }
         },
         {
@@ -106,7 +96,7 @@
             },
             "operation": {
                 "type": "blockchain:call",
-                "accounts": [],
+                "accounts": ["123"],
                 "inputFields": [
                     {
                         "key": "applicant",
@@ -139,13 +129,7 @@
                         "type": "text",
                         "placeholder": "Enter s string value"
                     }
-                ],
-                "outputFields": [
-                    
-                ],
-                "sample": {
-                   
-                }
+                ]
             }
         }
     ]

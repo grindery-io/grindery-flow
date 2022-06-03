@@ -150,7 +150,11 @@ const TriggerConfiguration = (props: Props) => {
                                 padding: 10,
                               }}
                               value={
-                                workflow?.trigger.input[inputField.key] || ""
+                                (workflow?.trigger.input[inputField.key] &&
+                                  workflow?.trigger.input[
+                                    inputField.key
+                                  ].toString()) ||
+                                ""
                               }
                               onChange={(e) => {
                                 handleFieldChange(e, inputField);
@@ -177,7 +181,11 @@ const TriggerConfiguration = (props: Props) => {
                               placeholder={inputField.placeholder || ""}
                               required={!!inputField.required}
                               value={
-                                workflow?.trigger.input[inputField.key] || ""
+                                (workflow?.trigger.input[inputField.key] &&
+                                  workflow?.trigger.input[
+                                    inputField.key
+                                  ].toString()) ||
+                                ""
                               }
                               onChange={(e) => {
                                 handleFieldChange(e, inputField);

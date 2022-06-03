@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useAppContext } from "../context/AppContext";
 
-type Props = {};
+type Props = {
+  index: number;
+};
 
 const ActionConfiguration = (props: Props) => {
+  const { index } = props;
   const {
     workflow,
     updateWorkflow,
@@ -31,7 +34,7 @@ const ActionConfiguration = (props: Props) => {
     }
   ) => {
     updateWorkflow({
-      ["actions[0].input." + inputField.key]: e.target.value,
+      ["actions[" + index + "].input." + inputField.key]: e.target.value,
     });
   };
 
@@ -98,7 +101,11 @@ const ActionConfiguration = (props: Props) => {
                             padding: 10,
                           }}
                           value={
-                            workflow?.actions[0].input[inputField.key] || ""
+                            (workflow?.actions[index].input[inputField.key] &&
+                              workflow?.actions[index].input[
+                                inputField.key
+                              ].toString()) ||
+                            ""
                           }
                           onChange={(e) => {
                             handleFieldChange(e, inputField);
@@ -147,7 +154,11 @@ const ActionConfiguration = (props: Props) => {
                             padding: 10,
                           }}
                           value={
-                            workflow?.actions[0].input[inputField.key] || ""
+                            (workflow?.actions[index].input[inputField.key] &&
+                              workflow?.actions[index].input[
+                                inputField.key
+                              ].toString()) ||
+                            ""
                           }
                           onChange={(e) => {
                             handleFieldChange(e, inputField);

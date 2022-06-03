@@ -8,11 +8,8 @@
             "name": "New spreadsheet",
             "display": {
                 "label": "New spreadsheet",
-                "description": "",
+                "description": "1",
                 "instructions": ""
-            },
-            "operation": {
-                
             }
         },
         {
@@ -20,11 +17,8 @@
             "name": "New Worksheet",
             "display": {
                 "label": "New Worksheet",
-                "description": "",
+                "description": "2",
                 "instructions": ""
-            },
-            "operation": {
-                
             }
         },
         {
@@ -32,11 +26,8 @@
             "name": "New or Updated Spreadsheet Row (Team Drive)",
             "display": {
                 "label": "New or Updated Spreadsheet Row (Team Drive)",
-                "description": "",
+                "description": "3",
                 "instructions": ""
-            },
-            "operation": {
-                
             }
         },
         {
@@ -44,12 +35,11 @@
             "name": "New spreadsheet row",
             "display": {
                 "label": "New spreadsheet row",
-                "description": "",
+                "description": "4",
                 "instructions": ""
             },
             "operation": {
                 "type": "polling",
-                "operation": {},
                 "inputFields": [
                     {
                         "key": "spreadsheet",
@@ -119,15 +109,11 @@
             "name": "New or Updated Spreadsheet Row",
             "display": {
                 "label": "New or Updated Spreadsheet Row",
-                "description": "",
+                "description": "5",
                 "instructions": ""
-            },
-            "operation": {
-                
             }
         }
     ],
-    "actions": [],
     "authentication": {
         "type": "oauth2",
         "test": {},
@@ -138,4 +124,4 @@
             "computed": true
         }]
     }
-}
+  }
