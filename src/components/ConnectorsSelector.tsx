@@ -204,7 +204,7 @@ const ConnectorsSelector = (props: Props) => {
                   }) => (
                     <option
                       key={trigger.key}
-                      value={trigger.name}
+                      value={trigger.key}
                       disabled={
                         !trigger ||
                         !trigger.operation ||
@@ -252,7 +252,7 @@ const ConnectorsSelector = (props: Props) => {
                   }) => (
                     <option
                       key={action.key}
-                      value={action.name}
+                      value={action.key}
                       disabled={
                         !action ||
                         !action.operation ||
