@@ -1,6 +1,8 @@
 import React, { useState, createContext, useContext } from "react";
+import _ from "lodash";
 import gsheetConnector from "../samples/gsheet-connector.json";
 import molochXdaiConnector from "../samples/moloch-xdai-connector.json";
+import molochEthereumConnector from "../samples/moloch-ethereum-connector.json";
 import { Workflow } from "../types/Workflow";
 
 type ContextProps = {
@@ -26,7 +28,8 @@ type ContextProps = {
   triggerConfigSubmitted: boolean;
   setTriggerConfigSubmitted: (a: any) => void;
   isTriggerAuthenticationRequired: boolean;
-  triggerAuthenticationField: any;
+  triggerAuthenticationFields: any[];
+  updateWorkflow: (a: any) => void;
 };
 
 type AppContextProps = {
@@ -37,7 +40,11 @@ export const AppContext = createContext<Partial<ContextProps>>({});
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
   const [state, setState] = useState({});
-  const connectors: any[] = [gsheetConnector, molochXdaiConnector];
+  const connectors: any[] = [
+    gsheetConnector,
+    molochXdaiConnector,
+    molochEthereumConnector,
+  ];
   const [workflow, setWorkflow] = useState<Workflow>({
     title: "New workflow",
     trigger: {
@@ -120,13 +127,13 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       (workflow &&
         workflow.trigger &&
         workflow.trigger.input &&
-        workflow.trigger.authentication &&
+        workflow.trigger.credentials &&
         triggerConnector &&
         triggerConnector.authentication &&
         triggerConnector.authentication.fields &&
         triggerConnector.authentication.fields.length > 0 &&
         triggerConnector.authentication.fields[0].key &&
-        workflow.trigger.authentication[
+        workflow.trigger.credentials[
           triggerConnector.authentication.fields[0].key
         ])
   );
@@ -181,14 +188,23 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     triggerConnector && triggerConnector.authentication
   );
 
-  const triggerAuthenticationField =
+  const triggerAuthenticationFields =
     (triggerConnector &&
       triggerConnector.authentication &&
       triggerConnector.authentication.fields &&
       triggerConnector.authentication.fields.length > 0 &&
-      triggerConnector.authentication.fields[0] &&
-      triggerConnector.authentication.fields[0].key) ||
-    null;
+      triggerConnector.authentication.fields.map(
+        (field: { key: any }) => field && field.key
+      )) ||
+    [];
+
+  const updateWorkflow = (data: any) => {
+    let newWorkflow = { ...workflow };
+    Object.keys(data).forEach((path) => {
+      _.set(newWorkflow, path, data[path]);
+    });
+    setWorkflow(newWorkflow);
+  };
 
   console.log("workflow", workflow);
 
@@ -217,7 +233,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         triggerConfigSubmitted,
         setTriggerConfigSubmitted,
         isTriggerAuthenticationRequired,
-        triggerAuthenticationField,
+        triggerAuthenticationFields,
+        updateWorkflow,
       }}
     >
       {children}
