@@ -13,15 +13,20 @@ const WorkflowConstructor = (props: Props) => {
     actionIsSet,
     triggerIsAuthenticated,
     triggerIsConfigured,
+    isTriggerAuthenticationRequired,
   } = useAppContext();
 
   return (
     <div style={{ padding: "0 20px 50px" }}>
       <ConnectorsSelector title="Create your own workflow" />
-      {triggerIsSet && actionIsSet && <TriggerAuthentication />}
-      {triggerIsSet && actionIsSet && triggerIsAuthenticated && (
-        <TriggerConfiguration />
+      {triggerIsSet && actionIsSet && isTriggerAuthenticationRequired && (
+        <TriggerAuthentication />
       )}
+      {triggerIsSet &&
+        actionIsSet &&
+        (!isTriggerAuthenticationRequired || triggerIsAuthenticated) && (
+          <TriggerConfiguration />
+        )}
       {triggerIsSet &&
         actionIsSet &&
         triggerIsAuthenticated &&
