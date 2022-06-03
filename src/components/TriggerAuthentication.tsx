@@ -4,7 +4,7 @@ import { useAppContext } from "../context/AppContext";
 type Props = {};
 
 const TriggerAuthentication = (props: Props) => {
-  const { workflow, setWorkflow } = useAppContext();
+  const { workflow, setWorkflow, triggerAuthenticationField } = useAppContext();
   const [authenticated, setAuthenticated] = useState(false);
 
   if (!workflow || !setWorkflow) {
@@ -12,13 +12,20 @@ const TriggerAuthentication = (props: Props) => {
   }
 
   const handleNextClick = () => {
-    setWorkflow({
-      ...workflow,
-      trigger: {
-        ...workflow.trigger,
-        authentication: true,
-      },
-    });
+    if (triggerAuthenticationField) {
+      setWorkflow({
+        ...workflow,
+        trigger: {
+          ...workflow.trigger,
+          input: {
+            ...workflow?.trigger.input,
+          },
+          authentication: {
+            [triggerAuthenticationField]: "demo_token",
+          },
+        },
+      });
+    }
   };
 
   const handleAuthClick = () => {
