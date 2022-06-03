@@ -5,6 +5,7 @@ type WorkflowTrigger = {
   input: any;
   display?: any;
   authentication?: any;
+  credentials?: any;
 };
 
 type WorkflowAction = {
@@ -14,6 +15,7 @@ type WorkflowAction = {
   input: any;
   display?: any;
   authentication?: any;
+  credentials?: any;
 };
 
 export type Workflow = {
