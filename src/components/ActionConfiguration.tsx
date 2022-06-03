@@ -6,17 +6,16 @@ type Props = {};
 const ActionConfiguration = (props: Props) => {
   const {
     workflow,
-    setWorkflow,
+    updateWorkflow,
     action,
     trigger,
-    triggerConnector,
     actionConnector,
     setTriggerConfigSubmitted,
   } = useAppContext();
 
   const [showResult, setShowResult] = useState(false);
 
-  if (!workflow || !setWorkflow) {
+  if (!workflow || !updateWorkflow) {
     return null;
   }
 
@@ -31,17 +30,8 @@ const ActionConfiguration = (props: Props) => {
       type: any;
     }
   ) => {
-    setWorkflow({
-      ...workflow,
-      actions: [
-        {
-          ...workflow?.actions[0],
-          input: {
-            ...workflow?.actions[0].input,
-            [inputField.key]: e.target.value,
-          },
-        },
-      ],
+    updateWorkflow({
+      ["actions[0].input." + inputField.key]: e.target.value,
     });
   };
 
@@ -68,8 +58,15 @@ const ActionConfiguration = (props: Props) => {
       }}
     >
       <h2 style={{ textAlign: "center", margin: 0 }}>
-        Map fields from {triggerConnector.name} into {actionConnector.name}
+        Set up Action for {actionConnector.name}
       </h2>
+
+      <h3 style={{ textAlign: "center", margin: "40px 0 0" }}>
+        Set fields{" "}
+        {action && action.display && action.display.label && (
+          <>for {action.display.label}</>
+        )}
+      </h3>
       <form onSubmit={handleFormSubmit}>
         {action &&
           action.operation &&
