@@ -14,6 +14,7 @@ const ActionConfiguration = (props: Props) => {
     trigger,
     actionConnector,
     setTriggerConfigSubmitted,
+    actionIsConfigured,
   } = useAppContext();
 
   const [showResult, setShowResult] = useState(false);
@@ -173,42 +174,21 @@ const ActionConfiguration = (props: Props) => {
               </React.Fragment>
             )
           )}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            flexWrap: "nowrap",
-            flexDirection: "row",
-          }}
-        >
+        {actionIsConfigured && (
           <button
             style={{
               display: "block",
-              margin: "40px auto 0 0",
+              margin: "40px 0 0 0",
               padding: 10,
               textAlign: "center",
               width: "100%",
-              maxWidth: 150,
-            }}
-            onClick={handleBackClick}
-          >
-            Back
-          </button>
-          <button
-            style={{
-              display: "block",
-              margin: "40px 0 0 auto",
-              padding: 10,
-              textAlign: "center",
-              width: "100%",
-              maxWidth: 150,
+              maxWidth: "100%",
             }}
             type="submit"
           >
-            Next
+            Test it!
           </button>
-        </div>
+        )}
       </form>
       {showResult && (
         <div
