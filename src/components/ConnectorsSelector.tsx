@@ -37,18 +37,21 @@ const ConnectorsSelector = (props: Props) => {
       "actions[0].connector": e.target.value,
       "actions[0].operation": "",
       "actions[0].input": {},
+      "actions[0].credentials": undefined,
     });
   };
 
   const handleTriggerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     updateWorkflow({
       "trigger.operation": e.target.value,
+      "trigger.input": {},
     });
   };
 
   const handleActionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     updateWorkflow({
       "actions[0].operation": e.target.value,
+      "actions[0].input": {},
     });
   };
 
