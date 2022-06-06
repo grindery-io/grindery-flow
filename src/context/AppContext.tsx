@@ -31,6 +31,7 @@ type ContextProps = {
   isTriggerAuthenticationRequired: boolean;
   triggerAuthenticationFields: any[];
   updateWorkflow: (a: any) => void;
+  actionIsConfigured: boolean;
 };
 
 type AppContextProps = {
@@ -46,25 +47,30 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     molochXdaiConnector,
     molochEthereumConnector,
   ];
-  const [workflow, setWorkflow] = useState<Workflow>({
-    title: "New workflow",
-    trigger: {
-      type: "trigger",
-      connector: "",
-      operation: "",
-      input: {},
-    },
-    actions: [
-      {
-        type: "action",
-        connector: "",
-        operation: "",
-        input: {},
-      },
-    ],
-    creator: "demo:user",
-    signature: "",
-  });
+  // get cached workflow
+  const cachedWorkflowString = localStorage.getItem("gnexus_workflow");
+  const cachedWorkflow = cachedWorkflowString
+    ? JSON.parse(cachedWorkflowString)
+    : {
+        title: "New workflow",
+        trigger: {
+          type: "trigger",
+          connector: "",
+          operation: "",
+          input: {},
+        },
+        actions: [
+          {
+            type: "action",
+            connector: "",
+            operation: "",
+            input: {},
+          },
+        ],
+        creator: "demo:user",
+        signature: "",
+      };
+  const [workflow, setWorkflow] = useState<Workflow>(cachedWorkflow);
 
   const [triggerConfigSubmitted, setTriggerConfigSubmitted] = useState(false);
 
@@ -150,14 +156,33 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     [];
 
   const triggerIsConfigured = Boolean(
-    triggerConfigSubmitted &&
-      requiredTriggerFields.filter(
-        (field: string) =>
-          workflow &&
-          workflow.trigger &&
-          workflow.trigger.input &&
-          workflow.trigger.input[field]
-      ).length === requiredTriggerFields.length
+    requiredTriggerFields.filter(
+      (field: string) =>
+        workflow &&
+        workflow.trigger &&
+        workflow.trigger.input &&
+        workflow.trigger.input[field]
+    ).length === requiredTriggerFields.length
+  );
+
+  const requiredActionFields =
+    (action &&
+      action.operation &&
+      action.operation.inputFields &&
+      action.operation.inputFields
+        .filter((field: Field) => field && field.required)
+        .map((field: Field) => field.key)) ||
+    [];
+
+  const actionIsConfigured = Boolean(
+    requiredActionFields.filter(
+      (field: string) =>
+        workflow &&
+        workflow.actions &&
+        workflow.actions[0] &&
+        workflow.actions[0].input &&
+        workflow.actions[0].input[field]
+    ).length === requiredActionFields.length
   );
 
   const selectedTriggerConnector = connectorsWithTriggers?.find(
@@ -205,6 +230,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     Object.keys(data).forEach((path) => {
       _.set(newWorkflow, path, data[path]);
     });
+    // cache workflow
+    localStorage.setItem("gnexus_workflow", JSON.stringify(newWorkflow));
     setWorkflow(newWorkflow);
   };
 
@@ -237,6 +264,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         isTriggerAuthenticationRequired,
         triggerAuthenticationFields,
         updateWorkflow,
+        actionIsConfigured,
       }}
     >
       {children}
