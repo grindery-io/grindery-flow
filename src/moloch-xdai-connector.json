@@ -1,0 +1,677 @@
+{
+	"name": "Moloch for xDai",
+	"version": "1.0.0",
+	"platformVersion": "1",
+	"triggers": [],
+	"actions": [
+		{
+		    "key": "submitProposal",
+		    "name": "submitProposal",
+		    "display": {
+		        "label": "SubmitProposal",
+		        "description": "Submit proposals to the DAO. Anyone, even non-members can do.",
+		        "instructions": "To submit a proposal, navigate to your DAOhaus DAO and select 'View Proposals' followed by New Proposal."
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "submitProposal(address, uint256, uint256, uint256, address, uint256, address, string)",
+		        "arguments": [],
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "applicant",
+		                "label": "Applicant",
+		                "helpText": "The applicant who wishes to become a member - this key will be used for withdrawals (doubles as guild kick target for gkick proposals)",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		            },
+		            {
+		                "key": "sharesRequested",
+		                "label": "SharesRequested",
+		                "helpText": "The number of shares the applicant is requesting",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            },
+		            {
+		                "key": "lootRequested",
+		                "label": "LootRequested",
+		                "helpText": "The amount of loot the applicant is requesting",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            },
+		            {
+		                "key": "tributeOffered",
+		                "label": "TributeOffered",
+		                "helpText": "The amount of tokens offered as tribute",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            },
+		            {
+		                "key": "tributeToken",
+		                "label": "TributeToken",
+		                "helpText": "Tribute token contract reference",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		            },
+		            {
+		                "key": "paymentRequested",
+		                "label": "PaymentRequested",
+		                "helpText": "The amount of tokens requested as payment. Payment can be requested in any token held by the DAO, or in shares and loot.",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            },
+		            {
+		                "key": "paymentToken",
+		                "label": "PaymentToken",
+		                "helpText": "Payment token contract reference",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		            },
+		            {
+		                "key": "details",
+		                "label": "Details",
+		                "helpText": "Anything you believe is relevant to your proposal. The shorter the description the better, and the important piece here is the WHAT you are asking for and WHY.",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Proposal details - could be IPFS hash, plaintext, or JSON"
+		            }
+		        ],
+		        "outputFields": [
+		            {
+		                "key": "details",
+		                "label": "Details",
+		                "helpText": "Proposal Details",
+		            }
+		        ],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "submitWhitelistProposal",
+		    "name": "submitWhitelistProposal",
+		    "display": {
+		        "label": "SubmitWhitelistProposal",
+		        "description": "Whitelist a new token.",
+		        "instructions": "Create a proposal to add a new token to the DAO treasury."
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "submitWhitelistProposal(address, string)",
+		        "arguments": [],
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "tokenToWhitelist",
+		                "label": "TokenToWhitelist",
+		                "helpText": "Address referecne of the token to be whitelisted",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		            },
+		            {
+		                "key": "details",
+		                "label": "Details",
+		                "helpText": "Proposal details",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter a string value"
+		            }
+		        ],
+		        "outputFields": [
+		            {
+		                "key": "details",
+		                "label": "Details",
+		                "helpText": "Proposal details",
+		                "type": "string",
+		            }
+		        ],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "submitGuildKickProposal",
+		    "name": "submitGuildKickProposal",
+		    "display": {
+		        "label": "SubmitGuildKickProposal",
+		        "description": "Guild kick",
+		        "instructions": "Create a proposal to kick a member"
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "submitGuildKickProposal(address, string)",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "memberToKick",
+		                "label": "MemberToKick",
+		                "helpText": "Account address of a member to be kicked",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		            },
+		            {
+		                "key": "details",
+		                "label": "Details",
+		                "helpText": "Proposal details",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter a string value"
+		            }
+		        ],
+		        "outputFields": [
+		            {
+		                "key": "details",
+		                "label": "Details",
+		                "helpText": "Proposal details",
+		            }
+		        ],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "withdrawBalance",
+		    "name": "withdrawBalance",
+		    "display": {
+		        "label": "WithdrawBalance",
+		        "description": "You will be able to withdraw from DAO to your EOA",
+		        "instructions": "Return to your member profile for the DAO, and you will be able to Withdraw to your EOA."
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "withdrawBalance(address, uint256)",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "token",
+		                "label": "Token",
+		                "helpText": "Adress reference of token to be withdrawn",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		            },	
+		            {
+		                "key": "amount",
+		                "label": "Amount",
+		                "helpText": "The amount of token to be withdrawn",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "ragekick",
+		    "name": "ragekick",
+		    "display": {
+		        "label": "Ragekick",
+		        "description": "Kick a jailed member",
+		        "instructions": "After a successful GuildKick, anyone can ragekick that member."
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "ragekick(address) ",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "memberToKick",
+		                "label": "MemberToKick",
+		                "helpText": "Address reference of amember to be kicked",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "updateDelegateKey",
+		    "name": "updateDelegateKey",
+		    "display": {
+		        "label": "UpdateDelegateKey",
+		        "description": "Update one's own delegate key",
+		        "instructions": ""
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "updateDelegateKey(address)",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "newDelegateKey",
+		                "label": "NewDelegateKey",
+		                "helpText": "Delegate key to be replaced by the old one",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "processWhitelistProposal",
+		    "name": "processWhitelistProposal",
+		    "display": {
+		        "label": "ProcessWhitelistProposal",
+		        "description": "Process a proposal of whitelisting a new token",
+		        "instructions": "Possible for the proposal that is sent to Processing(after Voting and Grace Period)"
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "processWhitelistProposal(uint256)",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "proposalIndex",
+		                "label": "ProposalIndex",
+		                "helpText": "The index of a proposal to be whitelisted",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "withdrawBalances",
+		    "name": "withdrawBalances",
+		    "display": {
+		        "label": "WithdrawBalances",
+		        "description": "You will be able to withdraw from DAO to your EOA",
+		        "instructions": "Return to your member profile for the DAO, and you will be able to Withdraw to your EOA."
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "withdrawBalances(address[], uint256[])",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "tokens",
+		                "label": "Tokens",
+		                "helpText": "Arrays of token addresses to be withdrawn",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter arrays of 0x..."
+		            },
+		            {
+		                "key": "amounts",
+		                "label": "Amounts",
+		                "helpText": "Arrays of token amounts to be withdrawn",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter arrays of uint256"
+		            },
+		            {
+		                "key": "max",
+		                "label": "Max",
+		                "helpText": "The value which indicates whether to withdraw all the amount of tokens in the DAO or not",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Select between true and false"
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "collectTokens",
+		    "name": "collectTokens",
+		    "display": {
+		        "label": "collectTokens", 
+		        "description": "Collect tokens to the Guild",         
+		        "instructions": "Only collect if 1) there are tokens to collect 2) token is whitelisted 3) token has non-zero balance"		
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "collectTokens(address)",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "token",      
+		                "label": "Token",	
+		                "helpText": "Token address reference",		
+		                "type": "string", 
+		                "required": true,
+		                "placeholder": "0x..."
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "sponsorProposal",
+		    "name": "sponsorProposal",
+		    "display": {
+		        "label": "SponsorProposal",
+		        "description": "Champion the proposal in order for it to be moved to voting",
+		        "instructions": "Only members can 'Sponsor' the proposal, sending it to the Queue"
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "sponsorProposal(uint256)",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "proposalId",
+		                "label": "ProposalId",
+		                "helpText": "The ID of submitted proposal",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "submitVote",
+		    "name": "submitVote",
+		    "display": {
+		        "label": "SubmitVote",
+		        "description": "Submit a vote for the proposal in the voting period",
+		        "instructions": "Vote Yes or No"
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "submitVote(uint256, uint8)",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "proposalIndex",
+		                "label": "ProposalIndex",
+		                "helpText": "The index of proposal",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            },
+		            {
+		                "key": "uintVote",
+		                "label": "uintVote",
+		                "helpText": "0 for abstention, 1 for Yes, 2 for No",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter an uint8 value"
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "ragequit",
+		    "name": "ragequit",
+		    "display": {
+		        "label": "Ragequit",
+		        "description": "Burn some amount of shares and/or loot in exchange for proportionate amount of tokens in the DAO.",
+		        "instructions": ""
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "ragequit(uint256, uint256)",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "sharesToBurn",
+		                "label": "SharesToBurn",
+		                "helpText": "The amount of shares to be burned",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            },
+		            {
+		                "key": "lootToBurn",
+		                "label": "LootToBurn",
+		                "helpText": "The amount of loot to be burned",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "cancelProposal",
+		    "name": "cancelProposal",
+		    "display": {
+		        "label": "CancelProposal",
+		        "description": "Cancel a proposal",
+		        "instructions": "Solely the proposer can cancel"
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "cancelProposal(uint256)",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "proposalId",
+		                "label": "ProposalId",
+		                "helpText": "A proposal ID",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "processGuildKickProposal",
+		    "name": "processGuildKickProposal",
+		    "display": {
+		        "label": "ProcessGuildKickProposal",
+		        "description": "Process a GuildKickProposal",
+		        "instructions": "Possible for the proposal that is sent to Processing(after Voting and Grace Period)"
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "processGuildKickProposal(uint256)",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "proposalIndex",
+		                "label": "ProposalIndex",
+		                "helpText": "The index of GuildKickProposal",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+		{
+		    "key": "processProposal",
+		    "name": "processProposal",
+		    "display": {
+		        "label": "ProcessProposal",
+		        "description": "Process a proposal",
+		        "instructions": "Possible for the proposal that is sent to Processing(after Voting and Grace Period)"
+		    },
+		    "operation": {
+		        "type": "blockchain:call",
+		        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+		        "signature": "processProposal(uint256)",
+		        "arguments": [],
+				"address": "",
+		        "inputFields": [
+		        	{
+		        		"key": "_grindery_contract_address",
+		        		"label": "GrinderyContractAddress",
+		        		"helpText": "Address of deployed Moloch contract",
+		   		        "type": "string",
+		                "required": true,
+		                "placeholder": "0x..."
+		        	},
+		            {
+		                "key": "proposalIndex",
+		                "label": "ProposalIndex",
+		                "helpText": "The index of proposal",
+		                "type": "string",
+		                "required": true,
+		                "placeholder": "Enter uint256 value"
+		            }
+		        ],
+		        "outputFields": [],
+		        "sample": {}
+		    }
+		},
+	]
+}
