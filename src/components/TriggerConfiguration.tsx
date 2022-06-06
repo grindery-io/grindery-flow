@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useAppContext } from "../context/AppContext";
 
 type Props = {};
@@ -8,26 +9,87 @@ const TriggerConfiguration = (props: Props) => {
     workflow,
     updateWorkflow,
     trigger,
-    setTriggerConfigSubmitted,
     triggerAuthenticationFields,
     isTriggerAuthenticationRequired,
     triggerIsAuthenticated,
     triggerConnector,
   } = useAppContext();
+  const [email, setEmail] = useState("");
+  const [formFields, setFormFields] = useState(
+    Object.fromEntries(
+      trigger &&
+        trigger.operation &&
+        trigger.operation.inputFields &&
+        trigger.operation.inputFields
+          .filter(
+            (inputField: { computed: any }) =>
+              inputField && !inputField.computed
+          )
+          .map((field: { key: any }) => [
+            "trigger.input." + field.key,
+            workflow?.trigger.input[field.key] || "",
+          ])
+    )
+  );
+
+  useEffect(() => {
+    const urlArray = window.location.href.split("#");
+    if (urlArray[1]) {
+      const hash = urlArray[1].split("&");
+      const params = Object.fromEntries(
+        hash.map((h) => {
+          const param = h.split("=");
+          const key = param[0];
+          const val = param[1];
+          return [key, val];
+        })
+      );
+      setAuthCredentials(params);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!workflow || !updateWorkflow) {
     return null;
   }
 
-  const handleAuthClick = () => {
+  const setAuthCredentials = (params: any) => {
     if (triggerAuthenticationFields && triggerAuthenticationFields.length > 0) {
-      const credentials: any = {};
-      triggerAuthenticationFields.forEach((field) => {
-        credentials[field] = "demo_token";
-      });
+      const credentials = Object.fromEntries(
+        triggerAuthenticationFields.map((field) => [field, params[field] || ""])
+      );
+      console.log("credentials", credentials);
       updateWorkflow({
         "trigger.credentials": credentials,
       });
+      if (credentials && credentials.access_token) {
+        axios
+          .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+            headers: {
+              Authorization: "Bearer " + credentials.access_token,
+            },
+          })
+          .then((res) => {
+            if (res && res.data && res.data.email) {
+              setEmail(res.data.email);
+            }
+          });
+      }
+    }
+  };
+
+  const handleAuthClick = () => {
+    if (triggerAuthenticationFields && triggerAuthenticationFields.length > 0) {
+      if (
+        triggerConnector &&
+        triggerConnector.authentication &&
+        triggerConnector.authentication.type &&
+        triggerConnector.authentication.type === "oauth2"
+      ) {
+        window.location.href =
+          triggerConnector.authentication.oauth2Config.authorizeUrl.url +
+          "&redirect_uri=http://localhost:3000";
+      }
     }
   };
 
@@ -39,19 +101,22 @@ const TriggerConfiguration = (props: Props) => {
       key: any;
     }
   ) => {
-    if (setTriggerConfigSubmitted) {
-      setTriggerConfigSubmitted(false);
-    }
-    updateWorkflow({
+    setFormFields({
+      ...formFields,
       ["trigger.input." + inputField.key]: e.target.value,
     });
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (setTriggerConfigSubmitted) {
-      setTriggerConfigSubmitted(true);
-    }
+    updateWorkflow(formFields);
+  };
+
+  const handleChangeAuth = () => {
+    updateWorkflow({
+      "trigger.credentials": undefined,
+    });
+    handleAuthClick();
   };
 
   return (
@@ -81,7 +146,7 @@ const TriggerConfiguration = (props: Props) => {
               }}
               onClick={handleAuthClick}
             >
-              Sign in to Google Sheets
+              Sign in to {triggerConnector.name}
             </button>
           )}
           {triggerIsAuthenticated && (
@@ -94,7 +159,7 @@ const TriggerConfiguration = (props: Props) => {
               }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
-                Google Sheets account
+                {triggerConnector.name} account
               </label>
               <input
                 style={{
@@ -103,9 +168,22 @@ const TriggerConfiguration = (props: Props) => {
                   boxSizing: "border-box",
                 }}
                 type="text"
-                value="Google Sheets email@example.com"
+                value={email}
                 readOnly
               />
+              <button
+                style={{
+                  display: "block",
+                  margin: "20px auto 0",
+                  padding: 10,
+                  textAlign: "center",
+                  width: "100%",
+                  maxWidth: "100%",
+                }}
+                onClick={handleChangeAuth}
+              >
+                Change account
+              </button>
             </div>
           )}
         </>
@@ -150,9 +228,12 @@ const TriggerConfiguration = (props: Props) => {
                                 padding: 10,
                               }}
                               value={
-                                (workflow?.trigger.input[inputField.key] &&
-                                  workflow?.trigger.input[
-                                    inputField.key
+                                (formFields &&
+                                  formFields[
+                                    "trigger.input." + inputField.key
+                                  ] &&
+                                  formFields[
+                                    "trigger.input." + inputField.key
                                   ].toString()) ||
                                 ""
                               }
@@ -181,9 +262,12 @@ const TriggerConfiguration = (props: Props) => {
                               placeholder={inputField.placeholder || ""}
                               required={!!inputField.required}
                               value={
-                                (workflow?.trigger.input[inputField.key] &&
-                                  workflow?.trigger.input[
-                                    inputField.key
+                                (formFields &&
+                                  formFields[
+                                    "trigger.input." + inputField.key
+                                  ] &&
+                                  formFields[
+                                    "trigger.input." + inputField.key
                                   ].toString()) ||
                                 ""
                               }
