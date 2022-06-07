@@ -3,25 +3,23 @@ import { useAppContext } from "../context/AppContext";
 
 type Props = {
   index: number;
+  step: number;
 };
 
 const ActionConfiguration = (props: Props) => {
-  const { index } = props;
+  const { index, step } = props;
   const {
     workflow,
     updateWorkflow,
     action,
     trigger,
     actionConnector,
-    setTriggerConfigSubmitted,
     actionIsConfigured,
+    activeStep,
+    setActiveStep,
   } = useAppContext();
 
   const [showResult, setShowResult] = useState(false);
-
-  if (!workflow || !updateWorkflow) {
-    return null;
-  }
 
   const handleFieldChange = (
     e: React.ChangeEvent<
@@ -34,7 +32,7 @@ const ActionConfiguration = (props: Props) => {
       type: any;
     }
   ) => {
-    updateWorkflow({
+    updateWorkflow?.({
       ["actions[" + index + "].input." + inputField.key]: e.target.value,
     });
   };
@@ -44,21 +42,27 @@ const ActionConfiguration = (props: Props) => {
     setShowResult(true);
   };
 
-  const handleBackClick = () => {
-    if (setTriggerConfigSubmitted) {
-      setTriggerConfigSubmitted(false);
-    }
-    setShowResult(false);
-  };
+  if (!activeStep) {
+    return null;
+  }
+
+  if (step < activeStep) {
+    return (
+      <div style={{ padding: 20 }}>
+        <h2 style={{ textAlign: "left", margin: 0 }}>Set up Action</h2>
+      </div>
+    );
+  }
+
+  if (step > activeStep) {
+    return null;
+  }
 
   return (
     <div
       style={{
-        maxWidth: 816,
-        margin: "54px auto 0",
-        padding: "80px 100px",
-        border: "1px solid #DCDCDC",
-        borderRadius: 10,
+        marginTop: 20,
+        padding: 20,
       }}
     >
       <h2 style={{ textAlign: "center", margin: 0 }}>
@@ -199,7 +203,9 @@ const ActionConfiguration = (props: Props) => {
           <h3 style={{ textAlign: "center", margin: "0 0 20px", padding: 0 }}>
             Workflow JSON
           </h3>
-          <pre>{JSON.stringify(workflow, null, 2)}</pre>
+          <pre style={{ overflow: "auto" }}>
+            {JSON.stringify(workflow, null, 2)}
+          </pre>
         </div>
       )}
     </div>

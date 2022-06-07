@@ -4,7 +4,6 @@ import { Workflow } from "../types/Workflow";
 import { Connector, Field } from "../types/Connector";
 import gsheetConnector from "../samples/gsheet-connector.json";
 import molochXdaiConnector from "../samples/moloch-xdai-connector.json";
-import molochEthereumConnector from "../samples/moloch-ethereum-connector.json";
 
 type ContextProps = {
   state: any;
@@ -32,6 +31,8 @@ type ContextProps = {
   triggerAuthenticationFields: any[];
   updateWorkflow: (a: any) => void;
   actionIsConfigured: boolean;
+  activeStep: number;
+  setActiveStep: (a: any) => void;
 };
 
 type AppContextProps = {
@@ -42,35 +43,27 @@ export const AppContext = createContext<Partial<ContextProps>>({});
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
   const [state, setState] = useState({});
-  const connectors: Connector[] = [
-    gsheetConnector,
-    molochXdaiConnector,
-    molochEthereumConnector,
-  ];
-  // get cached workflow
-  const cachedWorkflowString = localStorage.getItem("gnexus_workflow");
-  const cachedWorkflow = cachedWorkflowString
-    ? JSON.parse(cachedWorkflowString)
-    : {
-        title: "New workflow",
-        trigger: {
-          type: "trigger",
-          connector: "",
-          operation: "",
-          input: {},
-        },
-        actions: [
-          {
-            type: "action",
-            connector: "",
-            operation: "",
-            input: {},
-          },
-        ],
-        creator: "demo:user",
-        signature: "",
-      };
-  const [workflow, setWorkflow] = useState<Workflow>(cachedWorkflow);
+  const connectors: Connector[] = [gsheetConnector, molochXdaiConnector];
+  const [workflow, setWorkflow] = useState<Workflow>({
+    title: "New workflow",
+    trigger: {
+      type: "trigger",
+      connector: "",
+      operation: "",
+      input: {},
+    },
+    actions: [
+      {
+        type: "action",
+        connector: "",
+        operation: "",
+        input: {},
+      },
+    ],
+    creator: "demo:user",
+    signature: "",
+  });
+  const [activeStep, setActiveStep] = useState(1);
 
   const [triggerConfigSubmitted, setTriggerConfigSubmitted] = useState(false);
 
@@ -230,8 +223,6 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     Object.keys(data).forEach((path) => {
       _.set(newWorkflow, path, data[path]);
     });
-    // cache workflow
-    localStorage.setItem("gnexus_workflow", JSON.stringify(newWorkflow));
     setWorkflow(newWorkflow);
   };
 
@@ -265,6 +256,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         triggerAuthenticationFields,
         updateWorkflow,
         actionIsConfigured,
+        activeStep,
+        setActiveStep,
       }}
     >
       {children}

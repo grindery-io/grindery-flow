@@ -15,13 +15,19 @@ const WorkflowConstructor = (props: Props) => {
   } = useAppContext();
 
   return (
-    <div style={{ padding: "0 20px 50px" }}>
-      <ConnectorsSelector />
-      {triggerIsSet && actionIsSet && <TriggerConfiguration />}
+    <div
+      style={{
+        maxWidth: 375,
+        margin: "0 auto",
+        border: "1px solid #DCDCDC",
+      }}
+    >
+      <ConnectorsSelector step={1} />
+      {triggerIsSet && actionIsSet && <TriggerConfiguration step={2} />}
       {triggerIsSet &&
         actionIsSet &&
         triggerIsAuthenticated &&
-        triggerIsConfigured && <ActionConfiguration index={0} />}
+        triggerIsConfigured && <ActionConfiguration index={0} step={3} />}
     </div>
   );
 };

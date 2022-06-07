@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAppContext } from "../context/AppContext";
 
-type Props = {};
+type Props = {
+  step: number;
+};
 
 const ConnectorsSelector = (props: Props) => {
+  const { step } = props;
   const {
     workflow,
     connectorsWithActions,
@@ -12,19 +15,31 @@ const ConnectorsSelector = (props: Props) => {
     actionConnectorIsSet,
     availableTriggers,
     availableActions,
+    activeStep,
     updateWorkflow,
+    setActiveStep,
+    triggerIsSet,
+    actionIsSet,
   } = useAppContext();
+  const [formFields, setFormFields] = useState({
+    "trigger.operation": workflow?.trigger.operation || "",
+    "actions[0].operation": workflow?.actions[0].operation || "",
+  });
 
-  if (!workflow || !updateWorkflow) {
-    return null;
-  }
+  const formFilled =
+    Object.entries(formFields)
+      .map((field) => (field && field[1]) || "")
+      .filter((field) => field).length === Object.entries(formFields).length;
 
   const handleTriggerConnectorChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    updateWorkflow({
-      "trigger.connector": e.target.value,
+    setFormFields({
+      ...formFields,
       "trigger.operation": "",
+    });
+    updateWorkflow?.({
+      "trigger.connector": e.target.value,
       "trigger.input": {},
       "trigger.credentials": undefined,
     });
@@ -33,129 +48,129 @@ const ConnectorsSelector = (props: Props) => {
   const handleActionConnectorChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    updateWorkflow({
-      "actions[0].connector": e.target.value,
+    setFormFields({
+      ...formFields,
       "actions[0].operation": "",
+    });
+    updateWorkflow?.({
+      "actions[0].connector": e.target.value,
       "actions[0].input": {},
       "actions[0].credentials": undefined,
     });
   };
 
   const handleTriggerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateWorkflow({
+    setFormFields({
+      ...formFields,
       "trigger.operation": e.target.value,
+    });
+    updateWorkflow?.({
       "trigger.input": {},
     });
   };
 
   const handleActionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateWorkflow({
+    setFormFields({
+      ...formFields,
       "actions[0].operation": e.target.value,
+    });
+    updateWorkflow?.({
       "actions[0].input": {},
     });
   };
 
-  return (
-    <div
-      style={{
-        maxWidth: 1240,
-        margin: "0 auto",
-        padding: "80px 100px",
-        border: "1px solid #DCDCDC",
-        borderRadius: 10,
-      }}
-    >
-      <h2 style={{ textAlign: "center", margin: 0 }}>Connect Apps and dApps</h2>
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    updateWorkflow?.(formFields);
+    setActiveStep?.(2);
+  };
+
+  const handleTabClick = () => {
+    setActiveStep?.(1);
+  };
+
+  if (!activeStep) {
+    return null;
+  }
+
+  if (step < activeStep) {
+    return (
       <div
         style={{
-          marginTop: 40,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-start",
-          justifyContent: "center",
-          flexWrap: "nowrap",
-          gap: "88px",
+          padding: 20,
+          borderBottom: "1px solid #DCDCDC",
+          cursor: "pointer",
         }}
+        onClick={handleTabClick}
       >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 470,
-          }}
-        >
-          <label>
-            <span style={{ display: "block" }}>This...</span>
-            <select
-              style={{
-                width: "100%",
-                maxWidth: 470,
-                padding: 10,
-              }}
-              value={
-                (workflow && workflow.trigger && workflow.trigger.connector) ||
-                ""
-              }
-              onChange={handleTriggerConnectorChange}
-            >
-              <option value="">Search for an App</option>
-              {connectorsWithTriggers?.map((connector) => (
-                <option key={connector.name} value={connector.name}>
-                  {connector.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 470,
-          }}
-        >
-          <label>
-            <span style={{ display: "block" }}>With...</span>
-            <select
-              style={{
-                width: "100%",
-                maxWidth: 470,
-                padding: 10,
-              }}
-              value={
-                (workflow &&
-                  workflow.actions &&
-                  workflow.actions &&
-                  workflow.actions[0] &&
-                  workflow.actions[0].connector) ||
-                ""
-              }
-              onChange={handleActionConnectorChange}
-            >
-              <option value="">Search for protocol</option>
-              {connectorsWithActions?.map((connector) => (
-                <option key={connector.name} value={connector.name}>
-                  {connector.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <h2 style={{ textAlign: "left", margin: 0 }}>Connect Apps</h2>
       </div>
-      {triggerConnectorIsSet && actionConnectorIsSet && (
-        <div
-          style={{
-            marginTop: 40,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            flexWrap: "nowrap",
-            gap: "88px",
-          }}
-        >
-          <div
+    );
+  }
+
+  return (
+    <form onSubmit={handleFormSubmit} style={{ padding: 20 }}>
+      <h2 style={{ textAlign: "center", margin: 0 }}>Connect Apps</h2>
+      <div style={{ marginTop: 40 }}>
+        <label>
+          <span style={{ display: "block" }}>This...</span>
+          <select
             style={{
               width: "100%",
               maxWidth: 470,
+              padding: 10,
+            }}
+            value={
+              (workflow && workflow.trigger && workflow.trigger.connector) || ""
+            }
+            onChange={handleTriggerConnectorChange}
+          >
+            <option value="">Search for an App</option>
+            {connectorsWithTriggers?.map((connector) => (
+              <option key={connector.name} value={connector.name}>
+                {connector.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <div
+        style={{
+          marginTop: 10,
+        }}
+      >
+        <label>
+          <span style={{ display: "block" }}>With...</span>
+          <select
+            style={{
+              width: "100%",
+              maxWidth: 470,
+              padding: 10,
+            }}
+            value={
+              (workflow &&
+                workflow.actions &&
+                workflow.actions[0] &&
+                workflow.actions[0].connector) ||
+              ""
+            }
+            onChange={handleActionConnectorChange}
+          >
+            <option value="">Search for protocol</option>
+            {connectorsWithActions?.map((connector) => (
+              <option key={connector.name} value={connector.name}>
+                {connector.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      {triggerConnectorIsSet && actionConnectorIsSet && (
+        <div>
+          <div
+            style={{
+              marginTop: 40,
             }}
           >
             <label>
@@ -166,13 +181,9 @@ const ConnectorsSelector = (props: Props) => {
                   maxWidth: 470,
                   padding: 10,
                 }}
-                value={
-                  (workflow &&
-                    workflow.trigger &&
-                    workflow.trigger.operation) ||
-                  ""
-                }
+                value={(formFields && formFields["trigger.operation"]) || ""}
                 onChange={handleTriggerChange}
+                required
               >
                 <option value="">Select a Trigger</option>
                 {availableTriggers?.map(
@@ -201,8 +212,7 @@ const ConnectorsSelector = (props: Props) => {
           </div>
           <div
             style={{
-              width: "100%",
-              maxWidth: 470,
+              marginTop: 10,
             }}
           >
             <label>
@@ -213,14 +223,9 @@ const ConnectorsSelector = (props: Props) => {
                   width: "100%",
                   maxWidth: 470,
                 }}
-                value={
-                  (workflow &&
-                    workflow.actions &&
-                    workflow.actions[0] &&
-                    workflow.actions[0].operation) ||
-                  ""
-                }
+                value={(formFields && formFields["actions[0].operation"]) || ""}
                 onChange={handleActionChange}
+                required
               >
                 <option value="">Select an Action</option>
                 {availableActions?.map(
@@ -249,7 +254,22 @@ const ConnectorsSelector = (props: Props) => {
           </div>
         </div>
       )}
-    </div>
+      {formFilled && (
+        <button
+          style={{
+            display: "block",
+            margin: "40px auto 0",
+            padding: 10,
+            textAlign: "center",
+            width: "100%",
+            maxWidth: 604,
+          }}
+          type="submit"
+        >
+          Continue
+        </button>
+      )}
+    </form>
   );
 };
 
