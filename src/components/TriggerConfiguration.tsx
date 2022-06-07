@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAppContext } from "../context/AppContext";
 
-type Props = {};
+type Props = {
+  step: number;
+};
 
 const TriggerConfiguration = (props: Props) => {
+  const { step } = props;
   const {
     workflow,
     updateWorkflow,
@@ -13,6 +16,8 @@ const TriggerConfiguration = (props: Props) => {
     isTriggerAuthenticationRequired,
     triggerIsAuthenticated,
     triggerConnector,
+    activeStep,
+    setActiveStep,
   } = useAppContext();
   const [email, setEmail] = useState("");
   const [formFields, setFormFields] = useState(
@@ -32,26 +37,11 @@ const TriggerConfiguration = (props: Props) => {
     )
   );
 
-  useEffect(() => {
-    const urlArray = window.location.href.split("#");
-    if (urlArray[1]) {
-      const hash = urlArray[1].split("&");
-      const params = Object.fromEntries(
-        hash.map((h) => {
-          const param = h.split("=");
-          const key = param[0];
-          const val = param[1];
-          return [key, val];
-        })
-      );
-      setAuthCredentials(params);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (!workflow || !updateWorkflow) {
-    return null;
-  }
+  const clearCredentials = () => {
+    updateWorkflow?.({
+      "trigger.credentials": undefined,
+    });
+  };
 
   const setAuthCredentials = (params: any) => {
     if (triggerAuthenticationFields && triggerAuthenticationFields.length > 0) {
@@ -59,22 +49,56 @@ const TriggerConfiguration = (props: Props) => {
         triggerAuthenticationFields.map((field) => [field, params[field] || ""])
       );
       console.log("credentials", credentials);
-      updateWorkflow({
-        "trigger.credentials": credentials,
+      testAuth(credentials);
+    }
+  };
+
+  const testAuth = (credentials: any) => {
+    console.log("testAuth credentials", credentials);
+
+    const iterate = (obj: any) => {
+      Object.keys(obj).forEach((key) => {
+        obj[key] = obj[key].replace(
+          /\{\{(.+?)\}\}/g,
+          (m: any, inputField: any) => {
+            console.log("inputField", inputField);
+            console.log("credentials[inputField]", credentials[inputField]);
+            return (
+              (inputField && credentials && credentials[inputField]) ||
+              inputField
+            );
+          }
+        );
+        if (typeof obj[key] === "object" && obj[key] !== null) {
+          iterate(obj[key]);
+        }
       });
-      if (credentials && credentials.access_token) {
-        axios
-          .get("https://www.googleapis.com/oauth2/v3/userinfo", {
-            headers: {
-              Authorization: "Bearer " + credentials.access_token,
-            },
-          })
-          .then((res) => {
-            if (res && res.data && res.data.email) {
-              setEmail(res.data.email);
-            }
-          });
-      }
+      return obj;
+    };
+    if (
+      triggerConnector &&
+      triggerConnector.authentication &&
+      triggerConnector.authentication.test
+    ) {
+      const headers = iterate(triggerConnector.authentication.test.headers);
+      console.log("headers", headers);
+
+      axios({
+        method: triggerConnector.authentication.test.method,
+        url: triggerConnector.authentication.test.url,
+        headers: headers,
+      })
+        .then((res) => {
+          if (res && res.data && res.data.email) {
+            setEmail(res.data.email);
+            updateWorkflow?.({
+              "trigger.credentials": credentials,
+            });
+          }
+        })
+        .catch((err) => {
+          clearCredentials();
+        });
     }
   };
 
@@ -86,9 +110,13 @@ const TriggerConfiguration = (props: Props) => {
         triggerConnector.authentication.type &&
         triggerConnector.authentication.type === "oauth2"
       ) {
-        window.location.href =
+        openNewTab(
           triggerConnector.authentication.oauth2Config.authorizeUrl.url +
-          "&redirect_uri=http://localhost:3000";
+            "&redirect_uri=" +
+            window.location.origin +
+            "/auth"
+        );
+        //window.location.href = triggerConnector.authentication.oauth2Config.authorizeUrl.url + "&redirect_uri=http://localhost:3000";
       }
     }
   };
@@ -109,26 +137,155 @@ const TriggerConfiguration = (props: Props) => {
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    updateWorkflow(formFields);
+    updateWorkflow?.(formFields);
+    setActiveStep?.(3);
   };
 
   const handleChangeAuth = () => {
-    updateWorkflow({
+    updateWorkflow?.({
       "trigger.credentials": undefined,
     });
     handleAuthClick();
   };
 
+  let windowObjectReference = null;
+
+  const receiveMessage = (e: { origin: any; data: any }) => {
+    if (e.origin === window.location.origin) {
+      const { data } = e;
+      console.log("postMesasge data", data);
+      if (data.g_url) {
+        const urlArray = data.g_url.split("#");
+        if (urlArray[1]) {
+          const hash = urlArray[1].split("&");
+          const params = Object.fromEntries(
+            hash
+              .map((h: any) => {
+                if (h) {
+                  const param = h.split("=");
+                  const key = param[0];
+                  const val = param[1];
+                  return [key, val];
+                }
+                return null;
+              })
+              .filter((entry: any) => entry)
+          );
+          setAuthCredentials(params);
+        }
+      }
+    }
+  };
+
+  const openNewTab = (url: string) => {
+    console.log("open auth tab url", url);
+
+    window.removeEventListener("message", receiveMessage);
+    const strWindowFeatures =
+      "toolbar=no, menubar=no, width=375, height=500, top=100, left=100";
+    windowObjectReference = window.open(url, "_blank", strWindowFeatures);
+    windowObjectReference?.focus();
+    window.addEventListener("message", (event) => receiveMessage(event), false);
+    windowObjectReference?.postMessage("hi", "*");
+  };
+
+  /*useEffect(() => {
+    const iterate = (obj: any) => {
+      Object.keys(obj).forEach((key) => {
+        if (obj[key].includes("{{")) {
+          obj[key] = obj[key].replace(
+            /\{\{(.+?)\}\}/g,
+            (m: any, inputField: any) =>
+              (inputField &&
+                workflow?.trigger.credentials &&
+                workflow?.trigger.credentials[inputField]) ||
+              ""
+          );
+        }
+        if (typeof obj[key] === "object" && obj[key] !== null) {
+          iterate(obj[key]);
+        }
+      });
+      return obj;
+    };
+    if (
+      triggerConnector &&
+      triggerConnector.authentication &&
+      triggerConnector.authentication.test
+    ) {
+      const headers = iterate(triggerConnector.authentication.test.headers);
+      console.log("headers", headers);
+
+      axios({
+        method: triggerConnector.authentication.test.method,
+        url: triggerConnector.authentication.test.url,
+        headers: headers,
+      })
+        .then((res) => {
+          if (res && res.data && res.data.email) {
+            setEmail(res.data.email);
+          }
+        })
+        .catch((err) => {
+          clearCredentials();
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);*/
+
+  const handleTabClick = () => {
+    setActiveStep?.(2);
+  };
+
+  if (!activeStep) {
+    return null;
+  }
+
+  if (step < activeStep) {
+    return (
+      <div
+        style={{
+          padding: 20,
+          borderBottom: "1px solid #DCDCDC",
+          cursor: "pointer",
+        }}
+        onClick={handleTabClick}
+      >
+        <h2 style={{ textAlign: "left", margin: 0 }}>Set up trigger</h2>
+      </div>
+    );
+  }
+
+  if (step > activeStep) {
+    return null;
+  }
+
   return (
     <div
       style={{
-        maxWidth: 816,
-        margin: "54px auto 0",
-        padding: "80px 100px",
-        border: "1px solid #DCDCDC",
-        borderRadius: 10,
+        padding: 20,
       }}
     >
+      {triggerConnector.icon && (
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              display: "inline-block",
+              padding: 8,
+              background: "#FFFFFF",
+              border: "1px solid #DCDCDC",
+              borderRadius: 5,
+              margin: "20px auto 10px",
+            }}
+          >
+            <img
+              src={triggerConnector.icon}
+              alt={`${triggerConnector.name} icon`}
+              style={{ display: "block", width: 24, height: 24 }}
+            />
+          </div>
+        </div>
+      )}
       <h2 style={{ textAlign: "center", margin: 0 }}>
         Set up trigger for {triggerConnector.name}
       </h2>
@@ -152,10 +309,9 @@ const TriggerConfiguration = (props: Props) => {
           {triggerIsAuthenticated && (
             <div
               style={{
-                width: "100%",
-                maxWidth: 604,
-                margin: "40px auto 0",
+                marginTop: 40,
                 textAlign: "center",
+                marginBottom: 40,
               }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
@@ -213,7 +369,7 @@ const TriggerConfiguration = (props: Props) => {
                       <div
                         style={{
                           width: "100%",
-                          marginTop: 40,
+                          marginTop: 20,
                         }}
                       >
                         <label>
