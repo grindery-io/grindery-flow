@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppHeader from "./components/AppHeader";
-import AuthenticationHandler from "./components/AuthenticationHandler";
+import WorkflowAuthenticationHandler from "./components/WorkflowAuthenticationHandler";
 import WorkflowConstructor from "./components/WorkflowConstructor";
 import AppContextProvider from "./context/AppContext";
 
@@ -28,7 +28,10 @@ function App() {
               </div>
             }
           ></Route>
-          <Route path="/auth" element={<AuthenticationHandler />}></Route>
+          <Route
+            path="/auth"
+            element={<WorkflowAuthenticationHandler />}
+          ></Route>
         </Routes>
       </BrowserRouter>
     </AppContextProvider>

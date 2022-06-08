@@ -3,15 +3,17 @@ import Logo from "./Logo";
 
 type Props = {};
 
-const AuthenticationHandler = (props: Props) => {
+const WorkflowAuthenticationHandler = (props: Props) => {
   useEffect(() => {
-    window.opener.postMessage(
-      { g_url: window.location.href },
-      window.location.origin
-    );
-    setTimeout(() => {
-      window.close();
-    }, 1000);
+    if (window && window.opener) {
+      window.opener.postMessage(
+        { g_url: window.location.href },
+        window.location.origin
+      );
+      setTimeout(() => {
+        window.close();
+      }, 1000);
+    }
   }, []);
 
   return (
@@ -26,4 +28,4 @@ const AuthenticationHandler = (props: Props) => {
   );
 };
 
-export default AuthenticationHandler;
+export default WorkflowAuthenticationHandler;
