@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Text, SelectInput, ButtonElement } from "grindery-ui";
+import _ from "lodash";
 import { useAppContext } from "../context/AppContext";
 
 type Props = {
@@ -16,15 +18,12 @@ const ActionConfiguration = (props: Props) => {
     actionConnector,
     actionIsConfigured,
     activeStep,
-    setActiveStep,
   } = useAppContext();
 
   const [showResult, setShowResult] = useState(false);
 
   const handleFieldChange = (
-    e: React.ChangeEvent<
-      HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
-    >,
+    e: any,
     inputField: {
       label: any;
       key: any;
@@ -33,13 +32,13 @@ const ActionConfiguration = (props: Props) => {
     }
   ) => {
     updateWorkflow?.({
-      ["actions[" + index + "].input." + inputField.key]: e.target.value,
+      ["actions[" + index + "].input." + inputField.key]:
+        e.target.value?.value || "",
     });
   };
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setShowResult(true);
+  const handleTestClick = () => {
+    //setShowResult(true);
   };
 
   if (!activeStep) {
@@ -47,11 +46,7 @@ const ActionConfiguration = (props: Props) => {
   }
 
   if (step < activeStep) {
-    return (
-      <div style={{ padding: 20 }}>
-        <h2 style={{ textAlign: "left", margin: 0 }}>Set up Action</h2>
-      </div>
-    );
+    return null;
   }
 
   if (step > activeStep) {
@@ -61,21 +56,50 @@ const ActionConfiguration = (props: Props) => {
   return (
     <div
       style={{
-        marginTop: 20,
-        padding: 20,
+        padding: "20px 20px 40px",
       }}
     >
-      <h2 style={{ textAlign: "center", margin: 0 }}>
-        Set up Action for {actionConnector.name}
-      </h2>
+      {actionConnector.icon && (
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              display: "inline-block",
+              padding: 8,
+              background: "#FFFFFF",
+              border: "1px solid #DCDCDC",
+              borderRadius: 5,
+              margin: "20px auto 10px",
+            }}
+          >
+            <img
+              src={actionConnector.icon}
+              alt={`${actionConnector.name} icon`}
+              style={{ display: "block", width: 24, height: 24 }}
+            />
+          </div>
+        </div>
+      )}
+      <div style={{ textAlign: "center" }}>
+        <Text variant="h3" value="Set up Action" />
+        <div style={{ marginTop: 4 }}>
+          <Text variant="p" value={`for ${actionConnector.name}`} />
+        </div>
+      </div>
 
-      <h3 style={{ textAlign: "center", margin: "40px 0 0" }}>
-        Set fields{" "}
-        {action && action.display && action.display.label && (
-          <>for {action.display.label}</>
-        )}
-      </h3>
-      <form onSubmit={handleFormSubmit}>
+      <div style={{ textAlign: "center", marginTop: 40, marginBottom: 40 }}>
+        <Text
+          variant="h6"
+          value={
+            <>
+              Set fields{" "}
+              {action && action.display && action.display.label && (
+                <>for {action.display.label}</>
+              )}
+            </>
+          }
+        />
+      </div>
+      <div>
         {action &&
           action.operation &&
           action.operation.inputFields &&
@@ -92,108 +116,62 @@ const ActionConfiguration = (props: Props) => {
                   <div
                     style={{
                       width: "100%",
-                      marginTop: 40,
+                      marginTop: 20,
                     }}
                   >
-                    <label>
-                      <span style={{ display: "block" }}>
-                        {inputField.label}
-                      </span>
-                      {inputField.type === "string" && (
-                        <select
-                          style={{
-                            width: "100%",
-                            padding: 10,
-                          }}
-                          value={
-                            (workflow?.actions[index].input[inputField.key] &&
-                              workflow?.actions[index].input[
-                                inputField.key
-                              ].toString()) ||
-                            ""
-                          }
-                          onChange={(e) => {
-                            handleFieldChange(e, inputField);
-                          }}
-                          required={!!inputField.required}
-                        >
-                          <option value="">
-                            {inputField.placeholder || ""}
-                          </option>
-                          {Object.keys(trigger.operation.sample).map(
-                            (sampleKey) => {
-                              if (
-                                Array.isArray(
-                                  trigger.operation.sample[sampleKey]
-                                )
-                              ) {
-                                return trigger.operation.sample[sampleKey].map(
-                                  (v: any, i: any) => (
-                                    <option
-                                      key={v}
-                                      value={`{{${trigger.key}__${sampleKey}[${i}]}}`}
-                                    >
-                                      {sampleKey} {i}: {v}
-                                    </option>
-                                  )
-                                );
-                              } else {
-                                return (
-                                  <option
-                                    key={trigger.operation.sample[sampleKey]}
-                                    value={`{{${trigger.key}__${sampleKey}}}`}
-                                  >
-                                    {sampleKey}:{" "}
-                                    {trigger.operation.sample[sampleKey]}
-                                  </option>
-                                );
-                              }
+                    <SelectInput
+                      label={inputField.label}
+                      type="search"
+                      placeholder={inputField.placeholder}
+                      onChange={(e: any) => {
+                        handleFieldChange(e, inputField);
+                      }}
+                      multiple
+                      options={_.flatten(
+                        Object.keys(trigger.operation.sample).map(
+                          (sampleKey) => {
+                            if (
+                              Array.isArray(trigger.operation.sample[sampleKey])
+                            ) {
+                              return trigger.operation.sample[sampleKey].map(
+                                (v: any, i: any) => ({
+                                  //value: `{{trigger.${sampleKey}[${i}]}}`,
+                                  value: `${sampleKey} ${i}: ${v}`,
+                                  label: `${sampleKey} ${i}: ${v}`,
+                                  icon: actionConnector.icon || "",
+                                })
+                              );
+                            } else {
+                              return {
+                                //value: `{{trigger.${sampleKey}}}`,
+                                value: `${sampleKey} ${trigger.operation.sample[sampleKey]}`,
+                                label: `${sampleKey}: ${trigger.operation.sample[sampleKey]}`,
+                                icon: actionConnector.icon || "",
+                              };
                             }
-                          )}
-                        </select>
-                      )}
-                      {inputField.type === "text" && (
-                        <textarea
-                          style={{
-                            width: "100%",
-                            padding: 10,
-                          }}
-                          value={
-                            (workflow?.actions[index].input[inputField.key] &&
-                              workflow?.actions[index].input[
-                                inputField.key
-                              ].toString()) ||
-                            ""
                           }
-                          onChange={(e) => {
-                            handleFieldChange(e, inputField);
-                          }}
-                          placeholder={inputField.placeholder || ""}
-                          required={!!inputField.required}
-                        />
+                        )
                       )}
-                    </label>
+                      value={
+                        (workflow?.actions[index].input[inputField.key] &&
+                          workflow?.actions[index].input[
+                            inputField.key
+                          ].toString()) ||
+                        ""
+                      }
+                      required={!!inputField.required}
+                    />
                   </div>
                 )}
               </React.Fragment>
             )
           )}
         {actionIsConfigured && (
-          <button
-            style={{
-              display: "block",
-              margin: "40px 0 0 0",
-              padding: 10,
-              textAlign: "center",
-              width: "100%",
-              maxWidth: "100%",
-            }}
-            type="submit"
-          >
-            Test it!
-          </button>
+          <div style={{ marginTop: 40 }}>
+            <ButtonElement onClick={handleTestClick} value="Test it!" />
+          </div>
         )}
-      </form>
+      </div>
       {showResult && (
         <div
           style={{

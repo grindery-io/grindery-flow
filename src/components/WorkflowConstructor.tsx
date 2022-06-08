@@ -3,6 +3,7 @@ import ConnectorsSelector from "./ConnectorsSelector";
 import ActionConfiguration from "./ActionConfiguration";
 import { useAppContext } from "../context/AppContext";
 import TriggerConfiguration from "./TriggerConfiguration";
+import WorkflowProgress from "./WorkflowProgress";
 
 type Props = {};
 
@@ -15,13 +16,8 @@ const WorkflowConstructor = (props: Props) => {
   } = useAppContext();
 
   return (
-    <div
-      style={{
-        maxWidth: 375,
-        margin: "0 auto",
-        border: "1px solid #DCDCDC",
-      }}
-    >
+    <div>
+      <WorkflowProgress />
       <ConnectorsSelector step={1} />
       {triggerIsSet && actionIsSet && <TriggerConfiguration step={2} />}
       {triggerIsSet &&

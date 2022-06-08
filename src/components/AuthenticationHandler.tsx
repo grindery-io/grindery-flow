@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import Logo from "./Logo";
 
 type Props = {};
 
@@ -14,7 +15,14 @@ const AuthenticationHandler = (props: Props) => {
   }, []);
 
   return (
-    <div style={{ padding: 50, textAlign: "center" }}>Authenticating...</div>
+    <>
+      <div style={{ padding: "50px 20px 50px", textAlign: "center" }}>
+        <Logo />
+      </div>
+      <div style={{ padding: "0 20px 50px", textAlign: "center" }}>
+        Authenticating...
+      </div>
+    </>
   );
 };
 

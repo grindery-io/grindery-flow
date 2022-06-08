@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
+import {
+  Text,
+  SelectInput,
+  AutoCompleteInput,
+  ButtonElement,
+} from "grindery-ui";
 import { useAppContext } from "../context/AppContext";
 
 type Props = {
@@ -20,68 +26,43 @@ const ConnectorsSelector = (props: Props) => {
     setActiveStep,
     triggerIsSet,
     actionIsSet,
+    triggerConnector,
+    actionConnector,
   } = useAppContext();
-  const [formFields, setFormFields] = useState({
-    "trigger.operation": workflow?.trigger.operation || "",
-    "actions[0].operation": workflow?.actions[0].operation || "",
-  });
 
-  const formFilled =
-    Object.entries(formFields)
-      .map((field) => (field && field[1]) || "")
-      .filter((field) => field).length === Object.entries(formFields).length;
-
-  const handleTriggerConnectorChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setFormFields({
-      ...formFields,
-      "trigger.operation": "",
-    });
+  const handleTriggerConnectorChange = (e: any, val: any) => {
     updateWorkflow?.({
-      "trigger.connector": e.target.value,
+      "trigger.connector": val?.value || "",
       "trigger.input": {},
+      "trigger.operation": "",
       "trigger.credentials": undefined,
     });
   };
 
-  const handleActionConnectorChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setFormFields({
-      ...formFields,
-      "actions[0].operation": "",
-    });
+  const handleActionConnectorChange = (e: any, val: any) => {
     updateWorkflow?.({
-      "actions[0].connector": e.target.value,
+      "actions[0].connector": val?.value || "",
       "actions[0].input": {},
+      "actions[0].operation": "",
       "actions[0].credentials": undefined,
     });
   };
 
-  const handleTriggerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormFields({
-      ...formFields,
-      "trigger.operation": e.target.value,
-    });
+  const handleTriggerChange = (e: any) => {
     updateWorkflow?.({
+      "trigger.operation": e.target.value?.value || "",
       "trigger.input": {},
     });
   };
 
-  const handleActionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormFields({
-      ...formFields,
-      "actions[0].operation": e.target.value,
-    });
+  const handleActionChange = (e: any) => {
     updateWorkflow?.({
+      "actions[0].operation": e.target.value?.value || "",
       "actions[0].input": {},
     });
   };
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    updateWorkflow?.(formFields);
+  const handleContinueClick = () => {
     setActiveStep?.(2);
   };
 
@@ -94,76 +75,53 @@ const ConnectorsSelector = (props: Props) => {
   }
 
   if (step < activeStep) {
-    return (
-      <div
-        style={{
-          padding: 20,
-          borderBottom: "1px solid #DCDCDC",
-          cursor: "pointer",
-        }}
-        onClick={handleTabClick}
-      >
-        <h2 style={{ textAlign: "left", margin: 0 }}>Connect Apps</h2>
-      </div>
-    );
+    return null;
   }
 
   return (
-    <form onSubmit={handleFormSubmit} style={{ padding: 20 }}>
-      <h2 style={{ textAlign: "center", margin: 0 }}>Connect Apps</h2>
+    <div style={{ padding: 20 }}>
+      <div style={{ textAlign: "center", marginTop: 20 }}>
+        <Text variant="h3" value="Connect Apps"></Text>
+      </div>
       <div style={{ marginTop: 40 }}>
-        <label>
-          <span style={{ display: "block" }}>This...</span>
-          <select
-            style={{
-              width: "100%",
-              maxWidth: 470,
-              padding: 10,
-            }}
-            value={
-              (workflow && workflow.trigger && workflow.trigger.connector) || ""
-            }
-            onChange={handleTriggerConnectorChange}
-          >
-            <option value="">Search for an App</option>
-            {connectorsWithTriggers?.map((connector) => (
-              <option key={connector.name} value={connector.name}>
-                {connector.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        <AutoCompleteInput
+          label="This..."
+          size="full"
+          placeholder="Select a Trigger"
+          onChange={handleTriggerConnectorChange}
+          options={connectorsWithTriggers?.map((connector) => ({
+            value: connector.name,
+            label: connector.name,
+            icon: connector.icon,
+          }))}
+          value={
+            (workflow && workflow.trigger && workflow.trigger.connector) || ""
+          }
+        />
       </div>
       <div
         style={{
           marginTop: 10,
         }}
       >
-        <label>
-          <span style={{ display: "block" }}>With...</span>
-          <select
-            style={{
-              width: "100%",
-              maxWidth: 470,
-              padding: 10,
-            }}
-            value={
-              (workflow &&
-                workflow.actions &&
-                workflow.actions[0] &&
-                workflow.actions[0].connector) ||
-              ""
-            }
-            onChange={handleActionConnectorChange}
-          >
-            <option value="">Search for protocol</option>
-            {connectorsWithActions?.map((connector) => (
-              <option key={connector.name} value={connector.name}>
-                {connector.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        <AutoCompleteInput
+          label="With..."
+          size="full"
+          placeholder="Search for protocol"
+          onChange={handleActionConnectorChange}
+          options={connectorsWithActions?.map((connector) => ({
+            value: connector.name,
+            label: connector.name,
+            icon: connector.icon,
+          }))}
+          value={
+            (workflow &&
+              workflow.actions &&
+              workflow.actions[0] &&
+              workflow.actions[0].connector) ||
+            ""
+          }
+        />
       </div>
 
       {triggerConnectorIsSet && actionConnectorIsSet && (
@@ -173,103 +131,51 @@ const ConnectorsSelector = (props: Props) => {
               marginTop: 40,
             }}
           >
-            <label>
-              <span style={{ display: "block" }}>When this happens...</span>
-              <select
-                style={{
-                  width: "100%",
-                  maxWidth: 470,
-                  padding: 10,
-                }}
-                value={(formFields && formFields["trigger.operation"]) || ""}
-                onChange={handleTriggerChange}
-                required
-              >
-                <option value="">Select a Trigger</option>
-                {availableTriggers?.map(
-                  (trigger: {
-                    key: any;
-                    name: any;
-                    display: { label: any };
-                    operation: any;
-                  }) => (
-                    <option
-                      key={trigger.key}
-                      value={trigger.key}
-                      disabled={
-                        !trigger ||
-                        !trigger.operation ||
-                        !trigger.operation.inputFields ||
-                        trigger.operation.inputFields.length < 1
-                      }
-                    >
-                      {trigger.display.label}
-                    </option>
-                  )
-                )}
-              </select>
-            </label>
+            <SelectInput
+              label="When this happens..."
+              type="default"
+              placeholder="Select a Trigger"
+              onChange={handleTriggerChange}
+              options={availableTriggers?.map((availableTrigger) => ({
+                value: availableTrigger.key,
+                label: availableTrigger.display?.label,
+                icon:
+                  availableTrigger.display?.icon ||
+                  triggerConnector?.icon ||
+                  "",
+              }))}
+              value={(workflow?.trigger && workflow?.trigger.operation) || ""}
+            />
           </div>
           <div
             style={{
               marginTop: 10,
             }}
           >
-            <label>
-              <span style={{ display: "block" }}>Then do this...</span>
-              <select
-                style={{
-                  padding: 10,
-                  width: "100%",
-                  maxWidth: 470,
-                }}
-                value={(formFields && formFields["actions[0].operation"]) || ""}
-                onChange={handleActionChange}
-                required
-              >
-                <option value="">Select an Action</option>
-                {availableActions?.map(
-                  (action: {
-                    key: any;
-                    name: any;
-                    display: { label: any };
-                    operation: any;
-                  }) => (
-                    <option
-                      key={action.key}
-                      value={action.key}
-                      disabled={
-                        !action ||
-                        !action.operation ||
-                        !action.operation.inputFields ||
-                        action.operation.inputFields.length < 1
-                      }
-                    >
-                      {action.display.label}
-                    </option>
-                  )
-                )}
-              </select>
-            </label>
+            <SelectInput
+              label="Then do this..."
+              type="default"
+              placeholder="Select an Action"
+              onChange={handleActionChange}
+              options={availableActions?.map((availableAction) => ({
+                value: availableAction.key,
+                label: availableAction.display?.label,
+                icon:
+                  availableAction.display?.icon || actionConnector?.icon || "",
+              }))}
+              value={
+                (workflow?.actions[0] && workflow?.actions[0].operation) || ""
+              }
+            />
           </div>
         </div>
       )}
-      {formFilled && (
-        <button
-          style={{
-            display: "block",
-            margin: "40px auto 0",
-            padding: 10,
-            textAlign: "center",
-            width: "100%",
-            maxWidth: 604,
-          }}
-          type="submit"
-        >
-          Continue
-        </button>
+      {triggerIsSet && actionIsSet && (
+        <div style={{ marginTop: 30 }}>
+          <ButtonElement onClick={handleContinueClick} value="Continue" />
+        </div>
       )}
-    </form>
+    </div>
   );
 };
 
