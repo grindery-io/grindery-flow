@@ -15,7 +15,7 @@
       "operation": {
         "type": "blockchain:call",
         "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
-        "signature": "submitProposal(address, uint256, uint256, uint256, address, uint256, address, string)",
+        "signature": "submitProposal(address,uint256,uint256,uint256,address,uint256,address,string)",
         "arguments": [],
         "inputFields": [
           {
@@ -112,7 +112,7 @@
       "operation": {
         "type": "blockchain:call",
         "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
-        "signature": "submitWhitelistProposal(address, string)",
+        "signature": "submitWhitelistProposal(address,string)",
         "arguments": [],
         "inputFields": [
           {
@@ -162,7 +162,7 @@
       "operation": {
         "type": "blockchain:call",
         "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
-        "signature": "submitGuildKickProposal(address, string)",
+        "signature": "submitGuildKickProposal(address,string)",
         "arguments": [],
         "address": "",
         "inputFields": [
@@ -212,7 +212,7 @@
       "operation": {
         "type": "blockchain:call",
         "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
-        "signature": "withdrawBalance(address, uint256)",
+        "signature": "withdrawBalance(address,uint256)",
         "arguments": [],
         "address": "",
         "inputFields": [
@@ -256,7 +256,7 @@
       "operation": {
         "type": "blockchain:call",
         "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
-        "signature": "ragekick(address) ",
+        "signature": "ragekick(address)",
         "arguments": [],
         "address": "",
         "inputFields": [
@@ -364,7 +364,7 @@
       "operation": {
         "type": "blockchain:call",
         "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
-        "signature": "withdrawBalances(address[], uint256[])",
+        "signature": "withdrawBalances(address[],uint256[])",
         "arguments": [],
         "address": "",
         "inputFields": [
@@ -488,7 +488,7 @@
       "operation": {
         "type": "blockchain:call",
         "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
-        "signature": "submitVote(uint256, uint8)",
+        "signature": "submitVote(uint256,uint8)",
         "arguments": [],
         "address": "",
         "inputFields": [
@@ -532,7 +532,7 @@
       "operation": {
         "type": "blockchain:call",
         "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
-        "signature": "ragequit(uint256, uint256)",
+        "signature": "ragequit(uint256,uint256)",
         "arguments": [],
         "address": "",
         "inputFields": [
