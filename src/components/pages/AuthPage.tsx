@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import Logo from "./Logo";
+import Logo from "../Logo";
 
 type Props = {};
 
-const WorkflowAuthenticationHandler = (props: Props) => {
+const AuthPage = (props: Props) => {
   const receiveMessage = (e: { origin: any; data: any }) => {
     if (e.origin === window.location.origin) {
       const { data } = e;
@@ -40,4 +40,4 @@ const WorkflowAuthenticationHandler = (props: Props) => {
   );
 };
 
-export default WorkflowAuthenticationHandler;
+export default AuthPage;
