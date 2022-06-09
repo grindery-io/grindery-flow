@@ -25,6 +25,56 @@ const ConnectorsSelector = (props: Props) => {
     actionConnector,
   } = useAppContext();
 
+  const triggerConnectorOptions = connectorsWithTriggers?.map((connector) => ({
+    value: connector.name,
+    label: connector.name,
+    icon: connector.icon,
+  }));
+
+  const triggerConnectorValue = triggerConnectorOptions?.find(
+    (opt) =>
+      opt.value ===
+        (workflow && workflow.trigger && workflow.trigger.connector) || ""
+  );
+
+  const actionConnectorOptions = connectorsWithActions?.map((connector) => ({
+    value: connector.name,
+    label: connector.name,
+    icon: connector.icon,
+  }));
+
+  const actionConnectorValue = actionConnectorOptions?.find(
+    (opt) =>
+      opt.value ===
+        (workflow &&
+          workflow.actions &&
+          workflow.actions[0] &&
+          workflow.actions[0].connector) || ""
+  );
+
+  const triggerOptions = availableTriggers?.map((availableTrigger) => ({
+    value: availableTrigger.key,
+    label: availableTrigger.display?.label,
+    icon: availableTrigger.display?.icon || triggerConnector?.icon || "",
+  }));
+
+  const triggerValue = triggerOptions?.find(
+    (opt) =>
+      opt.value === (workflow?.trigger && workflow?.trigger.operation) || ""
+  );
+
+  const actionOptions = availableActions?.map((availableAction) => ({
+    value: availableAction.key,
+    label: availableAction.display?.label,
+    icon: availableAction.display?.icon || actionConnector?.icon || "",
+  }));
+
+  const actionValue = actionOptions?.find(
+    (opt) =>
+      opt.value === (workflow?.actions[0] && workflow?.actions[0].operation) ||
+      ""
+  );
+
   const handleTriggerConnectorChange = (val: any) => {
     updateWorkflow?.({
       "trigger.connector": val?.value || "",
@@ -80,83 +130,41 @@ const ConnectorsSelector = (props: Props) => {
           size="full"
           placeholder="Select a Trigger"
           onChange={handleTriggerConnectorChange}
-          options={connectorsWithTriggers?.map((connector) => ({
-            value: connector.name,
-            label: connector.name,
-            icon: connector.icon,
-          }))}
-          value={
-            (workflow && workflow.trigger && workflow.trigger.connector) || ""
-          }
+          options={triggerConnectorOptions}
+          value={triggerConnectorValue ? [triggerConnectorValue] : []}
         />
       </div>
-      <div
-        style={{
-          marginTop: 10,
-        }}
-      >
+      <div style={{ marginTop: 10 }}>
         <AutoCompleteInput
           label="With..."
           size="full"
           placeholder="Search for protocol"
           onChange={handleActionConnectorChange}
-          options={connectorsWithActions?.map((connector) => ({
-            value: connector.name,
-            label: connector.name,
-            icon: connector.icon,
-          }))}
-          value={
-            (workflow &&
-              workflow.actions &&
-              workflow.actions[0] &&
-              workflow.actions[0].connector) ||
-            ""
-          }
+          options={actionConnectorOptions}
+          value={actionConnectorValue ? [actionConnectorValue] : []}
         />
       </div>
 
       {triggerConnectorIsSet && actionConnectorIsSet && (
         <div>
-          <div
-            style={{
-              marginTop: 40,
-            }}
-          >
+          <div style={{ marginTop: 40 }}>
             <SelectInput
               label="When this happens..."
               type="default"
               placeholder="Select a Trigger"
               onChange={handleTriggerChange}
-              options={availableTriggers?.map((availableTrigger) => ({
-                value: availableTrigger.key,
-                label: availableTrigger.display?.label,
-                icon:
-                  availableTrigger.display?.icon ||
-                  triggerConnector?.icon ||
-                  "",
-              }))}
-              value={(workflow?.trigger && workflow?.trigger.operation) || ""}
+              options={triggerOptions}
+              value={triggerValue ? [triggerValue] : []}
             />
           </div>
-          <div
-            style={{
-              marginTop: 10,
-            }}
-          >
+          <div style={{ marginTop: 10 }}>
             <SelectInput
               label="Then do this..."
               type="default"
               placeholder="Select an Action"
               onChange={handleActionChange}
-              options={availableActions?.map((availableAction) => ({
-                value: availableAction.key,
-                label: availableAction.display?.label,
-                icon:
-                  availableAction.display?.icon || actionConnector?.icon || "",
-              }))}
-              value={
-                (workflow?.actions[0] && workflow?.actions[0].operation) || ""
-              }
+              options={actionOptions}
+              value={actionValue ? [actionValue] : []}
             />
           </div>
         </div>

@@ -6,7 +6,7 @@ import { useAppContext } from "../context/AppContext";
 type Props = {};
 
 const WorkflowProgress = (props: Props) => {
-  const { activeStep } = useAppContext();
+  const { activeStep, setActiveStep } = useAppContext();
 
   if (!activeStep) {
     return null;
@@ -56,8 +56,14 @@ const WorkflowProgress = (props: Props) => {
         width: "calc(100% / 3 - 14px)",
         textAlign: "center",
         position: "relative",
+        cursor: activeStep > step.index ? "pointer" : "default",
       }}
       key={step.index}
+      onClick={() => {
+        if (activeStep > step.index) {
+          setActiveStep?.(step.index);
+        }
+      }}
     >
       {renderIcon(step.index)}
       <div>

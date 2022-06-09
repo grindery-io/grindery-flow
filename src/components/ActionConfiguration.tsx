@@ -1,8 +1,9 @@
 import React from "react";
-import { Text, SelectInput, Button } from "grindery-ui";
+import { Text, Button } from "grindery-ui";
 import _ from "lodash";
 import { useAppContext } from "../context/AppContext";
 import { Field } from "../types/Connector";
+import ActionInputField from "./ActionInputField";
 
 type Props = {
   index: number;
@@ -12,8 +13,6 @@ type Props = {
 const ActionConfiguration = (props: Props) => {
   const { index, step } = props;
   const {
-    workflow,
-    updateWorkflow,
     action,
     trigger,
     actionConnector,
@@ -21,6 +20,14 @@ const ActionConfiguration = (props: Props) => {
     activeStep,
     triggerConnector,
   } = useAppContext();
+
+  const inputFields =
+    action &&
+    action.operation &&
+    action.operation.inputFields &&
+    action.operation.inputFields.filter(
+      (inputField: { computed: any }) => inputField && !inputField.computed
+    );
 
   const outputOptions = _.flatten(
     Object.keys(trigger.operation.sample).map((sampleKey) => {
@@ -41,16 +48,6 @@ const ActionConfiguration = (props: Props) => {
       }
     })
   );
-
-  const handleFieldChange = (val: any, inputField: Field) => {
-    const value = Array.isArray(val)
-      ? val.map((v) => v.value).join(" ")
-      : val.value;
-
-    updateWorkflow?.({
-      ["actions[" + index + "].input." + inputField.key]: value || "",
-    });
-  };
 
   const handleTestClick = () => {};
 
@@ -110,41 +107,14 @@ const ActionConfiguration = (props: Props) => {
         />
       </div>
       <div>
-        {action &&
-          action.operation &&
-          action.operation.inputFields &&
-          action.operation.inputFields.map((inputField: Field) => (
-            <React.Fragment key={inputField.key}>
-              {!!inputField && (
-                <div
-                  style={{
-                    width: "100%",
-                    marginTop: 20,
-                  }}
-                >
-                  <SelectInput
-                    label={inputField.label}
-                    type="searchLabel"
-                    variant="full"
-                    placeholder={inputField.placeholder}
-                    required={!!inputField.required}
-                    texthelper={inputField.helpText || ""}
-                    options={outputOptions}
-                    onChange={(e: any) => {
-                      handleFieldChange(e, inputField);
-                    }}
-                    value={
-                      (workflow?.actions[index].input[inputField.key] &&
-                        workflow?.actions[index].input[
-                          inputField.key
-                        ].toString()) ||
-                      ""
-                    }
-                  />
-                </div>
-              )}
-            </React.Fragment>
-          ))}
+        {inputFields.map((inputField: Field) => (
+          <ActionInputField
+            key={inputField.key}
+            inputField={inputField}
+            outputOptions={outputOptions}
+            index={index}
+          />
+        ))}
         {actionIsConfigured && (
           <div style={{ marginTop: 40 }}>
             <Button

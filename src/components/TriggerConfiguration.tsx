@@ -25,6 +25,14 @@ const TriggerConfiguration = (props: Props) => {
   } = useAppContext();
   const [email, setEmail] = useState("");
 
+  const inputFields =
+    trigger &&
+    trigger.operation &&
+    trigger.operation.inputFields &&
+    trigger.operation.inputFields.filter(
+      (inputField: { computed: any }) => inputField && !inputField.computed
+    );
+
   const clearCredentials = () => {
     updateWorkflow?.({
       "trigger.credentials": undefined,
@@ -170,6 +178,49 @@ const TriggerConfiguration = (props: Props) => {
     window.addEventListener("message", receiveMessage, false);
   };
 
+  const renderInputField = (inputField: Field) => {
+    const fieldOptions = inputField.choices?.map((choice) => ({
+      value: typeof choice !== "string" ? choice.value : choice,
+      label: typeof choice !== "string" ? choice.label : choice,
+      icon: triggerConnector.icon || "",
+    }));
+
+    const fieldValue = fieldOptions?.find(
+      (opt) =>
+        opt.value ===
+          (workflow?.trigger &&
+            workflow?.trigger.input &&
+            workflow?.trigger.input[inputField.key] &&
+            workflow?.trigger.input[inputField.key].toString()) || ""
+    );
+
+    return (
+      <React.Fragment key={inputField.key}>
+        {!!inputField && (
+          <div
+            style={{
+              width: "100%",
+              marginTop: 20,
+            }}
+          >
+            <SelectInput
+              label={inputField.label}
+              type="default"
+              placeholder={inputField.placeholder}
+              onChange={(e: any) => {
+                handleFieldChange(e, inputField);
+              }}
+              options={fieldOptions}
+              value={fieldValue ? [fieldValue] : []}
+              texthelper={inputField.helpText || ""}
+              required={!!inputField.required}
+            />
+          </div>
+        )}
+      </React.Fragment>
+    );
+  };
+
   const workflowTriggerCredentials = workflow?.trigger.credentials;
 
   useEffect(() => {
@@ -284,53 +335,7 @@ const TriggerConfiguration = (props: Props) => {
 
       {triggerIsAuthenticated && (
         <div>
-          {trigger &&
-            trigger.operation &&
-            trigger.operation.inputFields &&
-            trigger.operation.inputFields
-              .filter(
-                (inputField: { computed: any }) =>
-                  inputField && !inputField.computed
-              )
-              .map((inputField: Field) => (
-                <React.Fragment key={inputField.key}>
-                  {!!inputField && (
-                    <div
-                      style={{
-                        width: "100%",
-                        marginTop: 20,
-                      }}
-                    >
-                      <SelectInput
-                        label={inputField.label}
-                        type="default"
-                        placeholder={inputField.placeholder}
-                        onChange={(e: any) => {
-                          handleFieldChange(e, inputField);
-                        }}
-                        options={inputField.choices?.map((choice) => ({
-                          value:
-                            typeof choice !== "string" ? choice.value : choice,
-                          label:
-                            typeof choice !== "string" ? choice.label : choice,
-                          icon: triggerConnector.icon || "",
-                        }))}
-                        value={
-                          (workflow?.trigger &&
-                            workflow?.trigger.input &&
-                            workflow?.trigger.input[inputField.key] &&
-                            workflow?.trigger.input[
-                              inputField.key
-                            ].toString()) ||
-                          ""
-                        }
-                        texthelper={inputField.helpText || ""}
-                        required={!!inputField.required}
-                      />
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
+          {inputFields.map(renderInputField)}
           {triggerIsConfigured && (
             <div style={{ marginTop: 40 }}>
               <Button onClick={handleContinueClick} value="Continue" />
