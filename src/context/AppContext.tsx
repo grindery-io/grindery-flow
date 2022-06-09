@@ -27,7 +27,7 @@ type ContextProps = {
   actionConnectorIsSet: boolean;
   triggerConfigSubmitted: boolean;
   setTriggerConfigSubmitted: (a: any) => void;
-  isTriggerAuthenticationRequired: boolean;
+  triggerAuthenticationIsRequired: boolean;
   triggerAuthenticationFields: any[];
   updateWorkflow: (a: any) => void;
   actionIsConfigured: boolean;
@@ -204,7 +204,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       selectedActionConnector.actions) ||
     [];
 
-  const isTriggerAuthenticationRequired = Boolean(
+  const triggerAuthenticationIsRequired = Boolean(
     triggerConnector && triggerConnector.authentication
   );
 
@@ -252,7 +252,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         actionConnectorIsSet,
         triggerConfigSubmitted,
         setTriggerConfigSubmitted,
-        isTriggerAuthenticationRequired,
+        triggerAuthenticationIsRequired,
         triggerAuthenticationFields,
         updateWorkflow,
         actionIsConfigured,

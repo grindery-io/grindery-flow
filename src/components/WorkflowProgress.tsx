@@ -53,14 +53,16 @@ const WorkflowProgress = (props: Props) => {
   const renderStep = (step: any) => (
     <div
       style={{
-        width: "calc(100% / 3 - 20px)",
+        width: "calc(100% / 3 - 14px)",
         textAlign: "center",
         position: "relative",
       }}
       key={step.index}
     >
       {renderIcon(step.index)}
-      <Text value={step.label} variant="body2" />
+      <div>
+        <Text value={step.label} variant="caption" />
+      </div>
       {step.index < 3 && (
         <div
           style={{
@@ -70,7 +72,7 @@ const WorkflowProgress = (props: Props) => {
             left: "calc(50% + 20px)",
             top: "12.5px",
             transform: "translateY(-50%)",
-            width: 82,
+            width: 78,
           }}
         />
       )}
@@ -85,12 +87,12 @@ const WorkflowProgress = (props: Props) => {
         justifyContent: "center",
         flexWrap: "nowrap",
         flexDirection: "row",
-        gap: 30,
+        gap: 20,
         padding: "30px 20px 0",
       }}
     >
       {[
-        { index: 1, label: "Connect Apps" },
+        { index: 1, label: "Connect (d)Apps" },
         { index: 2, label: "Set Up Trigger" },
         { index: 3, label: "Set Up Action" },
       ].map((step) => renderStep(step))}

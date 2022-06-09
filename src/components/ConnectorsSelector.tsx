@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Text,
-  SelectInput,
-  AutoCompleteInput,
-  ButtonElement,
-} from "grindery-ui";
+import { Text, SelectInput, AutoCompleteInput, Button } from "grindery-ui";
 import { useAppContext } from "../context/AppContext";
 
 type Props = {
@@ -30,7 +25,7 @@ const ConnectorsSelector = (props: Props) => {
     actionConnector,
   } = useAppContext();
 
-  const handleTriggerConnectorChange = (e: any, val: any) => {
+  const handleTriggerConnectorChange = (val: any) => {
     updateWorkflow?.({
       "trigger.connector": val?.value || "",
       "trigger.input": {},
@@ -39,7 +34,7 @@ const ConnectorsSelector = (props: Props) => {
     });
   };
 
-  const handleActionConnectorChange = (e: any, val: any) => {
+  const handleActionConnectorChange = (val: any) => {
     updateWorkflow?.({
       "actions[0].connector": val?.value || "",
       "actions[0].input": {},
@@ -48,26 +43,22 @@ const ConnectorsSelector = (props: Props) => {
     });
   };
 
-  const handleTriggerChange = (e: any) => {
+  const handleTriggerChange = (val: any) => {
     updateWorkflow?.({
-      "trigger.operation": e.target.value?.value || "",
+      "trigger.operation": val?.value || "",
       "trigger.input": {},
     });
   };
 
-  const handleActionChange = (e: any) => {
+  const handleActionChange = (val: any) => {
     updateWorkflow?.({
-      "actions[0].operation": e.target.value?.value || "",
+      "actions[0].operation": val?.value || "",
       "actions[0].input": {},
     });
   };
 
   const handleContinueClick = () => {
     setActiveStep?.(2);
-  };
-
-  const handleTabClick = () => {
-    setActiveStep?.(1);
   };
 
   if (!activeStep) {
@@ -81,7 +72,7 @@ const ConnectorsSelector = (props: Props) => {
   return (
     <div style={{ padding: 20 }}>
       <div style={{ textAlign: "center", marginTop: 20 }}>
-        <Text variant="h3" value="Connect Apps"></Text>
+        <Text variant="h3" value="Connect (d)Apps"></Text>
       </div>
       <div style={{ marginTop: 40 }}>
         <AutoCompleteInput
@@ -172,7 +163,7 @@ const ConnectorsSelector = (props: Props) => {
       )}
       {triggerIsSet && actionIsSet && (
         <div style={{ marginTop: 30 }}>
-          <ButtonElement onClick={handleContinueClick} value="Continue" />
+          <Button onClick={handleContinueClick} value="Continue" />
         </div>
       )}
     </div>

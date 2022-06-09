@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Text, SelectInput, ButtonElement } from "grindery-ui";
+import React from "react";
+import { Text, SelectInput, Button } from "grindery-ui";
 import _ from "lodash";
 import { useAppContext } from "../context/AppContext";
+import { Field } from "../types/Connector";
 
 type Props = {
   index: number;
@@ -18,28 +19,40 @@ const ActionConfiguration = (props: Props) => {
     actionConnector,
     actionIsConfigured,
     activeStep,
+    triggerConnector,
   } = useAppContext();
 
-  const [showResult, setShowResult] = useState(false);
+  const outputOptions = _.flatten(
+    Object.keys(trigger.operation.sample).map((sampleKey) => {
+      if (Array.isArray(trigger.operation.sample[sampleKey])) {
+        return trigger.operation.sample[sampleKey].map((v: any, i: any) => ({
+          value: `{{step${index}.${sampleKey}[${i}]}}`,
+          label: `${sampleKey}[${i}]`,
+          reference: v,
+          icon: triggerConnector.icon || "",
+        }));
+      } else {
+        return {
+          value: `{{step${index}.${sampleKey}}}`,
+          label: sampleKey,
+          reference: trigger.operation.sample[sampleKey],
+          icon: triggerConnector.icon || "",
+        };
+      }
+    })
+  );
 
-  const handleFieldChange = (
-    e: any,
-    inputField: {
-      label: any;
-      key: any;
-      placeholder: any;
-      type: any;
-    }
-  ) => {
+  const handleFieldChange = (val: any, inputField: Field) => {
+    const value = Array.isArray(val)
+      ? val.map((v) => v.value).join(" ")
+      : val.value;
+
     updateWorkflow?.({
-      ["actions[" + index + "].input." + inputField.key]:
-        e.target.value?.value || "",
+      ["actions[" + index + "].input." + inputField.key]: value || "",
     });
   };
 
-  const handleTestClick = () => {
-    //setShowResult(true);
-  };
+  const handleTestClick = () => {};
 
   if (!activeStep) {
     return null;
@@ -89,103 +102,59 @@ const ActionConfiguration = (props: Props) => {
       <div style={{ textAlign: "center", marginTop: 40, marginBottom: 40 }}>
         <Text
           variant="h6"
-          value={
-            <>
-              Set fields{" "}
-              {action && action.display && action.display.label && (
-                <>for {action.display.label}</>
-              )}
-            </>
-          }
+          value={`Set fields${
+            action && action.display && action.display.label
+              ? " for " + action.display.label
+              : ""
+          }`}
         />
       </div>
       <div>
         {action &&
           action.operation &&
           action.operation.inputFields &&
-          action.operation.inputFields.map(
-            (inputField: {
-              label: any;
-              key: any;
-              placeholder: any;
-              type: any;
-              required: any;
-            }) => (
-              <React.Fragment key={inputField.key}>
-                {!!inputField && (
-                  <div
-                    style={{
-                      width: "100%",
-                      marginTop: 20,
+          action.operation.inputFields.map((inputField: Field) => (
+            <React.Fragment key={inputField.key}>
+              {!!inputField && (
+                <div
+                  style={{
+                    width: "100%",
+                    marginTop: 20,
+                  }}
+                >
+                  <SelectInput
+                    label={inputField.label}
+                    type="searchLabel"
+                    variant="full"
+                    placeholder={inputField.placeholder}
+                    required={!!inputField.required}
+                    texthelper={inputField.helpText || ""}
+                    options={outputOptions}
+                    onChange={(e: any) => {
+                      handleFieldChange(e, inputField);
                     }}
-                  >
-                    <SelectInput
-                      label={inputField.label}
-                      type="search"
-                      placeholder={inputField.placeholder}
-                      onChange={(e: any) => {
-                        handleFieldChange(e, inputField);
-                      }}
-                      multiple
-                      options={_.flatten(
-                        Object.keys(trigger.operation.sample).map(
-                          (sampleKey) => {
-                            if (
-                              Array.isArray(trigger.operation.sample[sampleKey])
-                            ) {
-                              return trigger.operation.sample[sampleKey].map(
-                                (v: any, i: any) => ({
-                                  //value: `{{trigger.${sampleKey}[${i}]}}`,
-                                  value: `${sampleKey} ${i}: ${v}`,
-                                  label: `${sampleKey} ${i}: ${v}`,
-                                  icon: actionConnector.icon || "",
-                                })
-                              );
-                            } else {
-                              return {
-                                //value: `{{trigger.${sampleKey}}}`,
-                                value: `${sampleKey} ${trigger.operation.sample[sampleKey]}`,
-                                label: `${sampleKey}: ${trigger.operation.sample[sampleKey]}`,
-                                icon: actionConnector.icon || "",
-                              };
-                            }
-                          }
-                        )
-                      )}
-                      value={
-                        (workflow?.actions[index].input[inputField.key] &&
-                          workflow?.actions[index].input[
-                            inputField.key
-                          ].toString()) ||
-                        ""
-                      }
-                      required={!!inputField.required}
-                    />
-                  </div>
-                )}
-              </React.Fragment>
-            )
-          )}
+                    value={
+                      (workflow?.actions[index].input[inputField.key] &&
+                        workflow?.actions[index].input[
+                          inputField.key
+                        ].toString()) ||
+                      ""
+                    }
+                  />
+                </div>
+              )}
+            </React.Fragment>
+          ))}
         {actionIsConfigured && (
           <div style={{ marginTop: 40 }}>
-            <ButtonElement onClick={handleTestClick} value="Test it!" />
+            <Button
+              onClick={handleTestClick}
+              value="Test & Continue"
+              color="primary"
+            />
           </div>
         )}
       </div>
-      {showResult && (
-        <div
-          style={{
-            margin: "80px 0 0",
-          }}
-        >
-          <h3 style={{ textAlign: "center", margin: "0 0 20px", padding: 0 }}>
-            Workflow JSON
-          </h3>
-          <pre style={{ overflow: "auto" }}>
-            {JSON.stringify(workflow, null, 2)}
-          </pre>
-        </div>
-      )}
     </div>
   );
 };

@@ -20,7 +20,7 @@
             "helpText": "",
             "type": "string",
             "required": true,
-            "placeholder": "Enter spreadsheet name",
+            "placeholder": "Choose sheet...",
             "choices": [
               {
                 "value": "demo_sheet_1",
@@ -37,10 +37,10 @@
           {
             "key": "worksheet",
             "label": "Worksheet",
-            "helpText": "",
+            "helpText": "You must have column headers",
             "type": "string",
             "required": true,
-            "placeholder": "Enter worksheet name",
+            "placeholder": "Choose sheet...",
             "choices": [
               {
                 "value": "demo_worksheet_1",

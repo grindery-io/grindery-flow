@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Text, ButtonElement, SelectInput } from "grindery-ui";
+import { Text, Button, SelectInput } from "grindery-ui";
 import { useAppContext } from "../context/AppContext";
 import Check from "./icons/Check";
+import { Field } from "../types/Connector";
 
 type Props = {
   step: number;
@@ -15,7 +16,7 @@ const TriggerConfiguration = (props: Props) => {
     updateWorkflow,
     trigger,
     triggerAuthenticationFields,
-    isTriggerAuthenticationRequired,
+    triggerAuthenticationIsRequired,
     triggerIsAuthenticated,
     triggerConnector,
     activeStep,
@@ -30,11 +31,11 @@ const TriggerConfiguration = (props: Props) => {
     });
   };
 
-  const receiveMessage = (e: { origin: any; data: any }) => {
+  const receiveMessage = (e: { source: any; origin: any; data: any }) => {
     if (e.origin === window.location.origin) {
       const { data } = e;
-      if (data.g_url) {
-        const urlArray = data.g_url.split("#");
+      if (data.gr_url) {
+        const urlArray = data.gr_url.split("#");
         if (urlArray[1]) {
           const hash = urlArray[1].split("&");
           const params = Object.fromEntries(
@@ -52,6 +53,8 @@ const TriggerConfiguration = (props: Props) => {
           );
           setAuthCredentials(params);
         }
+        e.source.postMessage({ gr_close: true }, window.location.origin);
+        window.removeEventListener("message", receiveMessage, false);
       }
     }
   };
@@ -61,7 +64,6 @@ const TriggerConfiguration = (props: Props) => {
       const credentials = Object.fromEntries(
         triggerAuthenticationFields.map((field) => [field, params[field] || ""])
       );
-      window.removeEventListener("message", receiveMessage);
       testAuth(credentials);
     }
   };
@@ -86,9 +88,13 @@ const TriggerConfiguration = (props: Props) => {
       triggerConnector.authentication.test
     ) {
       const headers = iterate(triggerConnector.authentication.test.headers);
+      const url = triggerConnector.authentication.test.url;
+      const method = triggerConnector.authentication.test.method;
       axios({
-        method: triggerConnector.authentication.test.method,
-        url: triggerConnector.authentication.test.url,
+        method: method,
+        url: `${url}${
+          /\?/.test(url) ? "&" : "?"
+        }timestamp=${new Date().getTime()}`,
         headers: headers,
       })
         .then((res) => {
@@ -101,6 +107,7 @@ const TriggerConfiguration = (props: Props) => {
         })
         .catch((err) => {
           clearCredentials();
+          setEmail("");
         });
     }
   };
@@ -123,14 +130,9 @@ const TriggerConfiguration = (props: Props) => {
     }
   };
 
-  const handleFieldChange = (
-    e: any,
-    inputField: {
-      key: any;
-    }
-  ) => {
+  const handleFieldChange = (val: any, inputField: Field) => {
     updateWorkflow?.({
-      ["trigger.input." + inputField.key]: e.target.value?.value || "",
+      ["trigger.input." + inputField.key]: val?.value || "",
     });
   };
 
@@ -139,6 +141,7 @@ const TriggerConfiguration = (props: Props) => {
   };
 
   const handleChangeAuth = () => {
+    setEmail("");
     updateWorkflow?.({
       "trigger.credentials": undefined,
     });
@@ -146,7 +149,7 @@ const TriggerConfiguration = (props: Props) => {
   };
 
   const openNewTab = (url: string) => {
-    window.removeEventListener("message", receiveMessage);
+    window.removeEventListener("message", receiveMessage, false);
     const width = 375,
       height = 500,
       left = window.screen.width / 2 - width / 2,
@@ -164,7 +167,7 @@ const TriggerConfiguration = (props: Props) => {
         left
     );
     windowObjectReference?.focus();
-    window.addEventListener("message", (event) => receiveMessage(event), false);
+    window.addEventListener("message", receiveMessage, false);
   };
 
   const workflowTriggerCredentials = workflow?.trigger.credentials;
@@ -175,10 +178,6 @@ const TriggerConfiguration = (props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleTabClick = () => {
-    setActiveStep?.(2);
-  };
 
   if (!activeStep) {
     return null;
@@ -224,11 +223,11 @@ const TriggerConfiguration = (props: Props) => {
           <Text variant="p" value={`for ${triggerConnector.name}`} />
         </div>
       </div>
-      {isTriggerAuthenticationRequired && (
+      {triggerAuthenticationIsRequired && (
         <>
           {!triggerIsAuthenticated && (
             <div style={{ margin: "30px auto 0" }}>
-              <ButtonElement
+              <Button
                 icon={triggerConnector.icon || ""}
                 onClick={handleAuthClick}
                 value={`Sign in to ${triggerConnector.name}`}
@@ -265,14 +264,14 @@ const TriggerConfiguration = (props: Props) => {
                   />
                 )}
 
-                <Text variant="body1" value={<strong>{email || ""}</strong>} />
+                <Text variant="body1" value={email || ""} />
 
                 <div style={{ marginLeft: "auto" }}>
                   <Check />
                 </div>
               </div>
               <div style={{ marginTop: 10 }}>
-                <ButtonElement
+                <Button
                   onClick={handleChangeAuth}
                   value="Change account"
                   variant="outlined"
@@ -293,53 +292,48 @@ const TriggerConfiguration = (props: Props) => {
                 (inputField: { computed: any }) =>
                   inputField && !inputField.computed
               )
-              .map(
-                (inputField: {
-                  label: any;
-                  key: any;
-                  placeholder: any;
-                  type: any;
-                  required: any;
-                  choices?: any[];
-                }) => (
-                  <React.Fragment key={inputField.key}>
-                    {!!inputField && (
-                      <div
-                        style={{
-                          width: "100%",
-                          marginTop: 20,
+              .map((inputField: Field) => (
+                <React.Fragment key={inputField.key}>
+                  {!!inputField && (
+                    <div
+                      style={{
+                        width: "100%",
+                        marginTop: 20,
+                      }}
+                    >
+                      <SelectInput
+                        label={inputField.label}
+                        type="default"
+                        placeholder={inputField.placeholder}
+                        onChange={(e: any) => {
+                          handleFieldChange(e, inputField);
                         }}
-                      >
-                        <SelectInput
-                          label={inputField.label}
-                          type="default"
-                          placeholder={inputField.placeholder}
-                          onChange={(e: any) => {
-                            handleFieldChange(e, inputField);
-                          }}
-                          options={inputField.choices?.map((choice) => ({
-                            value: choice.value,
-                            label: choice.label,
-                            icon: triggerConnector.icon || "",
-                          }))}
-                          value={
-                            (workflow?.trigger &&
-                              workflow?.trigger.input &&
-                              workflow?.trigger.input[inputField.key] &&
-                              workflow?.trigger.input[
-                                inputField.key
-                              ].toString()) ||
-                            ""
-                          }
-                        />
-                      </div>
-                    )}
-                  </React.Fragment>
-                )
-              )}
+                        options={inputField.choices?.map((choice) => ({
+                          value:
+                            typeof choice !== "string" ? choice.value : choice,
+                          label:
+                            typeof choice !== "string" ? choice.label : choice,
+                          icon: triggerConnector.icon || "",
+                        }))}
+                        value={
+                          (workflow?.trigger &&
+                            workflow?.trigger.input &&
+                            workflow?.trigger.input[inputField.key] &&
+                            workflow?.trigger.input[
+                              inputField.key
+                            ].toString()) ||
+                          ""
+                        }
+                        texthelper={inputField.helpText || ""}
+                        required={!!inputField.required}
+                      />
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
           {triggerIsConfigured && (
             <div style={{ marginTop: 40 }}>
-              <ButtonElement onClick={handleContinueClick} value="Continue" />
+              <Button onClick={handleContinueClick} value="Continue" />
             </div>
           )}
         </div>

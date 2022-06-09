@@ -4,15 +4,27 @@ import Logo from "./Logo";
 type Props = {};
 
 const WorkflowAuthenticationHandler = (props: Props) => {
+  const receiveMessage = (e: { origin: any; data: any }) => {
+    if (e.origin === window.location.origin) {
+      const { data } = e;
+      if (data.gr_close) {
+        window.close();
+      }
+    }
+  };
+
   useEffect(() => {
     if (window && window.opener) {
       window.opener.postMessage(
-        { g_url: window.location.href },
+        { gr_url: window.location.href },
         window.location.origin
       );
-      setTimeout(() => {
-        window.close();
-      }, 1000);
+
+      window.addEventListener(
+        "message",
+        (event) => receiveMessage(event),
+        false
+      );
     }
   }, []);
 
