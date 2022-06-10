@@ -5,11 +5,11 @@ import { Field } from "../types/Connector";
 
 type Props = {
   inputField: Field;
-  outputOptions: any;
+  options: any;
   index: any;
 };
 
-const ActionInputField = ({ inputField, outputOptions, index }: Props) => {
+const ActionInputField = ({ inputField, options, index }: Props) => {
   const { updateWorkflow, workflow } = useAppContext();
   const workflowValue = workflow?.actions[index].input[inputField.key];
   const [val, setVal]: any = useState(
@@ -17,7 +17,7 @@ const ActionInputField = ({ inputField, outputOptions, index }: Props) => {
       ? workflowValue
           ?.toString()
           .split(" ")
-          .map((v) => outputOptions.find((o: any) => o.value === v))
+          .map((v) => options.find((o: any) => o.value === v))
       : []
   );
 
@@ -49,7 +49,7 @@ const ActionInputField = ({ inputField, outputOptions, index }: Props) => {
             placeholder={inputField.placeholder || ""}
             required={!!inputField.required}
             texthelper={inputField.helpText || ""}
-            options={outputOptions}
+            options={options}
             onChange={handleFieldChange}
             value={val}
           />

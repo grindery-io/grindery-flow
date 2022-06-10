@@ -14,8 +14,13 @@ export type Trigger = {
   key: string;
   name: string;
   display: Display;
-  operation?: ChainEventOperation | HookOperation | PollingOperation; // TODO: make required
+  operation?: TriggerOperation; // TODO: make required
 };
+
+export type TriggerOperation =
+  | ChainEventOperation
+  | HookOperation
+  | PollingOperation;
 
 export type ChainEventOperation = {
   type: string; //"blockchain:event"; // Can't use literals in JSON file: https://github.com/microsoft/TypeScript/issues/26552
@@ -60,8 +65,10 @@ export type Action = {
   key: string;
   name: string;
   display: Display;
-  operation?: ChainCallOperation | APICallOperation; // TODO: make required
+  operation?: ActionOperation; // TODO: make required
 };
+
+export type ActionOperation = ChainCallOperation | APICallOperation;
 
 export type APICallOperation = {
   type: string; //"api";

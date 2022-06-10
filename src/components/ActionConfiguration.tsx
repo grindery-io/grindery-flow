@@ -5,7 +5,7 @@ import _ from "lodash";
 import { useAppContext } from "../context/AppContext";
 import { Field } from "../types/Connector";
 import ActionInputField from "./ActionInputField";
-import { replaceTokens, setConnectorKeys } from "../utils";
+import { getOutputOptions, replaceTokens, setConnectorKeys } from "../utils";
 
 type Props = {
   index: number;
@@ -32,7 +32,9 @@ const ActionConfiguration = (props: Props) => {
       (inputField: { computed: any }) => inputField && !inputField.computed
     );
 
-  const outputOptions = _.flatten(
+  const options = getOutputOptions(trigger.operation, triggerConnector);
+
+  /*_.flatten(
     trigger.operation.outputFields &&
       trigger.operation.outputFields.map((outputField: any) => {
         if (outputField.list) {
@@ -53,7 +55,7 @@ const ActionConfiguration = (props: Props) => {
           };
         }
       })
-  );
+  );*/
 
   const handleTestClick = async () => {
     if (testWorkflowAction) {
@@ -111,7 +113,7 @@ const ActionConfiguration = (props: Props) => {
           <ActionInputField
             key={inputField.key}
             inputField={inputField}
-            outputOptions={outputOptions}
+            options={options}
             index={index}
           />
         ))}
