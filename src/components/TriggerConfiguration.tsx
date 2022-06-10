@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Text, Button, SelectInput } from "grindery-ui";
+import { Text, Button } from "grindery-ui";
 import { useAppContext } from "../context/AppContext";
 import Check from "./icons/Check";
 import { Field } from "../types/Connector";
+import TriggerInputField from "./TriggerInputField";
+import { getParameterByName } from "../utils";
 
 type Props = {
   step: number;
@@ -39,63 +41,64 @@ const TriggerConfiguration = (props: Props) => {
     });
   };
 
-  const receiveMessage = (e: { source: any; origin: any; data: any }) => {
+  const receiveMessage = (e: any) => {
     if (e.origin === window.location.origin) {
       const { data } = e;
+
       if (data.gr_url) {
-        const urlArray = data.gr_url.split("#");
-        if (urlArray[1]) {
-          const hash = urlArray[1].split("&");
-          const params = Object.fromEntries(
-            hash
-              .map((h: any) => {
-                if (h) {
-                  const param = h.split("=");
-                  const key = param[0];
-                  const val = param[1];
-                  return [key, val];
-                }
-                return null;
-              })
-              .filter((entry: any) => entry)
-          );
-          setAuthCredentials(params);
+        const codeParam = getParameterByName("code", data.gr_url);
+
+        if (
+          triggerConnector &&
+          triggerConnector.authentication &&
+          triggerConnector.authentication.type &&
+          triggerConnector.authentication.type === "oauth2" &&
+          codeParam &&
+          triggerConnector.authentication.oauth2Config &&
+          triggerConnector.authentication.oauth2Config.getAccessToken
+        ) {
+          const getAccessTokenRequest =
+            triggerConnector.authentication.oauth2Config.getAccessToken;
+          axios({
+            method: getAccessTokenRequest.method,
+            url: getAccessTokenRequest.url,
+            headers: getAccessTokenRequest.headers || {},
+            data: {
+              ...getAccessTokenRequest.body,
+              code: codeParam,
+              redirect_uri: window.location.origin + "/auth",
+            },
+          })
+            .then((res) => {
+              console.log("getAccessTokenRequest res", res);
+              if (res && res.data && triggerAuthenticationFields) {
+                const credentials = Object.fromEntries(
+                  triggerAuthenticationFields.map((field) => [
+                    field,
+                    res.data[field] || "",
+                  ])
+                );
+                testAuth(credentials);
+              }
+            })
+            .catch((err) => {
+              console.log("getAccessTokenRequest err", err);
+            });
         }
+
         e.source.postMessage({ gr_close: true }, window.location.origin);
         window.removeEventListener("message", receiveMessage, false);
       }
     }
   };
 
-  const setAuthCredentials = (params: any) => {
-    if (triggerAuthenticationFields && triggerAuthenticationFields.length > 0) {
-      const credentials = Object.fromEntries(
-        triggerAuthenticationFields.map((field) => [field, params[field] || ""])
-      );
-      testAuth(credentials);
-    }
-  };
-
   const testAuth = (credentials: any) => {
-    const iterate = (obj: any) => {
-      Object.keys(obj).forEach((key) => {
-        obj[key] = obj[key].replace(
-          /\{\{(.+?)\}\}/g,
-          (m: any, inputField: any) =>
-            (inputField && credentials && credentials[inputField]) || inputField
-        );
-        if (typeof obj[key] === "object" && obj[key] !== null) {
-          iterate(obj[key]);
-        }
-      });
-      return obj;
-    };
     if (
       triggerConnector &&
       triggerConnector.authentication &&
       triggerConnector.authentication.test
     ) {
-      const headers = iterate(triggerConnector.authentication.test.headers);
+      const headers = triggerConnector.authentication.test.headers;
       const url = triggerConnector.authentication.test.url;
       const method = triggerConnector.authentication.test.method;
       axios({
@@ -103,7 +106,10 @@ const TriggerConfiguration = (props: Props) => {
         url: `${url}${
           /\?/.test(url) ? "&" : "?"
         }timestamp=${new Date().getTime()}`,
-        headers: headers,
+        headers: {
+          ...headers,
+          Authorization: "Bearer " + credentials.access_token,
+        },
       })
         .then((res) => {
           if (res && res.data && res.data.email) {
@@ -128,20 +134,30 @@ const TriggerConfiguration = (props: Props) => {
         triggerConnector.authentication.type &&
         triggerConnector.authentication.type === "oauth2"
       ) {
-        openNewTab(
+        window.removeEventListener("message", receiveMessage, false);
+        const width = 375,
+          height = 500,
+          left = window.screen.width / 2 - width / 2,
+          top = window.screen.height / 2 - height / 2;
+        let windowObjectReference = window.open(
           triggerConnector.authentication.oauth2Config.authorizeUrl.url +
             "&redirect_uri=" +
             window.location.origin +
-            "/auth"
+            "/auth",
+          "_blank",
+          "status=no, toolbar=no, menubar=no, width=" +
+            width +
+            ", height=" +
+            height +
+            ", top=" +
+            top +
+            ", left=" +
+            left
         );
+        windowObjectReference?.focus();
+        window.addEventListener("message", receiveMessage, false);
       }
     }
-  };
-
-  const handleFieldChange = (val: any, inputField: Field) => {
-    updateWorkflow?.({
-      ["trigger.input." + inputField.key]: val?.value || "",
-    });
   };
 
   const handleContinueClick = () => {
@@ -156,71 +172,6 @@ const TriggerConfiguration = (props: Props) => {
     handleAuthClick();
   };
 
-  const openNewTab = (url: string) => {
-    window.removeEventListener("message", receiveMessage, false);
-    const width = 375,
-      height = 500,
-      left = window.screen.width / 2 - width / 2,
-      top = window.screen.height / 2 - height / 2;
-    let windowObjectReference = window.open(
-      url,
-      "_blank",
-      "status=no, toolbar=no, menubar=no, width=" +
-        width +
-        ", height=" +
-        height +
-        ", top=" +
-        top +
-        ", left=" +
-        left
-    );
-    windowObjectReference?.focus();
-    window.addEventListener("message", receiveMessage, false);
-  };
-
-  const renderInputField = (inputField: Field) => {
-    const fieldOptions = inputField.choices?.map((choice) => ({
-      value: typeof choice !== "string" ? choice.value : choice,
-      label: typeof choice !== "string" ? choice.label : choice,
-      icon: triggerConnector.icon || "",
-    }));
-
-    const fieldValue = fieldOptions?.find(
-      (opt) =>
-        opt.value ===
-          (workflow?.trigger &&
-            workflow?.trigger.input &&
-            workflow?.trigger.input[inputField.key] &&
-            workflow?.trigger.input[inputField.key].toString()) || ""
-    );
-
-    return (
-      <React.Fragment key={inputField.key}>
-        {!!inputField && (
-          <div
-            style={{
-              width: "100%",
-              marginTop: 20,
-            }}
-          >
-            <SelectInput
-              label={inputField.label}
-              type="default"
-              placeholder={inputField.placeholder}
-              onChange={(e: any) => {
-                handleFieldChange(e, inputField);
-              }}
-              options={fieldOptions}
-              value={fieldValue ? [fieldValue] : []}
-              texthelper={inputField.helpText || ""}
-              required={!!inputField.required}
-            />
-          </div>
-        )}
-      </React.Fragment>
-    );
-  };
-
   const workflowTriggerCredentials = workflow?.trigger.credentials;
 
   useEffect(() => {
@@ -230,15 +181,7 @@ const TriggerConfiguration = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!activeStep) {
-    return null;
-  }
-
-  if (step < activeStep) {
-    return null;
-  }
-
-  if (step > activeStep) {
+  if (!activeStep || step !== activeStep) {
     return null;
   }
 
@@ -248,8 +191,8 @@ const TriggerConfiguration = (props: Props) => {
         padding: 20,
       }}
     >
-      {triggerConnector.icon && (
-        <div style={{ textAlign: "center" }}>
+      <div style={{ textAlign: "center", marginTop: 20 }}>
+        {triggerConnector.icon && (
           <div
             style={{
               display: "inline-block",
@@ -257,7 +200,7 @@ const TriggerConfiguration = (props: Props) => {
               background: "#FFFFFF",
               border: "1px solid #DCDCDC",
               borderRadius: 5,
-              margin: "20px auto 10px",
+              margin: "0px auto 10px",
             }}
           >
             <img
@@ -266,9 +209,7 @@ const TriggerConfiguration = (props: Props) => {
               style={{ display: "block", width: 24, height: 24 }}
             />
           </div>
-        </div>
-      )}
-      <div style={{ textAlign: "center" }}>
+        )}
         <Text variant="h3" value="Set up trigger" />
         <div style={{ marginTop: 4 }}>
           <Text variant="p" value={`for ${triggerConnector.name}`} />
@@ -334,8 +275,10 @@ const TriggerConfiguration = (props: Props) => {
       )}
 
       {triggerIsAuthenticated && (
-        <div>
-          {inputFields.map(renderInputField)}
+        <div style={{ marginTop: 40 }}>
+          {inputFields.map((inputField: Field) => (
+            <TriggerInputField inputField={inputField} key={inputField.key} />
+          ))}
           {triggerIsConfigured && (
             <div style={{ marginTop: 40 }}>
               <Button onClick={handleContinueClick} value="Continue" />

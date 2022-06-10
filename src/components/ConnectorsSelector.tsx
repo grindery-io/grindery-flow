@@ -111,11 +111,7 @@ const ConnectorsSelector = (props: Props) => {
     setActiveStep?.(2);
   };
 
-  if (!activeStep) {
-    return null;
-  }
-
-  if (step < activeStep) {
+  if (!activeStep || step < activeStep) {
     return null;
   }
 

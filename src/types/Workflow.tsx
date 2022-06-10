@@ -3,7 +3,6 @@ export type Workflow = {
   trigger: Operation;
   actions: Operation[];
   creator: string;
-  signature: string;
 };
 
 export type Operation = {

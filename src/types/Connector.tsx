@@ -5,6 +5,7 @@ export type Connector = {
   triggers?: Trigger[];
   actions?: Action[];
   authentication?: Authentication;
+  icon?: string;
 };
 
 // Triggers
@@ -63,7 +64,7 @@ export type Action = {
 };
 
 export type APICallOperation = {
-  type: "api";
+  type: string; //"api";
   operation: Request;
   inputFields?: Field[];
   inputFieldProviderUrl?: string;
@@ -134,6 +135,7 @@ export type Display = {
   label: string;
   description: string;
   instructions?: string;
+  icon?: string;
 };
 
 export type Field = {

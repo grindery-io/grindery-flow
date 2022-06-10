@@ -82,10 +82,7 @@
     "type": "oauth2",
     "test": {
       "method": "GET",
-      "url": "https://www.googleapis.com/oauth2/v3/userinfo",
-      "headers": {
-        "Authorization": "Bearer {{access_token}}"
-      }
+      "url": "https://www.googleapis.com/oauth2/v3/userinfo"
     },
     "fields": [
       {
@@ -107,8 +104,8 @@
         "computed": true
       },
       {
-        "key": "expires_in",
-        "type": "number",
+        "key": "refresh_token",
+        "type": "string",
         "required": true,
         "computed": true
       }
@@ -116,11 +113,25 @@
     "oauth2Config": {
       "authorizeUrl": {
         "method": "GET",
-        "url": "https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&response_type=token&client_id=676778012745-q5lg8up8nq94qet4fjhs3ftvpgd4nalv.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/spreadsheets+https://www.googleapis.com/auth/userinfo.email"
+        "url": "https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&response_type=code&client_id=676778012745-q5lg8up8nq94qet4fjhs3ftvpgd4nalv.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/spreadsheets+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/spreadsheets.readonly&access_type=offline"
       },
       "getAccessToken": {
         "method": "POST",
-        "url": ""
+        "url": "https://oauth2.googleapis.com/token",
+        "body": {
+          "client_id": "676778012745-q5lg8up8nq94qet4fjhs3ftvpgd4nalv.apps.googleusercontent.com",
+          "client_secret": "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",
+          "grant_type": "authorization_code"
+        }
+      },
+      "refreshAccessToken": {
+        "method": "POST",
+        "url": "https://oauth2.googleapis.com/token",
+        "body": {
+          "client_id": "676778012745-q5lg8up8nq94qet4fjhs3ftvpgd4nalv.apps.googleusercontent.com",
+          "client_secret": "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",
+          "grant_type": "refresh_token"
+        }
       }
     }
   },

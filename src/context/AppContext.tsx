@@ -4,7 +4,7 @@ import { Workflow } from "../types/Workflow";
 import { Connector, Field } from "../types/Connector";
 import gsheetConnector from "../samples/gsheet-connector.json";
 import molochXdaiConnector from "../samples/moloch-xdai-connector.json";
-
+import helloworldConnector from "../samples/helloworld.json";
 type ContextProps = {
   state: any;
   setState?: (a: any) => void;
@@ -43,7 +43,11 @@ export const AppContext = createContext<Partial<ContextProps>>({});
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
   const [state, setState] = useState({});
-  const connectors: Connector[] = [gsheetConnector, molochXdaiConnector];
+  const connectors: Connector[] = [
+    helloworldConnector,
+    gsheetConnector,
+    molochXdaiConnector,
+  ];
   const [workflow, setWorkflow] = useState<Workflow>({
     title: "New workflow",
     trigger: {
@@ -60,8 +64,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         input: {},
       },
     ],
-    creator: "demo:user",
-    signature: "",
+    creator:
+      "did:3:kjzl6cwe1jw149tlplc4bgnpn1v4uwk9rg9jkvijx0u0zmfa97t69dnqibqa2as",
   });
   const [activeStep, setActiveStep] = useState(1);
 
@@ -154,7 +158,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         workflow &&
         workflow.trigger &&
         workflow.trigger.input &&
-        workflow.trigger.input[field]
+        typeof workflow.trigger.input[field] !== "undefined" &&
+        workflow.trigger.input[field] !== "" &&
+        workflow.trigger.input[field] !== null
     ).length === requiredTriggerFields.length
   );
 

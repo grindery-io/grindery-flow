@@ -43,10 +43,10 @@ const ActionInputField = ({ inputField, outputOptions, index }: Props) => {
           }}
         >
           <SelectInput
-            label={inputField.label}
+            label={inputField.label || ""}
             type="searchLabel"
             variant="full"
-            placeholder={inputField.placeholder}
+            placeholder={inputField.placeholder || ""}
             required={!!inputField.required}
             texthelper={inputField.helpText || ""}
             options={outputOptions}
