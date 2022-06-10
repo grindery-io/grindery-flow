@@ -232,7 +232,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     setWorkflow(newWorkflow);
   };
 
-  console.log("workflow", workflow);
+  if (window.location.origin.includes("http://localhost")) {
+    console.log("workflow", workflow);
+  }
 
   return (
     <AppContext.Provider

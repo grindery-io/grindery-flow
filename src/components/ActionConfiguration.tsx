@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import { Text, Button } from "grindery-ui";
 import _ from "lodash";
 import { useAppContext } from "../context/AppContext";
@@ -79,6 +80,27 @@ const ActionConfiguration = (props: Props) => {
       signature: JSON.stringify(workflow),
     };
     console.log("readyWorkflow", readyWorkflow);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const testEngine = urlParams.get("testEngine");
+    if (testEngine && testEngine === "1") {
+      axios
+        .post("https://gnexus-orchestrator.herokuapp.com/", {
+          jsonrpc: "2.0",
+          method: "or_createWorkflow",
+          id: new Date(),
+          params: {
+            userAccountId: readyWorkflow.creator,
+            workflow: readyWorkflow,
+          },
+        })
+        .then((res) => {
+          console.log("or_createWorkflow res", res);
+        })
+        .catch((err) => {
+          console.log("or_createWorkflow error", err);
+        });
+    }
   };
 
   if (!activeStep || step !== activeStep) {

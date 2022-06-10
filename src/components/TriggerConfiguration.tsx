@@ -70,7 +70,6 @@ const TriggerConfiguration = (props: Props) => {
             },
           })
             .then((res) => {
-              console.log("getAccessTokenRequest res", res);
               if (res && res.data && triggerAuthenticationFields) {
                 const credentials = Object.fromEntries(
                   triggerAuthenticationFields.map((field) => [
