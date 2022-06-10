@@ -33,6 +33,8 @@ type ContextProps = {
   actionIsConfigured: boolean;
   activeStep: number;
   setActiveStep: (a: any) => void;
+  activeTab: number;
+  setActiveTab: (a: number) => void;
 };
 
 type AppContextProps = {
@@ -43,6 +45,7 @@ export const AppContext = createContext<Partial<ContextProps>>({});
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
   const [state, setState] = useState({});
+  const [activeTab, setActiveTab] = useState(1);
   const connectors: Connector[] = [
     helloworldConnector,
     gsheetConnector,
@@ -266,6 +269,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         actionIsConfigured,
         activeStep,
         setActiveStep,
+        activeTab,
+        setActiveTab,
       }}
     >
       {children}
