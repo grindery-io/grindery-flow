@@ -5,6 +5,7 @@ import _ from "lodash";
 import { useAppContext } from "../context/AppContext";
 import { Field } from "../types/Connector";
 import ActionInputField from "./ActionInputField";
+import { replaceTokens, setConnectorKeys } from "../utils";
 
 type Props = {
   index: number;
@@ -14,13 +15,13 @@ type Props = {
 const ActionConfiguration = (props: Props) => {
   const { index, step } = props;
   const {
-    workflow,
     action,
     trigger,
     actionConnector,
     actionIsConfigured,
     activeStep,
     triggerConnector,
+    testWorkflowAction,
   } = useAppContext();
 
   const inputFields =
@@ -30,26 +31,6 @@ const ActionConfiguration = (props: Props) => {
     action.operation.inputFields.filter(
       (inputField: { computed: any }) => inputField && !inputField.computed
     );
-
-  /*const outputOptions = _.flatten(
-    Object.keys(trigger.operation.sample).map((sampleKey) => {
-      if (Array.isArray(trigger.operation.sample[sampleKey])) {
-        return trigger.operation.sample[sampleKey].map((v: any, i: any) => ({
-          value: `{{step${index}.${sampleKey}[${i}]}}`,
-          label: `${sampleKey}[${i}]`,
-          reference: v,
-          icon: triggerConnector.icon || "",
-        }));
-      } else {
-        return {
-          value: `{{step${index}.${sampleKey}}}`,
-          label: sampleKey,
-          reference: trigger.operation.sample[sampleKey],
-          icon: triggerConnector.icon || "",
-        };
-      }
-    })
-  );*/
 
   const outputOptions = _.flatten(
     trigger.operation.outputFields &&
@@ -74,32 +55,9 @@ const ActionConfiguration = (props: Props) => {
       })
   );
 
-  const handleTestClick = () => {
-    const readyWorkflow = {
-      ...workflow,
-      signature: JSON.stringify(workflow),
-    };
-    console.log("readyWorkflow", readyWorkflow);
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const testEngine = urlParams.get("testEngine");
-    if (testEngine && testEngine === "1") {
-      axios
-        .post("https://gnexus-orchestrator.herokuapp.com/", {
-          jsonrpc: "2.0",
-          method: "or_createWorkflow",
-          id: new Date(),
-          params: {
-            userAccountId: readyWorkflow.creator,
-            workflow: readyWorkflow,
-          },
-        })
-        .then((res) => {
-          console.log("or_createWorkflow res", res);
-        })
-        .catch((err) => {
-          console.log("or_createWorkflow error", err);
-        });
+  const handleTestClick = async () => {
+    if (testWorkflowAction) {
+      testWorkflowAction(index);
     }
   };
 

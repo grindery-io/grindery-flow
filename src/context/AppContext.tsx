@@ -5,6 +5,9 @@ import { Connector, Field } from "../types/Connector";
 import gsheetConnector from "../samples/gsheet-connector.json";
 import molochXdaiConnector from "../samples/moloch-xdai-connector.json";
 import helloworldConnector from "../samples/helloworld.json";
+import { replaceTokens, setConnectorKeys } from "../utils";
+import axios from "axios";
+import { WORKFLOW_ENGINE_URL } from "../constants";
 type ContextProps = {
   state: any;
   setState?: (a: any) => void;
@@ -35,6 +38,7 @@ type ContextProps = {
   setActiveStep: (a: any) => void;
   activeTab: number;
   setActiveTab: (a: number) => void;
+  testWorkflowAction: (a: number) => { [key: string]: any } | void;
 };
 
 type AppContextProps = {
@@ -235,6 +239,52 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     setWorkflow(newWorkflow);
   };
 
+  const testWorkflowAction = (index: number) => {
+    if (workflow) {
+      const formatedWorkflow = setConnectorKeys(workflow);
+      const readyWorkflow = {
+        ...formatedWorkflow,
+        signature: JSON.stringify(formatedWorkflow),
+      };
+      if (window.location.origin.includes("http://localhost")) {
+        console.log("readyWorkflow", readyWorkflow);
+      }
+      if (readyWorkflow.actions && readyWorkflow.actions[index]) {
+        const currentAction = readyWorkflow.actions?.[index];
+        const testInputValues: any = replaceTokens(currentAction.input || {}, {
+          trigger: trigger?.operation?.sample || {},
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const testEngine = urlParams.get("testEngine");
+        if (testEngine && testEngine === "1") {
+          axios
+            .post(WORKFLOW_ENGINE_URL, {
+              jsonrpc: "2.0",
+              method: "or_testAction",
+              id: new Date(),
+              params: {
+                userAccountId: readyWorkflow.creator,
+                step: currentAction,
+                input: testInputValues,
+              },
+            })
+            .then((res) => {
+              if (res && res.data && res.data.error) {
+                console.log("or_testAction error", res.data.error);
+              }
+              if (res && res.data && res.data.result) {
+                console.log("or_testAction data", res.data.result);
+              }
+            })
+            .catch((err) => {
+              console.log("or_testAction error", err);
+            });
+        }
+      }
+    }
+  };
+
   if (window.location.origin.includes("http://localhost")) {
     console.log("workflow", workflow);
   }
@@ -271,6 +321,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         setActiveStep,
         activeTab,
         setActiveTab,
+        testWorkflowAction,
       }}
     >
       {children}
