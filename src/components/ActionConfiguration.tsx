@@ -1,11 +1,9 @@
 import React from "react";
-import axios from "axios";
 import { Text, Button } from "grindery-ui";
-import _ from "lodash";
 import { useAppContext } from "../context/AppContext";
 import { Field } from "../types/Connector";
 import ActionInputField from "./ActionInputField";
-import { getOutputOptions, replaceTokens, setConnectorKeys } from "../utils";
+import { getOutputOptions } from "../utils";
 
 type Props = {
   index: number;

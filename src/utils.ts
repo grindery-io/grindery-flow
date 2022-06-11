@@ -12,6 +12,22 @@ export const getParameterByName = (name: string, url = window.location.href) => 
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+export function replaceSystemTokens<T>(obj: T): T {
+  if (typeof obj === "string") {
+    return obj.replace("{{;}}", " ") as unknown as T;
+  }
+  if (typeof obj === "object") {
+    if (Array.isArray(obj)) {
+      return obj.map((item) => replaceSystemTokens(item)) as unknown as T;
+    }
+    return Object.entries(obj).reduce((acc:any, [key, value]) => {
+      acc[key] = replaceSystemTokens(value);
+      return acc;
+    }, {} as T);
+  }
+  return obj;
+}
+
 export function replaceTokens<T>(obj: T, context: { [key: string]: unknown }): T {
   if (typeof obj === "string") {
     return obj.replace(/\{\{\s*([^}]+)\s*\}\}/g, (_original, key) =>
@@ -30,17 +46,19 @@ export function replaceTokens<T>(obj: T, context: { [key: string]: unknown }): T
   return obj;
 }
 
-export const setConnectorKeys = (workflow: Workflow) => {
+export const formatWorkflow = (workflow: Workflow) => {
   return {
     ...workflow,
     trigger: {
       ...workflow.trigger,
-     connector: _.camelCase(workflow.trigger.connector) 
+     connector: _.camelCase(workflow.trigger.connector),
+     input: replaceSystemTokens(workflow.trigger.input)
     },
     actions: [
       ...workflow.actions.map(action=>({
         ...action,
-        connector: _.camelCase(action.connector) 
+        connector: _.camelCase(action.connector),
+        input: replaceSystemTokens(action.input)
       }))
     ]
   }
@@ -74,4 +92,14 @@ export const getOutputOptions = (operation: TriggerOperation | ActionOperation, 
       })
   );
     }
+}
+
+export const jsonrpcObj = (method: string, params: object) => {
+  return {
+    jsonrpc: "2.0",
+    method: method,
+    id: new Date(),
+    params
+  }
+
 }

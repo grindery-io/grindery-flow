@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { SelectInput } from "grindery-ui";
+import React, { useEffect, useState } from "react";
+import { AutoCompleteInput } from "grindery-ui";
 import { useAppContext } from "../context/AppContext";
 import { Field } from "../types/Connector";
 
@@ -16,22 +16,34 @@ const ActionInputField = ({ inputField, options, index }: Props) => {
     workflowValue
       ? workflowValue
           ?.toString()
-          .split(" ")
-          .map((v) => options.find((o: any) => o.value === v))
+          .split("{{;}}")
+          .map(
+            (v) =>
+              options.find((o: any) => o.value === v) || { value: v, label: v }
+          )
+      : inputField.default
+      ? [{ value: inputField.default, label: inputField.default }]
       : []
   );
 
   const handleFieldChange = (value: any) => {
-    setVal(Array.isArray(value) ? value : [value]);
+    console.log("handleFieldChange value", value);
 
-    const wfValue = Array.isArray(value)
-      ? value.map((v) => v.value).join(" ")
-      : value.value;
+    setVal(Array.isArray(value) ? value : [value]);
+  };
+
+  useEffect(() => {
+    const wfValue = Array.isArray(val)
+      ? val.map((v) => (v.value ? v.value : v)).join("{{;}}")
+      : val.value
+      ? val.value
+      : val;
 
     updateWorkflow?.({
       ["actions[" + index + "].input." + inputField.key]: wfValue || "",
     });
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [val, index, inputField]);
 
   return (
     <React.Fragment key={inputField.key}>
@@ -42,7 +54,7 @@ const ActionInputField = ({ inputField, options, index }: Props) => {
             marginTop: 20,
           }}
         >
-          <SelectInput
+          <AutoCompleteInput
             label={inputField.label || ""}
             type="searchLabel"
             variant="full"
