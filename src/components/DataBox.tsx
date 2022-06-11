@@ -109,7 +109,8 @@ const DataBox = (props: Props) => {
           </div>
           <div
             style={{
-              marginTop: 10,
+              marginTop:
+                !!BottomLeftComponent || !!BottomRightComponent ? 10 : 0,
             }}
           >
             <div

@@ -31,6 +31,46 @@ const Dashboard = (props: Props) => {
               gap: 8,
             }}
           >
+            <img
+              src={ICONS.BELL}
+              alt="notifications icon"
+              style={{ width: 20 }}
+            />
+            <Text value="Notifications" variant="body2" />
+          </div>
+        }
+        RightComponent={
+          <div
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: 12,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              flexWrap: "nowrap",
+              color: "#ffffff",
+              background: "#FF5858",
+            }}
+          >
+            <Text value={3} variant="body2" />
+          </div>
+        }
+      />
+      <DataBox
+        size="large"
+        LeftComponent={
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              flexWrap: "nowrap",
+              gap: 8,
+            }}
+          >
             <img src={ICONS.WALLET} alt="wallet icon" style={{ width: 20 }} />
             <Text value="Aggregated Balance" variant="body2" />
           </div>

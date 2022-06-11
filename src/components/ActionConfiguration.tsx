@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Button } from "grindery-ui";
+import { AlertField, Text, Button } from "grindery-ui";
 import { useAppContext } from "../context/AppContext";
 import { Field } from "../types/Connector";
 import ActionInputField from "./ActionInputField";
@@ -106,6 +106,30 @@ const ActionConfiguration = (props: Props) => {
           }`}
         />
       </div>
+      {action &&
+        action.operation &&
+        action.operation.type === "blockchain:call" && (
+          <AlertField
+            text={
+              <div style={{ textAlign: "left" }}>
+                This action will require you to pay gas. Make sure your account
+                has funds. Current balance:{" "}
+                <a
+                  href="#balance"
+                  style={{
+                    fontWeight: "bold",
+                    color: "inherit",
+                    textDecoration: "underline",
+                  }}
+                >
+                  0.003 ETH
+                </a>
+              </div>
+            }
+            color="warning"
+            icon={<img src="/images/exclamation.png" width={20} height={20} />}
+          />
+        )}
       <div>
         {inputFields.map((inputField: Field) => (
           <ActionInputField
