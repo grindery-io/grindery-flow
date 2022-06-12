@@ -1,5 +1,5 @@
 import React from "react";
-import RightBar from "../RightBar";
+import RightBar from "../shared/RightBar";
 
 type Props = {};
 

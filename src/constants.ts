@@ -9,6 +9,12 @@ export const ICONS: { [key: string]: string } = {
   DASHBOARD: "/images/icons/dashboard.svg",
   SETTINGS: "/images/icons/settings.svg",
   TRANSACTIONS: "/images/icons/list.svg",
+  EXECUTED: "/images/icons/executed.svg",
+  ERROR: "/images/icons/error.svg",
+  DEPOSIT: "/images/icons/deposit.svg",
+  GAS: "/images/icons/gas.svg",
+  SERVICE: "/images/icons/service.svg",
+  FEES: "/images/icons/fees.svg",
 };
 
 export const RIGHTBAR_TABS: { name: string; icon?: string; id: number }[] = [

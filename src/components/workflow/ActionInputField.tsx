@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AutoCompleteInput } from "grindery-ui";
-import { useAppContext } from "../context/AppContext";
-import { Field } from "../types/Connector";
+import { useAppContext } from "../../context/AppContext";
+import { Field } from "../../types/Connector";
 
 type Props = {
   inputField: Field;

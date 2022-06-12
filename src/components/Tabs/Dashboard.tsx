@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Text } from "grindery-ui";
-import DataBox from "../DataBox";
+import DataBox from "../shared/DataBox";
 import { ICONS } from "../../constants";
 import { useAppContext } from "../../context/AppContext";
 
@@ -106,30 +106,59 @@ const Dashboard = (props: Props) => {
       <DataBox
         size="large"
         LeftComponent={
-          <Title>
+          <Title
+            onClick={() => {
+              changeTab?.("NEW_WORKFLOW");
+            }}
+            style={{ cursor: "pointer" }}
+          >
             <Icon src={ICONS.WORKFLOWS} alt="Workflows icon" />
             <Text value="Workflows" variant="body2" />
           </Title>
         }
-        BottomRightComponent={<Text value="5" variant="h3" />}
+        BottomRightComponent={
+          <div
+            onClick={() => {
+              changeTab?.("NEW_WORKFLOW");
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            <Text value="5" variant="h3" />
+          </div>
+        }
       />
       <DataBox
         size="large"
         LeftComponent={
-          <Title>
+          <Title
+            onClick={() => {
+              changeTab?.("APPS");
+            }}
+            style={{ cursor: "pointer" }}
+          >
             <Icon src={ICONS.APPS} alt="(d)Apps icon" />
             <Text value="(d)Apps" variant="body2" />
           </Title>
         }
         BottomRightComponent={
           <CountsWrapper>
-            <CountWrapper>
+            <CountWrapper
+              onClick={() => {
+                changeTab?.("APPS");
+              }}
+              style={{ cursor: "pointer" }}
+            >
               <Text value="1" variant="h3" />
               <div style={{ marginBottom: 2 }}>
                 <Text value="dApp" variant="caption" />
               </div>
             </CountWrapper>
-            <CountWrapper>
+            <CountWrapper
+              onClick={() => {
+                changeTab?.("APPS");
+              }}
+              style={{ cursor: "pointer" }}
+            >
               <Text value="4" variant="h3" />
               <div style={{ marginBottom: 2 }}>
                 <Text value="Apps" variant="caption" />
@@ -141,20 +170,35 @@ const Dashboard = (props: Props) => {
       <DataBox
         size="large"
         LeftComponent={
-          <Title>
+          <Title
+            onClick={() => {
+              changeTab?.("HISTORY");
+            }}
+            style={{ cursor: "pointer" }}
+          >
             <Icon src={ICONS.HISTORY} alt="History icon" />
             <Text value="History" variant="body2" />
           </Title>
         }
         BottomRightComponent={
           <CountsWrapper>
-            <CountWrapper>
+            <CountWrapper
+              onClick={() => {
+                changeTab?.("HISTORY");
+              }}
+              style={{ cursor: "pointer" }}
+            >
               <Text value="1" variant="h3" />
               <div style={{ marginBottom: 2 }}>
                 <Text value="Error" variant="caption" />
               </div>
             </CountWrapper>
-            <CountWrapper>
+            <CountWrapper
+              onClick={() => {
+                changeTab?.("HISTORY");
+              }}
+              style={{ cursor: "pointer" }}
+            >
               <Text value="3" variant="h3" />
               <div style={{ marginBottom: 2 }}>
                 <Text value="Executed" variant="caption" />

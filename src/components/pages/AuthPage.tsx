@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Logo from "../Logo";
+import Logo from "../shared/Logo";
 
 type Props = {};
 

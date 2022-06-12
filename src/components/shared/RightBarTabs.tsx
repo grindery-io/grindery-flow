@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { RIGHTBAR_TABS } from "../constants";
-import { useAppContext } from "../context/AppContext";
+import { RIGHTBAR_TABS } from "../../constants";
+import { useAppContext } from "../../context/AppContext";
 
 const Wrapper = styled.div`
   display: flex;

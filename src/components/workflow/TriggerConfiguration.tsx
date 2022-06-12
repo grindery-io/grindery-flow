@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { Text, Button } from "grindery-ui";
-import { useAppContext } from "../context/AppContext";
-import Check from "./icons/Check";
-import { Field } from "../types/Connector";
+import { useAppContext } from "../../context/AppContext";
+import Check from "./../icons/Check";
+import { Field } from "../../types/Connector";
 import TriggerInputField from "./TriggerInputField";
-import { getParameterByName } from "../utils";
+import { getParameterByName } from "../../utils";
 
 const Wrapper = styled.div`
   padding: 20px;

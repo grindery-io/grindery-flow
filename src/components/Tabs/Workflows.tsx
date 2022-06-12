@@ -1,5 +1,5 @@
 import React from "react";
-import WorkflowConstructor from "../WorkflowConstructor";
+import WorkflowConstructor from "../workflow/WorkflowConstructor";
 
 type Props = {};
 

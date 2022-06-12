@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Text } from "grindery-ui";
-import Check from "./icons/Check";
-import { useAppContext } from "../context/AppContext";
+import Check from "./../icons/Check";
+import { useAppContext } from "../../context/AppContext";
 
 const Wrapper = styled.div`
   display: flex;

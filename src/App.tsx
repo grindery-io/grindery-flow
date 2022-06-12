@@ -1,5 +1,5 @@
 import React from "react";
-import AppRouter from "./components/AppRouter";
+import AppRouter from "./components/shared/AppRouter";
 import AppContextProvider from "./context/AppContext";
 
 function App() {

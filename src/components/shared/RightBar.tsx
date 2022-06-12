@@ -1,12 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import { RIGHTBAR_TABS } from "../constants";
-import { useAppContext } from "../context/AppContext";
+import { RIGHTBAR_TABS } from "../../constants";
+import { useAppContext } from "../../context/AppContext";
 import AppHeader from "./AppHeader";
-import Dashboard from "./Tabs/Dashboard";
-import Notifications from "./Tabs/Notifications";
+import Dashboard from "../tabs/Dashboard";
+import Notifications from "../tabs/Notifications";
 import RightBarTabs from "./RightBarTabs";
-import Workflows from "./Tabs/Workflows";
+import Workflows from "../tabs/Workflows";
+import Apps from "../tabs/Apps";
+import History from "../tabs/History";
+import Transactions from "../tabs/Transactions";
 
 const Wrapper = styled.div`
   max-width: 435px;
@@ -45,6 +48,12 @@ const RightBar = (props: Props) => {
         return <Dashboard />;
       case "NEW_WORKFLOW":
         return <Workflows />;
+      case "APPS":
+        return <Apps />;
+      case "HISTORY":
+        return <History />;
+      case "TRANSACTIONS":
+        return <Transactions />;
       case "NOTIFICATIONS":
         return <Notifications />;
       default:

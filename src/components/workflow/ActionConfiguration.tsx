@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { AlertField, Text, Button } from "grindery-ui";
-import { useAppContext } from "../context/AppContext";
-import { Field } from "../types/Connector";
+import { useAppContext } from "../../context/AppContext";
+import { Field } from "../../types/Connector";
 import ActionInputField from "./ActionInputField";
-import { getOutputOptions } from "../utils";
+import { getOutputOptions } from "../../utils";
 
 const Wrapper = styled.div`
   padding: 20px 20px 40px;

@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Text } from "grindery-ui";
-import DataBox from "../DataBox";
+import DataBox from "../shared/DataBox";
 import { ICONS } from "../../constants";
+
+const exampleNotifications = [
+  {
+    id: 1,
+    icon: ICONS.WALLET,
+    text: "Wallet balance low! Add funds",
+  },
+  {
+    id: 2,
+    icon: ICONS.WORKFLOWS,
+    text: "Workflow Google Sheets - Moloch DAO Test Error",
+  },
+  {
+    id: 3,
+    icon: ICONS.WORKFLOWS,
+    text: "Workflow Google Sheets - Moloch DAO Test Error",
+  },
+];
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -23,10 +41,6 @@ const TextIconWrapper = styled.div`
   gap: 10px;
 `;
 
-const Link = styled.a`
-  font-weight: bold;
-`;
-
 const Icon = styled.img`
   width: 20px;
   filter: invert(43%) sepia(36%) saturate(4084%) hue-rotate(332deg)
@@ -36,48 +50,21 @@ const Icon = styled.img`
 type Props = {};
 
 const Notifications = (props: Props) => {
+  const [items, setitems] = useState(exampleNotifications);
   return (
     <Wrapper>
-      <DataBox
-        size="small"
-        LeftComponent={
-          <TextIconWrapper>
-            <Icon src={ICONS.WALLET} alt="notifications icon" />
-            <Text
-              value={
-                <span>
-                  Wallet balance low! <Link href="#add-funds">Add funds</Link>
-                </span>
-              }
-              variant="body2"
-            />
-          </TextIconWrapper>
-        }
-      />
-      <DataBox
-        size="small"
-        LeftComponent={
-          <TextIconWrapper>
-            <Icon src={ICONS.WORKFLOWS} alt="Workflows icon" />
-            <Text
-              value="Workflow Google Sheets - Moloch DAO Test Error"
-              variant="body2"
-            />
-          </TextIconWrapper>
-        }
-      />
-      <DataBox
-        size="small"
-        LeftComponent={
-          <TextIconWrapper>
-            <Icon src={ICONS.WORKFLOWS} alt="Workflows icon" />
-            <Text
-              value="Workflow Google Sheets - Moloch DAO Test Error"
-              variant="body2"
-            />
-          </TextIconWrapper>
-        }
-      />
+      {items.map((item) => (
+        <DataBox
+          key={item.id}
+          size="small"
+          LeftComponent={
+            <TextIconWrapper>
+              <Icon src={item.icon} alt="notifications icon" />
+              <Text value={item.text} variant="body2" />
+            </TextIconWrapper>
+          }
+        />
+      ))}
     </Wrapper>
   );
 };

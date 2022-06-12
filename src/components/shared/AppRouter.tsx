@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AuthPage from "./pages/AuthPage";
-import HomePage from "./pages/HomePage";
+import AuthPage from "../pages/AuthPage";
+import HomePage from "../pages/HomePage";
 
 type Props = {};
 

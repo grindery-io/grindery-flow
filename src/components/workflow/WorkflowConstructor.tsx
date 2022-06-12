@@ -1,7 +1,7 @@
 import React from "react";
 import ConnectorsSelector from "./ConnectorsSelector";
 import ActionConfiguration from "./ActionConfiguration";
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../../context/AppContext";
 import TriggerConfiguration from "./TriggerConfiguration";
 import WorkflowProgress from "./WorkflowProgress";
 

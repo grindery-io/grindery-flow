@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, SelectInput, AutoCompleteInput, Button } from "grindery-ui";
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../../context/AppContext";
 
 type Props = {
   step: number;
