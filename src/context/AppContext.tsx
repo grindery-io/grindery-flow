@@ -7,7 +7,7 @@ import molochXdaiConnector from "../samples/moloch-xdai-connector.json";
 import helloworldConnector from "../samples/helloworld.json";
 import { formatWorkflow, jsonrpcObj, replaceTokens } from "../utils";
 import axios from "axios";
-import { WORKFLOW_ENGINE_URL } from "../constants";
+import { RIGHTBAR_TABS, WORKFLOW_ENGINE_URL } from "../constants";
 type ContextProps = {
   state: any;
   setState?: (a: any) => void;
@@ -37,7 +37,7 @@ type ContextProps = {
   activeStep: number;
   setActiveStep: (a: any) => void;
   activeTab: number;
-  setActiveTab: (a: number) => void;
+  changeTab: (a: string) => void;
   testWorkflowAction: (a: number) => { [key: string]: any } | void;
 };
 
@@ -282,6 +282,12 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     }
   };
 
+  const changeTab = (name: string) => {
+    setActiveTab(
+      (RIGHTBAR_TABS.find((tab) => tab.name === name) || { id: 0 }).id
+    );
+  };
+
   if (window.location.origin.includes("http://localhost")) {
     console.log("workflow", workflow);
   }
@@ -317,8 +323,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         activeStep,
         setActiveStep,
         activeTab,
-        setActiveTab,
         testWorkflowAction,
+        changeTab,
       }}
     >
       {children}

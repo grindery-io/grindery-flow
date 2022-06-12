@@ -1,44 +1,48 @@
 import React from "react";
+import styled from "styled-components";
 import { RIGHTBAR_TABS } from "../constants";
 import { useAppContext } from "../context/AppContext";
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  background: #fdfbff;
+  box-shadow: inset 0px -2px 20px rgba(0, 0, 0, 0.08);
+  min-height: calc(100vh - 61px);
+  height: 100%;
+`;
+
+const TabButton = styled.div`
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  padding: 18px;
+`;
 
 type Props = {};
 
 const RightBarTabs = (props: Props) => {
-  const { setActiveTab, activeTab } = useAppContext();
+  const { changeTab, activeTab } = useAppContext();
 
-  const handleTabClick = (key: number) => {
-    setActiveTab?.(key);
+  const handleTabClick = (name: string) => {
+    changeTab?.(name);
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
-        justifyContent: "flex-start",
-        flexWrap: "nowrap",
-        background: "#FDFBFF",
-        boxShadow: "inset 0px -2px 20px rgba(0, 0, 0, 0.08)",
-        minHeight: "calc(100vh - 61px)",
-        height: "100%",
-      }}
-    >
+    <Wrapper>
       {RIGHTBAR_TABS.map((tab, i) => (
-        <div
+        <TabButton
           key={tab.name}
           onClick={() => {
-            handleTabClick(i);
+            handleTabClick(tab.name);
           }}
           style={{
-            cursor: "pointer",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            flexWrap: "nowrap",
-            padding: 18,
             background: activeTab === i ? "#ffffff" : "transparent",
           }}
         >
@@ -51,9 +55,9 @@ const RightBarTabs = (props: Props) => {
           ) : (
             i
           )}
-        </div>
+        </TabButton>
       ))}
-    </div>
+    </Wrapper>
   );
 };
 

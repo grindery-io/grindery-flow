@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import { SelectInput, InputBox } from "grindery-ui";
 import { useAppContext } from "../context/AppContext";
 import { Field } from "../types/Connector";
+
+const Wrapper = styled.div`
+  width: 100%;
+  margin-top: 20px;
+`;
 
 type Props = {
   inputField: Field;
@@ -78,12 +84,7 @@ const TriggerInputField = ({ inputField }: Props) => {
   return (
     <React.Fragment key={inputField.key}>
       {!!inputField && (
-        <div
-          style={{
-            width: "100%",
-            marginTop: 20,
-          }}
-        >
+        <Wrapper>
           {(inputField.type === "number" ||
             (inputField.type === "string" && !inputField.choices)) && (
             <InputBox
@@ -119,7 +120,7 @@ const TriggerInputField = ({ inputField }: Props) => {
               required={!!inputField.required}
             />
           )}
-        </div>
+        </Wrapper>
       )}
     </React.Fragment>
   );

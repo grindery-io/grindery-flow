@@ -1,11 +1,50 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styled from "styled-components";
 import { Text, Button } from "grindery-ui";
 import { useAppContext } from "../context/AppContext";
 import Check from "./icons/Check";
 import { Field } from "../types/Connector";
 import TriggerInputField from "./TriggerInputField";
 import { getParameterByName } from "../utils";
+
+const Wrapper = styled.div`
+  padding: 20px;
+`;
+const TitleWrapper = styled.div`
+  text-align: center;
+  margin-top: 20px;
+`;
+
+const TitleIconWrapper = styled.div`
+  display: inline-block;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  margin: 0px auto 10px;
+`;
+
+const TitleIcon = styled.img`
+  display: block;
+  width: 24px;
+  height: 24px;
+`;
+
+const AccountWrapper = styled.div`
+  margin-top: 40px;
+  text-align: left;
+  margin-bottom: 40px;
+`;
+
+const AccountNameWrapper = styled.div`
+  padding: 15px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+`;
 
 type Props = {
   step: number;
@@ -185,35 +224,21 @@ const TriggerConfiguration = (props: Props) => {
   }
 
   return (
-    <div
-      style={{
-        padding: 20,
-      }}
-    >
-      <div style={{ textAlign: "center", marginTop: 20 }}>
+    <Wrapper>
+      <TitleWrapper>
         {triggerConnector.icon && (
-          <div
-            style={{
-              display: "inline-block",
-              padding: 8,
-              background: "#FFFFFF",
-              border: "1px solid #DCDCDC",
-              borderRadius: 5,
-              margin: "0px auto 10px",
-            }}
-          >
-            <img
+          <TitleIconWrapper>
+            <TitleIcon
               src={triggerConnector.icon}
               alt={`${triggerConnector.name} icon`}
-              style={{ display: "block", width: 24, height: 24 }}
             />
-          </div>
+          </TitleIconWrapper>
         )}
         <Text variant="h3" value="Set up trigger" />
         <div style={{ marginTop: 4 }}>
           <Text variant="p" value={`for ${triggerConnector.name}`} />
         </div>
-      </div>
+      </TitleWrapper>
       {triggerAuthenticationIsRequired && (
         <>
           {!triggerIsAuthenticated && (
@@ -226,27 +251,12 @@ const TriggerConfiguration = (props: Props) => {
             </div>
           )}
           {triggerIsAuthenticated && (
-            <div
-              style={{
-                marginTop: 40,
-                textAlign: "left",
-                marginBottom: 40,
-              }}
-            >
+            <AccountWrapper>
               <Text
                 value={`${triggerConnector.name} account`}
                 variant="body2"
               />
-              <div
-                style={{
-                  padding: "15px 0",
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                  flexWrap: "nowrap",
-                }}
-              >
+              <AccountNameWrapper>
                 {triggerConnector.icon && (
                   <img
                     src={triggerConnector.icon}
@@ -260,7 +270,7 @@ const TriggerConfiguration = (props: Props) => {
                 <div style={{ marginLeft: "auto" }}>
                   <Check />
                 </div>
-              </div>
+              </AccountNameWrapper>
               <div style={{ marginTop: 10 }}>
                 <Button
                   onClick={handleChangeAuth}
@@ -268,7 +278,7 @@ const TriggerConfiguration = (props: Props) => {
                   variant="outlined"
                 />
               </div>
-            </div>
+            </AccountWrapper>
           )}
         </>
       )}
@@ -285,7 +295,7 @@ const TriggerConfiguration = (props: Props) => {
           )}
         </div>
       )}
-    </div>
+    </Wrapper>
   );
 };
 

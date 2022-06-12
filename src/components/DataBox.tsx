@@ -1,7 +1,18 @@
 import React from "react";
+import styled from "styled-components";
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+`;
 
 type Props = {
   size?: "large" | "small";
+  style?: React.CSSProperties;
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
   LeftComponent?: React.ReactNode;
   RightComponent?: React.ReactNode;
   BottomLeftComponent?: React.ReactNode;
@@ -17,26 +28,24 @@ const DataBox = (props: Props) => {
     RightComponent,
     BottomLeftComponent,
     BottomRightComponent,
+    style = {},
+    onClick = () => {},
   } = props;
 
   return (
     <div
       style={{
+        ...style,
         border: "1px solid #D3DEEC",
         borderRadius: size === "small" ? "5px" : "10px",
         padding: size === "small" ? "10px" : "15px",
       }}
+      onClick={(event: React.MouseEvent<HTMLElement>) => {
+        onClick?.(event);
+      }}
     >
       {size === "small" && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            flexWrap: "nowrap",
-          }}
-        >
+        <Row>
           {!!LeftComponent && (
             <div
               style={{
@@ -65,19 +74,11 @@ const DataBox = (props: Props) => {
               {RightComponent}
             </div>
           )}
-        </div>
+        </Row>
       )}
       {size === "large" && (
         <>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              flexWrap: "nowrap",
-            }}
-          >
+          <Row>
             {!!LeftComponent && (
               <div
                 style={{
@@ -106,22 +107,14 @@ const DataBox = (props: Props) => {
                 {RightComponent}
               </div>
             )}
-          </div>
+          </Row>
           <div
             style={{
               marginTop:
                 !!BottomLeftComponent || !!BottomRightComponent ? 10 : 0,
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                flexWrap: "nowrap",
-              }}
-            >
+            <Row>
               {!!BottomLeftComponent && (
                 <div
                   style={{
@@ -141,7 +134,7 @@ const DataBox = (props: Props) => {
                   {BottomRightComponent}
                 </div>
               )}
-            </div>
+            </Row>
           </div>
         </>
       )}

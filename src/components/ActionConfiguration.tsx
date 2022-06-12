@@ -1,9 +1,34 @@
 import React from "react";
+import styled from "styled-components";
 import { AlertField, Text, Button } from "grindery-ui";
 import { useAppContext } from "../context/AppContext";
 import { Field } from "../types/Connector";
 import ActionInputField from "./ActionInputField";
 import { getOutputOptions } from "../utils";
+
+const Wrapper = styled.div`
+  padding: 20px 20px 40px;
+`;
+
+const TitleWrapper = styled.div`
+  text-align: center;
+  margin-top: 20px;
+`;
+
+const TitleIconWrapper = styled.div`
+  display: inline-block;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  margin: 0px auto 10px;
+`;
+
+const TitleIcon = styled.img`
+  display: block;
+  width: 24px;
+  height: 24px;
+`;
 
 type Props = {
   index: number;
@@ -32,29 +57,6 @@ const ActionConfiguration = (props: Props) => {
 
   const options = getOutputOptions(trigger.operation, triggerConnector);
 
-  /*_.flatten(
-    trigger.operation.outputFields &&
-      trigger.operation.outputFields.map((outputField: any) => {
-        if (outputField.list) {
-          return trigger.operation.sample[outputField.key].map(
-            (sample: any, i: any) => ({
-              value: `{{trigger.${outputField.key}[${i}]}}`,
-              label: `${outputField.label || outputField.key}[${i}]`,
-              reference: sample,
-              icon: triggerConnector.icon || "",
-            })
-          );
-        } else {
-          return {
-            value: `{{trigger.${outputField.key}}}`,
-            label: outputField.label || outputField.key,
-            reference: trigger.operation.sample[outputField.key],
-            icon: triggerConnector.icon || "",
-          };
-        }
-      })
-  );*/
-
   const handleTestClick = async () => {
     if (testWorkflowAction) {
       testWorkflowAction(index);
@@ -66,35 +68,21 @@ const ActionConfiguration = (props: Props) => {
   }
 
   return (
-    <div
-      style={{
-        padding: "20px 20px 40px",
-      }}
-    >
-      <div style={{ textAlign: "center", marginTop: 20 }}>
+    <Wrapper>
+      <TitleWrapper>
         {actionConnector.icon && (
-          <div
-            style={{
-              display: "inline-block",
-              padding: 8,
-              background: "#FFFFFF",
-              border: "1px solid #DCDCDC",
-              borderRadius: 5,
-              margin: "0px auto 10px",
-            }}
-          >
-            <img
+          <TitleIconWrapper>
+            <TitleIcon
               src={actionConnector.icon}
               alt={`${actionConnector.name} icon`}
-              style={{ display: "block", width: 24, height: 24 }}
             />
-          </div>
+          </TitleIconWrapper>
         )}
         <Text variant="h3" value="Set up Action" />
         <div style={{ marginTop: 4 }}>
           <Text variant="p" value={`for ${actionConnector.name}`} />
         </div>
-      </div>
+      </TitleWrapper>
 
       <div style={{ textAlign: "center", marginTop: 40, marginBottom: 40 }}>
         <Text
@@ -127,7 +115,14 @@ const ActionConfiguration = (props: Props) => {
               </div>
             }
             color="warning"
-            icon={<img src="/images/exclamation.png" width={20} height={20} />}
+            icon={
+              <img
+                src="/images/exclamation.png"
+                width={20}
+                height={20}
+                alt="exclamation icon"
+              />
+            }
           />
         )}
       <div>
@@ -149,7 +144,7 @@ const ActionConfiguration = (props: Props) => {
           </div>
         )}
       </div>
-    </div>
+    </Wrapper>
   );
 };
 

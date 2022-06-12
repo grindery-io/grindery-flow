@@ -1,10 +1,38 @@
 import React from "react";
+import styled from "styled-components";
 import { RIGHTBAR_TABS } from "../constants";
 import { useAppContext } from "../context/AppContext";
 import AppHeader from "./AppHeader";
-import Dashboard from "./Dashboard";
+import Dashboard from "./Tabs/Dashboard";
+import Notifications from "./Tabs/Notifications";
 import RightBarTabs from "./RightBarTabs";
-import WorkflowConstructor from "./WorkflowConstructor";
+import Workflows from "./Tabs/Workflows";
+
+const Wrapper = styled.div`
+  max-width: 435px;
+  margin: 0 0 0 auto;
+  border-left: 1px solid #dcdcdc;
+  min-height: 100vh;
+  background: #ffffff;
+`;
+
+const BarWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+`;
+
+const TabsWrapper = styled.div`
+  width: 100%;
+  max-width: 60px;
+`;
+
+const ContentWrapper = styled.div`
+  width: 100%;
+  max-width: 375px;
+`;
 
 type Props = {};
 
@@ -16,7 +44,9 @@ const RightBar = (props: Props) => {
       case "DASHBOARD":
         return <Dashboard />;
       case "NEW_WORKFLOW":
-        return <WorkflowConstructor />;
+        return <Workflows />;
+      case "NOTIFICATIONS":
+        return <Notifications />;
       default:
         return (
           <div style={{ textAlign: "center", padding: 30 }}>
@@ -27,43 +57,15 @@ const RightBar = (props: Props) => {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: 435,
-        margin: "0 0 0 auto",
-        borderLeft: "1px solid #DCDCDC",
-        minHeight: "100vh",
-        background: "#FFFFFF",
-      }}
-    >
+    <Wrapper>
       <AppHeader />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "stretch",
-          justifyContent: "flex-start",
-          flexWrap: "nowrap",
-        }}
-      >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 375,
-          }}
-        >
-          {renderContent(activeTab || 0)}
-        </div>
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 60,
-          }}
-        >
+      <BarWrapper>
+        <ContentWrapper>{renderContent(activeTab || 0)}</ContentWrapper>
+        <TabsWrapper>
           <RightBarTabs />
-        </div>
-      </div>
-    </div>
+        </TabsWrapper>
+      </BarWrapper>
+    </Wrapper>
   );
 };
 

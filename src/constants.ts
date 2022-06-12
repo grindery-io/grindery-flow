@@ -11,36 +11,39 @@ export const ICONS: { [key: string]: string } = {
   TRANSACTIONS: "/images/icons/list.svg",
 };
 
-export const RIGHTBAR_TABS: { name: string; icon?: string }[] = [
+export const RIGHTBAR_TABS: { name: string; icon?: string; id: number }[] = [
   {
+    id: 0,
     name: "DASHBOARD",
     icon: ICONS.DASHBOARD,
   },
   {
+    id: 1,
     name: "NEW_WORKFLOW",
     icon: ICONS.WORKFLOWS,
   },
   {
-    name: "WORKFLOW_LIST",
-    icon: ICONS.WORKFLOWS,
-  },
-  {
+    id: 2,
     name: "APPS",
     icon: ICONS.APPS,
   },
   {
+    id: 3,
     name: "HISTORY",
     icon: ICONS.HISTORY,
   },
   {
+    id: 4,
     name: "TRANSACTIONS",
     icon: ICONS.TRANSACTIONS,
   },
   {
+    id: 5,
     name: "NOTIFICATIONS",
     icon: ICONS.BELL,
   },
   {
+    id: 6,
     name: "SETTINGS",
     icon: ICONS.SETTINGS,
   },
