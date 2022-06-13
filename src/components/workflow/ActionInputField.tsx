@@ -27,8 +27,6 @@ const ActionInputField = ({ inputField, options, index }: Props) => {
   );
 
   const handleFieldChange = (value: any) => {
-    console.log("handleFieldChange value", value);
-
     setVal(Array.isArray(value) ? value : [value]);
   };
 

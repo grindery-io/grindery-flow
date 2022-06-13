@@ -65,6 +65,7 @@ const TriggerConfiguration = (props: Props) => {
     triggerIsConfigured,
   } = useAppContext();
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const inputFields =
     trigger &&
@@ -286,9 +287,14 @@ const TriggerConfiguration = (props: Props) => {
       {triggerIsAuthenticated && (
         <div style={{ marginTop: 40 }}>
           {inputFields.map((inputField: Field) => (
-            <TriggerInputField inputField={inputField} key={inputField.key} />
+            <TriggerInputField
+              inputField={inputField}
+              key={inputField.key}
+              loading={loading}
+              setLoading={setLoading}
+            />
           ))}
-          {triggerIsConfigured && (
+          {triggerIsConfigured && !loading && (
             <div style={{ marginTop: 40 }}>
               <Button onClick={handleContinueClick} value="Continue" />
             </div>

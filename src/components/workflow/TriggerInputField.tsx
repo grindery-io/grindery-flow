@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+import { debounce } from "throttle-debounce";
 import { SelectInput, InputBox } from "grindery-ui";
 import { useAppContext } from "../../context/AppContext";
 import { Field } from "../../types/Connector";
+import axios from "axios";
+import { formatWorkflow, jsonrpcObj } from "../../utils";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -11,10 +14,14 @@ const Wrapper = styled.div`
 
 type Props = {
   inputField: Field;
+  loading: boolean;
+  setLoading: (a: boolean) => void;
 };
 
-const TriggerInputField = ({ inputField }: Props) => {
-  const { triggerConnector, workflow, updateWorkflow } = useAppContext();
+const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
+  const { trigger, triggerConnector, workflow, updateWorkflow } =
+    useAppContext();
+  const [valChanged, setValChanged] = useState(false);
 
   const fieldOptions = inputField.choices?.map((choice) => ({
     value: typeof choice !== "string" ? choice.value : choice,
@@ -31,7 +38,10 @@ const TriggerInputField = ({ inputField }: Props) => {
     { value: "false", label: "False", icon: "" },
   ];
 
-  const workflowValue = workflow?.trigger.input[inputField.key] || "";
+  const workflowValue =
+    typeof workflow?.trigger.input[inputField.key] !== "undefined"
+      ? workflow?.trigger.input[inputField.key]
+      : inputField.default || "";
 
   const [val, setVal]: any = useState(
     fieldOptions
@@ -40,12 +50,10 @@ const TriggerInputField = ({ inputField }: Props) => {
             opt.value === (workflowValue && workflowValue.toString()) || ""
         ) || []
       : inputField.type === "boolean"
-      ? workflowValue || inputField.default
+      ? workflowValue
         ? booleanOptions[0]
         : booleanOptions[1]
-      : (workflowValue && workflowValue.toString()) ||
-        (inputField.default && inputField.default.toString()) ||
-        ""
+      : (workflowValue && workflowValue.toString()) || ""
   );
 
   const handleFieldChange = (e: any) => {
@@ -55,7 +63,63 @@ const TriggerInputField = ({ inputField }: Props) => {
         ? e?.target.value || ""
         : e
     );
+    setValChanged(true);
   };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const updateFieldsDefinition = useCallback(
+    debounce(1000, () => {
+      if (
+        (typeof inputField.updateFieldDefinition === "undefined" ||
+          inputField.updateFieldDefinition) &&
+        trigger.operation.inputFieldProviderUrl
+      ) {
+        if (workflow) {
+          setLoading(true);
+          const formattedWorkflow = formatWorkflow(workflow);
+          axios
+            .post(
+              trigger.operation.inputFieldProviderUrl,
+              jsonrpcObj("grinderyNexusConnectorUpdateFields", {
+                key: trigger.key,
+                fieldData: formattedWorkflow?.trigger.input,
+                credentials: formattedWorkflow?.trigger.credentials,
+              })
+            )
+            .then((res) => {
+              if (res && res.data && res.data.error) {
+                console.log(
+                  "grinderyNexusConnectorUpdateFields error",
+                  res.data.error
+                );
+              }
+              if (res && res.data && res.data.result) {
+                console.log(
+                  "grinderyNexusConnectorUpdateFields data",
+                  res.data.result
+                );
+                if (res.data.result.inputFields) {
+                  (
+                    triggerConnector?.triggers?.find(
+                      (connectorTrigger: { key: any }) =>
+                        connectorTrigger &&
+                        connectorTrigger.key === workflow.trigger.operation
+                    ) || {}
+                  ).operation = res.data.result.inputFields;
+                }
+              }
+              setLoading(false);
+            })
+            .catch((err) => {
+              console.log("grinderyNexusConnectorUpdateFields error", err);
+              setLoading(false);
+            });
+        }
+      }
+      setValChanged(false);
+    }),
+    []
+  );
 
   useEffect(() => {
     let newVal: any = "";
@@ -80,6 +144,12 @@ const TriggerInputField = ({ inputField }: Props) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [val]);
+
+  useEffect(() => {
+    if (valChanged) {
+      updateFieldsDefinition();
+    }
+  }, [valChanged, updateFieldsDefinition]);
 
   return (
     <React.Fragment key={inputField.key}>
