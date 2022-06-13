@@ -10,6 +10,7 @@ import Workflows from "../tabs/Workflows";
 import Apps from "../tabs/Apps";
 import History from "../tabs/History";
 import Transactions from "../tabs/Transactions";
+import Settings from "../tabs/Settings";
 
 const Wrapper = styled.div`
   max-width: 435px;
@@ -56,6 +57,8 @@ const RightBar = (props: Props) => {
         return <Transactions />;
       case "NOTIFICATIONS":
         return <Notifications />;
+      case "SETTINGS":
+        return <Settings />;
       default:
         return (
           <div style={{ textAlign: "center", padding: 30 }}>

@@ -2,9 +2,22 @@ import React, { useState } from "react";
 import _ from "lodash";
 import styled from "styled-components";
 import moment from "moment";
-import { InputBox } from "grindery-ui";
+import { Button, DialogBox, InputBox } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import { ICONS } from "../../constants";
+
+type Transaction = {
+  id: string | number;
+  type: string;
+  name: string;
+  amount: number;
+  token: string;
+  usd: number;
+  timestamp: number;
+  title?: string;
+  details?: string;
+  comment?: string;
+};
 
 const exampleTransactions = [
   {
@@ -15,6 +28,11 @@ const exampleTransactions = [
     token: "ETH",
     usd: 100,
     timestamp: 1628696303000,
+    title: "Inboundlabs",
+    details:
+      "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
+    comment:
+      "This is a comment the sender. in this case Inboundlabs, has made.",
   },
   {
     id: 2,
@@ -24,6 +42,11 @@ const exampleTransactions = [
     token: "ETH",
     usd: 20,
     timestamp: 1628609903000,
+    title: "Inboundlabs",
+    details:
+      "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
+    comment:
+      "This is a comment the sender. in this case Inboundlabs, has made.",
   },
   {
     id: 3,
@@ -33,6 +56,11 @@ const exampleTransactions = [
     token: "ETH",
     usd: 10,
     timestamp: 1628609903000,
+    title: "Inboundlabs",
+    details:
+      "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
+    comment:
+      "This is a comment the sender. in this case Inboundlabs, has made.",
   },
   {
     id: 4,
@@ -42,6 +70,11 @@ const exampleTransactions = [
     token: "ETH",
     usd: 10,
     timestamp: 1628609903000,
+    title: "Inboundlabs",
+    details:
+      "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
+    comment:
+      "This is a comment the sender. in this case Inboundlabs, has made.",
   },
 ];
 
@@ -179,10 +212,110 @@ const ItemUSD = styled.div`
   color: #898989;
 `;
 
+const DialogTitle = styled.h3`
+  font-weight: 700;
+  font-size: 25px;
+  line-height: 130%;
+  padding: 0;
+  margin: 0 0 20px;
+`;
+
+const DialogSubtitleWrapper = styled.div`
+  margin: 0 0 20px;
+`;
+
+const DialogSubtitle = styled.h4`
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 130%;
+  padding: 0;
+  margin: 0;
+`;
+
+const DialogAddress = styled.h5`
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  padding: 0;
+  margin: 4px 0 0;
+`;
+
+const DialogDetails = styled.p`
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  padding: 0;
+  margin: 0 0 20px;
+`;
+
+const DialogComment = styled.div`
+  background: #f4f5f7;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 0 0 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+`;
+
+const DialogCommentIcon = styled.img`
+  width: 16px;
+  min-width: 16px;
+  height: 24px;
+  margin-right: 10px;
+`;
+
+const DialogCommentText = styled.p`
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  color: #898989;
+  padding: 0;
+  margin: 0;
+`;
+
+const DialogDateWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+`;
+
+const DialogDateLabel = styled.p`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 160%;
+  padding: 0;
+  margin: 0;
+`;
+
+const DialogDate = styled.p`
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 150%;
+  padding: 0;
+  margin: 0 0 0 auto;
+`;
+
+const DialogAmount = styled.p`
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 150%;
+  opacity: 0.5;
+  padding: 0;
+  text-align: right;
+  margin: 0 0 20px;
+`;
+
 type Props = {};
 
 const Transactions = (props: Props) => {
-  const [items, setItems] = useState(exampleTransactions);
+  const [items, setItems] = useState<Transaction[]>(exampleTransactions);
+  const [dialog, setDialog] = useState<null | string | number>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredItems = items.filter((item) =>
@@ -265,16 +398,12 @@ const Transactions = (props: Props) => {
               </GroupSummaryWrapper>
             </GroupTitleWrapper>
             <ItemsWrapper>
-              {orderedGroups[key].map(
-                (item: {
-                  id: string | number;
-                  type: string;
-                  name: string;
-                  token: string;
-                  amount: number;
-                  usd: number;
-                }) => (
+              {orderedGroups[key].map((item: Transaction) => (
+                <>
                   <DataBox
+                    onClick={() => {
+                      setDialog(item.id);
+                    }}
                     key={item.id}
                     size="small"
                     LeftComponent={
@@ -297,8 +426,53 @@ const Transactions = (props: Props) => {
                       </ItemNumbers>
                     }
                   />
-                )
-              )}
+                  <DialogBox
+                    open={dialog === item.id}
+                    onClose={() => {
+                      setDialog(null);
+                    }}
+                  >
+                    {item.title && (
+                      <DialogTitle>
+                        {item.type !== "deposit" ? "- " : ""}${item.usd}
+                      </DialogTitle>
+                    )}
+                    <DialogSubtitleWrapper>
+                      <DialogSubtitle>{item.title}</DialogSubtitle>
+                      <DialogAddress>{item.name}</DialogAddress>
+                    </DialogSubtitleWrapper>
+                    {item.details && (
+                      <DialogDetails>{item.details}</DialogDetails>
+                    )}
+                    {item.comment && (
+                      <DialogComment>
+                        <DialogCommentIcon
+                          src={ICONS.COMMENT}
+                          alt="comment icon"
+                        />
+                        <DialogCommentText>{item.comment}</DialogCommentText>
+                      </DialogComment>
+                    )}
+                    <DialogDateWrapper>
+                      <DialogDateLabel>Date</DialogDateLabel>
+                      <DialogDate>
+                        {moment(item.timestamp).format("DD MMMM YYYY")}
+                      </DialogDate>
+                    </DialogDateWrapper>
+                    <DialogAmount>
+                      {item.type !== "deposit" ? "- " : ""}
+                      {item.amount} {item.token}
+                    </DialogAmount>
+                    <Button
+                      variant="outlined"
+                      value="Close"
+                      onClick={() => {
+                        setDialog(null);
+                      }}
+                    />
+                  </DialogBox>
+                </>
+              ))}
             </ItemsWrapper>
           </div>
         ))}

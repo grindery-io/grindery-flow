@@ -29,7 +29,7 @@ const DataBox = (props: Props) => {
     BottomLeftComponent,
     BottomRightComponent,
     style = {},
-    onClick = () => {},
+    onClick,
   } = props;
 
   return (
@@ -39,6 +39,7 @@ const DataBox = (props: Props) => {
         border: "1px solid #D3DEEC",
         borderRadius: size === "small" ? "5px" : "10px",
         padding: size === "small" ? "10px" : "15px",
+        cursor: !onClick ? "default" : "pointer",
       }}
       onClick={(event: React.MouseEvent<HTMLElement>) => {
         onClick?.(event);
