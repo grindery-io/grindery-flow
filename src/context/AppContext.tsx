@@ -37,6 +37,7 @@ type ContextProps = {
   activeStep: number;
   setActiveStep: (a: any) => void;
   activeTab: number;
+  setActiveTab: (a: number) => void;
   changeTab: (a: string) => void;
   testWorkflowAction: (a: number) => { [key: string]: any } | void;
   disconnect: any;
@@ -393,6 +394,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         changeTab,
         disconnect,
         resetWorkflow,
+        setActiveTab,
       }}
     >
       {children}

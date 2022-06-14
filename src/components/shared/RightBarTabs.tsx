@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-//import { TabComponent } from "grindery-ui";
+import { TabComponent } from "grindery-ui";
 import { RIGHTBAR_TABS } from "../../constants";
 import { useAppContext } from "../../context/AppContext";
 
@@ -14,6 +14,40 @@ const Wrapper = styled.div`
   box-shadow: inset 0px -2px 20px rgba(0, 0, 0, 0.08);
   min-height: calc(100vh - 61px);
   height: 100%;
+
+  & .MuiTabs-root {
+    background: transparent !important;
+  }
+
+  & .MuiTab-root {
+    max-width: 60px !important;
+    width: 60px !important;
+    min-width: 60px !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    text-align: center !important;
+    z-index: 2;
+  }
+
+  & .MuiTabs-indicator {
+    right: auto !important;
+    left: 0 !important;
+    width: 60px;
+    background: #ffffff !important;
+    z-index: 1;
+
+    &:after {
+      content: "";
+      display: block;
+      posotion: absolute;
+      left: 0;
+      top: 0;
+      width: 3px;
+      background: #0b0d17;
+      border-radius: 3px;
+      height: 100%;
+    }
+  }
 `;
 
 const TabButton = styled.div`
@@ -29,47 +63,24 @@ const TabButton = styled.div`
 type Props = {};
 
 const RightBarTabs = (props: Props) => {
-  const { user, changeTab, activeTab } = useAppContext();
-
-  const handleTabClick = (name: string) => {
-    changeTab?.(name);
-  };
+  const { activeTab, setActiveTab } = useAppContext();
 
   return (
     <Wrapper>
-      {/*<TabComponent
-        value={activeTab}
-        onChange={(e: any) => {
-          console.log("tabs e", e);
+      <TabComponent
+        value={activeTab || 0}
+        onChange={(index: number) => {
+          setActiveTab?.(index);
         }}
-        options={RIGHTBAR_TABS.map((tab) => (<img src={tab.icon} alt={tab.name} />))}
+        options={RIGHTBAR_TABS.map((tab) => (
+          <img src={tab.icon} alt={tab.name} />
+        ))}
         orientation="vertical"
         activeIndicatorColor="#0B0D17"
-      />*/}
-      {RIGHTBAR_TABS.map((tab, i) => (
-        <TabButton
-          key={tab.name}
-          onClick={() => {
-            if (user) {
-              handleTabClick(tab.name);
-            }
-          }}
-          style={{
-            background:
-              activeTab === tab.id && user ? "#ffffff" : "transparent",
-          }}
-        >
-          {tab.icon ? (
-            <img
-              style={{ opacity: activeTab === tab.id && user ? 1 : 0.2 }}
-              src={tab.icon}
-              alt={tab.name}
-            />
-          ) : (
-            i
-          )}
-        </TabButton>
-      ))}
+        activeColor="#000000"
+        type="icon"
+        tabColor="#000000"
+      />
     </Wrapper>
   );
 };
