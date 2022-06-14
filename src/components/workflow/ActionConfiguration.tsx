@@ -33,10 +33,11 @@ const TitleIcon = styled.img`
 type Props = {
   index: number;
   step: number;
+  closeConstructor: () => void;
 };
 
 const ActionConfiguration = (props: Props) => {
-  const { index, step } = props;
+  const { index, step, closeConstructor } = props;
   const {
     action,
     trigger,
@@ -57,10 +58,17 @@ const ActionConfiguration = (props: Props) => {
 
   const options = getOutputOptions(trigger.operation, triggerConnector);
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const testEngine = urlParams.get("testEngine");
+
   const handleTestClick = async () => {
     if (testWorkflowAction) {
       testWorkflowAction(index);
     }
+  };
+
+  const handleSaveClick = async () => {
+    closeConstructor();
   };
 
   if (!activeStep || step !== activeStep) {
@@ -136,11 +144,19 @@ const ActionConfiguration = (props: Props) => {
         ))}
         {actionIsConfigured && (
           <div style={{ marginTop: 40 }}>
-            <Button
-              onClick={handleTestClick}
-              value="Test & Continue"
-              color="primary"
-            />
+            {testEngine === "1" ? (
+              <Button
+                onClick={handleTestClick}
+                value="Test & Continue"
+                color="primary"
+              />
+            ) : (
+              <Button
+                onClick={handleSaveClick}
+                value="Save & Close"
+                color="primary"
+              />
+            )}
           </div>
         )}
       </div>

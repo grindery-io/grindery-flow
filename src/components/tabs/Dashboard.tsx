@@ -28,17 +28,13 @@ const Icon = styled.img`
   width: 20px;
 `;
 
-const NotificationCount = styled.div`
-  width: 24px;
-  height: 24px;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: nowrap;
-  color: #ffffff;
-  background: #ff5858;
+const NotificationText = styled.p`
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 150%;
+  color: #8c30f5;
+  padding: 0;
+  margin: 0;
 `;
 
 const CountsWrapper = styled.div`
@@ -68,29 +64,13 @@ const Dashboard = (props: Props) => {
       <DataBox
         size="large"
         LeftComponent={
-          <Title
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              changeTab?.("NOTIFICATIONS");
-            }}
-          >
+          <Title>
             <Icon src={ICONS.BELL} alt="notifications icon" />
             <Text value="Notifications" variant="body2" />
           </Title>
         }
-        RightComponent={
-          <NotificationCount
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              changeTab?.("NOTIFICATIONS");
-            }}
-          >
-            <Text value="3" variant="body2" />
-          </NotificationCount>
+        BottomRightComponent={
+          <NotificationText>Wallet balance low!</NotificationText>
         }
       />
       <DataBox
@@ -188,9 +168,9 @@ const Dashboard = (props: Props) => {
               }}
               style={{ cursor: "pointer" }}
             >
-              <Text value="1" variant="h3" />
+              <Text value="2" variant="h3" />
               <div style={{ marginBottom: 2 }}>
-                <Text value="Error" variant="caption" />
+                <Text value="Errors" variant="caption" />
               </div>
             </CountWrapper>
             <CountWrapper

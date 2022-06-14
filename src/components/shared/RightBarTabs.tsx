@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+//import { TabComponent } from "grindery-ui";
 import { RIGHTBAR_TABS } from "../../constants";
 import { useAppContext } from "../../context/AppContext";
 
@@ -36,6 +37,15 @@ const RightBarTabs = (props: Props) => {
 
   return (
     <Wrapper>
+      {/*<TabComponent
+        value={activeTab}
+        onChange={(e: any) => {
+          console.log("tabs e", e);
+        }}
+        options={RIGHTBAR_TABS.map((tab) => (<img src={tab.icon} alt={tab.name} />))}
+        orientation="vertical"
+        activeIndicatorColor="#0B0D17"
+      />*/}
       {RIGHTBAR_TABS.map((tab, i) => (
         <TabButton
           key={tab.name}

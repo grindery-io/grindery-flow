@@ -61,13 +61,11 @@ export const formatWorkflow = (workflow: Workflow) => {
     ...workflow,
     trigger: {
       ...workflow.trigger,
-      connector: _.camelCase(workflow.trigger.connector),
       input: replaceSystemTokens(workflow.trigger.input),
     },
     actions: [
       ...workflow.actions.map((action) => ({
         ...action,
-        connector: _.camelCase(action.connector),
         input: replaceSystemTokens(action.input),
       })),
     ],

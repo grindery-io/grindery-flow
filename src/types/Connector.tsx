@@ -1,4 +1,5 @@
 export type Connector = {
+  key: string;
   name: string;
   version: string;
   platformVersion: string;

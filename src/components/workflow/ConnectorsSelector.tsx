@@ -26,8 +26,8 @@ const ConnectorsSelector = (props: Props) => {
   } = useAppContext();
 
   const triggerConnectorOptions = connectorsWithTriggers?.map((connector) => ({
-    value: connector.name,
-    label: connector.name,
+    value: connector.key,
+    label: connector.key,
     icon: connector.icon,
   }));
 
@@ -38,8 +38,8 @@ const ConnectorsSelector = (props: Props) => {
   );
 
   const actionConnectorOptions = connectorsWithActions?.map((connector) => ({
-    value: connector.name,
-    label: connector.name,
+    value: connector.key,
+    label: connector.key,
     icon: connector.icon,
   }));
 

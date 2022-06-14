@@ -24,9 +24,8 @@ margin: 0 0 15px;
 
 const Img = styled.img`
   margin: 0 0 15px;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
+  width: 335px;
+  height: 322px;
 `;
 
 const Desc = styled.p`
