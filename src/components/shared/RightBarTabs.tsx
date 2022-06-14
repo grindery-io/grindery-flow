@@ -28,7 +28,7 @@ const TabButton = styled.div`
 type Props = {};
 
 const RightBarTabs = (props: Props) => {
-  const { changeTab, activeTab } = useAppContext();
+  const { user, changeTab, activeTab } = useAppContext();
 
   const handleTabClick = (name: string) => {
     changeTab?.(name);
@@ -40,15 +40,18 @@ const RightBarTabs = (props: Props) => {
         <TabButton
           key={tab.name}
           onClick={() => {
-            handleTabClick(tab.name);
+            if (user) {
+              handleTabClick(tab.name);
+            }
           }}
           style={{
-            background: activeTab === i ? "#ffffff" : "transparent",
+            background:
+              activeTab === tab.id && user ? "#ffffff" : "transparent",
           }}
         >
           {tab.icon ? (
             <img
-              style={{ opacity: activeTab === i ? 1 : 0.2 }}
+              style={{ opacity: activeTab === tab.id && user ? 1 : 0.2 }}
               src={tab.icon}
               alt={tab.name}
             />

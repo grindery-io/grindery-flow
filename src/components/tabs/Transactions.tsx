@@ -5,6 +5,7 @@ import moment from "moment";
 import { Button, DialogBox, InputBox } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import { ICONS } from "../../constants";
+import transactions from "../../samples/transactions";
 
 type Transaction = {
   id: string | number;
@@ -18,65 +19,6 @@ type Transaction = {
   details?: string;
   comment?: string;
 };
-
-const exampleTransactions = [
-  {
-    id: 1,
-    type: "deposit",
-    name: "0xB8c77...bDD52",
-    amount: 0.036,
-    token: "ETH",
-    usd: 100,
-    timestamp: 1628696303000,
-    title: "Inboundlabs",
-    details:
-      "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
-    comment:
-      "This is a comment the sender. in this case Inboundlabs, has made.",
-  },
-  {
-    id: 2,
-    type: "gas",
-    name: "Gnosis Chain",
-    amount: 0.0072,
-    token: "ETH",
-    usd: 20,
-    timestamp: 1628609903000,
-    title: "Inboundlabs",
-    details:
-      "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
-    comment:
-      "This is a comment the sender. in this case Inboundlabs, has made.",
-  },
-  {
-    id: 3,
-    type: "service",
-    name: "Sendgrid",
-    amount: 0.0036,
-    token: "ETH",
-    usd: 10,
-    timestamp: 1628609903000,
-    title: "Inboundlabs",
-    details:
-      "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
-    comment:
-      "This is a comment the sender. in this case Inboundlabs, has made.",
-  },
-  {
-    id: 4,
-    type: "fees",
-    name: "Grindery",
-    amount: 0.0036,
-    token: "ETH",
-    usd: 10,
-    timestamp: 1628609903000,
-    title: "Inboundlabs",
-    details:
-      "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
-    comment:
-      "This is a comment the sender. in this case Inboundlabs, has made.",
-  },
-];
 
 const typeIconMapping: { [key: string]: string } = {
   deposit: ICONS.DEPOSIT,
@@ -314,7 +256,7 @@ const DialogAmount = styled.p`
 type Props = {};
 
 const Transactions = (props: Props) => {
-  const [items, setItems] = useState<Transaction[]>(exampleTransactions);
+  const [items, setItems] = useState<Transaction[]>(transactions);
   const [dialog, setDialog] = useState<null | string | number>(null);
   const [searchTerm, setSearchTerm] = useState("");
 

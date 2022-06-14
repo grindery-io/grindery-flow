@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useViewerConnection } from "@self.id/react";
 import styled from "styled-components";
-import { SelectSimple, SwitchInput } from "grindery-ui";
+import { Button, SelectSimple, SwitchInput } from "grindery-ui";
+import { useAppContext } from "../../context/AppContext";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -12,6 +14,10 @@ const Title = styled.h2`
   line-height: 110%;
   padding: 0;
   margin: 0 0 40px;
+`;
+
+const DisconnectWrapper = styled.div`
+  margin: 40px 0 0;
 `;
 
 const DevModeWrapper = styled.div`
@@ -53,6 +59,7 @@ const CurrencySettingWrapper = styled.div`
 type Props = {};
 
 const Settings = (props: Props) => {
+  const { disconnect } = useAppContext();
   const cachedDevMode = localStorage.getItem("gr_dev_mode");
   const cachedPrimaryCurrency = localStorage.getItem("gr_primary_currency");
   const [devMode, setDevMode] = useState(cachedDevMode === "true");
@@ -71,6 +78,7 @@ const Settings = (props: Props) => {
   return (
     <Wrapper>
       <Title>Settings</Title>
+
       <DevModeWrapper>
         <Label>Developer mode</Label>
         <SwitchInput value={devMode} onChange={handleDevModeChange} />
@@ -96,6 +104,15 @@ const Settings = (props: Props) => {
           </CurrencySettingWrapper>
         </>
       )}
+      <DisconnectWrapper>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            disconnect();
+          }}
+          value="Disconnect"
+        />
+      </DisconnectWrapper>
     </Wrapper>
   );
 };

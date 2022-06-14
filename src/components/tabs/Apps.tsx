@@ -2,27 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Text, InputBox } from "grindery-ui";
 import DataBox from "../shared/DataBox";
-
-const exampleApps = [
-  {
-    name: "Google Sheets",
-    icon: "/images/examples/googlesheets.svg",
-    connections: 1,
-    workflows: 2,
-  },
-  {
-    name: "Google Calendar",
-    icon: "/images/examples/googlecalendar.svg",
-    connections: 1,
-    workflows: 1,
-  },
-  {
-    name: "Google Forms",
-    icon: "/images/examples/googleforms.svg",
-    connections: 1,
-    workflows: 2,
-  },
-];
+import apps from "../../samples/apps";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -104,7 +84,7 @@ const AppCounterValue = styled.span`
 type Props = {};
 
 const Apps = (props: Props) => {
-  const [items, setItems] = useState(exampleApps);
+  const [items, setItems] = useState(apps);
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredItems = items.filter((item) =>

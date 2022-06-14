@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { RIGHTBAR_TABS } from "../../constants";
 import { useAppContext } from "../../context/AppContext";
@@ -11,6 +11,7 @@ import Apps from "../tabs/Apps";
 import History from "../tabs/History";
 import Transactions from "../tabs/Transactions";
 import Settings from "../tabs/Settings";
+import Welcome from "../tabs/Welcome";
 
 const Wrapper = styled.div`
   max-width: 435px;
@@ -41,10 +42,13 @@ const ContentWrapper = styled.div`
 type Props = {};
 
 const RightBar = (props: Props) => {
-  const { activeTab } = useAppContext();
+  const { user, activeTab } = useAppContext();
 
   const renderContent = (tab: number) => {
-    switch (RIGHTBAR_TABS[tab].name) {
+    if (!user) {
+      return <Welcome />;
+    }
+    switch (RIGHTBAR_TABS[tab].name || "") {
       case "DASHBOARD":
         return <Dashboard />;
       case "NEW_WORKFLOW":
@@ -62,7 +66,7 @@ const RightBar = (props: Props) => {
       default:
         return (
           <div style={{ textAlign: "center", padding: 30 }}>
-            {RIGHTBAR_TABS[tab]?.name || ""}
+            {RIGHTBAR_TABS[tab].name || ""}
           </div>
         );
     }

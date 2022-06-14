@@ -15,7 +15,8 @@ export const ICONS: { [key: string]: string } = {
   GAS: "/images/icons/gas.svg",
   SERVICE: "/images/icons/service.svg",
   FEES: "/images/icons/fees.svg",
-  COMMENT: "images/icons/comment.svg",
+  COMMENT: "/images/icons/comment.svg",
+  GRINDERY: "/images/icons/grindery.svg",
 };
 
 export const RIGHTBAR_TABS: { name: string; icon?: string; id: number }[] = [

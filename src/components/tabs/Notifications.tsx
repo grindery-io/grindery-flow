@@ -2,25 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Text } from "grindery-ui";
 import DataBox from "../shared/DataBox";
-import { ICONS } from "../../constants";
-
-const exampleNotifications = [
-  {
-    id: 1,
-    icon: ICONS.WALLET,
-    text: "Wallet balance low! Add funds",
-  },
-  {
-    id: 2,
-    icon: ICONS.WORKFLOWS,
-    text: "Workflow Google Sheets - Moloch DAO Test Error",
-  },
-  {
-    id: 3,
-    icon: ICONS.WORKFLOWS,
-    text: "Workflow Google Sheets - Moloch DAO Test Error",
-  },
-];
+import notifications from "../../samples/notifications";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -50,7 +32,7 @@ const Icon = styled.img`
 type Props = {};
 
 const Notifications = (props: Props) => {
-  const [items, setitems] = useState(exampleNotifications);
+  const [items, setitems] = useState(notifications);
   return (
     <Wrapper>
       {items.map((item) => (

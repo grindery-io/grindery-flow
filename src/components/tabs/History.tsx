@@ -4,79 +4,7 @@ import moment from "moment";
 import { InputBox } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import { ICONS } from "../../constants";
-
-const exampleLogs = [
-  {
-    status: "Executed",
-    apps: [
-      {
-        name: "Google Sheets",
-        icon: "/images/examples/googlesheets.svg",
-      },
-      {
-        name: "MolochDAO",
-        icon: "/images/examples/molochdao.svg",
-      },
-    ],
-    timestamp: 1654616303000,
-  },
-  {
-    status: "Executed",
-    apps: [
-      {
-        name: "Google Calendar",
-        icon: "/images/examples/googlecalendar.svg",
-      },
-      {
-        name: "MolochDAO",
-        icon: "/images/examples/molochdao.svg",
-      },
-    ],
-    timestamp: 1654616303000,
-  },
-  {
-    status: "Executed",
-    apps: [
-      {
-        name: "Google Forms",
-        icon: "/images/examples/googleforms.svg",
-      },
-      {
-        name: "MolochDAO",
-        icon: "/images/examples/molochdao.svg",
-      },
-    ],
-    timestamp: 1654616303000,
-  },
-  {
-    status: "Error",
-    apps: [
-      {
-        name: "Google Forms",
-        icon: "/images/examples/googleforms.svg",
-      },
-      {
-        name: "MolochDAO",
-        icon: "/images/examples/molochdao.svg",
-      },
-    ],
-    timestamp: 1654616303000,
-  },
-  {
-    status: "Error",
-    apps: [
-      {
-        name: "Google Forms",
-        icon: "/images/examples/googleforms.svg",
-      },
-      {
-        name: "MolochDAO",
-        icon: "/images/examples/molochdao.svg",
-      },
-    ],
-    timestamp: 1654616303000,
-  },
-];
+import logs from "../../samples/logs";
 
 const statusIconMapping: { [key: string]: string } = {
   Executed: ICONS.EXECUTED,
@@ -170,7 +98,7 @@ const ItemDate = styled.div`
 type Props = {};
 
 const History = (props: Props) => {
-  const [items, setItems] = useState(exampleLogs);
+  const [items, setItems] = useState(logs);
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredItems = items.filter(

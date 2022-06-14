@@ -1,16 +1,18 @@
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 import _ from "lodash";
+import axios from "axios";
+import { useViewerConnection } from "@self.id/react";
 import { Workflow } from "../types/Workflow";
 import { Connector, Field } from "../types/Connector";
-import gsheetConnector from "../samples/gsheet-connector.json";
-import molochXdaiConnector from "../samples/moloch-xdai-connector.json";
-import helloworldConnector from "../samples/helloworld.json";
+import gsheetConnector from "../samples/connectors/gsheet.json";
+import molochXdaiConnector from "../samples/connectors/moloch-xdai.json";
+import helloworldConnector from "../samples/connectors/helloworld.json";
 import { formatWorkflow, jsonrpcObj, replaceTokens } from "../utils";
-import axios from "axios";
 import { RIGHTBAR_TABS, WORKFLOW_ENGINE_URL } from "../constants";
+
 type ContextProps = {
-  state: any;
-  setState?: (a: any) => void;
+  user: any;
+  setUser?: (a: any) => void;
   connectors?: Connector[];
   workflow?: Workflow;
   setWorkflow: (a: any) => void;
@@ -39,6 +41,7 @@ type ContextProps = {
   activeTab: number;
   changeTab: (a: string) => void;
   testWorkflowAction: (a: number) => { [key: string]: any } | void;
+  disconnect: any;
 };
 
 type AppContextProps = {
@@ -48,13 +51,14 @@ type AppContextProps = {
 export const AppContext = createContext<Partial<ContextProps>>({});
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
-  const [state, setState] = useState({});
+  const [connection, disconnect] = useViewerConnection();
+  const [user, setUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState(1);
-  const connectors: Connector[] = [
+  const [connectors, setConnectors] = useState<Connector[]>([
     helloworldConnector,
     gsheetConnector,
     molochXdaiConnector,
-  ];
+  ]);
   const [workflow, setWorkflow] = useState<Workflow>({
     title: "New workflow",
     trigger: {
@@ -71,8 +75,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         input: {},
       },
     ],
-    creator:
-      "did:3:kjzl6cwe1jw149tlplc4bgnpn1v4uwk9rg9jkvijx0u0zmfa97t69dnqibqa2as",
+    creator: "",
   });
   const [activeStep, setActiveStep] = useState(1);
 
@@ -288,6 +291,21 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     );
   };
 
+  useEffect(() => {
+    if (connection.status === "connected") {
+      setUser(connection.selfID.id);
+      updateWorkflow({
+        creator: connection.selfID.id,
+      });
+    } else {
+      setUser(null);
+      updateWorkflow({
+        creator: "",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connection]);
+
   if (window.location.origin.includes("http://localhost")) {
     console.log("workflow", workflow);
   }
@@ -295,8 +313,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   return (
     <AppContext.Provider
       value={{
-        state,
-        setState,
+        user,
+        setUser,
         connectors,
         workflow,
         setWorkflow,
@@ -325,6 +343,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         activeTab,
         testWorkflowAction,
         changeTab,
+        disconnect,
       }}
     >
       {children}
