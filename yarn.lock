@@ -5783,10 +5783,10 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, 
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
 
-grindery-ui@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.1.4.tgz#7b43e49745f6a412bfe331e851da92f72f6c825f"
-  integrity sha512-Rl1uVmGHB35f2KplPXO8AmYux8wtRJwvb7S++5wKyXqcsgEyKwNqSGdvfYydQGhFXnuJFwmkeXMU9qamSswl6g==
+grindery-ui@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.2.0.tgz#d245f4075e6ff10d44ba2f44f9cf23b8b4015eca"
+  integrity sha512-EBruZ48fA4LnN5p3JbKq6aipi5Mj7dPp3XEfc2HvB9OGwoe+6U/+0/Ai8VOnTCjTRkYbWjt0WJeSPJyfFHsGfg==
   dependencies:
     "@emotion/react" "^11.9.0"
     "@emotion/styled" "^11.8.1"
