@@ -32,6 +32,7 @@ const ContentWrapper = styled.div`
   width: 100%;
   max-width: 375px;
   margin-top: 67px;
+  min-height: calc(100vh - 100px);
 `;
 
 const OpenButtonWrapper = styled.div`
