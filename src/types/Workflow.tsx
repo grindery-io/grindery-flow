@@ -1,8 +1,10 @@
 export type Workflow = {
+  id?: any;
   title: string;
   trigger: Operation;
   actions: Operation[];
   creator: string;
+  state?: any;
 };
 
 export type Operation = {

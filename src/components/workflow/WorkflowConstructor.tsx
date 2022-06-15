@@ -5,9 +5,7 @@ import { useAppContext } from "../../context/AppContext";
 import TriggerConfiguration from "./TriggerConfiguration";
 import WorkflowProgress from "./WorkflowProgress";
 
-type Props = {
-  setIsNew: (e: boolean) => void;
-};
+type Props = {};
 
 const WorkflowConstructor = (props: Props) => {
   const {
@@ -16,10 +14,11 @@ const WorkflowConstructor = (props: Props) => {
     triggerIsAuthenticated,
     triggerIsConfigured,
     resetWorkflow,
+    setWorkflowOpened,
   } = useAppContext();
 
   const closeConstructor = () => {
-    props.setIsNew(false);
+    setWorkflowOpened?.(false);
     resetWorkflow?.();
   };
 

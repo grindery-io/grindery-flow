@@ -15,3 +15,11 @@ code {
 a {
   color: inherit;
 }
+
+.MuiTextField-root {
+  background: none !important;
+}
+
+.MuiSwitch-thumb {
+  margin-top: 1px;
+}

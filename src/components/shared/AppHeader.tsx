@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
+import { IconButton } from "grindery-ui";
 import { useAppContext } from "../../context/AppContext";
 import Logo from "./Logo";
+import { ICONS } from "../../constants";
 
 const Wrapper = styled.div`
   border-bottom: 1px solid #dcdcdc;
@@ -12,6 +14,10 @@ const Wrapper = styled.div`
   flex-direction: row;
   flex-wrap: nowrap;
   gap: 10px;
+  position: fixed;
+  background: #ffffff;
+  width: 435px;
+  box-sizing: border-box;
 `;
 
 const UserWrapper = styled.div`
@@ -41,10 +47,22 @@ const UserId = styled.p`
   padding: 0;
 `;
 
+const CloseButtonWrapper = styled.div`
+  margin-left: auto;
+  & .MuiIconButton-root img {
+    width: 16px !important;
+    height: 16px !important;
+  }
+`;
+
 type Props = {};
 
 const AppHeader = (props: Props) => {
-  const { user } = useAppContext();
+  const { user, setAppOpened } = useAppContext();
+
+  const handleClose = () => {
+    setAppOpened?.(false);
+  };
 
   return (
     <Wrapper>
@@ -57,6 +75,9 @@ const AppHeader = (props: Props) => {
           </UserId>
         </UserWrapper>
       )}
+      <CloseButtonWrapper>
+        <IconButton icon={ICONS.CLOSE} onClick={handleClose} color="" />
+      </CloseButtonWrapper>
     </Wrapper>
   );
 };

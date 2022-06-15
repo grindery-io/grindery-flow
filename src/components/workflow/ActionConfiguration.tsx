@@ -46,6 +46,9 @@ const ActionConfiguration = (props: Props) => {
     activeStep,
     triggerConnector,
     testWorkflowAction,
+    setWorkflows,
+    workflow,
+    workflows,
   } = useAppContext();
 
   const inputFields =
@@ -68,6 +71,12 @@ const ActionConfiguration = (props: Props) => {
   };
 
   const handleSaveClick = async () => {
+    if (workflows && workflow) {
+      setWorkflows?.([
+        ...workflows,
+        { ...workflow, id: new Date(), state: "on" },
+      ]);
+    }
     closeConstructor();
   };
 

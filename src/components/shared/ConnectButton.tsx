@@ -1,8 +1,17 @@
 import React from "react";
+import styled from "styled-components";
 import { useViewerConnection } from "@self.id/react";
 import { EthereumAuthProvider } from "@self.id/web";
 import { Button } from "grindery-ui";
 import { ICONS } from "../../constants";
+
+const ButtonWrapper = styled.div`
+  & .MuiButton-startIcon > img {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+`;
 
 declare global {
   interface Window {
@@ -24,14 +33,16 @@ const ConnectButton = (props: Props) => {
   const [connection, connect] = useViewerConnection();
 
   return connection.status === "connected" ? null : "ethereum" in window ? (
-    <Button
-      disabled={connection.status === "connecting"}
-      onClick={() => {
-        createAuthProvider().then(connect);
-      }}
-      //icon={ICONS.GRINDERY}
-      value="Connect"
-    />
+    <ButtonWrapper>
+      <Button
+        disabled={connection.status === "connecting"}
+        onClick={() => {
+          createAuthProvider().then(connect);
+        }}
+        icon={ICONS.GRINDERY}
+        value="Sign in"
+      />
+    </ButtonWrapper>
   ) : (
     <p style={{ textAlign: "center" }}>
       An injected Ethereum provider such as{" "}

@@ -15,9 +15,17 @@ export const ICONS: { [key: string]: string } = {
   GAS: "/images/icons/gas.svg",
   SERVICE: "/images/icons/service.svg",
   FEES: "/images/icons/fees.svg",
+  WITHDRAW: "/images/icons/withdraw.svg",
   COMMENT: "/images/icons/comment.svg",
   GRINDERY: "/images/icons/grindery.svg",
   PLUS: "/images/icons/plus.svg",
+  PLUS_SMALL: "/images/icons/plus-small.svg",
+  CREATE_WITHDRAW: "/images/icons/create-withdraw.svg",
+  CREATE_DEPOSIT: "/images/icons/create-deposit.svg",
+  CREATE_ALERT: "/images/icons/create-alert.svg",
+  ARROW_RIGHT: "/images/icons/arrow-right.svg",
+  CLOSE: "/images/icons/close.svg",
+  PLUS_WHITE: "/images/icons/plus-white.svg",
 };
 
 export const RIGHTBAR_TABS: { name: string; icon?: string; id: number }[] = [
@@ -28,7 +36,7 @@ export const RIGHTBAR_TABS: { name: string; icon?: string; id: number }[] = [
   },
   {
     id: 1,
-    name: "NEW_WORKFLOW",
+    name: "WORKFLOWS",
     icon: ICONS.WORKFLOWS,
   },
   {

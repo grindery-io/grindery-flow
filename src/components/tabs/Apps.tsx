@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Text, InputBox } from "grindery-ui";
+import { IconButton, Text, InputBox } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import apps from "../../samples/apps";
+import { ICONS } from "../../constants";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -11,7 +12,7 @@ const Wrapper = styled.div`
   align-items: stretch;
   justify-content: flex-start;
   flex-wrap: nowrap;
-  gap: 0px;
+  gap: 20px;
 `;
 
 const SearchWrapper = styled.div`
@@ -25,6 +26,13 @@ const SearchWrapper = styled.div`
 
 const SearchInputWrapper = styled.div`
   flex: 1;
+
+  & .MuiBox-root {
+    margin-bottom: 0;
+  }
+  & .MuiOutlinedInput-root {
+    margin-top: 0;
+  }
 `;
 
 const AppsWrapper = styled.div`
@@ -102,8 +110,11 @@ const Apps = (props: Props) => {
             placeholder={"(d)Apps"}
             value={searchTerm}
             onChange={handleSearchChange}
+            type="search"
+            icon="search"
           />
         </SearchInputWrapper>
+        <IconButton icon={ICONS.PLUS} color="" />
       </SearchWrapper>
       <AppsWrapper>
         {filteredItems.map((item) => (
@@ -120,19 +131,6 @@ const Apps = (props: Props) => {
             }
             RightComponent={
               <AppCountersWrapper>
-                <AppCounter>
-                  <Text
-                    variant="caption"
-                    value={
-                      <AppCounterValue>
-                        {item.connections.toString()}
-                      </AppCounterValue>
-                    }
-                  />
-                  <span style={{ color: "#758796", height: "17px" }}>
-                    <Text variant="caption" value="Connection" />
-                  </span>
-                </AppCounter>
                 <AppCounter>
                   <Text
                     variant="caption"

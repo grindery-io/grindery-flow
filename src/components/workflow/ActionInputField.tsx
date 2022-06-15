@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import { AutoCompleteInput } from "grindery-ui";
 import { useAppContext } from "../../context/AppContext";
 import { Field } from "../../types/Connector";
+
+const InputWrapper = styled.div`
+  width: 100%;
+  margin-top: 20px;
+  & > .MuiBox-root > .MuiBox-root {
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+`;
 
 type Props = {
   inputField: Field;
@@ -46,24 +57,19 @@ const ActionInputField = ({ inputField, options, index }: Props) => {
   return (
     <React.Fragment key={inputField.key}>
       {!!inputField && (
-        <div
-          style={{
-            width: "100%",
-            marginTop: 20,
-          }}
-        >
+        <InputWrapper>
           <AutoCompleteInput
             label={inputField.label || ""}
             type="searchLabel"
             variant="full"
             placeholder={inputField.placeholder || ""}
             required={!!inputField.required}
-            texthelper={inputField.helpText || ""}
+            tooltip={inputField.helpText || false}
             options={options}
             onChange={handleFieldChange}
             value={val}
           />
-        </div>
+        </InputWrapper>
       )}
     </React.Fragment>
   );

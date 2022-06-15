@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
-import { InputBox } from "grindery-ui";
+import { InputBox, TabComponent } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import { ICONS } from "../../constants";
 import logs from "../../samples/logs";
@@ -11,6 +11,16 @@ const statusIconMapping: { [key: string]: string } = {
   Error: ICONS.ERROR,
 };
 
+const TabsWrapper = styled.div`
+  & .MuiTab-root {
+    width: calc(100% / 3);
+    text-transform: initial;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 150%;
+  }
+`;
+
 const Wrapper = styled.div`
   padding: 24px 20px;
   display: flex;
@@ -18,7 +28,7 @@ const Wrapper = styled.div`
   align-items: stretch;
   justify-content: flex-start;
   flex-wrap: nowrap;
-  gap: 0px;
+  gap: 20px;
 `;
 
 const SearchWrapper = styled.div`
@@ -32,6 +42,13 @@ const SearchWrapper = styled.div`
 
 const SearchInputWrapper = styled.div`
   flex: 1;
+
+  & .MuiBox-root {
+    margin-bottom: 0;
+  }
+  & .MuiOutlinedInput-root {
+    margin-top: 0;
+  }
 `;
 
 const ItemsWrapper = styled.div`
@@ -100,61 +117,87 @@ type Props = {};
 const History = (props: Props) => {
   const [items, setItems] = useState(logs);
   const [searchTerm, setSearchTerm] = useState("");
+  const [tab, setTab] = useState(0);
 
-  const filteredItems = items.filter(
-    (item) =>
-      item.apps.filter((app) =>
-        app.name.toLowerCase().includes(searchTerm.toLowerCase())
-      ).length > 0
-  );
+  const filteredItems = items
+    .filter((item) => {
+      if (tab === 0) return true;
+      if (tab === 1 && item.status === "Executed") return true;
+      if (tab === 2 && item.status === "Error") return true;
+      return false;
+    })
+    .filter(
+      (item) =>
+        item.apps.filter((app) =>
+          app.name.toLowerCase().includes(searchTerm.toLowerCase())
+        ).length > 0
+    );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
   return (
-    <Wrapper>
-      <SearchWrapper>
-        <SearchInputWrapper>
-          <InputBox
-            placeholder={"History"}
-            value={searchTerm}
-            onChange={handleSearchChange}
-            size="small"
-          />
-        </SearchInputWrapper>
-      </SearchWrapper>
-      <ItemsWrapper>
-        {filteredItems.map((item, i) => (
-          <DataBox
-            key={item.timestamp + i}
-            size="small"
-            LeftComponent={
-              <ItemTitleWrapper>
-                <ItemIcon
-                  src={statusIconMapping[item.status]}
-                  alt={item.status}
-                />
-                <Title>{item.status}</Title>
-              </ItemTitleWrapper>
-            }
-            CenterComponent={
-              <ItemAppsWrapper>
-                {item.apps.map((app, i2) => (
-                  <ItemAppWrapper key={item.timestamp + i + i2}>
-                    <ItemAppIcon src={app.icon} alt={app.name} />
-                  </ItemAppWrapper>
-                ))}
-              </ItemAppsWrapper>
-            }
-            RightComponent={
-              <ItemDate>
-                {moment(item.timestamp).format("MMM DD, YYYY HH:mm:ss")}
-              </ItemDate>
-            }
-          />
-        ))}
-      </ItemsWrapper>
-    </Wrapper>
+    <>
+      <TabsWrapper>
+        <TabComponent
+          value={tab}
+          onChange={(index: number) => {
+            setTab(index);
+          }}
+          options={["All", "Success", "Error"]}
+          orientation="horizontal"
+          activeIndicatorColor="#A963EF"
+          activeColor="#8C30F5"
+          type="text"
+          tabColor=""
+        />
+      </TabsWrapper>
+      <Wrapper>
+        <SearchWrapper>
+          <SearchInputWrapper>
+            <InputBox
+              placeholder={"History"}
+              value={searchTerm}
+              onChange={handleSearchChange}
+              size="small"
+              type="search"
+              icon="search"
+            />
+          </SearchInputWrapper>
+        </SearchWrapper>
+        <ItemsWrapper>
+          {filteredItems.map((item, i) => (
+            <DataBox
+              key={item.timestamp + i}
+              size="small"
+              LeftComponent={
+                <ItemTitleWrapper>
+                  <ItemIcon
+                    src={statusIconMapping[item.status]}
+                    alt={item.status}
+                  />
+                  <Title>{item.status}</Title>
+                </ItemTitleWrapper>
+              }
+              CenterComponent={
+                <ItemAppsWrapper>
+                  {item.apps.map((app, i2) => (
+                    <ItemAppWrapper key={item.timestamp + i + i2}>
+                      <ItemAppIcon src={app.icon} alt={app.name} />
+                    </ItemAppWrapper>
+                  ))}
+                </ItemAppsWrapper>
+              }
+              RightComponent={
+                <ItemDate>
+                  {moment(item.timestamp).format("MMM DD, YYYY HH:mm:ss")}
+                </ItemDate>
+              }
+            />
+          ))}
+        </ItemsWrapper>
+      </Wrapper>
+    </>
   );
 };
 

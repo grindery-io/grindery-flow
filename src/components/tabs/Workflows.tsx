@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { InputBox, SwitchInput } from "grindery-ui";
+import { IconButton, InputBox, SwitchInput } from "grindery-ui";
 import WorkflowConstructor from "../workflow/WorkflowConstructor";
-import workflows from "../../samples/workflows";
 import DataBox from "../shared/DataBox";
 import { useAppContext } from "../../context/AppContext";
 import { ICONS } from "../../constants";
+import { Workflow } from "../../types/Workflow";
 
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
   padding: 24px 20px;
+  gap: 20px;
 `;
 
 const SearchWrapper = styled.div`
@@ -22,6 +28,13 @@ const SearchWrapper = styled.div`
 
 const SearchInputWrapper = styled.div`
   flex: 1;
+
+  & .MuiBox-root {
+    margin-bottom: 0;
+  }
+  & .MuiOutlinedInput-root {
+    margin-top: 0;
+  }
 `;
 
 const ItemsWrapper = styled.div`
@@ -80,21 +93,27 @@ const ItemActionsWrapper = styled.div`
   gap: 10px;
 `;
 
-const IconButton = styled.div`
-  padding: 4px;
-  cursor: pointer;
-  & img {
-    display: block;
-  }
+const Truncate = styled.span`
+  display: inline-block;
+  max-width: 150px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  line-height: 1;
 `;
 
 type Props = {};
 
 const Workflows = (props: Props) => {
-  const [isNew, setIsNew] = useState(false);
-  const [items, setItems] = useState(workflows);
+  const {
+    workflows,
+    setWorkflows,
+    workflowOpened,
+    connectors,
+    setWorkflowOpened,
+  } = useAppContext();
+  const items = workflows || [];
   const [searchTerm, setSearchTerm] = useState("");
-  const { connectors } = useAppContext();
 
   const filteredItems = searchTerm
     ? items.filter(
@@ -108,7 +127,71 @@ const Workflows = (props: Props) => {
     setSearchTerm(e.target.value);
   };
 
-  return !isNew ? (
+  const renderWorkflow = (item: Workflow) => {
+    const triggerIcon =
+      connectors?.find((t) => t.key === item.trigger.connector)?.icon || null;
+
+    const actionsIcons = item.actions
+      .map(
+        (action) => connectors?.find((a) => a.key === action.connector)?.icon
+      )
+      .filter((a) => a);
+
+    return (
+      <DataBox
+        key={item.id}
+        size="small"
+        LeftComponent={
+          <ItemTitleWrapper>
+            <ItemAppsWrapper>
+              {triggerIcon && (
+                <ItemAppWrapper>
+                  <ItemAppIcon src={triggerIcon} alt="trigger app icon" />
+                </ItemAppWrapper>
+              )}
+
+              {actionsIcons.length > 0 &&
+                actionsIcons.map((icon: any, i2: number) => (
+                  <ItemAppWrapper key={item.id + i2}>
+                    <ItemAppIcon src={icon} alt="action app icon" />
+                  </ItemAppWrapper>
+                ))}
+            </ItemAppsWrapper>
+            <Title>
+              <Truncate>
+                {item.trigger.input[Object.keys(item.trigger.input)[0]]}
+              </Truncate>
+              <br />
+              <Truncate>
+                {item.actions[0].input[Object.keys(item.actions[0].input)[0]]}
+              </Truncate>
+            </Title>
+          </ItemTitleWrapper>
+        }
+        RightComponent={
+          <ItemActionsWrapper>
+            <SwitchInput
+              value={item.state === "on"}
+              onChange={() => {
+                setWorkflows?.([
+                  ...items.map((itm) =>
+                    itm.id === item.id
+                      ? {
+                          ...itm,
+                          state: item.state === "on" ? "off" : "on",
+                        }
+                      : itm
+                  ),
+                ]);
+              }}
+            />
+          </ItemActionsWrapper>
+        }
+      />
+    );
+  };
+
+  return !workflowOpened ? (
     <Wrapper>
       <SearchWrapper>
         <SearchInputWrapper>
@@ -117,71 +200,22 @@ const Workflows = (props: Props) => {
             value={searchTerm}
             onChange={handleSearchChange}
             size="small"
+            icon="search"
+            type="search"
           />
         </SearchInputWrapper>
         <IconButton
+          color=""
           onClick={() => {
-            setIsNew(true);
+            setWorkflowOpened?.(true);
           }}
-        >
-          <img src={ICONS.PLUS} alt="add workflow" />
-        </IconButton>
+          icon={ICONS.PLUS}
+        />
       </SearchWrapper>
-      <ItemsWrapper>
-        {filteredItems.map((item, i) => (
-          <DataBox
-            key={item.id}
-            size="small"
-            LeftComponent={
-              <ItemTitleWrapper>
-                <ItemAppsWrapper>
-                  <ItemAppWrapper>
-                    <ItemAppIcon
-                      src={
-                        connectors?.find(
-                          (c) => c.key === item.trigger.connector
-                        )?.icon
-                      }
-                      alt="app icon"
-                    />
-                  </ItemAppWrapper>
-                  {item.actions.map((action, i2) => (
-                    <ItemAppWrapper key={item.id + action.connector + i2}>
-                      <ItemAppIcon
-                        src={
-                          connectors?.find((c) => c.key === action.connector)
-                            ?.icon
-                        }
-                        alt="app icon"
-                      />
-                    </ItemAppWrapper>
-                  ))}
-                </ItemAppsWrapper>
-                <Title>{item.title}</Title>
-              </ItemTitleWrapper>
-            }
-            RightComponent={
-              <ItemActionsWrapper>
-                <SwitchInput
-                  value={item.enabled}
-                  onChange={() => {
-                    setItems([
-                      ...items.map((itm) =>
-                        itm.id === item.id
-                          ? { ...itm, enabled: item.enabled ? false : true }
-                          : itm
-                      ),
-                    ]);
-                  }}
-                />
-              </ItemActionsWrapper>
-            }
-          />
-        ))}
-      </ItemsWrapper>
+      <ItemsWrapper>{filteredItems.map(renderWorkflow)}</ItemsWrapper>
     </Wrapper>
   ) : (
-    <WorkflowConstructor setIsNew={setIsNew} />
+    <WorkflowConstructor />
   );
 };
 

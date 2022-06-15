@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import _ from "lodash";
 import styled from "styled-components";
 import moment from "moment";
-import { Button, DialogBox, InputBox } from "grindery-ui";
+import { Button, DialogBox, InputBox, TabComponent } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import { ICONS } from "../../constants";
 import transactions from "../../samples/transactions";
@@ -15,7 +15,6 @@ type Transaction = {
   token: string;
   usd: number;
   timestamp: number;
-  title?: string;
   details?: string;
   comment?: string;
 };
@@ -23,9 +22,19 @@ type Transaction = {
 const typeIconMapping: { [key: string]: string } = {
   deposit: ICONS.DEPOSIT,
   gas: ICONS.GAS,
-  service: ICONS.SERVICE,
+  services: ICONS.SERVICE,
   fees: ICONS.FEES,
+  withdraw: ICONS.WITHDRAW,
 };
+
+const TabsWrapper = styled.div`
+  & .MuiTab-root {
+    text-transform: initial;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 150%;
+  }
+`;
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -34,7 +43,7 @@ const Wrapper = styled.div`
   align-items: stretch;
   justify-content: flex-start;
   flex-wrap: nowrap;
-  gap: 0px;
+  gap: 20px;
 `;
 
 const SearchWrapper = styled.div`
@@ -48,6 +57,13 @@ const SearchWrapper = styled.div`
 
 const SearchInputWrapper = styled.div`
   flex: 1;
+
+  & .MuiBox-root {
+    margin-bottom: 0;
+  }
+  & .MuiOutlinedInput-root {
+    margin-top: 0;
+  }
 `;
 
 const GroupsWrapper = styled.div`
@@ -127,10 +143,17 @@ const ItemIcon = styled.img`
   display: block;
 `;
 
-const Title = styled.span`
+const ItemTitle = styled.div`
   font-weight: 400;
   font-size: 14px;
   line-height: 150%;
+`;
+
+const ItemSubtitle = styled.div`
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 150%;
+  color: #898989;
 `;
 
 const ItemNumbers = styled.div`
@@ -259,10 +282,21 @@ const Transactions = (props: Props) => {
   const [items, setItems] = useState<Transaction[]>(transactions);
   const [dialog, setDialog] = useState<null | string | number>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [tab, setTab] = useState(0);
 
-  const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems = items
+    .filter((item) => {
+      if (tab === 0) return true;
+      if (tab === 1 && item.type === "deposit") return true;
+      if (tab === 2 && item.type === "gas") return true;
+      if (tab === 3 && item.type === "fees") return true;
+      if (tab === 4 && item.type === "services") return true;
+      if (tab === 5 && item.type === "withdraw") return true;
+      return false;
+    })
+    .filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   // convert real timestamps to day timestamps
   const itemsWithDates = filteredItems.map((item) => ({
@@ -288,138 +322,158 @@ const Transactions = (props: Props) => {
     setSearchTerm(e.target.value);
   };
 
-  return (
-    <Wrapper>
-      <SearchWrapper>
-        <SearchInputWrapper>
-          <InputBox
-            placeholder={"Transactions"}
-            value={searchTerm}
-            onChange={handleSearchChange}
-            size="small"
+  const renderItem = (item: Transaction) => {
+    const typeName =
+      item.type === "deposit"
+        ? "Funding"
+        : item.type === "withdraw"
+        ? "Withdrawal"
+        : item.type.charAt(0).toUpperCase() + item.type.slice(1);
+
+    return (
+      <>
+        <DataBox
+          onClick={() => {
+            setDialog(item.id);
+          }}
+          key={item.id}
+          size="small"
+          LeftComponent={
+            <ItemTitleWrapper>
+              <ItemIcon src={typeIconMapping[item.type]} alt={item.type} />
+              <div>
+                <ItemTitle>{item.name}</ItemTitle>
+                <ItemSubtitle>{typeName}</ItemSubtitle>
+              </div>
+            </ItemTitleWrapper>
+          }
+          RightComponent={
+            <ItemNumbers>
+              <ItemTokens>
+                {item.amount} {item.token}
+              </ItemTokens>
+              <ItemUSD>
+                {item.type !== "deposit" ? "- " : ""}${item.usd}
+              </ItemUSD>
+            </ItemNumbers>
+          }
+        />
+        <DialogBox
+          open={dialog === item.id}
+          onClose={() => {
+            setDialog(null);
+          }}
+          maxWidth="375px"
+        >
+          <DialogTitle>
+            {item.type !== "deposit" ? "- " : ""}${item.usd}
+          </DialogTitle>
+          <DialogSubtitleWrapper>
+            <DialogSubtitle>{item.name}</DialogSubtitle>
+            <DialogAddress>{typeName}</DialogAddress>
+          </DialogSubtitleWrapper>
+          {item.details && <DialogDetails>{item.details}</DialogDetails>}
+          {item.comment && (
+            <DialogComment>
+              <DialogCommentIcon src={ICONS.COMMENT} alt="comment icon" />
+              <DialogCommentText>{item.comment}</DialogCommentText>
+            </DialogComment>
+          )}
+          <DialogDateWrapper>
+            <DialogDateLabel>Date</DialogDateLabel>
+            <DialogDate>
+              {moment(item.timestamp).format("DD MMMM YYYY")}
+            </DialogDate>
+          </DialogDateWrapper>
+          <DialogAmount>
+            {item.type !== "deposit" ? "- " : ""}
+            {item.amount} {item.token}
+          </DialogAmount>
+          <Button
+            variant="outlined"
+            value="Close"
+            onClick={() => {
+              setDialog(null);
+            }}
           />
-        </SearchInputWrapper>
-      </SearchWrapper>
-      <GroupsWrapper>
-        {Object.keys(orderedGroups).map((key) => (
-          <div>
-            <GroupTitleWrapper>
-              <GroupTitle>
-                {moment(parseInt(key)).format("DD MMMM YYYY")}
-              </GroupTitle>
-              <GroupSummaryWrapper>
-                <GroupSummaryUsd>
-                  {orderedGroups[key]
-                    .map((item: { usd: number; type: string }) =>
-                      item.type !== "deposit" ? item.usd * -1 : item.usd
-                    )
-                    .reduce((acc: number, val: number) => acc + val, 0) < 0
-                    ? "- "
-                    : ""}
-                  $
-                  {orderedGroups[key]
-                    .map((item: { usd: number }) => item.usd)
-                    .reduce((acc: number, val: number) => acc + val, 0)}
-                </GroupSummaryUsd>
-                <GroupSummarySeparator>|</GroupSummarySeparator>
-                <GroupSummaryToken>
-                  {orderedGroups[key]
-                    .map((item: { amount: number; type: string }) =>
-                      item.type !== "deposit" ? item.amount * -1 : item.amount
-                    )
-                    .reduce((acc: number, val: number) => acc + val, 0) < 0
-                    ? "- "
-                    : ""}
-                  {orderedGroups[key]
-                    .map(
-                      (item: { amount: number; type: string }) => item.amount
-                    )
-                    .reduce((acc: number, val: number) => acc + val, 0)}
-                  {" ETH"}
-                </GroupSummaryToken>
-              </GroupSummaryWrapper>
-            </GroupTitleWrapper>
-            <ItemsWrapper>
-              {orderedGroups[key].map((item: Transaction) => (
-                <>
-                  <DataBox
-                    onClick={() => {
-                      setDialog(item.id);
-                    }}
-                    key={item.id}
-                    size="small"
-                    LeftComponent={
-                      <ItemTitleWrapper>
-                        <ItemIcon
-                          src={typeIconMapping[item.type]}
-                          alt={item.type}
-                        />
-                        <Title>{item.name}</Title>
-                      </ItemTitleWrapper>
-                    }
-                    RightComponent={
-                      <ItemNumbers>
-                        <ItemTokens>
-                          {item.amount} {item.token}
-                        </ItemTokens>
-                        <ItemUSD>
-                          {item.type !== "deposit" ? "- " : ""}${item.usd}
-                        </ItemUSD>
-                      </ItemNumbers>
-                    }
-                  />
-                  <DialogBox
-                    open={dialog === item.id}
-                    onClose={() => {
-                      setDialog(null);
-                    }}
-                  >
-                    {item.title && (
-                      <DialogTitle>
-                        {item.type !== "deposit" ? "- " : ""}${item.usd}
-                      </DialogTitle>
-                    )}
-                    <DialogSubtitleWrapper>
-                      <DialogSubtitle>{item.title}</DialogSubtitle>
-                      <DialogAddress>{item.name}</DialogAddress>
-                    </DialogSubtitleWrapper>
-                    {item.details && (
-                      <DialogDetails>{item.details}</DialogDetails>
-                    )}
-                    {item.comment && (
-                      <DialogComment>
-                        <DialogCommentIcon
-                          src={ICONS.COMMENT}
-                          alt="comment icon"
-                        />
-                        <DialogCommentText>{item.comment}</DialogCommentText>
-                      </DialogComment>
-                    )}
-                    <DialogDateWrapper>
-                      <DialogDateLabel>Date</DialogDateLabel>
-                      <DialogDate>
-                        {moment(item.timestamp).format("DD MMMM YYYY")}
-                      </DialogDate>
-                    </DialogDateWrapper>
-                    <DialogAmount>
-                      {item.type !== "deposit" ? "- " : ""}
-                      {item.amount} {item.token}
-                    </DialogAmount>
-                    <Button
-                      variant="outlined"
-                      value="Close"
-                      onClick={() => {
-                        setDialog(null);
-                      }}
-                    />
-                  </DialogBox>
-                </>
-              ))}
-            </ItemsWrapper>
-          </div>
-        ))}
-      </GroupsWrapper>
-    </Wrapper>
+        </DialogBox>
+      </>
+    );
+  };
+
+  return (
+    <>
+      <TabsWrapper>
+        <TabComponent
+          value={tab}
+          onChange={(index: number) => {
+            setTab(index);
+          }}
+          options={["All", "Deposit", "Gas", "Fees", "Service", "Withdrawal"]}
+          orientation="horizontal"
+          activeIndicatorColor="#A963EF"
+          activeColor="#8C30F5"
+          type="text"
+          tabColor=""
+        />
+      </TabsWrapper>
+      <Wrapper>
+        <SearchWrapper>
+          <SearchInputWrapper>
+            <InputBox
+              placeholder={"Transactions"}
+              value={searchTerm}
+              onChange={handleSearchChange}
+              size="small"
+            />
+          </SearchInputWrapper>
+        </SearchWrapper>
+        <GroupsWrapper>
+          {Object.keys(orderedGroups).map((key) => (
+            <div>
+              <GroupTitleWrapper>
+                <GroupTitle>
+                  {moment(parseInt(key)).format("DD MMMM YYYY")}
+                </GroupTitle>
+                <GroupSummaryWrapper>
+                  <GroupSummaryUsd>
+                    {orderedGroups[key]
+                      .map((item: { usd: number; type: string }) =>
+                        item.type !== "deposit" ? item.usd * -1 : item.usd
+                      )
+                      .reduce((acc: number, val: number) => acc + val, 0) < 0
+                      ? "- "
+                      : ""}
+                    $
+                    {orderedGroups[key]
+                      .map((item: { usd: number }) => item.usd)
+                      .reduce((acc: number, val: number) => acc + val, 0)}
+                  </GroupSummaryUsd>
+                  <GroupSummarySeparator>|</GroupSummarySeparator>
+                  <GroupSummaryToken>
+                    {orderedGroups[key]
+                      .map((item: { amount: number; type: string }) =>
+                        item.type !== "deposit" ? item.amount * -1 : item.amount
+                      )
+                      .reduce((acc: number, val: number) => acc + val, 0) < 0
+                      ? "- "
+                      : ""}
+                    {orderedGroups[key]
+                      .map(
+                        (item: { amount: number; type: string }) => item.amount
+                      )
+                      .reduce((acc: number, val: number) => acc + val, 0)
+                      .toFixed(4)}
+                    {" ETH"}
+                  </GroupSummaryToken>
+                </GroupSummaryWrapper>
+              </GroupTitleWrapper>
+              <ItemsWrapper>{orderedGroups[key].map(renderItem)}</ItemsWrapper>
+            </div>
+          ))}
+        </GroupsWrapper>
+      </Wrapper>
+    </>
   );
 };
 

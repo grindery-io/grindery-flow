@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Text } from "grindery-ui";
+import { Text, IconButton } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import { ICONS } from "../../constants";
 import { useAppContext } from "../../context/AppContext";
@@ -55,10 +55,26 @@ const CountWrapper = styled.div`
   gap: 3px;
 `;
 
+const IconButtonWrapper = styled.div`
+  & .MuiIconButton-root img {
+    width: 12px !important;
+    height: 12px !important;
+  }
+`;
+
+const IconButtonsGroup = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  gap: 4px;
+`;
+
 type Props = {};
 
 const Dashboard = (props: Props) => {
-  const { changeTab } = useAppContext();
+  const { workflows, changeTab, setWorkflowOpened } = useAppContext();
   return (
     <Wrapper>
       <DataBox
@@ -81,6 +97,19 @@ const Dashboard = (props: Props) => {
             <Text value="Aggregated Balance" variant="body2" />
           </Title>
         }
+        RightComponent={
+          <IconButtonsGroup>
+            <IconButtonWrapper>
+              <IconButton color="" icon={ICONS.CREATE_ALERT} />
+            </IconButtonWrapper>
+            <IconButtonWrapper>
+              <IconButton color="" icon={ICONS.CREATE_DEPOSIT} />
+            </IconButtonWrapper>
+            <IconButtonWrapper>
+              <IconButton color="" icon={ICONS.CREATE_WITHDRAW} />
+            </IconButtonWrapper>
+          </IconButtonsGroup>
+        }
         BottomRightComponent={<Text value="$20.40" variant="h3" />}
       />
       <DataBox
@@ -88,7 +117,8 @@ const Dashboard = (props: Props) => {
         LeftComponent={
           <Title
             onClick={() => {
-              changeTab?.("NEW_WORKFLOW");
+              setWorkflowOpened?.(false);
+              changeTab?.("WORKFLOWS");
             }}
             style={{ cursor: "pointer" }}
           >
@@ -96,14 +126,27 @@ const Dashboard = (props: Props) => {
             <Text value="Workflows" variant="body2" />
           </Title>
         }
+        RightComponent={
+          <IconButtonWrapper>
+            <IconButton
+              color=""
+              icon={ICONS.PLUS_SMALL}
+              onClick={() => {
+                setWorkflowOpened?.(true);
+                changeTab?.("WORKFLOWS");
+              }}
+            />
+          </IconButtonWrapper>
+        }
         BottomRightComponent={
           <div
             onClick={() => {
-              changeTab?.("NEW_WORKFLOW");
+              setWorkflowOpened?.(false);
+              changeTab?.("WORKFLOWS");
             }}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", marginRight: 4 }}
           >
-            <Text value="5" variant="h3" />
+            <Text value={workflows?.length.toString()} variant="h3" />
           </div>
         }
       />
@@ -119,6 +162,17 @@ const Dashboard = (props: Props) => {
             <Icon src={ICONS.APPS} alt="(d)Apps icon" />
             <Text value="(d)Apps" variant="body2" />
           </Title>
+        }
+        RightComponent={
+          <IconButtonWrapper>
+            <IconButton
+              color=""
+              onClick={() => {
+                changeTab?.("APPS");
+              }}
+              icon={ICONS.PLUS_SMALL}
+            />
+          </IconButtonWrapper>
         }
         BottomRightComponent={
           <CountsWrapper>
@@ -159,6 +213,17 @@ const Dashboard = (props: Props) => {
             <Icon src={ICONS.HISTORY} alt="History icon" />
             <Text value="History" variant="body2" />
           </Title>
+        }
+        RightComponent={
+          <IconButtonWrapper>
+            <IconButton
+              color=""
+              onClick={() => {
+                changeTab?.("HISTORY");
+              }}
+              icon={ICONS.ARROW_RIGHT}
+            />
+          </IconButtonWrapper>
         }
         BottomRightComponent={
           <CountsWrapper>

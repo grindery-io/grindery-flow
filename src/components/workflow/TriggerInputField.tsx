@@ -7,9 +7,14 @@ import { Field } from "../../types/Connector";
 import axios from "axios";
 import { formatWorkflow, jsonrpcObj } from "../../utils";
 
-const Wrapper = styled.div`
+const InputWrapper = styled.div`
   width: 100%;
   margin-top: 20px;
+  & > .MuiBox-root > .MuiBox-root {
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
 `;
 
 type Props = {
@@ -154,14 +159,14 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
   return (
     <React.Fragment key={inputField.key}>
       {!!inputField && (
-        <Wrapper>
+        <InputWrapper>
           {(inputField.type === "number" ||
             (inputField.type === "string" && !inputField.choices)) && (
             <InputBox
               value={val || ""}
               label={inputField.label || ""}
               placeholder={inputField.placeholder || ""}
-              texthelper={inputField.helpText || ""}
+              tooltip={inputField.helpText || false}
               required={!!inputField.required}
               onChange={handleFieldChange}
             ></InputBox>
@@ -174,7 +179,7 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
               onChange={handleFieldChange}
               options={booleanOptions}
               value={Array.isArray(val) ? val : [val]}
-              texthelper={inputField.helpText || ""}
+              tooltip={inputField.helpText || false}
               required={!!inputField.required}
             />
           )}
@@ -186,11 +191,11 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
               onChange={handleFieldChange}
               options={fieldOptions}
               value={Array.isArray(val) ? val : [val]}
-              texthelper={inputField.helpText || ""}
+              tooltip={inputField.helpText || false}
               required={!!inputField.required}
             />
           )}
-        </Wrapper>
+        </InputWrapper>
       )}
     </React.Fragment>
   );

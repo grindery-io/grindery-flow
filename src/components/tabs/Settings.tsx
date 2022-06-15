@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useViewerConnection } from "@self.id/react";
 import styled from "styled-components";
 import { Button, SelectSimple, SwitchInput } from "grindery-ui";
 import { useAppContext } from "../../context/AppContext";

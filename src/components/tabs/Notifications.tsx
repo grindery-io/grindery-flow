@@ -1,52 +1,86 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Text } from "grindery-ui";
-import DataBox from "../shared/DataBox";
-import notifications from "../../samples/notifications";
+import { SwitchInput, InputSuffix } from "grindery-ui";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  gap: 15px;
 `;
 
-const TextIconWrapper = styled.div`
+const Title = styled.h2`
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 110%;
+  padding: 0;
+  margin: 0 0 40px;
+`;
+
+const Subtitle = styled.h3`
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 110%;
+  padding: 0;
+  margin: 0 0 20px;
+`;
+
+const BalanceAlertWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: space-between;
   flex-wrap: nowrap;
-  gap: 10px;
+  margin: 0 0 10px;
 `;
 
-const Icon = styled.img`
-  width: 20px;
-  filter: invert(43%) sepia(36%) saturate(4084%) hue-rotate(332deg)
-    brightness(115%) contrast(103%);
+const Label = styled.p`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  padding: 0;
+  margin: 0;
+`;
+
+const AlertConfigWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  margin: 0 0 10px;
 `;
 
 type Props = {};
 
 const Notifications = (props: Props) => {
-  const [items, setitems] = useState(notifications);
+  const [balanceAlert, setBalanceAlert] = useState(false);
+  const [alertConfig, setAlertConfig] = useState("0.1");
+
+  const handleBalanceAlertChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBalanceAlert(e.target.checked);
+  };
+
+  const handleCurrencyChange = (e: any) => {
+    setAlertConfig(e.target.value);
+  };
   return (
     <Wrapper>
-      {items.map((item) => (
-        <DataBox
-          key={item.id}
-          size="small"
-          LeftComponent={
-            <TextIconWrapper>
-              <Icon src={item.icon} alt="notifications icon" />
-              <Text value={item.text} variant="body2" />
-            </TextIconWrapper>
-          }
-        />
-      ))}
+      <Title>Notifications</Title>
+      <Subtitle>Balance</Subtitle>
+
+      <BalanceAlertWrapper>
+        <Label>Low balance alert</Label>
+        <SwitchInput value={balanceAlert} onChange={handleBalanceAlertChange} />
+      </BalanceAlertWrapper>
+      <AlertConfigWrapper>
+        <Label>Alert when is qual or lower than</Label>
+        <div style={{ marginLeft: "auto", maxWidth: 84 }}>
+          <InputSuffix
+            value={alertConfig}
+            onChange={handleCurrencyChange}
+            suffix="ETH"
+            placeholder=""
+          />
+        </div>
+      </AlertConfigWrapper>
     </Wrapper>
   );
 };

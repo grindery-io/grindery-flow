@@ -7,7 +7,6 @@ const transactions = [
     token: "ETH",
     usd: 100,
     timestamp: 1628696303000,
-    title: "Inboundlabs",
     details:
       "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
     comment:
@@ -15,13 +14,12 @@ const transactions = [
   },
   {
     id: 2,
-    type: "gas",
-    name: "Gnosis Chain",
-    amount: 0.0072,
+    type: "withdraw",
+    name: "0xdAC17...31ec7",
+    amount: 0.036,
     token: "ETH",
-    usd: 20,
+    usd: 100,
     timestamp: 1628609903000,
-    title: "Inboundlabs",
     details:
       "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
     comment:
@@ -29,13 +27,12 @@ const transactions = [
   },
   {
     id: 3,
-    type: "service",
-    name: "Sendgrid",
-    amount: 0.0036,
+    type: "gas",
+    name: "Gnosis Chain",
+    amount: 0.0072,
     token: "ETH",
-    usd: 10,
+    usd: 20,
     timestamp: 1628609903000,
-    title: "Inboundlabs",
     details:
       "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
     comment:
@@ -43,13 +40,25 @@ const transactions = [
   },
   {
     id: 4,
+    type: "services",
+    name: "Sendgrid",
+    amount: 0.0036,
+    token: "ETH",
+    usd: 10,
+    timestamp: 1628609903000,
+    details:
+      "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
+    comment:
+      "This is a comment the sender. in this case Inboundlabs, has made.",
+  },
+  {
+    id: 5,
     type: "fees",
     name: "Grindery",
     amount: 0.0036,
     token: "ETH",
     usd: 10,
     timestamp: 1628609903000,
-    title: "Inboundlabs",
     details:
       "Transaction details. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. 0005582EUR\nCustomer reference: NSCT2108060007920000000000001",
     comment:

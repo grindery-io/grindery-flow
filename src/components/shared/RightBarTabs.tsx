@@ -12,8 +12,12 @@ const Wrapper = styled.div`
   flex-wrap: nowrap;
   background: #fdfbff;
   box-shadow: inset 0px -2px 20px rgba(0, 0, 0, 0.08);
-  min-height: calc(100vh - 61px);
-  height: 100%;
+  min-height: calc(100vh - 67px);
+  height: calc(100vh - 67px);
+  max-height: calc(100vh - 67px);
+  position: fixed;
+  top: 67px;
+  overflow-y: auto;
 
   & .MuiTabs-root {
     background: transparent !important;
@@ -63,17 +67,23 @@ const TabButton = styled.div`
 type Props = {};
 
 const RightBarTabs = (props: Props) => {
-  const { activeTab, setActiveTab } = useAppContext();
+  const { user, activeTab, setActiveTab } = useAppContext();
 
   return (
     <Wrapper>
       <TabComponent
         value={activeTab || 0}
         onChange={(index: number) => {
-          setActiveTab?.(index);
+          if (user) {
+            setActiveTab?.(index);
+          }
         }}
         options={RIGHTBAR_TABS.map((tab) => (
-          <img src={tab.icon} alt={tab.name} />
+          <img
+            src={tab.icon}
+            alt={tab.name}
+            style={{ opacity: activeTab !== tab.id ? "0.2" : 1 }}
+          />
         ))}
         orientation="vertical"
         activeIndicatorColor="#0B0D17"

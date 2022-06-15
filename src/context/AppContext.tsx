@@ -42,6 +42,12 @@ type ContextProps = {
   testWorkflowAction: (a: number) => { [key: string]: any } | void;
   disconnect: any;
   resetWorkflow: () => void;
+  workflowOpened: boolean;
+  setWorkflowOpened: (a: boolean) => void;
+  appOpened: boolean;
+  setAppOpened: (a: boolean) => void;
+  workflows: Workflow[];
+  setWorkflows: (a: Workflow[]) => void;
 };
 
 type AppContextProps = {
@@ -54,11 +60,20 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   // Auth hook
   const [connection, disconnect] = useViewerConnection();
 
+  // app panel opened
+  const [appOpened, setAppOpened] = useState<boolean>(true);
+
   // User id
   const [user, setUser] = useState<any>(null);
 
+  // user's workflows list
+  const [workflows, setWorkflows] = useState<Workflow[]>([]);
+
   // workflow builder tab
   const [activeTab, setActiveTab] = useState(0);
+
+  // workflow builder opened
+  const [workflowOpened, setWorkflowOpened] = useState(false);
 
   // loaded nexus connectors CDS
   const [connectors, setConnectors] = useState<Connector[]>([
@@ -395,6 +410,12 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         disconnect,
         resetWorkflow,
         setActiveTab,
+        workflowOpened,
+        setWorkflowOpened,
+        appOpened,
+        setAppOpened,
+        workflows,
+        setWorkflows,
       }}
     >
       {children}
