@@ -54,16 +54,6 @@ const Wrapper = styled.div`
   }
 `;
 
-const TabButton = styled.div`
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: nowrap;
-  padding: 18px;
-`;
-
 type Props = {};
 
 const RightBarTabs = (props: Props) => {

@@ -5,8 +5,9 @@ import { useViewerConnection } from "@self.id/react";
 import { Workflow } from "../types/Workflow";
 import { Connector, Field } from "../types/Connector";
 import gsheetConnector from "../samples/connectors/gsheet.json";
-import molochXdaiConnector from "../samples/connectors/moloch-xdai.json";
+import moloch from "../samples/connectors/moloch.json";
 import helloworldConnector from "../samples/connectors/helloworld.json";
+import sendgrid from "../samples/connectors/sendgrid.json";
 import { formatWorkflow, jsonrpcObj, replaceTokens } from "../utils";
 import { RIGHTBAR_TABS, WORKFLOW_ENGINE_URL } from "../constants";
 
@@ -79,7 +80,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const [connectors, setConnectors] = useState<Connector[]>([
     helloworldConnector,
     gsheetConnector,
-    molochXdaiConnector,
+    moloch,
+    sendgrid,
   ]);
 
   // empty workflow declaration

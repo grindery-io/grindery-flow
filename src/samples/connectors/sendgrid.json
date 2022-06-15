@@ -1,0 +1,71 @@
+{
+  "key": "sendGrid",
+  "name": "SendGrid",
+  "version": "1.0.0",
+  "platformVersion": "1.0.0",
+  "triggers": [],
+  "actions": [
+    {
+      "key": "sendEmail",
+      "name": "Send email",
+      "display": {
+        "label": "Send email",
+        "description": ""
+      },
+      "operation": {
+        "type": "api",
+        "operation": {
+          "url": ""
+        },
+        "inputFields": [
+          {
+            "key": "to",
+            "label": "To",
+            "type": "string",
+            "required": true,
+            "placeholder": "To"
+          },
+          {
+            "key": "from",
+            "label": "From",
+            "type": "string",
+            "required": true,
+            "placeholder": "From"
+          },
+          {
+            "key": "fromName",
+            "label": "From Name",
+            "type": "string",
+            "placeholder": "From Name"
+          },
+          {
+            "key": "replyTo",
+            "label": "Reply To",
+            "type": "string",
+            "placeholder": "Reply To"
+          },
+          {
+            "key": "subject",
+            "label": "Subject",
+            "type": "string",
+            "required": true,
+            "placeholder": "Subject"
+          },
+          {
+            "key": "text",
+            "label": "Text",
+            "type": "string",
+            "placeholder": "Text"
+          },
+          {
+            "key": "html",
+            "label": "HTML",
+            "type": "string",
+            "placeholder": "HTML"
+          }
+        ]
+      }
+    }
+  ],
+  "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAYCAYAAAAPtVbGAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAD+SURBVHgB7ZO9agJBFIXPndlNTGMWQ0IglZAiL5AuRZ4iZfo0eYMUKX0CWy3sfAHxHcTOwkKxEi0U3ULUnassCO4d/xZELOYrP+7OYefcARwpoFOG/ErjG/ePf9IHPSAzYql5No++hv/55kZ4OIEF6RwYr5Y3DD+yxlkTgm2hcAFcSCoSxRc700+lqSqH6r3wrtqeWB9Pnm4Qvmj70KW3PySG8SBV/LtsrSoMMcyO/RQZrvh0JG6v218il7WLpPWrDm5tv/BoOiOEQnPEB0LKtTGUsg97f8ug8PEsNRtjfn/y2RKO4Iq/vpBE8Rr+WJFpySGNeF2M0EykB3CcmxXlskDfDpis7QAAAABJRU5ErkJggg=="
+}

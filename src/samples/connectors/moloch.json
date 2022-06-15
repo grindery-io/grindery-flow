@@ -1,9 +1,65 @@
 {
   "key": "molochOnXDai",
-  "name": "Moloch on xDai",
+  "name": "MolochDAO",
   "version": "1.0.0",
   "platformVersion": "1",
-  "triggers": [],
+  "triggers": [
+    {
+      "key": "submitVote",
+      "name": "Submit Vote",
+      "display": {
+        "label": "Submit Vote",
+        "description": "",
+        "instructions": ""
+      },
+      "operation": {
+        "type": "blockchain:call",
+        "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
+        "signature": "submitVote(uint256,uint8)",
+        "arguments": [],
+        "address": "",
+        "inputFields": [
+          {
+            "key": "contractAddress",
+            "label": "Contract Address",
+            "helpText": "Address of deployed Moloch contract",
+            "type": "string",
+            "required": true,
+            "placeholder": "0x"
+          },
+          {
+            "key": "proposalId",
+            "label": "Proposal ID",
+            "helpText": "The index of proposal",
+            "type": "string",
+            "required": true,
+            "placeholder": "Enter uint256 value"
+          },
+          {
+            "key": "proposalStatus",
+            "label": "Proposal status",
+            "type": "string",
+            "required": true,
+            "placeholder": "Choose proposal status...",
+            "choices": [
+              {
+                "value": "1",
+                "label": "Approved",
+                "sample": "1"
+              },
+              {
+                "value": "2",
+                "label": "Rejected",
+                "sample": "2"
+              }
+            ]
+          }
+        ],
+        "outputFields": [],
+        "sample": {}
+      }
+    }
+  ],
   "actions": [
     {
       "key": "submitProposal",
