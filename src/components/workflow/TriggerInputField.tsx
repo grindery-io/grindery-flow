@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import { debounce } from "throttle-debounce";
 import { SelectInput, InputBox } from "grindery-ui";
 import { useAppContext } from "../../context/AppContext";
 import { Field } from "../../types/Connector";
-import axios from "axios";
 import { formatWorkflow, jsonrpcObj } from "../../utils";
 
 const InputWrapper = styled.div`
@@ -24,8 +24,14 @@ type Props = {
 };
 
 const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
-  const { trigger, triggerConnector, workflow, updateWorkflow } =
-    useAppContext();
+  const {
+    trigger,
+    triggerConnector,
+    workflow,
+    updateWorkflow,
+    setConnectors,
+    connectors,
+  } = useAppContext();
   const [valChanged, setValChanged] = useState(false);
 
   const fieldOptions = inputField.choices?.map((choice) => ({
@@ -65,7 +71,9 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
     setVal(
       (inputField.type === "string" || inputField.type === "number") &&
         !fieldOptions
-        ? e?.target.value || ""
+        ? e?.target.value === 0
+          ? 0
+          : e?.target.value || ""
         : e
     );
     setValChanged(true);
@@ -80,7 +88,6 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
         trigger.operation.inputFieldProviderUrl
       ) {
         if (workflow) {
-          setLoading(true);
           const formattedWorkflow = formatWorkflow(workflow);
           axios
             .post(
@@ -103,15 +110,43 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
                   "grinderyNexusConnectorUpdateFields data",
                   res.data.result
                 );
-                if (res.data.result.inputFields) {
-                  (
-                    triggerConnector?.triggers?.find(
-                      (connectorTrigger: { key: any }) =>
-                        connectorTrigger &&
-                        connectorTrigger.key === workflow.trigger.operation
-                    ) || {}
-                  ).operation = res.data.result.inputFields;
-                }
+
+                setConnectors?.([
+                  ...(connectors || []).map((connector) => {
+                    if (connector && connector.key === triggerConnector?.key) {
+                      return {
+                        ...connector,
+                        triggers: [
+                          ...(connector.triggers || []).map((trig) => {
+                            if (trig.key === trigger.key && trig.operation) {
+                              return {
+                                ...trig,
+                                operation: {
+                                  ...trig.operation,
+                                  inputFields:
+                                    res.data.result.inputFields ||
+                                    trig.operation.inputFields,
+                                  outputFields:
+                                    res.data.result.outputFields ||
+                                    trig.operation.outputFields ||
+                                    [],
+                                  sample:
+                                    res.data.result.sample ||
+                                    trig.operation.sample ||
+                                    {},
+                                },
+                              };
+                            } else {
+                              return trig;
+                            }
+                          }),
+                        ],
+                      };
+                    } else {
+                      return connector;
+                    }
+                  }),
+                ]);
               }
               setLoading(false);
             })
@@ -121,6 +156,7 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
             });
         }
       }
+      setLoading(false);
       setValChanged(false);
     }),
     []
@@ -132,7 +168,7 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
       (inputField.type === "string" && inputField.choices) ||
       inputField.type === "boolean"
     ) {
-      newVal = val?.value || "";
+      newVal = val?.value === 0 ? 0 : val?.value || "";
       if (inputField.type === "boolean") {
         newVal = newVal === "true";
       }
@@ -152,8 +188,10 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
 
   useEffect(() => {
     if (valChanged) {
+      setLoading(true);
       updateFieldsDefinition();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valChanged, updateFieldsDefinition]);
 
   return (

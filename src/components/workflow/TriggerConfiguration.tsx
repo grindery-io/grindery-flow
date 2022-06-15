@@ -6,7 +6,7 @@ import { useAppContext } from "../../context/AppContext";
 import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
 import TriggerInputField from "./TriggerInputField";
-import { getParameterByName } from "../../utils";
+import { formatWorkflow, getParameterByName, jsonrpcObj } from "../../utils";
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -63,17 +63,20 @@ const TriggerConfiguration = (props: Props) => {
     activeStep,
     setActiveStep,
     triggerIsConfigured,
+    connectors,
+    setConnectors,
   } = useAppContext();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   const inputFields =
-    trigger &&
-    trigger.operation &&
-    trigger.operation.inputFields &&
-    trigger.operation.inputFields.filter(
-      (inputField: { computed: any }) => inputField && !inputField.computed
-    );
+    (trigger &&
+      trigger.operation &&
+      trigger.operation.inputFields &&
+      trigger.operation.inputFields.filter(
+        (inputField: { computed: any }) => inputField && !inputField.computed
+      )) ||
+    [];
 
   const clearCredentials = () => {
     updateWorkflow?.({
@@ -156,6 +159,7 @@ const TriggerConfiguration = (props: Props) => {
             updateWorkflow?.({
               "trigger.credentials": credentials,
             });
+            updateFieldsDefinition();
           }
         })
         .catch((err) => {
@@ -198,6 +202,84 @@ const TriggerConfiguration = (props: Props) => {
       }
     }
   };
+
+  const updateFieldsDefinition = () => {
+    if (trigger.operation.inputFieldProviderUrl) {
+      if (workflow) {
+        setLoading(true);
+        const formattedWorkflow = formatWorkflow(workflow);
+        axios
+          .post(
+            trigger.operation.inputFieldProviderUrl,
+            jsonrpcObj("grinderyNexusConnectorUpdateFields", {
+              key: trigger.key,
+              fieldData: {},
+              credentials: formattedWorkflow?.trigger.credentials,
+            })
+          )
+          .then((res) => {
+            if (res && res.data && res.data.error) {
+              console.log(
+                "grinderyNexusConnectorUpdateFields error",
+                res.data.error
+              );
+            }
+            if (res && res.data && res.data.result) {
+              console.log(
+                "grinderyNexusConnectorUpdateFields data",
+                res.data.result
+              );
+
+              if (res.data.result.inputFields && connectors) {
+                setConnectors?.([
+                  ...connectors.map((connector) => {
+                    if (connector && connector.key === triggerConnector?.key) {
+                      return {
+                        ...connector,
+                        triggers: [
+                          ...(connector.triggers || []).map((trig) => {
+                            if (trig.key === trigger.key && trig.operation) {
+                              return {
+                                ...trig,
+                                operation: {
+                                  ...trig.operation,
+                                  inputFields:
+                                    res.data.result.inputFields ||
+                                    trig.operation.inputFields,
+                                  outputFields:
+                                    res.data.result.outputFields ||
+                                    trig.operation.outputFields ||
+                                    [],
+                                  sample:
+                                    res.data.result.sample ||
+                                    trig.operation.sample ||
+                                    {},
+                                },
+                              };
+                            } else {
+                              return trig;
+                            }
+                          }),
+                        ],
+                      };
+                    } else {
+                      return connector;
+                    }
+                  }),
+                ]);
+              }
+            }
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log("grinderyNexusConnectorUpdateFields error", err);
+            setLoading(false);
+          });
+      }
+    }
+  };
+
+  console.log("connectors", connectors);
 
   const handleContinueClick = () => {
     setActiveStep?.(3);

@@ -49,6 +49,7 @@ type ContextProps = {
   setAppOpened: (a: boolean) => void;
   workflows: Workflow[];
   setWorkflows: (a: Workflow[]) => void;
+  setConnectors: (a: Connector[]) => void;
 };
 
 type AppContextProps = {
@@ -418,6 +419,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         setAppOpened,
         workflows,
         setWorkflows,
+        setConnectors,
       }}
     >
       {children}
