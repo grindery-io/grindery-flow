@@ -27,7 +27,7 @@ const ConnectorsSelector = (props: Props) => {
 
   const triggerConnectorOptions = connectorsWithTriggers?.map((connector) => ({
     value: connector.key,
-    label: connector.key,
+    label: connector.name,
     icon: connector.icon,
   }));
 
@@ -39,7 +39,7 @@ const ConnectorsSelector = (props: Props) => {
 
   const actionConnectorOptions = connectorsWithActions?.map((connector) => ({
     value: connector.key,
-    label: connector.key,
+    label: connector.name,
     icon: connector.icon,
   }));
 
