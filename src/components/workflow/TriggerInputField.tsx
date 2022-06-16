@@ -3,9 +3,9 @@ import styled from "styled-components";
 import axios from "axios";
 import { debounce } from "throttle-debounce";
 import { SelectInput, InputBox } from "grindery-ui";
-import { useAppContext } from "../../context/AppContext";
 import { Field } from "../../types/Connector";
 import { formatWorkflow, jsonrpcObj } from "../../utils";
+import { useWorkflowContext } from "../../context/WorkflowContext";
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -31,7 +31,7 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
     updateWorkflow,
     setConnectors,
     connectors,
-  } = useAppContext();
+  } = useWorkflowContext();
   const [valChanged, setValChanged] = useState(false);
 
   const fieldOptions = inputField.choices?.map((choice) => ({
@@ -68,6 +68,7 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
   );
 
   const handleFieldChange = (e: any) => {
+    setLoading(true);
     setVal(
       (inputField.type === "string" || inputField.type === "number") &&
         !fieldOptions
@@ -106,11 +107,6 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
                 );
               }
               if (res && res.data && res.data.result) {
-                console.log(
-                  "grinderyNexusConnectorUpdateFields data",
-                  res.data.result
-                );
-
                 setConnectors?.([
                   ...(connectors || []).map((connector) => {
                     if (connector && connector.key === triggerConnector?.key) {
@@ -155,8 +151,9 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
               setLoading(false);
             });
         }
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
       setValChanged(false);
     }),
     []
@@ -188,7 +185,6 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
 
   useEffect(() => {
     if (valChanged) {
-      setLoading(true);
       updateFieldsDefinition();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -204,7 +200,7 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
               value={val || ""}
               label={inputField.label || ""}
               placeholder={inputField.placeholder || ""}
-              tooltip={inputField.helpText || false}
+              tooltip={inputField.helpText}
               required={!!inputField.required}
               onChange={handleFieldChange}
             ></InputBox>
@@ -217,7 +213,7 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
               onChange={handleFieldChange}
               options={booleanOptions}
               value={Array.isArray(val) ? val : [val]}
-              tooltip={inputField.helpText || false}
+              tooltip={inputField.helpText}
               required={!!inputField.required}
             />
           )}
@@ -229,7 +225,7 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
               onChange={handleFieldChange}
               options={fieldOptions}
               value={Array.isArray(val) ? val : [val]}
-              tooltip={inputField.helpText || false}
+              tooltip={inputField.helpText}
               required={!!inputField.required}
             />
           )}

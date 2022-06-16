@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Text } from "grindery-ui";
 import Check from "./../icons/Check";
-import { useAppContext } from "../../context/AppContext";
+import { useWorkflowContext } from "../../context/WorkflowContext";
 
 const Wrapper = styled.div`
   display: flex;
@@ -57,7 +57,7 @@ const InActiveStepIcon = styled.div`
 type Props = {};
 
 const WorkflowProgress = (props: Props) => {
-  const { activeStep, setActiveStep } = useAppContext();
+  const { activeStep, setActiveStep } = useWorkflowContext();
 
   if (!activeStep) {
     return null;

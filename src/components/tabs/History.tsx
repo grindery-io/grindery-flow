@@ -13,7 +13,6 @@ const statusIconMapping: { [key: string]: string } = {
 
 const TabsWrapper = styled.div`
   & .MuiTab-root {
-    width: calc(100% / 3);
     text-transform: initial;
     font-weight: 400;
     font-size: 12px;
@@ -150,6 +149,7 @@ const History = (props: Props) => {
           activeColor="#8C30F5"
           type="text"
           tabColor=""
+          variant="fullWidth"
         />
       </TabsWrapper>
       <Wrapper>

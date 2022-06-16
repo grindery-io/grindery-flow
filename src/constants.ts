@@ -26,6 +26,13 @@ export const ICONS: { [key: string]: string } = {
   ARROW_RIGHT: "/images/icons/arrow-right.svg",
   CLOSE: "/images/icons/close.svg",
   PLUS_WHITE: "/images/icons/plus-white.svg",
+  GAS_ALERT: "/images/icons/gas-alert.svg",
+  // CHAINS
+  CHAIN_ETHEREUM: "/images/icons/ethereum.svg",
+  CHAIN_ARBITRUM: "/images/icons/arbitrum.svg",
+  CHAIN_GNOSIS: "/images/icons/gnosis.svg",
+  CHAIN_POLYGON: "/images/icons/polygon.svg",
+  CHAIN_CELO: "/images/icons/celo.svg",
 };
 
 export const RIGHTBAR_TABS: { name: string; icon?: string; id: number }[] = [

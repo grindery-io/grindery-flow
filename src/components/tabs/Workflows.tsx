@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { IconButton, InputBox, SwitchInput } from "grindery-ui";
-import WorkflowConstructor from "../workflow/WorkflowConstructor";
 import DataBox from "../shared/DataBox";
 import { useAppContext } from "../../context/AppContext";
 import { ICONS } from "../../constants";
 import { Workflow } from "../../types/Workflow";
+import WorkflowBuilder from "../workflow/WorkflowBuilder";
 
 const Wrapper = styled.div`
   display: flex;
@@ -215,7 +215,7 @@ const Workflows = (props: Props) => {
       <ItemsWrapper>{filteredItems.map(renderWorkflow)}</ItemsWrapper>
     </Wrapper>
   ) : (
-    <WorkflowConstructor />
+    <WorkflowBuilder />
   );
 };
 

@@ -18,6 +18,7 @@ const Wrapper = styled.div`
   background: #ffffff;
   width: 435px;
   box-sizing: border-box;
+  z-index: 2;
 `;
 
 const UserWrapper = styled.div`

@@ -5,6 +5,10 @@ import { useAppContext } from "../../context/AppContext";
 import { Field } from "../../types/Connector";
 import ActionInputField from "./ActionInputField";
 import { getOutputOptions } from "../../utils";
+import { useWorkflowContext } from "../../context/WorkflowContext";
+import ChainSelector from "./ChainSelector";
+import GasInput from "./GasInput";
+import { ICONS } from "../../constants";
 
 const Wrapper = styled.div`
   padding: 20px 20px 40px;
@@ -38,6 +42,7 @@ type Props = {
 
 const ActionConfiguration = (props: Props) => {
   const { index, step, closeConstructor } = props;
+  const { setWorkflows, workflows } = useAppContext();
   const {
     action,
     trigger,
@@ -46,18 +51,13 @@ const ActionConfiguration = (props: Props) => {
     activeStep,
     triggerConnector,
     testWorkflowAction,
-    setWorkflows,
     workflow,
-    workflows,
-  } = useAppContext();
+    updateWorkflow,
+  } = useWorkflowContext();
 
-  const inputFields =
-    action &&
-    action.operation &&
-    action.operation.inputFields &&
-    action.operation.inputFields.filter(
-      (inputField: { computed: any }) => inputField && !inputField.computed
-    );
+  const inputFields = (action?.(index)?.operation?.inputFields || []).filter(
+    (inputField: Field) => inputField && !inputField.computed
+  );
 
   const options = getOutputOptions(trigger.operation, triggerConnector);
 
@@ -80,6 +80,12 @@ const ActionConfiguration = (props: Props) => {
     closeConstructor();
   };
 
+  const handleChainChange = (val: any) => {
+    updateWorkflow?.({
+      ["actions[" + index + "].input.blockchain"]: val?.value || "",
+    });
+  };
+
   if (!activeStep || step !== activeStep) {
     return null;
   }
@@ -87,17 +93,17 @@ const ActionConfiguration = (props: Props) => {
   return (
     <Wrapper>
       <TitleWrapper>
-        {actionConnector.icon && (
+        {actionConnector?.(index)?.icon && (
           <TitleIconWrapper>
             <TitleIcon
-              src={actionConnector.icon}
-              alt={`${actionConnector.name} icon`}
+              src={actionConnector?.(index)?.icon}
+              alt={`${actionConnector?.(index)?.name} icon`}
             />
           </TitleIconWrapper>
         )}
         <Text variant="h3" value="Set up Action" />
         <div style={{ marginTop: 4 }}>
-          <Text variant="p" value={`for ${actionConnector.name}`} />
+          <Text variant="p" value={`for ${actionConnector?.(index)?.name}`} />
         </div>
       </TitleWrapper>
 
@@ -105,44 +111,45 @@ const ActionConfiguration = (props: Props) => {
         <Text
           variant="h6"
           value={`Set fields${
-            action && action.display && action.display.label
-              ? " for " + action.display.label
+            action?.(index)?.display.label
+              ? " for " + action?.(index)?.display.label
               : ""
           }`}
         />
       </div>
-      {action &&
-        action.operation &&
-        action.operation.type === "blockchain:call" && (
-          <AlertField
-            text={
-              <div style={{ textAlign: "left" }}>
-                This action will require you to pay gas. Make sure your account
-                has funds. Current balance:{" "}
-                <a
-                  href="#balance"
-                  style={{
-                    fontWeight: "bold",
-                    color: "inherit",
-                    textDecoration: "underline",
-                  }}
-                >
-                  0.003 ETH
-                </a>
-              </div>
-            }
-            color="warning"
-            icon={
-              <img
-                src="/images/exclamation.png"
-                width={20}
-                height={20}
-                alt="exclamation icon"
-              />
-            }
+      {action?.(index)?.operation?.type === "blockchain:call" && (
+        <AlertField
+          color="warning"
+          icon={
+            <img src={ICONS.GAS_ALERT} width={20} height={20} alt="gas icon" />
+          }
+        >
+          <>
+            <div style={{ textAlign: "left" }}>
+              This action will require you to pay gas. Make sure your account
+              has funds. Current balance:{" "}
+              <a
+                href="#balance"
+                style={{
+                  fontWeight: "bold",
+                  color: "inherit",
+                  textDecoration: "underline",
+                }}
+              >
+                0.003 ETH
+              </a>
+            </div>
+            <GasInput value="0.1" onChange={() => {}} />
+          </>
+        </AlertField>
+      )}
+      <div>
+        {action?.(index)?.operation?.type === "blockchain:call" && (
+          <ChainSelector
+            value={workflow?.actions[index].input.blockchain || ""}
+            onChange={handleChainChange}
           />
         )}
-      <div>
         {inputFields.map((inputField: Field) => (
           <ActionInputField
             key={inputField.key}
@@ -151,7 +158,7 @@ const ActionConfiguration = (props: Props) => {
             index={index}
           />
         ))}
-        {actionIsConfigured && (
+        {actionIsConfigured?.(index) && (
           <div style={{ marginTop: 40 }}>
             {testEngine === "1" ? (
               <Button

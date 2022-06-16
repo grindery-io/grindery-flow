@@ -4,18 +4,19 @@ import ActionConfiguration from "./ActionConfiguration";
 import { useAppContext } from "../../context/AppContext";
 import TriggerConfiguration from "./TriggerConfiguration";
 import WorkflowProgress from "./WorkflowProgress";
+import { useWorkflowContext } from "../../context/WorkflowContext";
 
 type Props = {};
 
-const WorkflowConstructor = (props: Props) => {
+const WorkflowSteps = (props: Props) => {
+  const { setWorkflowOpened } = useAppContext();
   const {
     triggerIsSet,
     actionIsSet,
     triggerIsAuthenticated,
     triggerIsConfigured,
     resetWorkflow,
-    setWorkflowOpened,
-  } = useAppContext();
+  } = useWorkflowContext();
 
   const closeConstructor = () => {
     setWorkflowOpened?.(false);
@@ -25,7 +26,7 @@ const WorkflowConstructor = (props: Props) => {
   return (
     <div>
       <WorkflowProgress />
-      <ConnectorsSelector step={1} />
+      <ConnectorsSelector step={1} index={0} />
       {triggerIsSet && actionIsSet && <TriggerConfiguration step={2} />}
       {triggerIsSet &&
         actionIsSet &&
@@ -41,4 +42,4 @@ const WorkflowConstructor = (props: Props) => {
   );
 };
 
-export default WorkflowConstructor;
+export default WorkflowSteps;

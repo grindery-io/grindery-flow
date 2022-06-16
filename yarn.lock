@@ -5783,10 +5783,10 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, 
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
 
-grindery-ui@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.2.0.tgz#d245f4075e6ff10d44ba2f44f9cf23b8b4015eca"
-  integrity sha512-EBruZ48fA4LnN5p3JbKq6aipi5Mj7dPp3XEfc2HvB9OGwoe+6U/+0/Ai8VOnTCjTRkYbWjt0WJeSPJyfFHsGfg==
+grindery-ui@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.2.1.tgz#076bb5d71812af6b1b7a98fbc2b91305ea19670e"
+  integrity sha512-nDofqQwJ/uaRNje9OOpgZTeEWaklq6q0jS8QVGHp2at1dHvCbSKq85LD4tH0aKHqPNgd+GjmwuZ7xO60ucYlEQ==
   dependencies:
     "@emotion/react" "^11.9.0"
     "@emotion/styled" "^11.8.1"
@@ -10036,7 +10036,7 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-web-vitals@^2.1.0, web-vitals@^2.1.4:
+web-vitals@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-2.1.4.tgz#76563175a475a5e835264d373704f9dde718290c"
   integrity sha512-sVWcwhU5mX6crfI5Vd2dC4qchyTqxV8URinzt25XqVh+bHEPGH4C3NPrNionCP7Obx59wrYEbNlw4Z8sjALzZg==

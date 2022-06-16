@@ -80,7 +80,7 @@ const Welcome = (props: Props) => {
       <Desc>
         {!user
           ? "We are the easiest way for people and organizations to connect Apps and dApps across chains and protocols."
-          : "Create workflows to connect a Web2 to a Web3 App or biceversa."}
+          : "Create workflows to connect a Web2 to a Web3 App or viceversa."}
       </Desc>
       <ButtonWrapper>
         {!user ? (

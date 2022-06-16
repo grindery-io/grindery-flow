@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { AutoCompleteInput } from "grindery-ui";
-import { useAppContext } from "../../context/AppContext";
+import { AutoCompleteInput, SelectInput } from "grindery-ui";
 import { Field } from "../../types/Connector";
+import { useWorkflowContext } from "../../context/WorkflowContext";
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -21,7 +21,14 @@ type Props = {
 };
 
 const ActionInputField = ({ inputField, options, index }: Props) => {
-  const { updateWorkflow, workflow } = useAppContext();
+  const { updateWorkflow, workflow } = useWorkflowContext();
+
+  const fieldOptions = inputField.choices?.map((choice) => ({
+    value: typeof choice !== "string" ? choice.value : choice,
+    label: typeof choice !== "string" ? choice.label : choice,
+    //icon: triggerConnector ? triggerConnector.icon || "" : "",
+  }));
+
   const workflowValue = workflow?.actions[index].input[inputField.key];
   const [val, setVal]: any = useState(
     workflowValue
@@ -58,17 +65,30 @@ const ActionInputField = ({ inputField, options, index }: Props) => {
     <React.Fragment key={inputField.key}>
       {!!inputField && (
         <InputWrapper>
-          <AutoCompleteInput
-            label={inputField.label || ""}
-            type="searchLabel"
-            variant="full"
-            placeholder={inputField.placeholder || ""}
-            required={!!inputField.required}
-            tooltip={inputField.helpText || false}
-            options={options}
-            onChange={handleFieldChange}
-            value={val}
-          />
+          {inputField.choices ? (
+            <SelectInput
+              label={inputField.label || ""}
+              type="default"
+              placeholder={inputField.placeholder || ""}
+              onChange={handleFieldChange}
+              options={fieldOptions}
+              value={Array.isArray(val) ? val : [val]}
+              tooltip={inputField.helpText}
+              required={!!inputField.required}
+            />
+          ) : (
+            <AutoCompleteInput
+              label={inputField.label || ""}
+              type="searchLabel"
+              variant="full"
+              placeholder={inputField.placeholder || ""}
+              required={!!inputField.required}
+              tooltip={inputField.helpText || false}
+              options={options}
+              onChange={handleFieldChange}
+              value={val}
+            />
+          )}
         </InputWrapper>
       )}
     </React.Fragment>

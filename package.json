@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@self.id/react": "^0.3.2",
+    "@self.id/web": "^0.4.2",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -15,7 +16,7 @@
     "@types/styled-components": "^5.1.25",
     "axios": "^0.27.2",
     "buffer": "^6.0.3",
-    "grindery-ui": "^0.2.0",
+    "grindery-ui": "^0.2.1",
     "key-did-provider-ed25519": "^2.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.3",
@@ -25,8 +26,7 @@
     "react-scripts": "5.0.1",
     "styled-components": "^5.3.5",
     "throttle-debounce": "^5.0.0",
-    "typescript": "^4.4.2",
-    "web-vitals": "^2.1.0"
+    "typescript": "^4.4.2"
   },
   "scripts": {
     "start": "react-scripts start",

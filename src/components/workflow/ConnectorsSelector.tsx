@@ -1,13 +1,14 @@
 import React from "react";
 import { Text, SelectInput, AutoCompleteInput, Button } from "grindery-ui";
-import { useAppContext } from "../../context/AppContext";
+import { useWorkflowContext } from "../../context/WorkflowContext";
 
 type Props = {
   step: number;
+  index: number; // action index
 };
 
 const ConnectorsSelector = (props: Props) => {
-  const { step } = props;
+  const { step, index } = props;
   const {
     workflow,
     connectorsWithActions,
@@ -23,7 +24,7 @@ const ConnectorsSelector = (props: Props) => {
     actionIsSet,
     triggerConnector,
     actionConnector,
-  } = useAppContext();
+  } = useWorkflowContext();
 
   const triggerConnectorOptions = connectorsWithTriggers?.map((connector) => ({
     value: connector.key,
@@ -48,8 +49,8 @@ const ConnectorsSelector = (props: Props) => {
       opt.value ===
         (workflow &&
           workflow.actions &&
-          workflow.actions[0] &&
-          workflow.actions[0].connector) || ""
+          workflow.actions[index] &&
+          workflow.actions[index].connector) || ""
   );
 
   const triggerOptions = availableTriggers?.map((availableTrigger) => ({
@@ -63,16 +64,16 @@ const ConnectorsSelector = (props: Props) => {
       opt.value === (workflow?.trigger && workflow?.trigger.operation) || ""
   );
 
-  const actionOptions = availableActions?.map((availableAction) => ({
+  const actionOptions = availableActions?.(index)?.map((availableAction) => ({
     value: availableAction.key,
     label: availableAction.display?.label,
-    icon: availableAction.display?.icon || actionConnector?.icon || "",
+    icon: availableAction.display?.icon || actionConnector?.(index)?.icon || "",
   }));
 
   const actionValue = actionOptions?.find(
     (opt) =>
-      opt.value === (workflow?.actions[0] && workflow?.actions[0].operation) ||
-      ""
+      opt.value ===
+        (workflow?.actions[index] && workflow?.actions[index].operation) || ""
   );
 
   const handleTriggerConnectorChange = (val: any) => {
@@ -86,10 +87,10 @@ const ConnectorsSelector = (props: Props) => {
 
   const handleActionConnectorChange = (val: any) => {
     updateWorkflow?.({
-      "actions[0].connector": val?.value || "",
-      "actions[0].input": {},
-      "actions[0].operation": "",
-      "actions[0].credentials": undefined,
+      ["actions[" + index + "].connector"]: val?.value || "",
+      ["actions[" + index + "].input"]: {},
+      ["actions[" + index + "].operation"]: "",
+      ["actions[" + index + "].credentials"]: undefined,
     });
   };
 
@@ -102,8 +103,8 @@ const ConnectorsSelector = (props: Props) => {
 
   const handleActionChange = (val: any) => {
     updateWorkflow?.({
-      "actions[0].operation": val?.value || "",
-      "actions[0].input": {},
+      ["actions[" + index + "].operation"]: val?.value || "",
+      ["actions[" + index + "].input"]: {},
     });
   };
 

@@ -13,7 +13,7 @@
         "instructions": ""
       },
       "operation": {
-        "type": "blockchain:call",
+        "type": "blockchain:event",
         "accounts": ["eip155:1:0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"],
         "signature": "submitVote(uint256,uint8)",
         "arguments": [],

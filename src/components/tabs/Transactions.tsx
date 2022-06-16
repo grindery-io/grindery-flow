@@ -331,12 +331,11 @@ const Transactions = (props: Props) => {
         : item.type.charAt(0).toUpperCase() + item.type.slice(1);
 
     return (
-      <>
+      <React.Fragment key={item.id}>
         <DataBox
           onClick={() => {
             setDialog(item.id);
           }}
-          key={item.id}
           size="small"
           LeftComponent={
             <ItemTitleWrapper>
@@ -397,7 +396,7 @@ const Transactions = (props: Props) => {
             }}
           />
         </DialogBox>
-      </>
+      </React.Fragment>
     );
   };
 
@@ -415,6 +414,7 @@ const Transactions = (props: Props) => {
           activeColor="#8C30F5"
           type="text"
           tabColor=""
+          variant="scrollable"
         />
       </TabsWrapper>
       <Wrapper>
@@ -430,7 +430,7 @@ const Transactions = (props: Props) => {
         </SearchWrapper>
         <GroupsWrapper>
           {Object.keys(orderedGroups).map((key) => (
-            <div>
+            <div key={key}>
               <GroupTitleWrapper>
                 <GroupTitle>
                   {moment(parseInt(key)).format("DD MMMM YYYY")}

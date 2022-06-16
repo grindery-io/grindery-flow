@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { Text, Button } from "grindery-ui";
-import { useAppContext } from "../../context/AppContext";
 import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
 import TriggerInputField from "./TriggerInputField";
 import { formatWorkflow, getParameterByName, jsonrpcObj } from "../../utils";
+import { useWorkflowContext } from "../../context/WorkflowContext";
+import ChainSelector from "./ChainSelector";
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -65,7 +66,7 @@ const TriggerConfiguration = (props: Props) => {
     triggerIsConfigured,
     connectors,
     setConnectors,
-  } = useAppContext();
+  } = useWorkflowContext();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -225,11 +226,6 @@ const TriggerConfiguration = (props: Props) => {
               );
             }
             if (res && res.data && res.data.result) {
-              console.log(
-                "grinderyNexusConnectorUpdateFields data",
-                res.data.result
-              );
-
               if (res.data.result.inputFields && connectors) {
                 setConnectors?.([
                   ...connectors.map((connector) => {
@@ -279,8 +275,6 @@ const TriggerConfiguration = (props: Props) => {
     }
   };
 
-  console.log("connectors", connectors);
-
   const handleContinueClick = () => {
     setActiveStep?.(3);
   };
@@ -291,6 +285,12 @@ const TriggerConfiguration = (props: Props) => {
       "trigger.credentials": undefined,
     });
     handleAuthClick();
+  };
+
+  const handleChainChange = (val: any) => {
+    updateWorkflow?.({
+      "trigger.input.blockchain": val?.value || "",
+    });
   };
 
   const workflowTriggerCredentials = workflow?.trigger.credentials;
@@ -368,6 +368,12 @@ const TriggerConfiguration = (props: Props) => {
 
       {triggerIsAuthenticated && (
         <div style={{ marginTop: 40 }}>
+          {trigger.operation.type === "blockchain:event" && (
+            <ChainSelector
+              value={workflow?.trigger.input.blockchain || ""}
+              onChange={handleChainChange}
+            />
+          )}
           {inputFields.map((inputField: Field) => (
             <TriggerInputField
               inputField={inputField}
