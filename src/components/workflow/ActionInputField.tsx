@@ -34,7 +34,7 @@ const ActionInputField = ({ inputField, options, index }: Props) => {
     workflowValue
       ? workflowValue
           ?.toString()
-          .split("{{;}}")
+          .split(" ")
           .map(
             (v) =>
               options.find((o: any) => o.value === v) || { value: v, label: v }
@@ -50,7 +50,7 @@ const ActionInputField = ({ inputField, options, index }: Props) => {
 
   useEffect(() => {
     const wfValue = Array.isArray(val)
-      ? val.map((v) => (v.value ? v.value : v)).join("{{;}}")
+      ? val.map((v) => (v.value ? v.value : v)).join(" ")
       : val.value
       ? val.value
       : val;

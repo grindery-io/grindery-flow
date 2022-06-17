@@ -27,6 +27,8 @@ export const ICONS: { [key: string]: string } = {
   CLOSE: "/images/icons/close.svg",
   PLUS_WHITE: "/images/icons/plus-white.svg",
   GAS_ALERT: "/images/icons/gas-alert.svg",
+  SUCCESS_ALERT: "/images/icons/success-alert.svg",
+  ERROR_ALERT: "/images/icons/error-alert.svg",
   // CHAINS
   CHAIN_ETHEREUM: "/images/icons/ethereum.svg",
   CHAIN_ARBITRUM: "/images/icons/arbitrum.svg",

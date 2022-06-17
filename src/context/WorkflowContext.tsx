@@ -3,8 +3,9 @@ import _ from "lodash";
 import axios from "axios";
 import { Workflow } from "../types/Workflow";
 import { Action, Connector, Field } from "../types/Connector";
-import { formatWorkflow, jsonrpcObj, replaceTokens } from "../utils";
+import { jsonrpcObj } from "../utils";
 import { WORKFLOW_ENGINE_URL } from "../constants";
+import { useAppContext } from "./AppContext";
 
 type WorkflowContextProps = {
   connectors?: Connector[];
@@ -15,6 +16,7 @@ type WorkflowContextProps = {
   triggerIsSet: boolean;
   actionIsSet: (i: number) => boolean;
   triggerIsAuthenticated: boolean;
+  actionIsAuthenticated: (i: number) => boolean;
   triggerIsConfigured: boolean;
   trigger: any;
   availableTriggers: any[];
@@ -25,15 +27,21 @@ type WorkflowContextProps = {
   triggerConnectorIsSet: boolean;
   actionConnectorIsSet: (i: number) => boolean;
   triggerAuthenticationIsRequired: boolean;
-  triggerAuthenticationFields: any[];
+  actionAuthenticationIsRequired: (i: number) => boolean;
   updateWorkflow: (a: any) => void;
   actionIsConfigured: (i: number) => boolean;
-  activeStep: number;
+  activeStep: number | string;
   setActiveStep: (a: any) => void;
-  testWorkflowAction: (a: number) => { [key: string]: any } | void;
   resetWorkflow: () => void;
   setConnectors: (a: Connector[]) => void;
   requiredActionFields: (i: number) => string[];
+  saveWorkflow: () => void;
+  loading: boolean;
+  setLoading: (a: boolean) => void;
+  error?: string | null;
+  setError: (a: string) => void;
+  success: string | null;
+  setSuccess: (a: string) => void;
 };
 
 type WorkflowContextProviderProps = {
@@ -49,6 +57,8 @@ export const WorkflowContextProvider = ({
   children,
   availableConnectors,
 }: WorkflowContextProviderProps) => {
+  const { setWorkflowOpened, getWorkflowsList } = useAppContext();
+
   // loaded nexus connectors CDS
   const [connectors, setConnectors] = useState<Connector[]>(
     availableConnectors || []
@@ -77,8 +87,17 @@ export const WorkflowContextProvider = ({
   // workflow state
   const [workflow, setWorkflow] = useState<Workflow>(blankWorkflow);
 
+  // is data loading
+  const [loading, setLoading] = useState(false);
+
+  // error message
+  const [error, setError] = useState<string | null>(null);
+
+  // success message
+  const [success, setSuccess] = useState<string | null>(null);
+
   // active workflow builde step
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState<string | number>(1);
 
   // filter connectors that has triggers
   const connectorsWithTriggers = connectors?.filter(
@@ -166,19 +185,15 @@ export const WorkflowContextProvider = ({
   // chech if trigger is authenticated (if required)
   const triggerIsAuthenticated = Boolean(
     (triggerConnector && !triggerConnector.authentication) ||
-      (workflow &&
-        workflow.trigger &&
-        workflow.trigger.input &&
-        workflow.trigger.credentials &&
-        triggerConnector &&
-        triggerConnector.authentication &&
-        triggerConnector.authentication.fields &&
-        triggerConnector.authentication.fields.length > 0 &&
-        triggerConnector.authentication.fields[0].key &&
-        workflow.trigger.credentials[
-          triggerConnector.authentication.fields[0].key
-        ])
+      (workflow?.trigger?.credentials && triggerConnector?.authentication)
   );
+
+  const actionIsAuthenticated = (index: number) =>
+    Boolean(
+      (actionConnector(index) && !actionConnector(index)?.authentication) ||
+        (workflow?.actions[index]?.credentials &&
+          actionConnector(index)?.authentication)
+    );
 
   // list trigger's required field names
   const requiredTriggerFields =
@@ -262,16 +277,9 @@ export const WorkflowContextProvider = ({
     triggerConnector && triggerConnector.authentication
   );
 
-  // list trigger's authentication field names
-  const triggerAuthenticationFields =
-    (triggerConnector &&
-      triggerConnector.authentication &&
-      triggerConnector.authentication.fields &&
-      triggerConnector.authentication.fields.length > 0 &&
-      triggerConnector.authentication.fields.map(
-        (field: { key: any }) => field && field.key
-      )) ||
-    [];
+  // check if action authentication is required
+  const actionAuthenticationIsRequired = (index: number) =>
+    Boolean(actionConnector(index) && actionConnector(index)?.authentication);
 
   // update current workflow
   const updateWorkflow = (data: any) => {
@@ -288,47 +296,41 @@ export const WorkflowContextProvider = ({
     setActiveStep(1);
   };
 
-  // test current workflow's action by sending request to the workflow engine
-  const testWorkflowAction = (index: number) => {
+  const saveWorkflow = () => {
     if (workflow) {
       const readyWorkflow = {
-        ...formatWorkflow(workflow),
-        signature: JSON.stringify(formatWorkflow(workflow)),
+        ...workflow,
+        signature: JSON.stringify(workflow),
       };
       if (window.location.origin.includes("http://localhost")) {
         console.log("readyWorkflow", readyWorkflow);
       }
-      if (readyWorkflow.actions && readyWorkflow.actions[index]) {
-        const currentAction = readyWorkflow.actions[index];
-        const testInputValues: any = replaceTokens(currentAction.input || {}, {
-          trigger: trigger?.operation?.sample || {},
+      setError(null);
+      setSuccess(null);
+      setLoading?.(true);
+      axios
+        .post(
+          WORKFLOW_ENGINE_URL,
+          jsonrpcObj("or_createWorkflow", {
+            userAccountId: readyWorkflow.creator,
+            workflow: readyWorkflow,
+          })
+        )
+        .then((res) => {
+          if (res && res.data && res.data.error) {
+            setError(res.data.error.message || null);
+          }
+          if (res && res.data && res.data.result) {
+            getWorkflowsList?.();
+            setWorkflowOpened?.(false);
+            resetWorkflow?.();
+          }
+          setLoading?.(false);
+        })
+        .catch((err) => {
+          setError(err.message || null);
+          setLoading?.(false);
         });
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const testEngine = urlParams.get("testEngine");
-        if (testEngine && testEngine === "1") {
-          axios
-            .post(
-              WORKFLOW_ENGINE_URL,
-              jsonrpcObj("or_testAction", {
-                userAccountId: readyWorkflow.creator,
-                step: currentAction,
-                input: testInputValues,
-              })
-            )
-            .then((res) => {
-              if (res && res.data && res.data.error) {
-                console.log("or_testAction error", res.data.error);
-              }
-              if (res && res.data && res.data.result) {
-                console.log("or_testAction data", res.data.result);
-              }
-            })
-            .catch((err) => {
-              console.log("or_testAction error", err);
-            });
-        }
-      }
     }
   };
 
@@ -347,6 +349,7 @@ export const WorkflowContextProvider = ({
   }, [user]);
 
   if (window.location.origin.includes("http://localhost")) {
+    console.log("connectors", connectors);
     console.log("workflow", workflow);
   }
 
@@ -361,6 +364,7 @@ export const WorkflowContextProvider = ({
         triggerIsSet,
         actionIsSet,
         triggerIsAuthenticated,
+        actionIsAuthenticated,
         triggerIsConfigured,
         trigger,
         availableTriggers,
@@ -371,15 +375,21 @@ export const WorkflowContextProvider = ({
         triggerConnectorIsSet,
         actionConnectorIsSet,
         triggerAuthenticationIsRequired,
-        triggerAuthenticationFields,
         updateWorkflow,
         actionIsConfigured,
         activeStep,
         setActiveStep,
-        testWorkflowAction,
         resetWorkflow,
         setConnectors,
         requiredActionFields,
+        saveWorkflow,
+        loading,
+        setLoading,
+        error,
+        setError,
+        success,
+        setSuccess,
+        actionAuthenticationIsRequired,
       }}
     >
       {children}

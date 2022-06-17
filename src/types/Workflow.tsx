@@ -1,5 +1,5 @@
 export type Workflow = {
-  id?: any;
+  key?: any;
   title: string;
   trigger: Operation;
   actions: Operation[];

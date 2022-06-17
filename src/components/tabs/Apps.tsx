@@ -132,14 +132,7 @@ const Apps = (props: Props) => {
             RightComponent={
               <AppCountersWrapper>
                 <AppCounter>
-                  <Text
-                    variant="caption"
-                    value={
-                      <AppCounterValue>
-                        {item.workflows.toString()}
-                      </AppCounterValue>
-                    }
-                  />
+                  <AppCounterValue>{item.workflows.toString()}</AppCounterValue>
                   <span style={{ color: "#758796", height: "17px" }}>
                     <Text variant="caption" value="Workflows" />
                   </span>

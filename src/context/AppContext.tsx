@@ -1,13 +1,14 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
+import axios from "axios";
 import { useViewerConnection } from "@self.id/react";
 import { Workflow } from "../types/Workflow";
-import { RIGHTBAR_TABS } from "../constants";
+import { RIGHTBAR_TABS, WORKFLOW_ENGINE_URL } from "../constants";
+import { Connector } from "../types/Connector";
+import { jsonrpcObj } from "../utils";
 
 import gsheetConnector from "../samples/connectors/gsheet.json";
 import moloch from "../samples/connectors/moloch.json";
-import helloworldConnector from "../samples/connectors/helloworld.json";
 import sendgrid from "../samples/connectors/sendgrid.json";
-import { Connector } from "../types/Connector";
 
 type ContextProps = {
   user: any;
@@ -23,6 +24,7 @@ type ContextProps = {
   workflows: Workflow[];
   setWorkflows: (a: Workflow[]) => void;
   connectors: Connector[];
+  getWorkflowsList: () => void;
 };
 
 type AppContextProps = {
@@ -50,7 +52,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   // workflow builder opened
   const [workflowOpened, setWorkflowOpened] = useState(false);
 
-  const connectors = [helloworldConnector, gsheetConnector, moloch, sendgrid];
+  const connectors = [gsheetConnector, moloch, sendgrid];
 
   // change current active tab
   const changeTab = (name: string) => {
@@ -58,6 +60,48 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       (RIGHTBAR_TABS.find((tab) => tab.name === name) || { id: 0 }).id
     );
   };
+
+  const getWorkflowsList = () => {
+    axios
+      .post(
+        WORKFLOW_ENGINE_URL,
+        jsonrpcObj("or_listWorkflows", {
+          userAccountId: user,
+        })
+      )
+      .then((res) => {
+        if (res && res.data && res.data.error) {
+          console.log("or_listWorkflows error", res.data.error);
+        }
+        if (res && res.data && res.data.result) {
+          setWorkflows(
+            res.data.result
+              .map((result: any) => ({
+                ...result.workflow,
+                state: "on",
+                key: result.key,
+              }))
+              .filter((workflow: Workflow) => workflow)
+          );
+        }
+      })
+      .catch((err) => {
+        console.log("or_listWorkflows error", err);
+      });
+  };
+
+  const clearWorkflows = () => {
+    setWorkflows([]);
+  };
+
+  useEffect(() => {
+    if (user) {
+      getWorkflowsList();
+    } else {
+      clearWorkflows();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   // set user id on success authentication
   useEffect(() => {
@@ -85,6 +129,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         workflows,
         setWorkflows,
         connectors,
+        getWorkflowsList,
       }}
     >
       {children}

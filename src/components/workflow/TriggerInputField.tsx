@@ -4,7 +4,7 @@ import axios from "axios";
 import { debounce } from "throttle-debounce";
 import { SelectInput, InputBox } from "grindery-ui";
 import { Field } from "../../types/Connector";
-import { formatWorkflow, jsonrpcObj } from "../../utils";
+import { jsonrpcObj } from "../../utils";
 import { useWorkflowContext } from "../../context/WorkflowContext";
 
 const InputWrapper = styled.div`
@@ -19,11 +19,9 @@ const InputWrapper = styled.div`
 
 type Props = {
   inputField: Field;
-  loading: boolean;
-  setLoading: (a: boolean) => void;
 };
 
-const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
+const TriggerInputField = ({ inputField }: Props) => {
   const {
     trigger,
     triggerConnector,
@@ -31,6 +29,7 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
     updateWorkflow,
     setConnectors,
     connectors,
+    setLoading,
   } = useWorkflowContext();
   const [valChanged, setValChanged] = useState(false);
 
@@ -68,7 +67,7 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
   );
 
   const handleFieldChange = (e: any) => {
-    setLoading(true);
+    setLoading?.(true);
     setVal(
       (inputField.type === "string" || inputField.type === "number") &&
         !fieldOptions
@@ -89,14 +88,13 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
         trigger.operation.inputFieldProviderUrl
       ) {
         if (workflow) {
-          const formattedWorkflow = formatWorkflow(workflow);
           axios
             .post(
               trigger.operation.inputFieldProviderUrl,
               jsonrpcObj("grinderyNexusConnectorUpdateFields", {
                 key: trigger.key,
-                fieldData: formattedWorkflow?.trigger.input,
-                credentials: formattedWorkflow?.trigger.credentials,
+                fieldData: workflow?.trigger.input,
+                credentials: workflow?.trigger.credentials,
               })
             )
             .then((res) => {
@@ -144,15 +142,15 @@ const TriggerInputField = ({ inputField, loading, setLoading }: Props) => {
                   }),
                 ]);
               }
-              setLoading(false);
+              setLoading?.(false);
             })
             .catch((err) => {
               console.log("grinderyNexusConnectorUpdateFields error", err);
-              setLoading(false);
+              setLoading?.(false);
             });
         }
       } else {
-        setLoading(false);
+        setLoading?.(false);
       }
       setValChanged(false);
     }),

@@ -7,6 +7,7 @@ export type Connector = {
   actions?: Action[];
   authentication?: Authentication;
   icon?: string;
+  pricing?: string;
 };
 
 // Triggers

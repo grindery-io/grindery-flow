@@ -25,32 +25,6 @@
       "method": "GET",
       "url": "https://www.googleapis.com/oauth2/v3/userinfo"
     },
-    "fields": [
-      {
-        "key": "access_token",
-        "type": "string",
-        "required": true,
-        "computed": true
-      },
-      {
-        "key": "token_type",
-        "type": "string",
-        "required": true,
-        "computed": true
-      },
-      {
-        "key": "scope",
-        "type": "string",
-        "required": true,
-        "computed": true
-      },
-      {
-        "key": "refresh_token",
-        "type": "string",
-        "required": true,
-        "computed": true
-      }
-    ],
     "oauth2Config": {
       "authorizeUrl": {
         "method": "GET",

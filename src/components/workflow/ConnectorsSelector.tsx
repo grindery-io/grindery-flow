@@ -142,7 +142,7 @@ const ConnectorsSelector = (props: Props) => {
         />
       </div>
 
-      {triggerConnectorIsSet && actionConnectorIsSet && (
+      {triggerConnectorIsSet && actionConnectorIsSet?.(index) && (
         <div>
           <div style={{ marginTop: 40 }}>
             <SelectInput
@@ -166,7 +166,7 @@ const ConnectorsSelector = (props: Props) => {
           </div>
         </div>
       )}
-      {triggerIsSet && actionIsSet && (
+      {triggerIsSet && actionIsSet?.(index) && (
         <div style={{ marginTop: 30 }}>
           <Button onClick={handleContinueClick} value="Continue" />
         </div>

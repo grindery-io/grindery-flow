@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { Text, Button } from "grindery-ui";
+import { CircularProgress, Text, Button } from "grindery-ui";
 import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
 import TriggerInputField from "./TriggerInputField";
-import { formatWorkflow, getParameterByName, jsonrpcObj } from "../../utils";
+import { getParameterByName, jsonrpcObj } from "../../utils";
 import { useWorkflowContext } from "../../context/WorkflowContext";
 import ChainSelector from "./ChainSelector";
 
@@ -36,6 +36,10 @@ const AccountWrapper = styled.div`
   margin-top: 40px;
   text-align: left;
   margin-bottom: 40px;
+
+  & .MuiButton-root {
+    width: 100%;
+  }
 `;
 
 const AccountNameWrapper = styled.div`
@@ -57,7 +61,6 @@ const TriggerConfiguration = (props: Props) => {
     workflow,
     updateWorkflow,
     trigger,
-    triggerAuthenticationFields,
     triggerAuthenticationIsRequired,
     triggerIsAuthenticated,
     triggerConnector,
@@ -66,9 +69,10 @@ const TriggerConfiguration = (props: Props) => {
     triggerIsConfigured,
     connectors,
     setConnectors,
+    loading,
+    setLoading,
   } = useWorkflowContext();
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const inputFields =
     (trigger &&
@@ -114,13 +118,8 @@ const TriggerConfiguration = (props: Props) => {
             },
           })
             .then((res) => {
-              if (res && res.data && triggerAuthenticationFields) {
-                const credentials = Object.fromEntries(
-                  triggerAuthenticationFields.map((field) => [
-                    field,
-                    res.data[field] || "",
-                  ])
-                );
+              if (res && res.data) {
+                const credentials = res.data;
                 testAuth(credentials);
               }
             })
@@ -171,51 +170,43 @@ const TriggerConfiguration = (props: Props) => {
   };
 
   const handleAuthClick = () => {
-    if (triggerAuthenticationFields && triggerAuthenticationFields.length > 0) {
-      if (
-        triggerConnector &&
-        triggerConnector.authentication &&
-        triggerConnector.authentication.type &&
-        triggerConnector.authentication.type === "oauth2"
-      ) {
-        window.removeEventListener("message", receiveMessage, false);
-        const width = 375,
-          height = 500,
-          left = window.screen.width / 2 - width / 2,
-          top = window.screen.height / 2 - height / 2;
-        let windowObjectReference = window.open(
-          triggerConnector.authentication.oauth2Config.authorizeUrl.url +
-            "&redirect_uri=" +
-            window.location.origin +
-            "/auth",
-          "_blank",
-          "status=no, toolbar=no, menubar=no, width=" +
-            width +
-            ", height=" +
-            height +
-            ", top=" +
-            top +
-            ", left=" +
-            left
-        );
-        windowObjectReference?.focus();
-        window.addEventListener("message", receiveMessage, false);
-      }
+    if (triggerConnector?.authentication?.type === "oauth2") {
+      window.removeEventListener("message", receiveMessage, false);
+      const width = 375,
+        height = 500,
+        left = window.screen.width / 2 - width / 2,
+        top = window.screen.height / 2 - height / 2;
+      let windowObjectReference = window.open(
+        triggerConnector.authentication.oauth2Config.authorizeUrl.url +
+          "&redirect_uri=" +
+          window.location.origin +
+          "/auth",
+        "_blank",
+        "status=no, toolbar=no, menubar=no, width=" +
+          width +
+          ", height=" +
+          height +
+          ", top=" +
+          top +
+          ", left=" +
+          left
+      );
+      windowObjectReference?.focus();
+      window.addEventListener("message", receiveMessage, false);
     }
   };
 
   const updateFieldsDefinition = () => {
     if (trigger.operation.inputFieldProviderUrl) {
       if (workflow) {
-        setLoading(true);
-        const formattedWorkflow = formatWorkflow(workflow);
+        setLoading?.(true);
         axios
           .post(
             trigger.operation.inputFieldProviderUrl,
             jsonrpcObj("grinderyNexusConnectorUpdateFields", {
               key: trigger.key,
               fieldData: {},
-              credentials: formattedWorkflow?.trigger.credentials,
+              credentials: workflow.trigger.credentials,
             })
           )
           .then((res) => {
@@ -265,11 +256,11 @@ const TriggerConfiguration = (props: Props) => {
                 ]);
               }
             }
-            setLoading(false);
+            setLoading?.(false);
           })
           .catch((err) => {
             console.log("grinderyNexusConnectorUpdateFields error", err);
-            setLoading(false);
+            setLoading?.(false);
           });
       }
     }
@@ -375,13 +366,15 @@ const TriggerConfiguration = (props: Props) => {
             />
           )}
           {inputFields.map((inputField: Field) => (
-            <TriggerInputField
-              inputField={inputField}
-              key={inputField.key}
-              loading={loading}
-              setLoading={setLoading}
-            />
+            <TriggerInputField inputField={inputField} key={inputField.key} />
           ))}
+          {loading && (
+            <div
+              style={{ marginTop: 40, textAlign: "center", color: "#8C30F5" }}
+            >
+              <CircularProgress color="inherit" />
+            </div>
+          )}
           {triggerIsConfigured && !loading && (
             <div style={{ marginTop: 40 }}>
               <Button onClick={handleContinueClick} value="Continue" />

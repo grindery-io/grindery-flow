@@ -19,22 +19,6 @@ export const getParameterByName = (
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
 
-export function replaceSystemTokens<T>(obj: T): T {
-  if (typeof obj === "string") {
-    return obj.replace("{{;}}", " ") as unknown as T;
-  }
-  if (typeof obj === "object") {
-    if (Array.isArray(obj)) {
-      return obj.map((item) => replaceSystemTokens(item)) as unknown as T;
-    }
-    return Object.entries(obj).reduce((acc: any, [key, value]) => {
-      acc[key] = replaceSystemTokens(value);
-      return acc;
-    }, {} as T);
-  }
-  return obj;
-}
-
 export function replaceTokens<T>(
   obj: T,
   context: { [key: string]: unknown }
@@ -55,22 +39,6 @@ export function replaceTokens<T>(
   }
   return obj;
 }
-
-export const formatWorkflow = (workflow: Workflow) => {
-  return {
-    ...workflow,
-    trigger: {
-      ...workflow.trigger,
-      input: replaceSystemTokens(workflow.trigger.input),
-    },
-    actions: [
-      ...workflow.actions.map((action) => ({
-        ...action,
-        input: replaceSystemTokens(action.input),
-      })),
-    ],
-  };
-};
 
 export const getOutputOptions = (
   operation: TriggerOperation | ActionOperation,

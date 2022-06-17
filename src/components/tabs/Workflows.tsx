@@ -93,25 +93,11 @@ const ItemActionsWrapper = styled.div`
   gap: 10px;
 `;
 
-const Truncate = styled.span`
-  display: inline-block;
-  max-width: 150px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  line-height: 1;
-`;
-
 type Props = {};
 
 const Workflows = (props: Props) => {
-  const {
-    workflows,
-    setWorkflows,
-    workflowOpened,
-    connectors,
-    setWorkflowOpened,
-  } = useAppContext();
+  const { workflows, workflowOpened, connectors, setWorkflowOpened } =
+    useAppContext();
   const items = workflows || [];
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -139,7 +125,7 @@ const Workflows = (props: Props) => {
 
     return (
       <DataBox
-        key={item.id}
+        key={item.key}
         size="small"
         LeftComponent={
           <ItemTitleWrapper>
@@ -152,39 +138,17 @@ const Workflows = (props: Props) => {
 
               {actionsIcons.length > 0 &&
                 actionsIcons.map((icon: any, i2: number) => (
-                  <ItemAppWrapper key={item.id + i2}>
+                  <ItemAppWrapper key={item.key + i2}>
                     <ItemAppIcon src={icon} alt="action app icon" />
                   </ItemAppWrapper>
                 ))}
             </ItemAppsWrapper>
-            <Title>
-              <Truncate>
-                {item.trigger.input[Object.keys(item.trigger.input)[0]]}
-              </Truncate>
-              <br />
-              <Truncate>
-                {item.actions[0].input[Object.keys(item.actions[0].input)[0]]}
-              </Truncate>
-            </Title>
+            <Title>{item.title}</Title>
           </ItemTitleWrapper>
         }
         RightComponent={
           <ItemActionsWrapper>
-            <SwitchInput
-              value={item.state === "on"}
-              onChange={() => {
-                setWorkflows?.([
-                  ...items.map((itm) =>
-                    itm.id === item.id
-                      ? {
-                          ...itm,
-                          state: item.state === "on" ? "off" : "on",
-                        }
-                      : itm
-                  ),
-                ]);
-              }}
-            />
+            <SwitchInput value={item.state === "on"} onChange={() => {}} />
           </ItemActionsWrapper>
         }
       />

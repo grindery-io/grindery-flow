@@ -5,6 +5,7 @@ import { useAppContext } from "../../context/AppContext";
 import TriggerConfiguration from "./TriggerConfiguration";
 import WorkflowProgress from "./WorkflowProgress";
 import { useWorkflowContext } from "../../context/WorkflowContext";
+import ActionTest from "./ActionTest";
 
 type Props = {};
 
@@ -16,6 +17,7 @@ const WorkflowSteps = (props: Props) => {
     triggerIsAuthenticated,
     triggerIsConfigured,
     resetWorkflow,
+    activeStep,
   } = useWorkflowContext();
 
   const closeConstructor = () => {
@@ -25,19 +27,19 @@ const WorkflowSteps = (props: Props) => {
 
   return (
     <div>
-      <WorkflowProgress />
-      <ConnectorsSelector step={1} index={0} />
-      {triggerIsSet && actionIsSet && <TriggerConfiguration step={2} />}
-      {triggerIsSet &&
-        actionIsSet &&
-        triggerIsAuthenticated &&
-        triggerIsConfigured && (
-          <ActionConfiguration
-            index={0}
-            step={3}
-            closeConstructor={closeConstructor}
-          />
-        )}
+      {typeof activeStep === "number" ? (
+        <>
+          <WorkflowProgress />
+          <ConnectorsSelector step={1} index={0} />
+          {triggerIsSet && actionIsSet && <TriggerConfiguration step={2} />}
+          {triggerIsSet &&
+            actionIsSet &&
+            triggerIsAuthenticated &&
+            triggerIsConfigured && <ActionConfiguration index={0} step={3} />}
+        </>
+      ) : (
+        <>{activeStep === "actionTest" && <ActionTest index={0} />}</>
+      )}
     </div>
   );
 };
