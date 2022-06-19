@@ -1,6 +1,13 @@
 import React from "react";
+import styled from "styled-components";
 import { Text, SelectInput, AutoCompleteInput, Button } from "grindery-ui";
 import { useWorkflowContext } from "../../context/WorkflowContext";
+
+const InputWrapper = styled.div`
+  & .paid-label {
+    margin-left: auto;
+  }
+`;
 
 type Props = {
   step: number;
@@ -30,6 +37,7 @@ const ConnectorsSelector = (props: Props) => {
     value: connector.key,
     label: connector.name,
     icon: connector.icon,
+    paid: connector.pricing,
   }));
 
   const triggerConnectorValue = triggerConnectorOptions?.find(
@@ -42,6 +50,7 @@ const ConnectorsSelector = (props: Props) => {
     value: connector.key,
     label: connector.name,
     icon: connector.icon,
+    paid: connector.pricing,
   }));
 
   const actionConnectorValue = actionConnectorOptions?.find(
@@ -122,24 +131,28 @@ const ConnectorsSelector = (props: Props) => {
         <Text variant="h3" value="Connect (d)Apps"></Text>
       </div>
       <div style={{ marginTop: 40 }}>
-        <AutoCompleteInput
-          label="This..."
-          size="full"
-          placeholder="Select a Trigger"
-          onChange={handleTriggerConnectorChange}
-          options={triggerConnectorOptions}
-          value={triggerConnectorValue ? [triggerConnectorValue] : []}
-        />
+        <InputWrapper>
+          <AutoCompleteInput
+            label="This..."
+            size="full"
+            placeholder="Select a Trigger"
+            onChange={handleTriggerConnectorChange}
+            options={triggerConnectorOptions}
+            value={triggerConnectorValue ? [triggerConnectorValue] : []}
+          />
+        </InputWrapper>
       </div>
       <div style={{ marginTop: 10 }}>
-        <AutoCompleteInput
-          label="With..."
-          size="full"
-          placeholder="Search for protocol"
-          onChange={handleActionConnectorChange}
-          options={actionConnectorOptions}
-          value={actionConnectorValue ? [actionConnectorValue] : []}
-        />
+        <InputWrapper>
+          <AutoCompleteInput
+            label="With..."
+            size="full"
+            placeholder="Search for protocol"
+            onChange={handleActionConnectorChange}
+            options={actionConnectorOptions}
+            value={actionConnectorValue ? [actionConnectorValue] : []}
+          />
+        </InputWrapper>
       </div>
 
       {triggerConnectorIsSet && actionConnectorIsSet?.(index) && (

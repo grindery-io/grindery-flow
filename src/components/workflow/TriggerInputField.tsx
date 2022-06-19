@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { debounce } from "throttle-debounce";
-import { SelectInput, InputBox } from "grindery-ui";
+import { RichInput, SelectInput } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import { jsonrpcObj } from "../../utils";
 import { useWorkflowContext } from "../../context/WorkflowContext";
+import { useAppContext } from "../../context/AppContext";
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -32,6 +33,12 @@ const TriggerInputField = ({ inputField }: Props) => {
     setLoading,
   } = useWorkflowContext();
   const [valChanged, setValChanged] = useState(false);
+  const { user } = useAppContext();
+
+  const cachedAddressBook = localStorage.getItem("gr_addressBook__" + user);
+  const [addressBook, setAddressBook] = React.useState(
+    cachedAddressBook ? JSON.parse(cachedAddressBook) : []
+  );
 
   const fieldOptions = inputField.choices?.map((choice) => ({
     value: typeof choice !== "string" ? choice.value : choice,
@@ -76,6 +83,12 @@ const TriggerInputField = ({ inputField }: Props) => {
           : e?.target.value || ""
         : e
     );
+    setValChanged(true);
+  };
+
+  const handleRichInputFieldChange = (richInputValue: string) => {
+    setLoading?.(true);
+    setVal(richInputValue.trim());
     setValChanged(true);
   };
 
@@ -194,14 +207,19 @@ const TriggerInputField = ({ inputField }: Props) => {
         <InputWrapper>
           {(inputField.type === "number" ||
             (inputField.type === "string" && !inputField.choices)) && (
-            <InputBox
+            <RichInput
               value={val || ""}
               label={inputField.label || ""}
               placeholder={inputField.placeholder || ""}
               tooltip={inputField.helpText}
               required={!!inputField.required}
-              onChange={handleFieldChange}
-            ></InputBox>
+              onChange={handleRichInputFieldChange}
+              user={user}
+              hasAddressBook={inputField.useAddressBook}
+              options={[]}
+              addressBook={addressBook}
+              setAddressBook={setAddressBook}
+            ></RichInput>
           )}
           {inputField.type === "boolean" && (
             <SelectInput

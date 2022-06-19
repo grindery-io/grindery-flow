@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "platformVersion": "1.0.0",
   "triggers": [],
+  "pricing": "https://google.com",
   "actions": [
     {
       "key": "sendEmail",

@@ -58,6 +58,7 @@ export const getOutputOptions = (
                   label: `${outputField.label || outputField.key}[${i}]`,
                   reference: sample,
                   icon: connector.icon || "",
+                  group: connector.name,
                 }))
               : [];
           } else {
@@ -66,6 +67,7 @@ export const getOutputOptions = (
               label: outputField.label || outputField.key,
               reference: operation.sample?.[outputField.key],
               icon: connector.icon || "",
+              group: connector.name,
             };
           }
         })

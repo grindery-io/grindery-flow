@@ -10,6 +10,7 @@ import GasInput from "./GasInput";
 import { ICONS } from "../../constants";
 import axios from "axios";
 import Check from "../icons/Check";
+import { useAppContext } from "../../context/AppContext";
 
 const Wrapper = styled.div`
   padding: 20px 20px 40px;
@@ -58,6 +59,7 @@ type Props = {
 
 const ActionConfiguration = (props: Props) => {
   const { index, step } = props;
+  const { user } = useAppContext();
   const {
     action,
     trigger,
@@ -81,6 +83,11 @@ const ActionConfiguration = (props: Props) => {
 
   const inputFields = (action?.(index)?.operation?.inputFields || []).filter(
     (inputField: Field) => inputField && !inputField.computed
+  );
+
+  const cachedAddressBook = localStorage.getItem("gr_addressBook__" + user);
+  const [addressBook, setAddressBook] = React.useState(
+    cachedAddressBook ? JSON.parse(cachedAddressBook) : []
   );
 
   const options = getOutputOptions(trigger.operation, triggerConnector);
@@ -413,6 +420,8 @@ const ActionConfiguration = (props: Props) => {
               inputField={inputField}
               options={options}
               index={index}
+              addressBook={addressBook}
+              setAddressBook={setAddressBook}
             />
           ))}
           {loading && (

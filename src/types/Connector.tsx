@@ -172,6 +172,7 @@ export type Field = {
   computed?: boolean;
   updateFieldDefinition?: boolean;
   inputFormat?: string;
+  useAddressBook?: boolean;
 };
 
 export type FieldChoice =

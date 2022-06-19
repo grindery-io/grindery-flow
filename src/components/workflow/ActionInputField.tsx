@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { AutoCompleteInput, SelectInput } from "grindery-ui";
+import { RichInput, SelectInput } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import { useWorkflowContext } from "../../context/WorkflowContext";
+import { useAppContext } from "../../context/AppContext";
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -18,9 +19,18 @@ type Props = {
   inputField: Field;
   options: any;
   index: any;
+  addressBook: any;
+  setAddressBook?: (i: any) => void;
 };
 
-const ActionInputField = ({ inputField, options, index }: Props) => {
+const ActionInputField = ({
+  inputField,
+  options,
+  index,
+  addressBook,
+  setAddressBook,
+}: Props) => {
+  const { user } = useAppContext();
   const { updateWorkflow, workflow } = useWorkflowContext();
 
   const fieldOptions = inputField.choices?.map((choice) => ({
@@ -30,34 +40,34 @@ const ActionInputField = ({ inputField, options, index }: Props) => {
   }));
 
   const workflowValue = workflow?.actions[index].input[inputField.key];
-  const [val, setVal]: any = useState(
-    workflowValue
-      ? workflowValue
-          ?.toString()
-          .split(" ")
-          .map(
-            (v) =>
-              options.find((o: any) => o.value === v) || { value: v, label: v }
-          )
-      : inputField.default
-      ? [{ value: inputField.default, label: inputField.default }]
-      : []
-  );
+  const [val, setVal]: any = useState(workflowValue || "");
 
   const handleFieldChange = (value: any) => {
-    setVal(Array.isArray(value) ? value : [value]);
+    //setVal(val);
+    if (inputField.choices) {
+      setVal(Array.isArray(value) ? value : [value]);
+    } else {
+      updateWorkflow?.({
+        ["actions[" + index + "].input." + inputField.key]: (
+          value || ""
+        ).trim(),
+      });
+    }
   };
 
   useEffect(() => {
-    const wfValue = Array.isArray(val)
-      ? val.map((v) => (v.value ? v.value : v)).join(" ")
-      : val.value
-      ? val.value
-      : val;
+    if (inputField.choices) {
+      const wfValue = Array.isArray(val)
+        ? val.map((v) => (v.value ? v.value : v)).join(" ")
+        : val.value
+        ? val.value
+        : val;
 
-    updateWorkflow?.({
-      ["actions[" + index + "].input." + inputField.key]: wfValue || "",
-    });
+      updateWorkflow?.({
+        ["actions[" + index + "].input." + inputField.key]: wfValue || "",
+      });
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [val, index, inputField]);
 
@@ -77,16 +87,18 @@ const ActionInputField = ({ inputField, options, index }: Props) => {
               required={!!inputField.required}
             />
           ) : (
-            <AutoCompleteInput
+            <RichInput
               label={inputField.label || ""}
-              type="searchLabel"
-              variant="full"
               placeholder={inputField.placeholder || ""}
               required={!!inputField.required}
               tooltip={inputField.helpText || false}
               options={options}
               onChange={handleFieldChange}
               value={val}
+              user={user}
+              hasAddressBook={inputField.useAddressBook}
+              addressBook={addressBook}
+              setAddressBook={setAddressBook}
             />
           )}
         </InputWrapper>
