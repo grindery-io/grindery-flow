@@ -83,7 +83,7 @@ export type APICallOperation = {
 
 export type ChainCallOperation = {
   type: string; //"blockchain:call";
-  accounts: ChainAccount[];
+  accounts?: ChainAccount[];
   signature?: string; // TODO: make required
   arguments?: ChainCallOperationArgs[]; // TODO: make required
   inputFields?: Field[];

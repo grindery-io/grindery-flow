@@ -274,6 +274,7 @@ const TriggerConfiguration = (props: Props) => {
     setEmail("");
     updateWorkflow?.({
       "trigger.credentials": undefined,
+      "trigger.input": {},
     });
     handleAuthClick();
   };
