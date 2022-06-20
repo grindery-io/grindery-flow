@@ -11,6 +11,8 @@ import { ICONS } from "../../constants";
 import axios from "axios";
 import Check from "../icons/Check";
 import { useAppContext } from "../../context/AppContext";
+import ContractSelector from "./ContractSelector";
+import useAddressBook from "../../hooks/useAddressBook";
 
 const Wrapper = styled.div`
   padding: 20px 20px 40px;
@@ -82,14 +84,10 @@ const ActionConfiguration = (props: Props) => {
 
   const [email, setEmail] = useState("");
   const [gas, setGas] = useState("0.1");
+  const { addressBook, setAddressBook } = useAddressBook(user);
 
   const inputFields = (action(index)?.operation?.inputFields || []).filter(
     (inputField: Field) => inputField && !inputField.computed
-  );
-
-  const cachedAddressBook = localStorage.getItem("gr_addressBook__" + user);
-  const [addressBook, setAddressBook] = React.useState(
-    cachedAddressBook ? JSON.parse(cachedAddressBook) : []
   );
 
   const options =
@@ -107,7 +105,13 @@ const ActionConfiguration = (props: Props) => {
 
   const handleChainChange = (val: any) => {
     updateWorkflow({
-      ["actions[" + index + "].input.blockchain"]: val?.value || "",
+      ["actions[" + index + "].input._grinderyChain"]: val?.value || "",
+    });
+  };
+
+  const handleContractChange = (val: any) => {
+    updateWorkflow({
+      ["actions[" + index + "].input._grinderyContractAddress"]: val || "",
     });
   };
 
@@ -442,8 +446,19 @@ const ActionConfiguration = (props: Props) => {
         <div>
           {action(index)?.operation?.type === "blockchain:call" && (
             <ChainSelector
-              value={workflow.actions[index].input.blockchain || ""}
+              value={workflow.actions[index].input._grinderyChain || ""}
               onChange={handleChainChange}
+            />
+          )}
+          {action(index)?.operation?.type === "blockchain:call" && (
+            <ContractSelector
+              value={
+                workflow.actions[index].input._grinderyContractAddress || ""
+              }
+              onChange={handleContractChange}
+              options={options}
+              addressBook={addressBook}
+              setAddressBook={setAddressBook}
             />
           )}
           {inputFields.map((inputField: Field) => (

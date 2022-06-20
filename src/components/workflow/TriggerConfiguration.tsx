@@ -8,6 +8,9 @@ import TriggerInputField from "./TriggerInputField";
 import { getParameterByName, jsonrpcObj } from "../../utils";
 import { useWorkflowContext } from "../../context/WorkflowContext";
 import ChainSelector from "./ChainSelector";
+import ContractSelector from "./ContractSelector";
+import useAddressBook from "../../hooks/useAddressBook";
+import { useAppContext } from "../../context/AppContext";
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -57,6 +60,7 @@ type Props = {
 
 const TriggerConfiguration = (props: Props) => {
   const { step } = props;
+  const { user } = useAppContext();
   const {
     workflow,
     updateWorkflow,
@@ -73,6 +77,8 @@ const TriggerConfiguration = (props: Props) => {
     setLoading,
   } = useWorkflowContext();
   const [email, setEmail] = useState("");
+
+  const { addressBook, setAddressBook } = useAddressBook(user);
 
   const inputFields =
     (trigger &&
@@ -287,7 +293,13 @@ const TriggerConfiguration = (props: Props) => {
 
   const handleChainChange = (val: any) => {
     updateWorkflow({
-      "trigger.input.blockchain": val?.value || "",
+      "trigger.input._grinderyChain": val?.value || "",
+    });
+  };
+
+  const handleContractChange = (val: any) => {
+    updateWorkflow({
+      "trigger.input._grinderyContractAddress": val || "",
     });
   };
 
@@ -368,8 +380,17 @@ const TriggerConfiguration = (props: Props) => {
         <div style={{ marginTop: 40 }}>
           {trigger.operation?.type === "blockchain:event" && (
             <ChainSelector
-              value={workflow.trigger.input.blockchain || ""}
+              value={workflow.trigger.input._grinderyChain || ""}
               onChange={handleChainChange}
+            />
+          )}
+          {trigger.operation?.type === "blockchain:event" && (
+            <ContractSelector
+              value={workflow.trigger.input._grinderyContractAddress || ""}
+              onChange={handleContractChange}
+              options={[]}
+              addressBook={addressBook}
+              setAddressBook={setAddressBook}
             />
           )}
           {inputFields.map((inputField: Field) => (
