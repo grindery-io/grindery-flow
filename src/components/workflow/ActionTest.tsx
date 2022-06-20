@@ -132,27 +132,27 @@ const ActionTest = (props: Props) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const values = replaceTokens(workflow?.actions[index].input || {}, {
+  const values = replaceTokens(workflow.actions[index].input || {}, {
     trigger: trigger?.operation?.sample || {},
   });
 
   const rows =
-    action?.(index)?.operation?.inputFields?.map((field: Field) => ({
+    action(index)?.operation?.inputFields?.map((field: Field) => ({
       label: field.label || field.key,
-      icon: actionConnector?.(index)?.icon,
+      icon: actionConnector(index)?.icon,
       value: values[field.key] || "",
     })) || [];
 
   const handleTestClick = () => {
-    testWorkflowAction?.(index);
+    testWorkflowAction(index);
   };
 
   const handleBackClick = () => {
-    setActiveStep?.(3);
+    setActiveStep(3);
   };
 
   const handleSaveClick = async () => {
-    saveWorkflow?.();
+    saveWorkflow();
   };
 
   const testWorkflowAction = (index: number) => {
@@ -192,11 +192,11 @@ const ActionTest = (props: Props) => {
   return (
     <Wrapper>
       <TitleWrapper>
-        {actionConnector?.(index)?.icon && (
+        {actionConnector(index)?.icon && (
           <TitleIconWrapper>
             <TitleIcon
-              src={actionConnector?.(index)?.icon}
-              alt={`${actionConnector?.(index)?.name} icon`}
+              src={actionConnector(index)?.icon}
+              alt={`${actionConnector(index)?.name} icon`}
             />
           </TitleIconWrapper>
         )}
@@ -244,21 +244,23 @@ const ActionTest = (props: Props) => {
       )}
       <TableWrapper>
         <table>
-          {rows.map((row) => (
-            <tr>
-              <td>
-                <RowLabelWrapper>
-                  {row.icon && (
-                    <RowIconWrapper>
-                      <img src={row.icon} alt={row.label} />
-                    </RowIconWrapper>
-                  )}
-                  {row.label}
-                </RowLabelWrapper>
-              </td>
-              <td>{row.value}</td>
-            </tr>
-          ))}
+          <tbody>
+            {rows.map((row) => (
+              <tr>
+                <td>
+                  <RowLabelWrapper>
+                    {row.icon && (
+                      <RowIconWrapper>
+                        <img src={row.icon} alt={row.label} />
+                      </RowIconWrapper>
+                    )}
+                    {row.label}
+                  </RowLabelWrapper>
+                </td>
+                <td>{row.value}</td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </TableWrapper>
       <ButtonsWrapper>

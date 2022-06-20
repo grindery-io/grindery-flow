@@ -33,27 +33,27 @@ const ConnectorsSelector = (props: Props) => {
     actionConnector,
   } = useWorkflowContext();
 
-  const triggerConnectorOptions = connectorsWithTriggers?.map((connector) => ({
+  const triggerConnectorOptions = connectorsWithTriggers.map((connector) => ({
     value: connector.key,
     label: connector.name,
     icon: connector.icon,
     paid: connector.pricing,
   }));
 
-  const triggerConnectorValue = triggerConnectorOptions?.find(
+  const triggerConnectorValue = triggerConnectorOptions.find(
     (opt) =>
       opt.value ===
         (workflow && workflow.trigger && workflow.trigger.connector) || ""
   );
 
-  const actionConnectorOptions = connectorsWithActions?.map((connector) => ({
+  const actionConnectorOptions = connectorsWithActions.map((connector) => ({
     value: connector.key,
     label: connector.name,
     icon: connector.icon,
     paid: connector.pricing,
   }));
 
-  const actionConnectorValue = actionConnectorOptions?.find(
+  const actionConnectorValue = actionConnectorOptions.find(
     (opt) =>
       opt.value ===
         (workflow &&
@@ -62,31 +62,31 @@ const ConnectorsSelector = (props: Props) => {
           workflow.actions[index].connector) || ""
   );
 
-  const triggerOptions = availableTriggers?.map((availableTrigger) => ({
+  const triggerOptions = availableTriggers.map((availableTrigger) => ({
     value: availableTrigger.key,
     label: availableTrigger.display?.label,
     icon: availableTrigger.display?.icon || triggerConnector?.icon || "",
   }));
 
-  const triggerValue = triggerOptions?.find(
+  const triggerValue = triggerOptions.find(
     (opt) =>
-      opt.value === (workflow?.trigger && workflow?.trigger.operation) || ""
+      opt.value === (workflow.trigger && workflow.trigger.operation) || ""
   );
 
-  const actionOptions = availableActions?.(index)?.map((availableAction) => ({
+  const actionOptions = availableActions(index)?.map((availableAction) => ({
     value: availableAction.key,
     label: availableAction.display?.label,
-    icon: availableAction.display?.icon || actionConnector?.(index)?.icon || "",
+    icon: availableAction.display?.icon || actionConnector(index)?.icon || "",
   }));
 
-  const actionValue = actionOptions?.find(
+  const actionValue = actionOptions.find(
     (opt) =>
       opt.value ===
-        (workflow?.actions[index] && workflow?.actions[index].operation) || ""
+        (workflow.actions[index] && workflow.actions[index].operation) || ""
   );
 
   const handleTriggerConnectorChange = (val: any) => {
-    updateWorkflow?.({
+    updateWorkflow({
       "trigger.connector": val?.value || "",
       "trigger.input": {},
       "trigger.operation": "",
@@ -95,7 +95,7 @@ const ConnectorsSelector = (props: Props) => {
   };
 
   const handleActionConnectorChange = (val: any) => {
-    updateWorkflow?.({
+    updateWorkflow({
       ["actions[" + index + "].connector"]: val?.value || "",
       ["actions[" + index + "].input"]: {},
       ["actions[" + index + "].operation"]: "",
@@ -104,21 +104,21 @@ const ConnectorsSelector = (props: Props) => {
   };
 
   const handleTriggerChange = (val: any) => {
-    updateWorkflow?.({
+    updateWorkflow({
       "trigger.operation": val?.value || "",
       "trigger.input": {},
     });
   };
 
   const handleActionChange = (val: any) => {
-    updateWorkflow?.({
+    updateWorkflow({
       ["actions[" + index + "].operation"]: val?.value || "",
       ["actions[" + index + "].input"]: {},
     });
   };
 
   const handleContinueClick = () => {
-    setActiveStep?.(2);
+    setActiveStep(2);
   };
 
   if (!activeStep || step < activeStep) {
@@ -155,7 +155,7 @@ const ConnectorsSelector = (props: Props) => {
         </InputWrapper>
       </div>
 
-      {triggerConnectorIsSet && actionConnectorIsSet?.(index) && (
+      {triggerConnectorIsSet && actionConnectorIsSet(index) && (
         <div>
           <div style={{ marginTop: 40 }}>
             <SelectInput
@@ -179,7 +179,7 @@ const ConnectorsSelector = (props: Props) => {
           </div>
         </div>
       )}
-      {triggerIsSet && actionIsSet?.(index) && (
+      {triggerIsSet && actionIsSet(index) && (
         <div style={{ marginTop: 30 }}>
           <Button onClick={handleContinueClick} value="Continue" />
         </div>

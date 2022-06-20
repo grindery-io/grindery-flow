@@ -83,7 +83,7 @@ const WorkflowProgress = (props: Props) => {
       key={step.index}
       onClick={() => {
         if (activeStep > step.index) {
-          setActiveStep?.(step.index);
+          setActiveStep(step.index);
         }
       }}
     >

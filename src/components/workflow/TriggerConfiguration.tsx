@@ -84,7 +84,7 @@ const TriggerConfiguration = (props: Props) => {
     [];
 
   const clearCredentials = () => {
-    updateWorkflow?.({
+    updateWorkflow({
       "trigger.credentials": undefined,
     });
   };
@@ -107,12 +107,16 @@ const TriggerConfiguration = (props: Props) => {
         ) {
           const getAccessTokenRequest =
             triggerConnector.authentication.oauth2Config.getAccessToken;
+          const body =
+            typeof getAccessTokenRequest.body === "object"
+              ? getAccessTokenRequest.body
+              : {};
           axios({
             method: getAccessTokenRequest.method,
             url: getAccessTokenRequest.url,
             headers: getAccessTokenRequest.headers || {},
             data: {
-              //...getAccessTokenRequest.body,
+              ...body,
               code: codeParam,
               redirect_uri: window.location.origin + "/auth",
             },
@@ -157,7 +161,7 @@ const TriggerConfiguration = (props: Props) => {
           .then((res) => {
             if (res && res.data && res.data.email) {
               setEmail(res.data.email);
-              updateWorkflow?.({
+              updateWorkflow({
                 "trigger.credentials": credentials,
               });
               updateFieldsDefinition();
@@ -201,7 +205,7 @@ const TriggerConfiguration = (props: Props) => {
   const updateFieldsDefinition = () => {
     if (trigger?.operation?.inputFieldProviderUrl) {
       if (workflow) {
-        setLoading?.(true);
+        setLoading(true);
         axios
           .post(
             trigger.operation.inputFieldProviderUrl,
@@ -220,7 +224,7 @@ const TriggerConfiguration = (props: Props) => {
             }
             if (res && res.data && res.data.result) {
               if (res.data.result.inputFields && connectors) {
-                setConnectors?.([
+                setConnectors([
                   ...connectors.map((connector) => {
                     if (connector && connector.key === triggerConnector?.key) {
                       return {
@@ -258,23 +262,23 @@ const TriggerConfiguration = (props: Props) => {
                 ]);
               }
             }
-            setLoading?.(false);
+            setLoading(false);
           })
           .catch((err) => {
             console.log("grinderyNexusConnectorUpdateFields error", err);
-            setLoading?.(false);
+            setLoading(false);
           });
       }
     }
   };
 
   const handleContinueClick = () => {
-    setActiveStep?.(3);
+    setActiveStep(3);
   };
 
   const handleChangeAuth = () => {
     setEmail("");
-    updateWorkflow?.({
+    updateWorkflow({
       "trigger.credentials": undefined,
       "trigger.input": {},
     });
@@ -282,12 +286,12 @@ const TriggerConfiguration = (props: Props) => {
   };
 
   const handleChainChange = (val: any) => {
-    updateWorkflow?.({
+    updateWorkflow({
       "trigger.input.blockchain": val?.value || "",
     });
   };
 
-  const workflowTriggerCredentials = workflow?.trigger.credentials;
+  const workflowTriggerCredentials = workflow.trigger.credentials;
 
   useEffect(() => {
     if (workflowTriggerCredentials) {
@@ -364,7 +368,7 @@ const TriggerConfiguration = (props: Props) => {
         <div style={{ marginTop: 40 }}>
           {trigger.operation?.type === "blockchain:event" && (
             <ChainSelector
-              value={workflow?.trigger.input.blockchain || ""}
+              value={workflow.trigger.input.blockchain || ""}
               onChange={handleChainChange}
             />
           )}

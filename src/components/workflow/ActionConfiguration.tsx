@@ -83,7 +83,7 @@ const ActionConfiguration = (props: Props) => {
   const [email, setEmail] = useState("");
   const [gas, setGas] = useState("0.1");
 
-  const inputFields = (action?.(index)?.operation?.inputFields || []).filter(
+  const inputFields = (action(index)?.operation?.inputFields || []).filter(
     (inputField: Field) => inputField && !inputField.computed
   );
 
@@ -98,21 +98,21 @@ const ActionConfiguration = (props: Props) => {
       : [];
 
   const handleTestClick = async () => {
-    setActiveStep?.("actionTest");
+    setActiveStep("actionTest");
   };
 
   const handleSaveClick = async () => {
-    saveWorkflow?.();
+    saveWorkflow();
   };
 
   const handleChainChange = (val: any) => {
-    updateWorkflow?.({
+    updateWorkflow({
       ["actions[" + index + "].input.blockchain"]: val?.value || "",
     });
   };
 
   const clearCredentials = () => {
-    updateWorkflow?.({
+    updateWorkflow({
       "trigger.credentials": undefined,
     });
   };
@@ -125,23 +125,28 @@ const ActionConfiguration = (props: Props) => {
         const codeParam = getParameterByName("code", data.gr_url);
 
         if (
-          actionConnector?.(index)?.authentication &&
-          actionConnector?.(index)?.authentication?.type &&
-          actionConnector?.(index)?.authentication?.type === "oauth2" &&
+          actionConnector(index)?.authentication &&
+          actionConnector(index)?.authentication?.type &&
+          actionConnector(index)?.authentication?.type === "oauth2" &&
           codeParam &&
-          actionConnector?.(index)?.authentication?.oauth2Config &&
-          actionConnector?.(index)?.authentication?.oauth2Config?.getAccessToken
+          actionConnector(index)?.authentication?.oauth2Config &&
+          actionConnector(index)?.authentication?.oauth2Config?.getAccessToken
         ) {
           const getAccessTokenRequest =
-            actionConnector?.(index)?.authentication?.oauth2Config
+            actionConnector(index)?.authentication?.oauth2Config
               ?.getAccessToken;
+
           if (getAccessTokenRequest) {
+            const body =
+              typeof getAccessTokenRequest.body === "object"
+                ? getAccessTokenRequest.body
+                : {};
             axios({
               method: getAccessTokenRequest.method,
               url: getAccessTokenRequest.url,
               headers: getAccessTokenRequest.headers || {},
               data: {
-                //...getAccessTokenRequest.body,
+                ...body,
                 code: codeParam,
                 redirect_uri: window.location.origin + "/auth",
               },
@@ -188,7 +193,7 @@ const ActionConfiguration = (props: Props) => {
         .then((res) => {
           if (res && res.data && res.data.email) {
             setEmail(res.data.email);
-            updateWorkflow?.({
+            updateWorkflow({
               ["actions[" + index + "].credentials"]: credentials,
             });
             updateFieldsDefinition();
@@ -202,15 +207,14 @@ const ActionConfiguration = (props: Props) => {
   };
 
   const handleAuthClick = () => {
-    if (actionConnector?.(index)?.authentication?.type === "oauth2") {
+    if (actionConnector(index)?.authentication?.type === "oauth2") {
       window.removeEventListener("message", receiveMessage, false);
       const width = 375,
         height = 500,
         left = window.screen.width / 2 - width / 2,
         top = window.screen.height / 2 - height / 2;
       let windowObjectReference = window.open(
-        actionConnector?.(index)?.authentication?.oauth2Config?.authorizeUrl
-          .url +
+        actionConnector(index)?.authentication?.oauth2Config?.authorizeUrl.url +
           "&redirect_uri=" +
           window.location.origin +
           "/auth",
@@ -230,14 +234,14 @@ const ActionConfiguration = (props: Props) => {
   };
 
   const updateFieldsDefinition = () => {
-    if (action?.(index)?.operation?.inputFieldProviderUrl) {
+    if (action(index)?.operation?.inputFieldProviderUrl) {
       if (workflow) {
-        setLoading?.(true);
+        setLoading(true);
         axios
           .post(
-            action?.(index)?.operation?.inputFieldProviderUrl || "",
+            action(index)?.operation?.inputFieldProviderUrl || "",
             jsonrpcObj("grinderyNexusConnectorUpdateFields", {
-              key: action?.(index)?.key,
+              key: action(index)?.key,
               fieldData: {},
               credentials: workflow.actions[index].credentials,
             })
@@ -251,18 +255,18 @@ const ActionConfiguration = (props: Props) => {
             }
             if (res && res.data && res.data.result) {
               if (res.data.result.inputFields && connectors) {
-                setConnectors?.([
+                setConnectors([
                   ...connectors.map((connector) => {
                     if (
                       connector &&
-                      connector.key === actionConnector?.(index)?.key
+                      connector.key === actionConnector(index)?.key
                     ) {
                       return {
                         ...connector,
                         actions: [
                           ...(connector.actions || []).map((act) => {
                             if (
-                              act.key === action?.(index)?.key &&
+                              act.key === action(index)?.key &&
                               act.operation
                             ) {
                               return {
@@ -295,11 +299,11 @@ const ActionConfiguration = (props: Props) => {
                 ]);
               }
             }
-            setLoading?.(false);
+            setLoading(false);
           })
           .catch((err) => {
             console.log("grinderyNexusConnectorUpdateFields error", err);
-            setLoading?.(false);
+            setLoading(false);
           });
       }
     }
@@ -307,21 +311,21 @@ const ActionConfiguration = (props: Props) => {
 
   const handleChangeAuth = () => {
     setEmail("");
-    updateWorkflow?.({
+    updateWorkflow({
       "trigger.credentials": undefined,
     });
     handleAuthClick();
   };
 
-  const workflowActionCredentials = workflow?.actions[index].credentials;
+  const workflowActionCredentials = workflow.actions[index].credentials;
 
   const handleGasChange = (value: string) => {
-    updateWorkflow?.({
+    updateWorkflow({
       ["actions[" + index + "].input._grinderyGasLimit"]: value,
     });
   };
 
-  const operationType = action?.(index)?.operation?.type;
+  const operationType = action(index)?.operation?.type;
 
   useEffect(() => {
     if (workflowActionCredentials) {
@@ -344,21 +348,21 @@ const ActionConfiguration = (props: Props) => {
   return (
     <Wrapper>
       <TitleWrapper>
-        {actionConnector?.(index)?.icon && (
+        {actionConnector(index)?.icon && (
           <TitleIconWrapper>
             <TitleIcon
-              src={actionConnector?.(index)?.icon}
-              alt={`${actionConnector?.(index)?.name} icon`}
+              src={actionConnector(index)?.icon}
+              alt={`${actionConnector(index)?.name} icon`}
             />
           </TitleIconWrapper>
         )}
         <Text variant="h3" value="Set up Action" />
         <div style={{ marginTop: 4 }}>
-          <Text variant="p" value={`for ${actionConnector?.(index)?.name}`} />
+          <Text variant="p" value={`for ${actionConnector(index)?.name}`} />
         </div>
       </TitleWrapper>
 
-      {action?.(index)?.operation?.type === "blockchain:call" && (
+      {action(index)?.operation?.type === "blockchain:call" && (
         <AlertField
           color="warning"
           icon={
@@ -390,27 +394,27 @@ const ActionConfiguration = (props: Props) => {
         </AlertField>
       )}
 
-      {actionAuthenticationIsRequired?.(index) && (
+      {actionAuthenticationIsRequired(index) && (
         <>
-          {!actionIsAuthenticated?.(index) && (
+          {!actionIsAuthenticated(index) && (
             <div style={{ margin: "30px auto 0" }}>
               <Button
-                icon={actionConnector?.(index)?.icon || ""}
+                icon={actionConnector(index)?.icon || ""}
                 onClick={handleAuthClick}
-                value={`Sign in to ${actionConnector?.(index)?.name}`}
+                value={`Sign in to ${actionConnector(index)?.name}`}
               />
             </div>
           )}
-          {actionIsAuthenticated?.(index) && (
+          {actionIsAuthenticated(index) && (
             <AccountWrapper>
               <Text
-                value={`${actionConnector?.(index)?.name} account`}
+                value={`${actionConnector(index)?.name} account`}
                 variant="body2"
               />
               <AccountNameWrapper>
-                {actionConnector?.(index)?.icon && (
+                {actionConnector(index)?.icon && (
                   <img
-                    src={actionConnector?.(index)?.icon}
+                    src={actionConnector(index)?.icon}
                     alt=""
                     style={{ marginRight: 8 }}
                   />
@@ -434,11 +438,11 @@ const ActionConfiguration = (props: Props) => {
         </>
       )}
 
-      {actionIsAuthenticated?.(index) && (
+      {actionIsAuthenticated(index) && (
         <div>
-          {action?.(index)?.operation?.type === "blockchain:call" && (
+          {action(index)?.operation?.type === "blockchain:call" && (
             <ChainSelector
-              value={workflow?.actions[index].input.blockchain || ""}
+              value={workflow.actions[index].input.blockchain || ""}
               onChange={handleChainChange}
             />
           )}
@@ -466,9 +470,9 @@ const ActionConfiguration = (props: Props) => {
               Error: {error}
             </div>
           )}
-          {actionIsConfigured?.(index) && (
+          {actionIsConfigured(index) && (
             <div style={{ marginTop: 30 }}>
-              {action?.(index)?.operation?.type !== "blockchain:call" ? (
+              {action(index)?.operation?.type !== "blockchain:call" ? (
                 <Button
                   onClick={handleTestClick}
                   value="Test & Continue"

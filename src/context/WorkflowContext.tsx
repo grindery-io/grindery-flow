@@ -28,8 +28,8 @@ const blankWorkflow: Workflow = {
 };
 
 type WorkflowContextProps = {
-  connectors?: Connector[];
-  workflow?: Workflow;
+  connectors: Connector[];
+  workflow: Workflow;
   setWorkflow: (a: any) => void;
   connectorsWithTriggers: Connector[];
   connectorsWithActions: Connector[];
@@ -134,13 +134,13 @@ export const WorkflowContextProvider = ({
   const [activeStep, setActiveStep] = useState<string | number>(1);
 
   // filter connectors that has triggers
-  const connectorsWithTriggers = connectors?.filter(
+  const connectorsWithTriggers = connectors.filter(
     (connector) =>
       connector && connector.triggers && connector.triggers.length > 0
   );
 
   // filter connectors that has actions
-  const connectorsWithActions = connectors?.filter(
+  const connectorsWithActions = connectors.filter(
     (connector) =>
       connector && connector.actions && connector.actions.length > 0
   );
@@ -174,21 +174,21 @@ export const WorkflowContextProvider = ({
     );
 
   // current workflow's trigger connector key
-  const workflowTriggerConnector = workflow?.trigger.connector;
+  const workflowTriggerConnector = workflow.trigger.connector;
 
   // current workflow's trigger operation key
-  const workflowTriggerOperation = workflow?.trigger.operation;
+  const workflowTriggerOperation = workflow.trigger.operation;
 
   // current workflow's action connector key
   const workflowActionConnector = (index: number) =>
-    workflow?.actions[index].connector;
+    workflow.actions[index].connector;
 
   // current workflow's action operation key
   const workflowActionOperation = (index: number) =>
-    workflow?.actions[index].operation;
+    workflow.actions[index].operation;
 
   // current trigger's connector object
-  const triggerConnector = connectors?.find(
+  const triggerConnector = connectors.find(
     (connector) =>
       connector && connector.key && connector.key === workflowTriggerConnector
   );
@@ -201,7 +201,7 @@ export const WorkflowContextProvider = ({
 
   // current action's connector object
   const actionConnector = (index: number) =>
-    connectors?.find(
+    connectors.find(
       (connector) =>
         connector &&
         connector.key &&
@@ -219,13 +219,13 @@ export const WorkflowContextProvider = ({
   // chech if trigger is authenticated (if required)
   const triggerIsAuthenticated = Boolean(
     (triggerConnector && !triggerConnector.authentication) ||
-      (workflow?.trigger?.credentials && triggerConnector?.authentication)
+      (workflow.trigger?.credentials && triggerConnector?.authentication)
   );
 
   const actionIsAuthenticated = (index: number) =>
     Boolean(
       (actionConnector(index) && !actionConnector(index)?.authentication) ||
-        (workflow?.actions[index]?.credentials &&
+        (workflow.actions[index]?.credentials &&
           actionConnector(index)?.authentication)
     );
 
@@ -270,7 +270,7 @@ export const WorkflowContextProvider = ({
   const actionIsConfigured = (index: number) => {
     return Boolean(
       requiredActionFields(index).filter(
-        (field: string) => workflow?.actions?.[index]?.input?.[field]
+        (field: string) => workflow.actions[index]?.input?.[field]
       ).length === requiredActionFields(index).length &&
         (action(index)?.operation?.type === "blockchain:call"
           ? workflow.actions[index].input.blockchain
@@ -279,20 +279,18 @@ export const WorkflowContextProvider = ({
   };
 
   // current trigger's connector object
-  const selectedTriggerConnector = connectorsWithTriggers?.find(
+  const selectedTriggerConnector = connectorsWithTriggers.find(
     (connector) =>
-      connector &&
-      connector.key &&
-      connector.key === workflow?.trigger.connector
+      connector && connector.key && connector.key === workflow.trigger.connector
   );
 
   // current action's connector object
   const selectedActionConnector = (index: number) =>
-    connectorsWithActions?.find(
+    connectorsWithActions.find(
       (connector) =>
         connector &&
         connector.key &&
-        connector.key === workflow?.actions[index].connector
+        connector.key === workflow.actions[index].connector
     );
 
   // list available triggers for the selected connector
@@ -341,7 +339,7 @@ export const WorkflowContextProvider = ({
       }
       setError(null);
       setSuccess(null);
-      setLoading?.(true);
+      setLoading(true);
       axios
         .post(
           WORKFLOW_ENGINE_URL,
@@ -355,15 +353,15 @@ export const WorkflowContextProvider = ({
             setError(res.data.error.message || null);
           }
           if (res && res.data && res.data.result) {
-            getWorkflowsList?.();
-            setWorkflowOpened?.(false);
-            resetWorkflow?.();
+            getWorkflowsList();
+            setWorkflowOpened(false);
+            resetWorkflow();
           }
-          setLoading?.(false);
+          setLoading(false);
         })
         .catch((err) => {
           setError(err.message || null);
-          setLoading?.(false);
+          setLoading(false);
         });
     }
   };

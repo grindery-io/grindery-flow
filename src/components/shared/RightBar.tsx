@@ -76,7 +76,7 @@ const RightBar = (props: Props) => {
   };
 
   const handleOpen = () => {
-    setAppOpened?.(true);
+    setAppOpened(true);
   };
 
   return (

@@ -115,12 +115,10 @@ const Workflows = (props: Props) => {
 
   const renderWorkflow = (item: Workflow) => {
     const triggerIcon =
-      connectors?.find((t) => t.key === item.trigger.connector)?.icon || null;
+      connectors.find((t) => t.key === item.trigger.connector)?.icon || null;
 
     const actionsIcons = item.actions
-      .map(
-        (action) => connectors?.find((a) => a.key === action.connector)?.icon
-      )
+      .map((action) => connectors.find((a) => a.key === action.connector)?.icon)
       .filter((a) => a);
 
     return (
@@ -171,7 +169,7 @@ const Workflows = (props: Props) => {
         <IconButton
           color=""
           onClick={() => {
-            setWorkflowOpened?.(true);
+            setWorkflowOpened(true);
           }}
           icon={ICONS.PLUS}
         />

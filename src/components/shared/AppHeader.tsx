@@ -62,7 +62,7 @@ const AppHeader = (props: Props) => {
   const { user, setAppOpened } = useAppContext();
 
   const handleClose = () => {
-    setAppOpened?.(false);
+    setAppOpened(false);
   };
 
   return (

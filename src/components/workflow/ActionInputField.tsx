@@ -39,7 +39,7 @@ const ActionInputField = ({
     //icon: triggerConnector ? triggerConnector.icon || "" : "",
   }));
 
-  const workflowValue = workflow?.actions[index].input[inputField.key];
+  const workflowValue = workflow.actions[index].input[inputField.key];
   const [val, setVal]: any = useState(workflowValue || "");
 
   const handleFieldChange = (value: any) => {
@@ -47,7 +47,7 @@ const ActionInputField = ({
     if (inputField.choices) {
       setVal(Array.isArray(value) ? value : [value]);
     } else {
-      updateWorkflow?.({
+      updateWorkflow({
         ["actions[" + index + "].input." + inputField.key]: (
           value || ""
         ).trim(),
@@ -63,7 +63,7 @@ const ActionInputField = ({
         ? val.value
         : val;
 
-      updateWorkflow?.({
+      updateWorkflow({
         ["actions[" + index + "].input." + inputField.key]: wfValue || "",
       });
     }

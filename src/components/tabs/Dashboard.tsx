@@ -117,8 +117,8 @@ const Dashboard = (props: Props) => {
         LeftComponent={
           <Title
             onClick={() => {
-              setWorkflowOpened?.(false);
-              changeTab?.("WORKFLOWS");
+              setWorkflowOpened(false);
+              changeTab("WORKFLOWS");
             }}
             style={{ cursor: "pointer" }}
           >
@@ -132,8 +132,8 @@ const Dashboard = (props: Props) => {
               color=""
               icon={ICONS.PLUS_SMALL}
               onClick={() => {
-                setWorkflowOpened?.(true);
-                changeTab?.("WORKFLOWS");
+                setWorkflowOpened(true);
+                changeTab("WORKFLOWS");
               }}
             />
           </IconButtonWrapper>
@@ -141,12 +141,12 @@ const Dashboard = (props: Props) => {
         BottomRightComponent={
           <div
             onClick={() => {
-              setWorkflowOpened?.(false);
-              changeTab?.("WORKFLOWS");
+              setWorkflowOpened(false);
+              changeTab("WORKFLOWS");
             }}
             style={{ cursor: "pointer", marginRight: 4 }}
           >
-            <Text value={workflows?.length.toString()} variant="h3" />
+            <Text value={workflows.length.toString()} variant="h3" />
           </div>
         }
       />
@@ -155,7 +155,7 @@ const Dashboard = (props: Props) => {
         LeftComponent={
           <Title
             onClick={() => {
-              changeTab?.("APPS");
+              changeTab("APPS");
             }}
             style={{ cursor: "pointer" }}
           >
@@ -168,7 +168,7 @@ const Dashboard = (props: Props) => {
             <IconButton
               color=""
               onClick={() => {
-                changeTab?.("APPS");
+                changeTab("APPS");
               }}
               icon={ICONS.PLUS_SMALL}
             />
@@ -178,7 +178,7 @@ const Dashboard = (props: Props) => {
           <CountsWrapper>
             <CountWrapper
               onClick={() => {
-                changeTab?.("APPS");
+                changeTab("APPS");
               }}
               style={{ cursor: "pointer" }}
             >
@@ -189,7 +189,7 @@ const Dashboard = (props: Props) => {
             </CountWrapper>
             <CountWrapper
               onClick={() => {
-                changeTab?.("APPS");
+                changeTab("APPS");
               }}
               style={{ cursor: "pointer" }}
             >
@@ -206,7 +206,7 @@ const Dashboard = (props: Props) => {
         LeftComponent={
           <Title
             onClick={() => {
-              changeTab?.("HISTORY");
+              changeTab("HISTORY");
             }}
             style={{ cursor: "pointer" }}
           >
@@ -219,7 +219,7 @@ const Dashboard = (props: Props) => {
             <IconButton
               color=""
               onClick={() => {
-                changeTab?.("HISTORY");
+                changeTab("HISTORY");
               }}
               icon={ICONS.ARROW_RIGHT}
             />
@@ -229,7 +229,7 @@ const Dashboard = (props: Props) => {
           <CountsWrapper>
             <CountWrapper
               onClick={() => {
-                changeTab?.("HISTORY");
+                changeTab("HISTORY");
               }}
               style={{ cursor: "pointer" }}
             >
@@ -240,7 +240,7 @@ const Dashboard = (props: Props) => {
             </CountWrapper>
             <CountWrapper
               onClick={() => {
-                changeTab?.("HISTORY");
+                changeTab("HISTORY");
               }}
               style={{ cursor: "pointer" }}
             >

@@ -65,7 +65,7 @@ const RightBarTabs = (props: Props) => {
         value={activeTab || 0}
         onChange={(index: number) => {
           if (user) {
-            setActiveTab?.(index);
+            setActiveTab(index);
           }
         }}
         options={RIGHTBAR_TABS.map((tab) => (

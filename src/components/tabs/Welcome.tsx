@@ -89,8 +89,8 @@ const Welcome = (props: Props) => {
           <Button
             value="Create workflow"
             onClick={() => {
-              setWorkflowOpened?.(true);
-              changeTab?.("WORKFLOWS");
+              setWorkflowOpened(true);
+              changeTab("WORKFLOWS");
             }}
             icon={ICONS.PLUS_WHITE}
           />
