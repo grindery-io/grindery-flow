@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { Text, IconButton } from "grindery-ui";
 import DataBox from "../shared/DataBox";
-import { ICONS } from "../../constants";
-import { useAppContext } from "../../context/AppContext";
+import { ICONS, SCREEN } from "../../constants";
+import useAppContext from "../../hooks/useAppContext";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -13,6 +13,20 @@ const Wrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 15px;
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    padding: 60px 106px;
+    margin: 107px 20px 0;
+    border: 1px solid #dcdcdc;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    & > div {
+      width: 100%;
+      max-width: calc(100% / 2 - 7.5px);
+      box-sizing: border-box;
+    }
+  }
 `;
 
 const Title = styled.div`

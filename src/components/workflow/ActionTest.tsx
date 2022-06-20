@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { useWorkflowContext } from "../../context/WorkflowContext";
+import useWorkflowContext from "../../hooks/useWorkflowContext";
 import { Button, Text, AlertField, CircularProgress } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import { jsonrpcObj, replaceTokens } from "../../utils";

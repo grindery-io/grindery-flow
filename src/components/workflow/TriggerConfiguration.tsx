@@ -6,7 +6,7 @@ import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
 import TriggerInputField from "./TriggerInputField";
 import { getParameterByName, jsonrpcObj } from "../../utils";
-import { useWorkflowContext } from "../../context/WorkflowContext";
+import useWorkflowContext from "../../hooks/useWorkflowContext";
 import ChainSelector from "./ChainSelector";
 
 const Wrapper = styled.div`

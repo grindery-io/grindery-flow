@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { IconButton, InputBox, SwitchInput } from "grindery-ui";
 import DataBox from "../shared/DataBox";
-import { useAppContext } from "../../context/AppContext";
-import { ICONS } from "../../constants";
+import useAppContext from "../../hooks/useAppContext";
+import { ICONS, SCREEN } from "../../constants";
 import { Workflow } from "../../types/Workflow";
 import WorkflowBuilder from "../workflow/WorkflowBuilder";
 
@@ -15,6 +15,12 @@ const Wrapper = styled.div`
   flex-wrap: nowrap;
   padding: 24px 20px;
   gap: 20px;
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    padding: 60px 106px;
+    margin: 107px 20px 0;
+    border: 1px solid #dcdcdc;
+  }
 `;
 
 const SearchWrapper = styled.div`
@@ -24,6 +30,17 @@ const SearchWrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 5px;
+
+  .MuiIconButton-root img {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    .MuiIconButton-root {
+      margin-left: auto;
+    }
+  }
 `;
 
 const SearchInputWrapper = styled.div`
@@ -34,6 +51,10 @@ const SearchInputWrapper = styled.div`
   }
   & .MuiOutlinedInput-root {
     margin-top: 0;
+  }
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    flex: 0.5;
   }
 `;
 

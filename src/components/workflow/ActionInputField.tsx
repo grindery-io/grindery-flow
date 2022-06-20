@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { RichInput, SelectInput } from "grindery-ui";
 import { Field } from "../../types/Connector";
-import { useWorkflowContext } from "../../context/WorkflowContext";
-import { useAppContext } from "../../context/AppContext";
+import useWorkflowContext from "../../hooks/useWorkflowContext";
+import useAppContext from "../../hooks/useAppContext";
 
 const InputWrapper = styled.div`
   width: 100%;

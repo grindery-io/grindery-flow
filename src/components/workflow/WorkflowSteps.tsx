@@ -3,7 +3,7 @@ import ConnectorsSelector from "./ConnectorsSelector";
 import ActionConfiguration from "./ActionConfiguration";
 import TriggerConfiguration from "./TriggerConfiguration";
 import WorkflowProgress from "./WorkflowProgress";
-import { useWorkflowContext } from "../../context/WorkflowContext";
+import useWorkflowContext from "../../hooks/useWorkflowContext";
 import ActionTest from "./ActionTest";
 
 type Props = {};

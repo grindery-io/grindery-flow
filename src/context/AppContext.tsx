@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext, useEffect } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import axios from "axios";
 import { useViewerConnection } from "@self.id/react";
 import { Workflow } from "../types/Workflow";
@@ -151,7 +151,5 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     </AppContext.Provider>
   );
 };
-
-export const useAppContext = () => useContext(AppContext);
 
 export default AppContextProvider;

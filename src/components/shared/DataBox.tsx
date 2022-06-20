@@ -1,6 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+`;
+
 const Row = styled.div`
   display: flex;
   flex-direction: row;
@@ -33,7 +41,7 @@ const DataBox = (props: Props) => {
   } = props;
 
   return (
-    <div
+    <Wrapper
       style={{
         ...style,
         border: "1px solid #D3DEEC",
@@ -139,7 +147,7 @@ const DataBox = (props: Props) => {
           </div>
         </>
       )}
-    </div>
+    </Wrapper>
   );
 };
 

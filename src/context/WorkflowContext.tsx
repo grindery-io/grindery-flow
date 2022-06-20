@@ -5,7 +5,7 @@ import { Workflow } from "../types/Workflow";
 import { Action, Connector, Field, Trigger } from "../types/Connector";
 import { defaultFunc, jsonrpcObj } from "../utils";
 import { WORKFLOW_ENGINE_URL } from "../constants";
-import { useAppContext } from "./AppContext";
+import useAppContext from "../hooks/useAppContext";
 
 // empty workflow declaration
 const blankWorkflow: Workflow = {
@@ -428,7 +428,5 @@ export const WorkflowContextProvider = ({
     </WorkflowContext.Provider>
   );
 };
-
-export const useWorkflowContext = () => useContext(WorkflowContext);
 
 export default WorkflowContextProvider;

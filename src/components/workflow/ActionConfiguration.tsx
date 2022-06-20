@@ -4,13 +4,13 @@ import { CircularProgress, AlertField, Text, Button } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import ActionInputField from "./ActionInputField";
 import { getOutputOptions, getParameterByName, jsonrpcObj } from "../../utils";
-import { useWorkflowContext } from "../../context/WorkflowContext";
+import useWorkflowContext from "../../hooks/useWorkflowContext";
 import ChainSelector from "./ChainSelector";
 import GasInput from "./GasInput";
 import { ICONS } from "../../constants";
 import axios from "axios";
 import Check from "../icons/Check";
-import { useAppContext } from "../../context/AppContext";
+import useAppContext from "../../hooks/useAppContext";
 
 const Wrapper = styled.div`
   padding: 20px 20px 40px;

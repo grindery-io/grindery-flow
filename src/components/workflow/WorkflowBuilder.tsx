@@ -1,5 +1,5 @@
 import React from "react";
-import { useAppContext } from "../../context/AppContext";
+import useAppContext from "../../hooks/useAppContext";
 import WorkflowContextProvider from "../../context/WorkflowContext";
 import WorkflowSteps from "./WorkflowSteps";
 

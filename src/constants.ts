@@ -1,3 +1,8 @@
+export const SCREEN = {
+  DESKTOP: "1024px",
+  PHONE: "576px",
+};
+
 export const WORKFLOW_ENGINE_URL = "https://gnexus-orchestrator.herokuapp.com";
 
 export const ICONS: { [key: string]: string } = {
@@ -29,6 +34,7 @@ export const ICONS: { [key: string]: string } = {
   GAS_ALERT: "/images/icons/gas-alert.svg",
   SUCCESS_ALERT: "/images/icons/success-alert.svg",
   ERROR_ALERT: "/images/icons/error-alert.svg",
+  MENU: "/images/icons/menu.svg",
   // CHAINS
   CHAIN_ETHEREUM: "/images/icons/ethereum.svg",
   CHAIN_ARBITRUM: "/images/icons/arbitrum.svg",
@@ -37,40 +43,52 @@ export const ICONS: { [key: string]: string } = {
   CHAIN_CELO: "/images/icons/celo.svg",
 };
 
-export const RIGHTBAR_TABS: { name: string; icon?: string; id: number }[] = [
+export const RIGHTBAR_TABS: {
+  name: string;
+  icon?: string;
+  id: number;
+  label: string;
+}[] = [
   {
     id: 0,
     name: "DASHBOARD",
     icon: ICONS.DASHBOARD,
+    label: "Dashboard",
   },
   {
     id: 1,
     name: "WORKFLOWS",
     icon: ICONS.WORKFLOWS,
+    label: "Workflows",
   },
   {
     id: 2,
     name: "APPS",
     icon: ICONS.APPS,
+    label: "(d)Apps",
   },
   {
     id: 3,
     name: "HISTORY",
     icon: ICONS.HISTORY,
+    label: "History",
   },
   {
     id: 4,
     name: "TRANSACTIONS",
     icon: ICONS.TRANSACTIONS,
+    label: "Transactions",
   },
   {
     id: 5,
     name: "NOTIFICATIONS",
     icon: ICONS.BELL,
+    label: "Notifications",
   },
   {
     id: 6,
     name: "SETTINGS",
     icon: ICONS.SETTINGS,
+    label: "Settings",
   },
 ];

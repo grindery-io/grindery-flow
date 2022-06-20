@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Button, SelectSimple, SwitchInput } from "grindery-ui";
-import { useAppContext } from "../../context/AppContext";
+import useAppContext from "../../hooks/useAppContext";
 
 const Wrapper = styled.div`
   padding: 24px 20px;

@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { Button } from "grindery-ui";
-import { useAppContext } from "../../context/AppContext";
+import useAppContext from "../../hooks/useAppContext";
 import ConnectButton from "../shared/ConnectButton";
-import { ICONS } from "../../constants";
+import { ICONS, SCREEN } from "../../constants";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -13,6 +13,10 @@ const Wrapper = styled.div`
   justify-content: center;
   flex-wrap: nowrap;
   min-height: calc(100% - 48px);
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    margin-left: auto;
+    margin-right: auto;
+  }
 `;
 
 const Title = styled.p`
@@ -26,7 +30,7 @@ margin: 0 0 15px;
 `;
 
 const Img = styled.img`
-  margin: 0 0 15px;
+  margin: 0 auto 15px;
   width: 335px;
   height: 322px;
 `;

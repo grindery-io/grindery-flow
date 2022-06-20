@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { IconButton } from "grindery-ui";
-import { useAppContext } from "../../context/AppContext";
+import useAppContext from "../../hooks/useAppContext";
 import Logo from "./Logo";
-import { ICONS } from "../../constants";
+import { ICONS, SCREEN } from "../../constants";
+import useWindowSize from "../../hooks/useWindowSize";
 
 const Wrapper = styled.div`
   border-bottom: 1px solid #dcdcdc;
@@ -19,6 +20,10 @@ const Wrapper = styled.div`
   width: 435px;
   box-sizing: border-box;
   z-index: 2;
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    width: 100%;
+    top: 0;
+  }
 `;
 
 const UserWrapper = styled.div`
@@ -31,6 +36,11 @@ const UserWrapper = styled.div`
   flex-direction: row;
   flex-wrap: nowrap;
   gap: 6px;
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    order: 4;
+    margin-left: auto;
+  }
 `;
 
 const UserStatus = styled.div`
@@ -54,20 +64,48 @@ const CloseButtonWrapper = styled.div`
     width: 16px !important;
     height: 16px !important;
   }
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    margin-left: 0;
+    margin-right: 8px;
+    order: 1;
+  }
+`;
+
+const LogoWrapper = styled.div`
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    order: 2;
+  }
+`;
+
+const CompanyNameWrapper = styled.div`
+  display: none;
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    display: block;
+    order: 3;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 110%;
+    color: #0b0d17;
+  }
 `;
 
 type Props = {};
 
 const AppHeader = (props: Props) => {
-  const { user, setAppOpened } = useAppContext();
+  const { user, setAppOpened, appOpened } = useAppContext();
+  const size = useWindowSize();
 
   const handleClose = () => {
-    setAppOpened(false);
+    setAppOpened(!appOpened);
   };
 
   return (
     <Wrapper>
-      <Logo variant="square" />
+      <LogoWrapper>
+        <Logo variant="square" />
+      </LogoWrapper>
+      <CompanyNameWrapper>Grindery Nexus</CompanyNameWrapper>
       {user && (
         <UserWrapper>
           <UserStatus />
@@ -77,7 +115,11 @@ const AppHeader = (props: Props) => {
         </UserWrapper>
       )}
       <CloseButtonWrapper>
-        <IconButton icon={ICONS.CLOSE} onClick={handleClose} color="" />
+        {size === "desktop" && !appOpened ? (
+          <IconButton icon={ICONS.MENU} onClick={handleClose} color="" />
+        ) : (
+          <IconButton icon={ICONS.CLOSE} onClick={handleClose} color="" />
+        )}
       </CloseButtonWrapper>
     </Wrapper>
   );

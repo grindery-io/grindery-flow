@@ -5,8 +5,8 @@ import { debounce } from "throttle-debounce";
 import { RichInput, SelectInput } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import { jsonrpcObj } from "../../utils";
-import { useWorkflowContext } from "../../context/WorkflowContext";
-import { useAppContext } from "../../context/AppContext";
+import useWorkflowContext from "../../hooks/useWorkflowContext";
+import useAppContext from "../../hooks/useAppContext";
 
 const InputWrapper = styled.div`
   width: 100%;

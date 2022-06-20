@@ -3,13 +3,21 @@ import styled from "styled-components";
 import moment from "moment";
 import { InputBox, TabComponent } from "grindery-ui";
 import DataBox from "../shared/DataBox";
-import { ICONS } from "../../constants";
+import { ICONS, SCREEN } from "../../constants";
 import logs from "../../samples/logs";
+import useWindowSize from "../../hooks/useWindowSize";
 
 const statusIconMapping: { [key: string]: string } = {
   Executed: ICONS.EXECUTED,
   Error: ICONS.ERROR,
 };
+
+const RootWrapper = styled.div`
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    margin: 107px 20px 0;
+    border: 1px solid #dcdcdc;
+  }
+`;
 
 const TabsWrapper = styled.div`
   & .MuiTab-root {
@@ -28,6 +36,10 @@ const Wrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 20px;
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    padding: 60px 106px;
+  }
 `;
 
 const SearchWrapper = styled.div`
@@ -47,6 +59,10 @@ const SearchInputWrapper = styled.div`
   }
   & .MuiOutlinedInput-root {
     margin-top: 0;
+  }
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    flex: 0.5;
   }
 `;
 
@@ -118,6 +134,7 @@ const History = (props: Props) => {
   const [items, setItems] = useState(logs);
   const [searchTerm, setSearchTerm] = useState("");
   const [tab, setTab] = useState(0);
+  const size = useWindowSize();
 
   const filteredItems = items
     .filter((item) => {
@@ -137,7 +154,7 @@ const History = (props: Props) => {
     setSearchTerm(e.target.value);
   };
   return (
-    <>
+    <RootWrapper>
       <TabsWrapper>
         <TabComponent
           value={tab}
@@ -150,7 +167,7 @@ const History = (props: Props) => {
           activeColor="#8C30F5"
           type="text"
           tabColor=""
-          variant="fullWidth"
+          variant={size === "phone" ? "fullWidth" : ""}
         />
       </TabsWrapper>
       <Wrapper>
@@ -198,7 +215,7 @@ const History = (props: Props) => {
           ))}
         </ItemsWrapper>
       </Wrapper>
-    </>
+    </RootWrapper>
   );
 };
 
