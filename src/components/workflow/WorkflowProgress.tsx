@@ -12,6 +12,9 @@ const Wrapper = styled.div`
   flex-direction: row;
   gap: 20px;
   padding: 30px 20px 0;
+  max-width: 375px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const Step = styled.div`

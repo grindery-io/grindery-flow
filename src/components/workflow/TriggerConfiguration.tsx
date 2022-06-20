@@ -10,7 +10,7 @@ import useWorkflowContext from "../../hooks/useWorkflowContext";
 import ChainSelector from "./ChainSelector";
 import ContractSelector from "./ContractSelector";
 import useAddressBook from "../../hooks/useAddressBook";
-import { useAppContext } from "../../context/AppContext";
+import useAppContext from "../../hooks/useAppContext";
 
 const Wrapper = styled.div`
   padding: 20px;

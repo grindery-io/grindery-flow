@@ -4,8 +4,9 @@ import styled from "styled-components";
 import moment from "moment";
 import { Button, DialogBox, InputBox, TabComponent } from "grindery-ui";
 import DataBox from "../shared/DataBox";
-import { ICONS } from "../../constants";
+import { ICONS, SCREEN } from "../../constants";
 import transactions from "../../samples/transactions";
+import useWindowSize from "../../hooks/useWindowSize";
 
 type Transaction = {
   id: string | number;
@@ -27,6 +28,13 @@ const typeIconMapping: { [key: string]: string } = {
   withdraw: ICONS.WITHDRAW,
 };
 
+const RootWrapper = styled.div`
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    margin: 107px 20px 0;
+    border: 1px solid #dcdcdc;
+  }
+`;
+
 const TabsWrapper = styled.div`
   & .MuiTab-root {
     text-transform: initial;
@@ -44,6 +52,10 @@ const Wrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 20px;
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    padding: 60px 106px;
+  }
 `;
 
 const SearchWrapper = styled.div`
@@ -63,6 +75,10 @@ const SearchInputWrapper = styled.div`
   }
   & .MuiOutlinedInput-root {
     margin-top: 0;
+  }
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    flex: 0.5;
   }
 `;
 
@@ -284,6 +300,7 @@ const Transactions = (props: Props) => {
   const [dialog, setDialog] = useState<null | string | number>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [tab, setTab] = useState(0);
+  const size = useWindowSize();
 
   const filteredItems = items
     .filter((item) => {
@@ -363,7 +380,7 @@ const Transactions = (props: Props) => {
           onClose={() => {
             setDialog(null);
           }}
-          maxWidth="375px"
+          maxWidth={size === "phone" ? "375px" : "590px"}
         >
           <DialogTitle>
             {item.type !== "deposit" ? "- " : ""}${item.usd}
@@ -402,7 +419,7 @@ const Transactions = (props: Props) => {
   };
 
   return (
-    <>
+    <RootWrapper>
       <TabsWrapper>
         <TabComponent
           value={tab}
@@ -474,7 +491,7 @@ const Transactions = (props: Props) => {
           ))}
         </GroupsWrapper>
       </Wrapper>
-    </>
+    </RootWrapper>
   );
 };
 

@@ -51,7 +51,7 @@ const ContentWrapper = styled.div`
   margin-top: 67px;
   min-height: calc(100vh - 100px);
   @media (min-width: ${SCREEN.DESKTOP}) {
-    max-width: 1028px;
+    max-width: 1068px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 67px;
@@ -139,7 +139,12 @@ const MainLayout = (props: Props) => {
       {size === "desktop" && (
         <>
           <AppHeader />
-          <div style={{ marginLeft: appOpened ? "210px" : "60px" }}>
+          <div
+            style={{
+              marginLeft: appOpened ? "210px" : "60px",
+              transition: "all 225ms cubic-bezier(0, 0, 0.2, 1) 0ms",
+            }}
+          >
             <ContentWrapper>{renderContent(activeTab || 0)}</ContentWrapper>
           </div>
         </>

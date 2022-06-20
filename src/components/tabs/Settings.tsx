@@ -2,9 +2,15 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Button, SelectSimple, SwitchInput } from "grindery-ui";
 import useAppContext from "../../hooks/useAppContext";
+import { SCREEN } from "../../constants";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    padding: 60px 106px;
+    margin: 107px 20px 0;
+    border: 1px solid #dcdcdc;
+  }
 `;
 
 const Title = styled.h2`

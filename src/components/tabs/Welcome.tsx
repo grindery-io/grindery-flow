@@ -14,8 +14,9 @@ const Wrapper = styled.div`
   flex-wrap: nowrap;
   min-height: calc(100% - 48px);
   @media (min-width: ${SCREEN.DESKTOP}) {
-    margin-left: auto;
-    margin-right: auto;
+    padding: 60px 106px;
+    margin: 107px 20px 0;
+    border: 1px solid #dcdcdc;
   }
 `;
 
@@ -27,12 +28,20 @@ text-align: center;
 color: rgba(0, 0, 0, 0.87);
 padding: 0
 margin: 0 0 15px;
+@media (min-width: ${SCREEN.DESKTOP}) {
+  max-width: 576px;
+  margin: 0 auto 15px;
+}
 `;
 
 const Img = styled.img`
   margin: 0 auto 15px;
   width: 335px;
   height: 322px;
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    width: 500px;
+    height: 480px;
+  }
 `;
 
 const Desc = styled.p`
@@ -43,6 +52,10 @@ const Desc = styled.p`
   color: #0b0d17;
   padding: 0;
   margin: 0 0 5px;
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    max-width: 576px;
+    margin: 0 auto 5px;
+  }
 `;
 
 const ButtonWrapper = styled.div`

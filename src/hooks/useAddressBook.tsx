@@ -38,6 +38,7 @@ const useAddressBook = (user: string) => {
               reference: value.address,
             };
           }
+          return addr;
         }),
       ];
       localStorage.setItem(

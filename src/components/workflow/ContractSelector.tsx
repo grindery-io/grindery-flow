@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { RichInput } from "grindery-ui";
-import { useAppContext } from "../../context/AppContext";
+import useAppContext from "../../hooks/useAppContext";
 
 const InputWrapper = styled.div`
   width: 100%;

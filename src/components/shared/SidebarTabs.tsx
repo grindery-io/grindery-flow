@@ -21,6 +21,10 @@ const Wrapper = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
 
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    transition: all 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+  }
+
   & .MuiTabs-root {
     background: transparent !important;
   }
