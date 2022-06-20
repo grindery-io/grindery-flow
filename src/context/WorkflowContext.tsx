@@ -253,7 +253,8 @@ export const WorkflowContextProvider = ({
       (trigger &&
       trigger.operation &&
       trigger.operation.type === "blockchain:event"
-        ? workflow.trigger.input.blockchain
+        ? workflow.trigger.input._grinderyChain &&
+          workflow.trigger.input._grinderyContractAddress
         : true)
   );
 
@@ -273,7 +274,9 @@ export const WorkflowContextProvider = ({
         (field: string) => workflow.actions[index]?.input?.[field]
       ).length === requiredActionFields(index).length &&
         (action(index)?.operation?.type === "blockchain:call"
-          ? workflow.actions[index].input.blockchain
+          ? workflow.actions[index].input._grinderyChain &&
+            workflow.actions[index].input._grinderyContractAddress &&
+            workflow.actions[index].input._grinderyGasLimit
           : true)
     );
   };
