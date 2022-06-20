@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Button, Drawer } from "grindery-ui";
 import { RIGHTBAR_TABS } from "../../constants";

@@ -279,6 +279,7 @@ const DialogAmount = styled.p`
 type Props = {};
 
 const Transactions = (props: Props) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [items, setItems] = useState<Transaction[]>(transactions);
   const [dialog, setDialog] = useState<null | string | number>(null);
   const [searchTerm, setSearchTerm] = useState("");

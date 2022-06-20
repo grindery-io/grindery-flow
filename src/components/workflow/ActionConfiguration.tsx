@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { CircularProgress, AlertField, Text, Button } from "grindery-ui";
 import { Field } from "../../types/Connector";
@@ -92,7 +92,10 @@ const ActionConfiguration = (props: Props) => {
     cachedAddressBook ? JSON.parse(cachedAddressBook) : []
   );
 
-  const options = getOutputOptions(trigger.operation, triggerConnector);
+  const options =
+    triggerConnector && trigger?.operation
+      ? getOutputOptions(trigger.operation, triggerConnector)
+      : [];
 
   const handleTestClick = async () => {
     setActiveStep?.("actionTest");
@@ -130,26 +133,29 @@ const ActionConfiguration = (props: Props) => {
           actionConnector?.(index)?.authentication?.oauth2Config?.getAccessToken
         ) {
           const getAccessTokenRequest =
-            triggerConnector.authentication.oauth2Config.getAccessToken;
-          axios({
-            method: getAccessTokenRequest.method,
-            url: getAccessTokenRequest.url,
-            headers: getAccessTokenRequest.headers || {},
-            data: {
-              ...getAccessTokenRequest.body,
-              code: codeParam,
-              redirect_uri: window.location.origin + "/auth",
-            },
-          })
-            .then((res) => {
-              if (res && res.data) {
-                const credentials = res.data;
-                testAuth(credentials);
-              }
+            actionConnector?.(index)?.authentication?.oauth2Config
+              ?.getAccessToken;
+          if (getAccessTokenRequest) {
+            axios({
+              method: getAccessTokenRequest.method,
+              url: getAccessTokenRequest.url,
+              headers: getAccessTokenRequest.headers || {},
+              data: {
+                //...getAccessTokenRequest.body,
+                code: codeParam,
+                redirect_uri: window.location.origin + "/auth",
+              },
             })
-            .catch((err) => {
-              console.log("getAccessTokenRequest err", err);
-            });
+              .then((res) => {
+                if (res && res.data) {
+                  const credentials = res.data;
+                  testAuth(credentials);
+                }
+              })
+              .catch((err) => {
+                console.log("getAccessTokenRequest err", err);
+              });
+          }
         }
 
         e.source.postMessage({ gr_close: true }, window.location.origin);

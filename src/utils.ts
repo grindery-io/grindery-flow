@@ -4,7 +4,6 @@ import {
   Connector,
   TriggerOperation,
 } from "./types/Connector";
-import { Workflow } from "./types/Workflow";
 
 export const getParameterByName = (
   name: string,
@@ -83,3 +82,5 @@ export const jsonrpcObj = (method: string, params: object) => {
     params,
   };
 };
+
+export const defaultFunc = () => {};

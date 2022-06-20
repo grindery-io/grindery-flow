@@ -92,6 +92,7 @@ const AppCounterValue = styled.span`
 type Props = {};
 
 const Apps = (props: Props) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [items, setItems] = useState(apps);
   const [searchTerm, setSearchTerm] = useState("");
 

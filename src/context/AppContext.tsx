@@ -4,7 +4,7 @@ import { useViewerConnection } from "@self.id/react";
 import { Workflow } from "../types/Workflow";
 import { RIGHTBAR_TABS, WORKFLOW_ENGINE_URL } from "../constants";
 import { Connector } from "../types/Connector";
-import { jsonrpcObj } from "../utils";
+import { defaultFunc, jsonrpcObj } from "../utils";
 
 import gsheetConnector from "../samples/connectors/gsheet.json";
 import moloch from "../samples/connectors/moloch.json";
@@ -31,7 +31,22 @@ type AppContextProps = {
   children: React.ReactNode;
 };
 
-export const AppContext = createContext<Partial<ContextProps>>({});
+export const AppContext = createContext<ContextProps>({
+  user: "",
+  setUser: defaultFunc,
+  activeTab: 0,
+  setActiveTab: defaultFunc,
+  changeTab: defaultFunc,
+  disconnect: defaultFunc,
+  workflowOpened: false,
+  setWorkflowOpened: defaultFunc,
+  appOpened: true,
+  setAppOpened: defaultFunc,
+  workflows: [],
+  setWorkflows: defaultFunc,
+  connectors: [],
+  getWorkflowsList: defaultFunc,
+});
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
   // Auth hook

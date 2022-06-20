@@ -79,7 +79,7 @@ const TriggerConfiguration = (props: Props) => {
       trigger.operation &&
       trigger.operation.inputFields &&
       trigger.operation.inputFields.filter(
-        (inputField: { computed: any }) => inputField && !inputField.computed
+        (inputField: Field) => inputField && !inputField.computed
       )) ||
     [];
 
@@ -112,7 +112,7 @@ const TriggerConfiguration = (props: Props) => {
             url: getAccessTokenRequest.url,
             headers: getAccessTokenRequest.headers || {},
             data: {
-              ...getAccessTokenRequest.body,
+              //...getAccessTokenRequest.body,
               code: codeParam,
               redirect_uri: window.location.origin + "/auth",
             },
@@ -143,29 +143,31 @@ const TriggerConfiguration = (props: Props) => {
       const headers = triggerConnector.authentication.test.headers;
       const url = triggerConnector.authentication.test.url;
       const method = triggerConnector.authentication.test.method;
-      axios({
-        method: method,
-        url: `${url}${
-          /\?/.test(url) ? "&" : "?"
-        }timestamp=${new Date().getTime()}`,
-        headers: {
-          ...headers,
-          Authorization: "Bearer " + credentials.access_token,
-        },
-      })
-        .then((res) => {
-          if (res && res.data && res.data.email) {
-            setEmail(res.data.email);
-            updateWorkflow?.({
-              "trigger.credentials": credentials,
-            });
-            updateFieldsDefinition();
-          }
+      if (url) {
+        axios({
+          method: method,
+          url: `${url}${
+            /\?/.test(url) ? "&" : "?"
+          }timestamp=${new Date().getTime()}`,
+          headers: {
+            ...headers,
+            Authorization: "Bearer " + credentials.access_token,
+          },
         })
-        .catch((err) => {
-          clearCredentials();
-          setEmail("");
-        });
+          .then((res) => {
+            if (res && res.data && res.data.email) {
+              setEmail(res.data.email);
+              updateWorkflow?.({
+                "trigger.credentials": credentials,
+              });
+              updateFieldsDefinition();
+            }
+          })
+          .catch((err) => {
+            clearCredentials();
+            setEmail("");
+          });
+      }
     }
   };
 
@@ -177,7 +179,7 @@ const TriggerConfiguration = (props: Props) => {
         left = window.screen.width / 2 - width / 2,
         top = window.screen.height / 2 - height / 2;
       let windowObjectReference = window.open(
-        triggerConnector.authentication.oauth2Config.authorizeUrl.url +
+        triggerConnector?.authentication?.oauth2Config?.authorizeUrl.url +
           "&redirect_uri=" +
           window.location.origin +
           "/auth",
@@ -197,7 +199,7 @@ const TriggerConfiguration = (props: Props) => {
   };
 
   const updateFieldsDefinition = () => {
-    if (trigger.operation.inputFieldProviderUrl) {
+    if (trigger?.operation?.inputFieldProviderUrl) {
       if (workflow) {
         setLoading?.(true);
         axios
@@ -298,7 +300,7 @@ const TriggerConfiguration = (props: Props) => {
     return null;
   }
 
-  return (
+  return triggerConnector && trigger ? (
     <Wrapper>
       <TitleWrapper>
         {triggerConnector.icon && (
@@ -360,7 +362,7 @@ const TriggerConfiguration = (props: Props) => {
 
       {triggerIsAuthenticated && (
         <div style={{ marginTop: 40 }}>
-          {trigger.operation.type === "blockchain:event" && (
+          {trigger.operation?.type === "blockchain:event" && (
             <ChainSelector
               value={workflow?.trigger.input.blockchain || ""}
               onChange={handleChainChange}
@@ -384,7 +386,7 @@ const TriggerConfiguration = (props: Props) => {
         </div>
       )}
     </Wrapper>
-  );
+  ) : null;
 };
 
 export default TriggerConfiguration;

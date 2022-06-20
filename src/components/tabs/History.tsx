@@ -114,6 +114,7 @@ const ItemDate = styled.div`
 type Props = {};
 
 const History = (props: Props) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [items, setItems] = useState(logs);
   const [searchTerm, setSearchTerm] = useState("");
   const [tab, setTab] = useState(0);

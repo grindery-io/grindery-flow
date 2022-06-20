@@ -98,7 +98,7 @@ const TriggerInputField = ({ inputField }: Props) => {
       if (
         (typeof inputField.updateFieldDefinition === "undefined" ||
           inputField.updateFieldDefinition) &&
-        trigger.operation.inputFieldProviderUrl
+        trigger?.operation?.inputFieldProviderUrl
       ) {
         if (workflow) {
           axios

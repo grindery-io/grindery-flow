@@ -2,10 +2,30 @@ import React, { useState, createContext, useContext, useEffect } from "react";
 import _ from "lodash";
 import axios from "axios";
 import { Workflow } from "../types/Workflow";
-import { Action, Connector, Field } from "../types/Connector";
-import { jsonrpcObj } from "../utils";
+import { Action, Connector, Field, Trigger } from "../types/Connector";
+import { defaultFunc, jsonrpcObj } from "../utils";
 import { WORKFLOW_ENGINE_URL } from "../constants";
 import { useAppContext } from "./AppContext";
+
+// empty workflow declaration
+const blankWorkflow: Workflow = {
+  title: "New workflow",
+  trigger: {
+    type: "trigger",
+    connector: "",
+    operation: "",
+    input: {},
+  },
+  actions: [
+    {
+      type: "action",
+      connector: "",
+      operation: "",
+      input: {},
+    },
+  ],
+  creator: "",
+};
 
 type WorkflowContextProps = {
   connectors?: Connector[];
@@ -18,11 +38,11 @@ type WorkflowContextProps = {
   triggerIsAuthenticated: boolean;
   actionIsAuthenticated: (i: number) => boolean;
   triggerIsConfigured: boolean;
-  trigger: any;
+  trigger: Trigger | undefined;
   availableTriggers: any[];
   availableActions: (i: number) => Action[];
   action: (i: number) => Action | undefined;
-  triggerConnector: any;
+  triggerConnector: Connector | undefined;
   actionConnector: (i: number) => Connector | undefined;
   triggerConnectorIsSet: boolean;
   actionConnectorIsSet: (i: number) => boolean;
@@ -50,7 +70,41 @@ type WorkflowContextProviderProps = {
   availableConnectors: Connector[];
 };
 
-export const WorkflowContext = createContext<Partial<WorkflowContextProps>>({});
+export const WorkflowContext = createContext<WorkflowContextProps>({
+  connectors: [],
+  workflow: blankWorkflow,
+  setWorkflow: defaultFunc,
+  connectorsWithTriggers: [],
+  connectorsWithActions: [],
+  triggerIsSet: false,
+  actionIsSet: () => false,
+  triggerIsAuthenticated: false,
+  actionIsAuthenticated: () => false,
+  triggerIsConfigured: false,
+  trigger: undefined,
+  availableTriggers: [],
+  availableActions: () => [],
+  action: () => undefined,
+  triggerConnector: undefined,
+  actionConnector: () => undefined,
+  triggerConnectorIsSet: false,
+  actionConnectorIsSet: () => false,
+  triggerAuthenticationIsRequired: false,
+  actionAuthenticationIsRequired: () => false,
+  updateWorkflow: defaultFunc,
+  actionIsConfigured: () => false,
+  activeStep: 1,
+  setActiveStep: defaultFunc,
+  resetWorkflow: defaultFunc,
+  setConnectors: defaultFunc,
+  requiredActionFields: () => [],
+  saveWorkflow: defaultFunc,
+  loading: false,
+  setLoading: defaultFunc,
+  setError: defaultFunc,
+  success: null,
+  setSuccess: defaultFunc,
+});
 
 export const WorkflowContextProvider = ({
   user,
@@ -63,26 +117,6 @@ export const WorkflowContextProvider = ({
   const [connectors, setConnectors] = useState<Connector[]>(
     availableConnectors || []
   );
-
-  // empty workflow declaration
-  const blankWorkflow: Workflow = {
-    title: "New workflow",
-    trigger: {
-      type: "trigger",
-      connector: "",
-      operation: "",
-      input: {},
-    },
-    actions: [
-      {
-        type: "action",
-        connector: "",
-        operation: "",
-        input: {},
-      },
-    ],
-    creator: "",
-  };
 
   // workflow state
   const [workflow, setWorkflow] = useState<Workflow>(blankWorkflow);
