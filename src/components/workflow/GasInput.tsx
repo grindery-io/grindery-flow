@@ -19,7 +19,7 @@ const Label = styled.div`
 
 const InputWrapper = styled.div`
   margin-left: auto;
-  max-width: 84px;
+  max-width: 92px;
 
   & .MuiTextField-root {
     background: #fff !important;
@@ -28,7 +28,7 @@ const InputWrapper = styled.div`
 
 type Props = {
   value: string;
-  onChange: (a: string) => void;
+  onChange: (a: any) => void;
   suffix?: string;
   placeholder?: string;
 };

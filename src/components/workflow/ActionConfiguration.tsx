@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { CircularProgress, AlertField, Text, Button } from "grindery-ui";
 import { Field } from "../../types/Connector";
@@ -79,7 +79,9 @@ const ActionConfiguration = (props: Props) => {
     actionAuthenticationIsRequired,
     actionIsAuthenticated,
   } = useWorkflowContext();
+
   const [email, setEmail] = useState("");
+  const [gas, setGas] = useState("0.1");
 
   const inputFields = (action?.(index)?.operation?.inputFields || []).filter(
     (inputField: Field) => inputField && !inputField.computed
@@ -307,12 +309,27 @@ const ActionConfiguration = (props: Props) => {
 
   const workflowActionCredentials = workflow?.actions[index].credentials;
 
+  const handleGasChange = (value: string) => {
+    updateWorkflow?.({
+      ["actions[" + index + "].input._grinderyGasLimit"]: value,
+    });
+  };
+
+  const operationType = action?.(index)?.operation?.type;
+
   useEffect(() => {
     if (workflowActionCredentials) {
       testAuth(workflowActionCredentials);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (operationType === "blockchain:call") {
+      handleGasChange(gas);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [operationType, gas]);
 
   if (!activeStep || step !== activeStep) {
     return null;
@@ -357,7 +374,12 @@ const ActionConfiguration = (props: Props) => {
                 0.003 ETH
               </a>
             </div>
-            <GasInput value="0.1" onChange={() => {}} />
+            <GasInput
+              value={gas}
+              onChange={(e) => {
+                setGas(e.target.value);
+              }}
+            />
           </>
         </AlertField>
       )}
