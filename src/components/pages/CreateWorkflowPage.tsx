@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import ConnectButton from "../shared/ConnectButton";
-import { SCREEN } from "../../constants";
+import { Button } from "grindery-ui";
+import { ICONS, SCREEN } from "../../constants";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -69,24 +70,30 @@ const ButtonWrapper = styled.div`
 
 type Props = {};
 
-const WelcomePage = (props: Props) => {
+const CreateWorkflowPage = (props: Props) => {
+  let navigate = useNavigate();
   return (
     <Wrapper>
       <Title>
-        Welcome to
+        Create your first
         <br />
-        Grindery Nexus
+        workflow
       </Title>
-      <Img src="/images/welcome.svg" alt="Welcome" />
+      <Img src="/images/create-workflow.svg" alt="Create workflow" />
       <Desc>
-        We are the easiest way for people and organizations to connect Apps and
-        dApps across chains and protocols.
+        Create workflows to connect a Web2 to a Web3 App or viceversa.
       </Desc>
       <ButtonWrapper>
-        <ConnectButton />
+        <Button
+          value="Create workflow"
+          onClick={() => {
+            navigate("/workflows/new");
+          }}
+          icon={ICONS.PLUS_WHITE}
+        />
       </ButtonWrapper>
     </Wrapper>
   );
 };
 
-export default WelcomePage;
+export default CreateWorkflowPage;

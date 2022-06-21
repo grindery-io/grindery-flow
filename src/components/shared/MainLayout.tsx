@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Button, Drawer } from "grindery-ui";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { RIGHTBAR_TABS, SCREEN } from "../../constants";
+import { SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import AppHeader from "./AppHeader";
 import SidebarTabs from "./SidebarTabs";
@@ -16,6 +16,7 @@ import TransactionsPage from "../pages/TransactionsPage";
 import WelcomePage from "../pages/WelcomePage";
 import WorkflowsPage from "../pages/WorkflowsPage";
 import WorkflowBuilderPage from "../pages/WorkflowBuilderPage";
+import CreateWorkflowPage from "../pages/CreateWorkflowPage";
 
 const DrawerWrapper = styled.div`
   @media (min-width: ${SCREEN.DESKTOP}) {
@@ -80,16 +81,7 @@ const MainLayout = (props: Props) => {
   const size = useWindowSize();
 
   const renderContent = () => {
-    let path =
-      RIGHTBAR_TABS.findIndex((tab) => {
-        return tab.path === window.location.pathname;
-      }) >= 0
-        ? RIGHTBAR_TABS.findIndex((tab) => {
-            return tab.path === window.location.pathname;
-          })
-        : 0;
-
-    if (!user || (path === 0 && (!workflows || workflows.length < 1))) {
+    if (!user) {
       return <WelcomePage />;
     }
 
@@ -97,7 +89,16 @@ const MainLayout = (props: Props) => {
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />}></Route>
         <Route path="/dashboard" element={<DashboardPage />}></Route>
-        <Route path="/workflows" element={<WorkflowsPage />}></Route>
+        <Route
+          path="/workflows"
+          element={
+            !workflows || workflows.length < 1 ? (
+              <CreateWorkflowPage />
+            ) : (
+              <WorkflowsPage />
+            )
+          }
+        ></Route>
         <Route path="/workflows/new" element={<WorkflowBuilderPage />}></Route>
         <Route path="/d-apps" element={<AppsPage />}></Route>
         <Route path="/history" element={<HistoryPage />}></Route>

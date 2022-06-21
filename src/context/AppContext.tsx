@@ -110,11 +110,14 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   useEffect(() => {
     if (connection.status === "connected") {
       setUser(connection.selfID.id);
+      if (!workflows || workflows.length < 1) {
+        navigate("/workflows");
+      }
     } else {
       setUser(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connection]);
+  }, [connection, workflows]);
 
   return (
     <AppContext.Provider
