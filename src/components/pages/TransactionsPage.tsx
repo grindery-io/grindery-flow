@@ -30,7 +30,7 @@ const typeIconMapping: { [key: string]: string } = {
 
 const RootWrapper = styled.div`
   @media (min-width: ${SCREEN.DESKTOP}) {
-    margin: 107px 20px 0;
+    margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
   }
 `;
@@ -294,7 +294,7 @@ const DialogAmount = styled.p`
 
 type Props = {};
 
-const Transactions = (props: Props) => {
+const TransactionsPage = (props: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [items, setItems] = useState<Transaction[]>(transactions);
   const [dialog, setDialog] = useState<null | string | number>(null);
@@ -495,4 +495,4 @@ const Transactions = (props: Props) => {
   );
 };
 
-export default Transactions;
+export default TransactionsPage;

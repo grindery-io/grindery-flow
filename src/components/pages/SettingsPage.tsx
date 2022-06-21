@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   padding: 24px 20px;
   @media (min-width: ${SCREEN.DESKTOP}) {
     padding: 60px 106px;
-    margin: 107px 20px 0;
+    margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
   }
 `;
@@ -63,7 +63,7 @@ const CurrencySettingWrapper = styled.div`
 
 type Props = {};
 
-const Settings = (props: Props) => {
+const SettingsPage = (props: Props) => {
   const { disconnect } = useAppContext();
   const cachedDevMode = localStorage.getItem("gr_dev_mode");
   const cachedPrimaryCurrency = localStorage.getItem("gr_primary_currency");
@@ -122,4 +122,4 @@ const Settings = (props: Props) => {
   );
 };
 
-export default Settings;
+export default SettingsPage;

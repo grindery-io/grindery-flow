@@ -14,7 +14,7 @@ const statusIconMapping: { [key: string]: string } = {
 
 const RootWrapper = styled.div`
   @media (min-width: ${SCREEN.DESKTOP}) {
-    margin: 107px 20px 0;
+    margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
   }
 `;
@@ -129,7 +129,7 @@ const ItemDate = styled.div`
 
 type Props = {};
 
-const History = (props: Props) => {
+const HistoryPage = (props: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [items, setItems] = useState(logs);
   const [searchTerm, setSearchTerm] = useState("");
@@ -219,4 +219,4 @@ const History = (props: Props) => {
   );
 };
 
-export default History;
+export default HistoryPage;

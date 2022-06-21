@@ -6,6 +6,7 @@ import { Action, Connector, Field, Trigger } from "../types/Connector";
 import { defaultFunc, jsonrpcObj } from "../utils";
 import { WORKFLOW_ENGINE_URL } from "../constants";
 import useAppContext from "../hooks/useAppContext";
+import { useNavigate } from "react-router-dom";
 
 // empty workflow declaration
 const blankWorkflow: Workflow = {
@@ -111,7 +112,8 @@ export const WorkflowContextProvider = ({
   children,
   availableConnectors,
 }: WorkflowContextProviderProps) => {
-  const { setWorkflowOpened, getWorkflowsList } = useAppContext();
+  let navigate = useNavigate();
+  const { getWorkflowsList } = useAppContext();
 
   // loaded nexus connectors CDS
   const [connectors, setConnectors] = useState<Connector[]>(
@@ -119,7 +121,24 @@ export const WorkflowContextProvider = ({
   );
 
   // workflow state
-  const [workflow, setWorkflow] = useState<Workflow>(blankWorkflow);
+  const [workflow, setWorkflow] = useState<Workflow>({
+    title: "New workflow",
+    trigger: {
+      type: "trigger",
+      connector: "",
+      operation: "",
+      input: {},
+    },
+    actions: [
+      {
+        type: "action",
+        connector: "",
+        operation: "",
+        input: {},
+      },
+    ],
+    creator: "",
+  });
 
   // is data loading
   const [loading, setLoading] = useState(false);
@@ -357,8 +376,8 @@ export const WorkflowContextProvider = ({
           }
           if (res && res.data && res.data.result) {
             getWorkflowsList();
-            setWorkflowOpened(false);
             resetWorkflow();
+            navigate("/workflows");
           }
           setLoading(false);
         })

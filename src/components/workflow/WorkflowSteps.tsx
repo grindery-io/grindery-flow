@@ -11,7 +11,7 @@ import { SCREEN } from "../../constants";
 const Wrapper = styled.div`
   @media (min-width: ${SCREEN.DESKTOP}) {
     padding: 30px 86px 30px;
-    margin: 107px 20px 0;
+    margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
   }
 `;

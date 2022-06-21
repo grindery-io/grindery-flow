@@ -5,7 +5,7 @@ import DataBox from "../shared/DataBox";
 import useAppContext from "../../hooks/useAppContext";
 import { ICONS, SCREEN } from "../../constants";
 import { Workflow } from "../../types/Workflow";
-import WorkflowBuilder from "../workflow/WorkflowBuilder";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 
   @media (min-width: ${SCREEN.DESKTOP}) {
     padding: 60px 106px;
-    margin: 107px 20px 0;
+    margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
   }
 `;
@@ -116,11 +116,11 @@ const ItemActionsWrapper = styled.div`
 
 type Props = {};
 
-const Workflows = (props: Props) => {
-  const { workflows, workflowOpened, connectors, setWorkflowOpened } =
-    useAppContext();
+const WorkflowsPage = (props: Props) => {
+  const { workflows, connectors } = useAppContext();
   const items = workflows || [];
   const [searchTerm, setSearchTerm] = useState("");
+  let navigate = useNavigate();
 
   const filteredItems = searchTerm
     ? items.filter(
@@ -174,7 +174,7 @@ const Workflows = (props: Props) => {
     );
   };
 
-  return !workflowOpened ? (
+  return (
     <Wrapper>
       <SearchWrapper>
         <SearchInputWrapper>
@@ -190,16 +190,14 @@ const Workflows = (props: Props) => {
         <IconButton
           color=""
           onClick={() => {
-            setWorkflowOpened(true);
+            navigate("/workflows/new");
           }}
           icon={ICONS.PLUS}
         />
       </SearchWrapper>
       <ItemsWrapper>{filteredItems.map(renderWorkflow)}</ItemsWrapper>
     </Wrapper>
-  ) : (
-    <WorkflowBuilder />
   );
 };
 
-export default Workflows;
+export default WorkflowsPage;

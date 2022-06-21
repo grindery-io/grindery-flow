@@ -1,19 +1,21 @@
 import React from "react";
 import styled from "styled-components";
 import { Button, Drawer } from "grindery-ui";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { RIGHTBAR_TABS, SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import AppHeader from "./AppHeader";
-import Dashboard from "../tabs/Dashboard";
-import Notifications from "../tabs/Notifications";
 import SidebarTabs from "./SidebarTabs";
-import Workflows from "../tabs/Workflows";
-import Apps from "../tabs/Apps";
-import History from "../tabs/History";
-import Transactions from "../tabs/Transactions";
-import Settings from "../tabs/Settings";
-import Welcome from "../tabs/Welcome";
 import useWindowSize from "../../hooks/useWindowSize";
+import AppsPage from "../pages/AppsPage";
+import DashboardPage from "../pages/DashboardPage";
+import HistoryPage from "../pages/HistoryPage";
+import NotificationsPage from "../pages/NotificationsPage";
+import SettingsPage from "../pages/SettingsPage";
+import TransactionsPage from "../pages/TransactionsPage";
+import WelcomePage from "../pages/WelcomePage";
+import WorkflowsPage from "../pages/WorkflowsPage";
+import WorkflowBuilderPage from "../pages/WorkflowBuilderPage";
 
 const DrawerWrapper = styled.div`
   @media (min-width: ${SCREEN.DESKTOP}) {
@@ -48,13 +50,15 @@ const TabsWrapper = styled.div`
 const ContentWrapper = styled.div`
   width: 100%;
   max-width: 375px;
-  margin-top: 67px;
+  padding-top: 67px;
   min-height: calc(100vh - 100px);
   @media (min-width: ${SCREEN.DESKTOP}) {
     max-width: 1068px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 67px;
+    min-height: calc(100vh - 105px);
+    padding-bottom: 40px;
+    box-sizing: border-box;
   }
 `;
 
@@ -72,36 +76,37 @@ const OpenButtonWrapper = styled.div`
 type Props = {};
 
 const MainLayout = (props: Props) => {
-  const { workflows, user, activeTab, appOpened, setAppOpened } =
-    useAppContext();
+  const { workflows, user, appOpened, setAppOpened } = useAppContext();
   const size = useWindowSize();
 
-  const renderContent = (tab: number) => {
-    if (!user || (activeTab === 0 && (!workflows || workflows.length < 1))) {
-      return <Welcome />;
+  const renderContent = () => {
+    let path =
+      RIGHTBAR_TABS.findIndex((tab) => {
+        return tab.path === window.location.pathname;
+      }) >= 0
+        ? RIGHTBAR_TABS.findIndex((tab) => {
+            return tab.path === window.location.pathname;
+          })
+        : 0;
+
+    if (!user || (path === 0 && (!workflows || workflows.length < 1))) {
+      return <WelcomePage />;
     }
-    switch (RIGHTBAR_TABS[tab].name || "") {
-      case "DASHBOARD":
-        return <Dashboard />;
-      case "WORKFLOWS":
-        return <Workflows />;
-      case "APPS":
-        return <Apps />;
-      case "HISTORY":
-        return <History />;
-      case "TRANSACTIONS":
-        return <Transactions />;
-      case "NOTIFICATIONS":
-        return <Notifications />;
-      case "SETTINGS":
-        return <Settings />;
-      default:
-        return (
-          <div style={{ textAlign: "center", padding: 30 }}>
-            {RIGHTBAR_TABS[tab].name || ""}
-          </div>
-        );
-    }
+
+    return (
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />}></Route>
+        <Route path="/dashboard" element={<DashboardPage />}></Route>
+        <Route path="/workflows" element={<WorkflowsPage />}></Route>
+        <Route path="/workflows/new" element={<WorkflowBuilderPage />}></Route>
+        <Route path="/d-apps" element={<AppsPage />}></Route>
+        <Route path="/history" element={<HistoryPage />}></Route>
+        <Route path="/transactions" element={<TransactionsPage />}></Route>
+        <Route path="/notifications" element={<NotificationsPage />}></Route>
+        <Route path="/settings" element={<SettingsPage />}></Route>
+      </Routes>
+    );
+    /**/
   };
 
   const handleOpen = () => {
@@ -124,7 +129,7 @@ const MainLayout = (props: Props) => {
           {size === "phone" && <AppHeader />}
           <BarWrapper>
             {size === "phone" && (
-              <ContentWrapper>{renderContent(activeTab || 0)}</ContentWrapper>
+              <ContentWrapper>{renderContent()}</ContentWrapper>
             )}
             <TabsWrapper
               style={{
@@ -145,7 +150,7 @@ const MainLayout = (props: Props) => {
               transition: "all 225ms cubic-bezier(0, 0, 0.2, 1) 0ms",
             }}
           >
-            <ContentWrapper>{renderContent(activeTab || 0)}</ContentWrapper>
+            <ContentWrapper>{renderContent()}</ContentWrapper>
           </div>
         </>
       )}

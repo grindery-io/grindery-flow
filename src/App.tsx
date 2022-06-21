@@ -1,14 +1,21 @@
 import React from "react";
 import { Provider } from "@self.id/react";
-import AppRouter from "./components/shared/AppRouter";
 import AppContextProvider from "./context/AppContext";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import RootPage from "./components/pages/RootPage";
+import AuthPage from "./components/pages/AuthPage";
 
 function App() {
   return (
     <Provider client={{ ceramic: "testnet-clay" }}>
-      <AppContextProvider>
-        <AppRouter />
-      </AppContextProvider>
+      <BrowserRouter>
+        <AppContextProvider>
+          <Routes>
+            <Route path="/auth" element={<AuthPage />}></Route>
+            <Route path="*" element={<RootPage />}></Route>
+          </Routes>
+        </AppContextProvider>
+      </BrowserRouter>
     </Provider>
   );
 }

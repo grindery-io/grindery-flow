@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   padding: 24px 20px;
   @media (min-width: ${SCREEN.DESKTOP}) {
     padding: 60px 106px;
-    margin: 107px 20px 0;
+    margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
   }
 `;
@@ -56,7 +56,7 @@ const AlertConfigWrapper = styled.div`
 
 type Props = {};
 
-const Notifications = (props: Props) => {
+const NotificationsPage = (props: Props) => {
   const [balanceAlert, setBalanceAlert] = useState(false);
   const [alertConfig, setAlertConfig] = useState("0.1");
 
@@ -91,4 +91,4 @@ const Notifications = (props: Props) => {
   );
 };
 
-export default Notifications;
+export default NotificationsPage;

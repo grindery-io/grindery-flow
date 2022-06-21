@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { TabComponent } from "grindery-ui";
+import { useNavigate } from "react-router-dom";
 import { RIGHTBAR_TABS, SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -91,8 +92,17 @@ const Wrapper = styled.div`
 type Props = {};
 
 const SidebarTabs = (props: Props) => {
-  const { user, activeTab, setActiveTab, appOpened } = useAppContext();
+  const { user, appOpened } = useAppContext();
   const size = useWindowSize();
+  let navigate = useNavigate();
+  let path =
+    RIGHTBAR_TABS.findIndex((tab) => {
+      return tab.path === window.location.pathname;
+    }) >= 0
+      ? RIGHTBAR_TABS.findIndex((tab) => {
+          return tab.path === window.location.pathname;
+        })
+      : false;
 
   return (
     <Wrapper
@@ -101,10 +111,10 @@ const SidebarTabs = (props: Props) => {
       }}
     >
       <TabComponent
-        value={activeTab || 0}
+        value={path}
         onChange={(index: number) => {
           if (user) {
-            setActiveTab(index);
+            navigate(RIGHTBAR_TABS[index].path, { replace: true });
           }
         }}
         options={RIGHTBAR_TABS.map((tab) => (
@@ -112,7 +122,7 @@ const SidebarTabs = (props: Props) => {
             <img
               src={tab.icon}
               alt={tab.name}
-              style={{ opacity: activeTab !== tab.id ? "0.2" : 1 }}
+              style={{ opacity: path !== tab.id ? "0.2" : 1 }}
             />
             <p>{tab.label}</p>
           </>

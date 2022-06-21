@@ -3,7 +3,7 @@ import MainLayout from "../shared/MainLayout";
 
 type Props = {};
 
-const HomePage = (props: Props) => {
+const RootPage = (props: Props) => {
   return (
     <div>
       <MainLayout />
@@ -11,4 +11,4 @@ const HomePage = (props: Props) => {
   );
 };
 
-export default HomePage;
+export default RootPage;

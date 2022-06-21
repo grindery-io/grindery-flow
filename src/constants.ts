@@ -1,6 +1,5 @@
 export const SCREEN = {
-  DESKTOP: "1024px",
-  PHONE: "576px",
+  DESKTOP: "1200px",
 };
 
 export const WORKFLOW_ENGINE_URL = "https://gnexus-orchestrator.herokuapp.com";
@@ -48,47 +47,55 @@ export const RIGHTBAR_TABS: {
   icon?: string;
   id: number;
   label: string;
+  path: string;
 }[] = [
   {
     id: 0,
     name: "DASHBOARD",
     icon: ICONS.DASHBOARD,
     label: "Dashboard",
+    path: "/dashboard",
   },
   {
     id: 1,
     name: "WORKFLOWS",
     icon: ICONS.WORKFLOWS,
     label: "Workflows",
+    path: "/workflows",
   },
   {
     id: 2,
     name: "APPS",
     icon: ICONS.APPS,
     label: "(d)Apps",
+    path: "/d-apps",
   },
   {
     id: 3,
     name: "HISTORY",
     icon: ICONS.HISTORY,
     label: "History",
+    path: "/history",
   },
   {
     id: 4,
     name: "TRANSACTIONS",
     icon: ICONS.TRANSACTIONS,
     label: "Transactions",
+    path: "/transactions",
   },
   {
     id: 5,
     name: "NOTIFICATIONS",
     icon: ICONS.BELL,
     label: "Notifications",
+    path: "/notifications",
   },
   {
     id: 6,
     name: "SETTINGS",
     icon: ICONS.SETTINGS,
     label: "Settings",
+    path: "/settings",
   },
 ];

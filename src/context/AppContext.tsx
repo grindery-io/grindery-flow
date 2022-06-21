@@ -9,16 +9,13 @@ import { defaultFunc, jsonrpcObj } from "../utils";
 import gsheetConnector from "../samples/connectors/gsheet.json";
 import moloch from "../samples/connectors/moloch.json";
 import sendgrid from "../samples/connectors/sendgrid.json";
+import { useNavigate } from "react-router-dom";
 
 type ContextProps = {
   user: any;
   setUser?: (a: any) => void;
-  activeTab: number;
-  setActiveTab: (a: number) => void;
   changeTab: (a: string) => void;
   disconnect: any;
-  workflowOpened: boolean;
-  setWorkflowOpened: (a: boolean) => void;
   appOpened: boolean;
   setAppOpened: (a: boolean) => void;
   workflows: Workflow[];
@@ -34,12 +31,8 @@ type AppContextProps = {
 export const AppContext = createContext<ContextProps>({
   user: "",
   setUser: defaultFunc,
-  activeTab: 0,
-  setActiveTab: defaultFunc,
   changeTab: defaultFunc,
   disconnect: defaultFunc,
-  workflowOpened: false,
-  setWorkflowOpened: defaultFunc,
   appOpened: true,
   setAppOpened: defaultFunc,
   workflows: [],
@@ -49,6 +42,8 @@ export const AppContext = createContext<ContextProps>({
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
+  let navigate = useNavigate();
+
   // Auth hook
   const [connection, disconnect] = useViewerConnection();
 
@@ -61,19 +56,12 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   // user's workflows list
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
 
-  // app tab
-  const [activeTab, setActiveTab] = useState(0);
-
-  // workflow builder opened
-  const [workflowOpened, setWorkflowOpened] = useState(false);
-
   const connectors = [gsheetConnector, moloch, sendgrid];
 
   // change current active tab
   const changeTab = (name: string) => {
-    setActiveTab(
-      (RIGHTBAR_TABS.find((tab) => tab.name === name) || { id: 0 }).id
-    );
+    const tab = RIGHTBAR_TABS.find((tab) => tab.name === name);
+    navigate((tab && tab.path) || "/");
   };
 
   const getWorkflowsList = () => {
@@ -133,12 +121,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       value={{
         user,
         setUser,
-        activeTab,
         changeTab,
         disconnect,
-        setActiveTab,
-        workflowOpened,
-        setWorkflowOpened,
         appOpened,
         setAppOpened,
         workflows,

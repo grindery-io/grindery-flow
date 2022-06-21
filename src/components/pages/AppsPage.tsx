@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 
   @media (min-width: ${SCREEN.DESKTOP}) {
     padding: 60px 106px;
-    margin: 107px 20px 0;
+    margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
   }
 `;
@@ -112,7 +112,7 @@ const AppCounterValue = styled.span`
 
 type Props = {};
 
-const Apps = (props: Props) => {
+const AppsPage = (props: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [items, setItems] = useState(apps);
   const [searchTerm, setSearchTerm] = useState("");
@@ -168,4 +168,4 @@ const Apps = (props: Props) => {
   );
 };
 
-export default Apps;
+export default AppsPage;

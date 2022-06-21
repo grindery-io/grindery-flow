@@ -4,6 +4,7 @@ import { Text, IconButton } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import { ICONS, SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -16,7 +17,7 @@ const Wrapper = styled.div`
 
   @media (min-width: ${SCREEN.DESKTOP}) {
     padding: 60px 106px;
-    margin: 107px 20px 0;
+    margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
     flex-direction: row;
     flex-wrap: wrap;
@@ -87,8 +88,9 @@ const IconButtonsGroup = styled.div`
 
 type Props = {};
 
-const Dashboard = (props: Props) => {
-  const { workflows, changeTab, setWorkflowOpened } = useAppContext();
+const DashboardPage = (props: Props) => {
+  let navigate = useNavigate();
+  const { workflows, changeTab } = useAppContext();
   return (
     <Wrapper>
       <DataBox
@@ -131,7 +133,6 @@ const Dashboard = (props: Props) => {
         LeftComponent={
           <Title
             onClick={() => {
-              setWorkflowOpened(false);
               changeTab("WORKFLOWS");
             }}
             style={{ cursor: "pointer" }}
@@ -146,8 +147,7 @@ const Dashboard = (props: Props) => {
               color=""
               icon={ICONS.PLUS_SMALL}
               onClick={() => {
-                setWorkflowOpened(true);
-                changeTab("WORKFLOWS");
+                navigate("/workflows/new");
               }}
             />
           </IconButtonWrapper>
@@ -155,7 +155,6 @@ const Dashboard = (props: Props) => {
         BottomRightComponent={
           <div
             onClick={() => {
-              setWorkflowOpened(false);
               changeTab("WORKFLOWS");
             }}
             style={{ cursor: "pointer", marginRight: 4 }}
@@ -270,4 +269,4 @@ const Dashboard = (props: Props) => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

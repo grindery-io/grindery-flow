@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   min-height: calc(100% - 48px);
   @media (min-width: ${SCREEN.DESKTOP}) {
     padding: 60px 106px;
-    margin: 107px 20px 0;
+    margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
   }
 `;
@@ -71,8 +71,8 @@ const ButtonWrapper = styled.div`
 
 type Props = {};
 
-const Welcome = (props: Props) => {
-  const { user, changeTab, setWorkflowOpened } = useAppContext();
+const WelcomePage = (props: Props) => {
+  const { user, changeTab } = useAppContext();
   return (
     <Wrapper>
       <Title>
@@ -106,7 +106,6 @@ const Welcome = (props: Props) => {
           <Button
             value="Create workflow"
             onClick={() => {
-              setWorkflowOpened(true);
               changeTab("WORKFLOWS");
             }}
             icon={ICONS.PLUS_WHITE}
@@ -117,4 +116,4 @@ const Welcome = (props: Props) => {
   );
 };
 
-export default Welcome;
+export default WelcomePage;

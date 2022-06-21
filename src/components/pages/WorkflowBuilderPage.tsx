@@ -1,11 +1,11 @@
 import React from "react";
 import useAppContext from "../../hooks/useAppContext";
 import WorkflowContextProvider from "../../context/WorkflowContext";
-import WorkflowSteps from "./WorkflowSteps";
+import WorkflowSteps from "../workflow/WorkflowSteps";
 
 type Props = {};
 
-const WorkflowBuilder = (props: Props) => {
+const WorkflowBuilderPage = (props: Props) => {
   const { user, connectors } = useAppContext();
 
   return (
@@ -15,4 +15,4 @@ const WorkflowBuilder = (props: Props) => {
   );
 };
 
-export default WorkflowBuilder;
+export default WorkflowBuilderPage;
