@@ -63,12 +63,7 @@ const ActionConfiguration = (props: Props) => {
   const { index, step } = props;
   const { user } = useAppContext();
   const {
-    action,
-    trigger,
-    actionConnector,
-    actionIsConfigured,
     activeStep,
-    triggerConnector,
     workflow,
     updateWorkflow,
     saveWorkflow,
@@ -78,21 +73,26 @@ const ActionConfiguration = (props: Props) => {
     setLoading,
     connectors,
     setConnectors,
+    triggers,
+    actions,
+  } = useWorkflowContext();
+  const {
+    actionConnector,
+    actionIsConfigured,
     actionAuthenticationIsRequired,
     actionIsAuthenticated,
-  } = useWorkflowContext();
-
+  } = actions;
   const [email, setEmail] = useState("");
   const [gas, setGas] = useState("0.1");
   const { addressBook, setAddressBook } = useAddressBook(user);
 
-  const inputFields = (action(index)?.operation?.inputFields || []).filter(
-    (inputField: Field) => inputField && !inputField.computed
-  );
+  const inputFields = (
+    actions.current(index)?.operation?.inputFields || []
+  ).filter((inputField: Field) => inputField && !inputField.computed);
 
   const options =
-    triggerConnector && trigger?.operation
-      ? getOutputOptions(trigger.operation, triggerConnector)
+    triggers.triggerConnector && triggers.current?.operation
+      ? getOutputOptions(triggers.current.operation, triggers.triggerConnector)
       : [];
 
   const handleTestClick = async () => {
@@ -238,14 +238,14 @@ const ActionConfiguration = (props: Props) => {
   };
 
   const updateFieldsDefinition = () => {
-    if (action(index)?.operation?.inputFieldProviderUrl) {
+    if (actions.current(index)?.operation?.inputFieldProviderUrl) {
       if (workflow) {
         setLoading(true);
         axios
           .post(
-            action(index)?.operation?.inputFieldProviderUrl || "",
+            actions.current(index)?.operation?.inputFieldProviderUrl || "",
             jsonrpcObj("grinderyNexusConnectorUpdateFields", {
-              key: action(index)?.key,
+              key: actions.current(index)?.key,
               fieldData: {},
               credentials: workflow.actions[index].credentials,
             })
@@ -270,7 +270,7 @@ const ActionConfiguration = (props: Props) => {
                         actions: [
                           ...(connector.actions || []).map((act) => {
                             if (
-                              act.key === action(index)?.key &&
+                              act.key === actions.current(index)?.key &&
                               act.operation
                             ) {
                               return {
@@ -329,7 +329,7 @@ const ActionConfiguration = (props: Props) => {
     });
   };
 
-  const operationType = action(index)?.operation?.type;
+  const operationType = actions.current(index)?.operation?.type;
 
   useEffect(() => {
     if (workflowActionCredentials) {
@@ -366,7 +366,7 @@ const ActionConfiguration = (props: Props) => {
         </div>
       </TitleWrapper>
 
-      {action(index)?.operation?.type === "blockchain:call" && (
+      {actions.current(index)?.operation?.type === "blockchain:call" && (
         <AlertField
           color="warning"
           icon={
@@ -444,13 +444,13 @@ const ActionConfiguration = (props: Props) => {
 
       {actionIsAuthenticated(index) && (
         <div>
-          {action(index)?.operation?.type === "blockchain:call" && (
+          {actions.current(index)?.operation?.type === "blockchain:call" && (
             <ChainSelector
               value={workflow.actions[index].input._grinderyChain || ""}
               onChange={handleChainChange}
             />
           )}
-          {action(index)?.operation?.type === "blockchain:call" && (
+          {actions.current(index)?.operation?.type === "blockchain:call" && (
             <ContractSelector
               value={
                 workflow.actions[index].input._grinderyContractAddress || ""
@@ -487,7 +487,7 @@ const ActionConfiguration = (props: Props) => {
           )}
           {actionIsConfigured(index) && (
             <div style={{ marginTop: 30 }}>
-              {action(index)?.operation?.type !== "blockchain:call" ? (
+              {actions.current(index)?.operation?.type !== "blockchain:call" ? (
                 <Button
                   onClick={handleTestClick}
                   value="Test & Continue"

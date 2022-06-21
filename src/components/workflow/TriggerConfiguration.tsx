@@ -64,27 +64,23 @@ const TriggerConfiguration = (props: Props) => {
   const {
     workflow,
     updateWorkflow,
-    trigger,
-    triggerAuthenticationIsRequired,
-    triggerIsAuthenticated,
-    triggerConnector,
     activeStep,
     setActiveStep,
-    triggerIsConfigured,
     connectors,
     setConnectors,
     loading,
     setLoading,
+    triggers,
   } = useWorkflowContext();
   const [email, setEmail] = useState("");
 
   const { addressBook, setAddressBook } = useAddressBook(user);
 
   const inputFields =
-    (trigger &&
-      trigger.operation &&
-      trigger.operation.inputFields &&
-      trigger.operation.inputFields.filter(
+    (triggers.current &&
+      triggers.current.operation &&
+      triggers.current.operation.inputFields &&
+      triggers.current.operation.inputFields.filter(
         (inputField: Field) => inputField && !inputField.computed
       )) ||
     [];
@@ -103,16 +99,17 @@ const TriggerConfiguration = (props: Props) => {
         const codeParam = getParameterByName("code", data.gr_url);
 
         if (
-          triggerConnector &&
-          triggerConnector.authentication &&
-          triggerConnector.authentication.type &&
-          triggerConnector.authentication.type === "oauth2" &&
+          triggers.triggerConnector &&
+          triggers.triggerConnector.authentication &&
+          triggers.triggerConnector.authentication.type &&
+          triggers.triggerConnector.authentication.type === "oauth2" &&
           codeParam &&
-          triggerConnector.authentication.oauth2Config &&
-          triggerConnector.authentication.oauth2Config.getAccessToken
+          triggers.triggerConnector.authentication.oauth2Config &&
+          triggers.triggerConnector.authentication.oauth2Config.getAccessToken
         ) {
           const getAccessTokenRequest =
-            triggerConnector.authentication.oauth2Config.getAccessToken;
+            triggers.triggerConnector.authentication.oauth2Config
+              .getAccessToken;
           const body =
             typeof getAccessTokenRequest.body === "object"
               ? getAccessTokenRequest.body
@@ -146,13 +143,13 @@ const TriggerConfiguration = (props: Props) => {
 
   const testAuth = (credentials: any) => {
     if (
-      triggerConnector &&
-      triggerConnector.authentication &&
-      triggerConnector.authentication.test
+      triggers.triggerConnector &&
+      triggers.triggerConnector.authentication &&
+      triggers.triggerConnector.authentication.test
     ) {
-      const headers = triggerConnector.authentication.test.headers;
-      const url = triggerConnector.authentication.test.url;
-      const method = triggerConnector.authentication.test.method;
+      const headers = triggers.triggerConnector.authentication.test.headers;
+      const url = triggers.triggerConnector.authentication.test.url;
+      const method = triggers.triggerConnector.authentication.test.method;
       if (url) {
         axios({
           method: method,
@@ -182,14 +179,15 @@ const TriggerConfiguration = (props: Props) => {
   };
 
   const handleAuthClick = () => {
-    if (triggerConnector?.authentication?.type === "oauth2") {
+    if (triggers.triggerConnector?.authentication?.type === "oauth2") {
       window.removeEventListener("message", receiveMessage, false);
       const width = 375,
         height = 500,
         left = window.screen.width / 2 - width / 2,
         top = window.screen.height / 2 - height / 2;
       let windowObjectReference = window.open(
-        triggerConnector?.authentication?.oauth2Config?.authorizeUrl.url +
+        triggers.triggerConnector.authentication?.oauth2Config?.authorizeUrl
+          .url +
           "&redirect_uri=" +
           window.location.origin +
           "/auth",
@@ -209,14 +207,14 @@ const TriggerConfiguration = (props: Props) => {
   };
 
   const updateFieldsDefinition = () => {
-    if (trigger?.operation?.inputFieldProviderUrl) {
+    if (triggers.current?.operation?.inputFieldProviderUrl) {
       if (workflow) {
         setLoading(true);
         axios
           .post(
-            trigger.operation.inputFieldProviderUrl,
+            triggers.current.operation.inputFieldProviderUrl,
             jsonrpcObj("grinderyNexusConnectorUpdateFields", {
-              key: trigger.key,
+              key: triggers.current.key,
               fieldData: {},
               credentials: workflow.trigger.credentials,
             })
@@ -232,12 +230,18 @@ const TriggerConfiguration = (props: Props) => {
               if (res.data.result.inputFields && connectors) {
                 setConnectors([
                   ...connectors.map((connector) => {
-                    if (connector && connector.key === triggerConnector?.key) {
+                    if (
+                      connector &&
+                      connector.key === triggers.triggerConnector?.key
+                    ) {
                       return {
                         ...connector,
                         triggers: [
                           ...(connector.triggers || []).map((trig) => {
-                            if (trig.key === trigger.key && trig.operation) {
+                            if (
+                              trig.key === triggers.current?.key &&
+                              trig.operation
+                            ) {
                               return {
                                 ...trig,
                                 operation: {
@@ -316,43 +320,43 @@ const TriggerConfiguration = (props: Props) => {
     return null;
   }
 
-  return triggerConnector && trigger ? (
+  return triggers.triggerConnector && triggers.current ? (
     <Wrapper>
       <TitleWrapper>
-        {triggerConnector.icon && (
+        {triggers.triggerConnector.icon && (
           <TitleIconWrapper>
             <TitleIcon
-              src={triggerConnector.icon}
-              alt={`${triggerConnector.name} icon`}
+              src={triggers.triggerConnector.icon}
+              alt={`${triggers.triggerConnector.name} icon`}
             />
           </TitleIconWrapper>
         )}
         <Text variant="h3" value="Set up trigger" />
         <div style={{ marginTop: 4 }}>
-          <Text variant="p" value={`for ${triggerConnector.name}`} />
+          <Text variant="p" value={`for ${triggers.triggerConnector.name}`} />
         </div>
       </TitleWrapper>
-      {triggerAuthenticationIsRequired && (
+      {triggers.triggerAuthenticationIsRequired && (
         <>
-          {!triggerIsAuthenticated && (
+          {!triggers.triggerIsAuthenticated && (
             <div style={{ margin: "30px auto 0" }}>
               <Button
-                icon={triggerConnector.icon || ""}
+                icon={triggers.triggerConnector.icon || ""}
                 onClick={handleAuthClick}
-                value={`Sign in to ${triggerConnector.name}`}
+                value={`Sign in to ${triggers.triggerConnector.name}`}
               />
             </div>
           )}
-          {triggerIsAuthenticated && (
+          {triggers.triggerIsAuthenticated && (
             <AccountWrapper>
               <Text
-                value={`${triggerConnector.name} account`}
+                value={`${triggers.triggerConnector.name} account`}
                 variant="body2"
               />
               <AccountNameWrapper>
-                {triggerConnector.icon && (
+                {triggers.triggerConnector.icon && (
                   <img
-                    src={triggerConnector.icon}
+                    src={triggers.triggerConnector.icon}
                     alt=""
                     style={{ marginRight: 8 }}
                   />
@@ -376,15 +380,15 @@ const TriggerConfiguration = (props: Props) => {
         </>
       )}
 
-      {triggerIsAuthenticated && (
+      {triggers.triggerIsAuthenticated && (
         <div style={{ marginTop: 40 }}>
-          {trigger.operation?.type === "blockchain:event" && (
+          {triggers.current.operation?.type === "blockchain:event" && (
             <ChainSelector
               value={workflow.trigger.input._grinderyChain || ""}
               onChange={handleChainChange}
             />
           )}
-          {trigger.operation?.type === "blockchain:event" && (
+          {triggers.current.operation?.type === "blockchain:event" && (
             <ContractSelector
               value={workflow.trigger.input._grinderyContractAddress || ""}
               onChange={handleContractChange}
@@ -403,7 +407,7 @@ const TriggerConfiguration = (props: Props) => {
               <CircularProgress color="inherit" />
             </div>
           )}
-          {triggerIsConfigured && !loading && (
+          {triggers.triggerIsConfigured && !loading && (
             <div style={{ marginTop: 40 }}>
               <Button onClick={handleContinueClick} value="Continue" />
             </div>

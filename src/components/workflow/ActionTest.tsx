@@ -119,25 +119,20 @@ type Props = {
 
 const ActionTest = (props: Props) => {
   const { index } = props;
-  const {
-    workflow,
-    action,
-    trigger,
-    actionConnector,
-    setActiveStep,
-    saveWorkflow,
-  } = useWorkflowContext();
+  const { workflow, setActiveStep, saveWorkflow, triggers, actions } =
+    useWorkflowContext();
+  const { actionConnector } = actions;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   const values = replaceTokens(workflow.actions[index].input || {}, {
-    trigger: trigger?.operation?.sample || {},
+    trigger: triggers.current?.operation?.sample || {},
   });
 
   const rows =
-    action(index)?.operation?.inputFields?.map((field: Field) => ({
+    actions.current(index)?.operation?.inputFields?.map((field: Field) => ({
       label: field.label || field.key,
       icon: actionConnector(index)?.icon,
       value: values[field.key] || "",
@@ -168,7 +163,7 @@ const ActionTest = (props: Props) => {
               userAccountId: workflow.creator,
               step: workflow.actions[index],
               input: replaceTokens(workflow.actions[index].input || {}, {
-                trigger: trigger?.operation?.sample || {},
+                trigger: triggers.current?.operation?.sample || {},
               }),
             })
           )
@@ -245,8 +240,8 @@ const ActionTest = (props: Props) => {
       <TableWrapper>
         <table>
           <tbody>
-            {rows.map((row) => (
-              <tr>
+            {rows.map((row, i) => (
+              <tr key={`${row.value}_${i}`}>
                 <td>
                   <RowLabelWrapper>
                     {row.icon && (

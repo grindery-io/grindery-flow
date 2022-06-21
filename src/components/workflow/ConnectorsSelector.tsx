@@ -18,27 +18,21 @@ const ConnectorsSelector = (props: Props) => {
   const { step, index } = props;
   const {
     workflow,
-    connectorsWithActions,
-    connectorsWithTriggers,
-    triggerConnectorIsSet,
-    actionConnectorIsSet,
-    availableTriggers,
-    availableActions,
     activeStep,
     updateWorkflow,
     setActiveStep,
-    triggerIsSet,
-    actionIsSet,
-    triggerConnector,
-    actionConnector,
+    triggers,
+    actions,
   } = useWorkflowContext();
 
-  const triggerConnectorOptions = connectorsWithTriggers.map((connector) => ({
-    value: connector.key,
-    label: connector.name,
-    icon: connector.icon,
-    paid: connector.pricing,
-  }));
+  const triggerConnectorOptions = triggers.connectorsWithTriggers.map(
+    (connector) => ({
+      value: connector.key,
+      label: connector.name,
+      icon: connector.icon,
+      paid: connector.pricing,
+    })
+  );
 
   const triggerConnectorValue = triggerConnectorOptions.find(
     (opt) =>
@@ -46,12 +40,14 @@ const ConnectorsSelector = (props: Props) => {
         (workflow && workflow.trigger && workflow.trigger.connector) || ""
   );
 
-  const actionConnectorOptions = connectorsWithActions.map((connector) => ({
-    value: connector.key,
-    label: connector.name,
-    icon: connector.icon,
-    paid: connector.pricing,
-  }));
+  const actionConnectorOptions = actions.connectorsWithActions.map(
+    (connector) => ({
+      value: connector.key,
+      label: connector.name,
+      icon: connector.icon,
+      paid: connector.pricing,
+    })
+  );
 
   const actionConnectorValue = actionConnectorOptions.find(
     (opt) =>
@@ -62,10 +58,11 @@ const ConnectorsSelector = (props: Props) => {
           workflow.actions[index].connector) || ""
   );
 
-  const triggerOptions = availableTriggers.map((availableTrigger) => ({
+  const triggerOptions = triggers.availableTriggers.map((availableTrigger) => ({
     value: availableTrigger.key,
     label: availableTrigger.display?.label,
-    icon: availableTrigger.display?.icon || triggerConnector?.icon || "",
+    icon:
+      availableTrigger.display?.icon || triggers.triggerConnector?.icon || "",
   }));
 
   const triggerValue = triggerOptions.find(
@@ -73,11 +70,16 @@ const ConnectorsSelector = (props: Props) => {
       opt.value === (workflow.trigger && workflow.trigger.operation) || ""
   );
 
-  const actionOptions = availableActions(index)?.map((availableAction) => ({
-    value: availableAction.key,
-    label: availableAction.display?.label,
-    icon: availableAction.display?.icon || actionConnector(index)?.icon || "",
-  }));
+  const actionOptions = actions
+    .availableActions(index)
+    ?.map((availableAction) => ({
+      value: availableAction.key,
+      label: availableAction.display?.label,
+      icon:
+        availableAction.display?.icon ||
+        actions.actionConnector(index)?.icon ||
+        "",
+    }));
 
   const actionValue = actionOptions.find(
     (opt) =>
@@ -155,7 +157,7 @@ const ConnectorsSelector = (props: Props) => {
         </InputWrapper>
       </div>
 
-      {triggerConnectorIsSet && actionConnectorIsSet(index) && (
+      {triggers.triggerConnectorIsSet && actions.actionConnectorIsSet(index) && (
         <div>
           <div style={{ marginTop: 40 }}>
             <SelectInput
@@ -179,7 +181,7 @@ const ConnectorsSelector = (props: Props) => {
           </div>
         </div>
       )}
-      {triggerIsSet && actionIsSet(index) && (
+      {triggers.triggerIsSet && actions.actionIsSet(index) && (
         <div style={{ marginTop: 30 }}>
           <Button onClick={handleContinueClick} value="Continue" />
         </div>

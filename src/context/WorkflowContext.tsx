@@ -31,38 +31,41 @@ const blankWorkflow: Workflow = {
 type WorkflowContextProps = {
   connectors: Connector[];
   workflow: Workflow;
-  setWorkflow: (a: any) => void;
-  connectorsWithTriggers: Connector[];
-  connectorsWithActions: Connector[];
-  triggerIsSet: boolean;
-  actionIsSet: (i: number) => boolean;
-  triggerIsAuthenticated: boolean;
-  actionIsAuthenticated: (i: number) => boolean;
-  triggerIsConfigured: boolean;
-  trigger: Trigger | undefined;
-  availableTriggers: any[];
-  availableActions: (i: number) => Action[];
-  action: (i: number) => Action | undefined;
-  triggerConnector: Connector | undefined;
-  actionConnector: (i: number) => Connector | undefined;
-  triggerConnectorIsSet: boolean;
-  actionConnectorIsSet: (i: number) => boolean;
-  triggerAuthenticationIsRequired: boolean;
-  actionAuthenticationIsRequired: (i: number) => boolean;
-  updateWorkflow: (a: any) => void;
-  actionIsConfigured: (i: number) => boolean;
   activeStep: number | string;
-  setActiveStep: (a: any) => void;
-  resetWorkflow: () => void;
-  setConnectors: (a: Connector[]) => void;
-  requiredActionFields: (i: number) => string[];
-  saveWorkflow: () => void;
   loading: boolean;
-  setLoading: (a: boolean) => void;
   error?: string | null;
-  setError: (a: string) => void;
   success: string | null;
+  setActiveStep: (a: any) => void;
+  setLoading: (a: boolean) => void;
+  setError: (a: string) => void;
   setSuccess: (a: string) => void;
+  setWorkflow: (a: any) => void;
+  saveWorkflow: () => void;
+  resetWorkflow: () => void;
+  updateWorkflow: (a: any) => void;
+  setConnectors: (a: Connector[]) => void;
+  triggers: {
+    current?: Trigger;
+    triggerConnector?: Connector;
+    triggerIsSet: boolean;
+    triggerConnectorIsSet: boolean;
+    triggerAuthenticationIsRequired: boolean;
+    triggerIsAuthenticated: boolean;
+    triggerIsConfigured: boolean;
+    availableTriggers: Trigger[];
+    connectorsWithTriggers: Connector[];
+  };
+  actions: {
+    current: (i: number) => Action | undefined;
+    actionConnector: (i: number) => Connector | undefined;
+    actionIsSet: (i: number) => boolean;
+    actionConnectorIsSet: (i: number) => boolean;
+    actionAuthenticationIsRequired: (i: number) => boolean;
+    actionIsAuthenticated: (i: number) => boolean;
+    actionIsConfigured: (i: number) => boolean;
+    availableActions: (i: number) => Action[];
+    connectorsWithActions: Connector[];
+  };
 };
 
 type WorkflowContextProviderProps = {
@@ -74,37 +77,38 @@ type WorkflowContextProviderProps = {
 export const WorkflowContext = createContext<WorkflowContextProps>({
   connectors: [],
   workflow: blankWorkflow,
-  setWorkflow: defaultFunc,
-  connectorsWithTriggers: [],
-  connectorsWithActions: [],
-  triggerIsSet: false,
-  actionIsSet: () => false,
-  triggerIsAuthenticated: false,
-  actionIsAuthenticated: () => false,
-  triggerIsConfigured: false,
-  trigger: undefined,
-  availableTriggers: [],
-  availableActions: () => [],
-  action: () => undefined,
-  triggerConnector: undefined,
-  actionConnector: () => undefined,
-  triggerConnectorIsSet: false,
-  actionConnectorIsSet: () => false,
-  triggerAuthenticationIsRequired: false,
-  actionAuthenticationIsRequired: () => false,
-  updateWorkflow: defaultFunc,
-  actionIsConfigured: () => false,
   activeStep: 1,
-  setActiveStep: defaultFunc,
-  resetWorkflow: defaultFunc,
-  setConnectors: defaultFunc,
-  requiredActionFields: () => [],
-  saveWorkflow: defaultFunc,
   loading: false,
+  success: null,
+  setActiveStep: defaultFunc,
+  setConnectors: defaultFunc,
+  setWorkflow: defaultFunc,
+  saveWorkflow: defaultFunc,
+  resetWorkflow: defaultFunc,
+  updateWorkflow: defaultFunc,
   setLoading: defaultFunc,
   setError: defaultFunc,
-  success: null,
   setSuccess: defaultFunc,
+  triggers: {
+    triggerIsSet: false,
+    triggerConnectorIsSet: false,
+    triggerAuthenticationIsRequired: false,
+    triggerIsAuthenticated: false,
+    triggerIsConfigured: false,
+    availableTriggers: [],
+    connectorsWithTriggers: [],
+  },
+  actions: {
+    current: () => undefined,
+    actionConnector: () => undefined,
+    actionIsSet: () => false,
+    actionConnectorIsSet: () => false,
+    actionAuthenticationIsRequired: () => false,
+    actionIsAuthenticated: () => false,
+    actionIsConfigured: () => false,
+    availableActions: () => [],
+    connectorsWithActions: [],
+  },
 });
 
 export const WorkflowContextProvider = ({
@@ -335,6 +339,30 @@ export const WorkflowContextProvider = ({
   const actionAuthenticationIsRequired = (index: number) =>
     Boolean(actionConnector(index) && actionConnector(index)?.authentication);
 
+  const triggers = {
+    current: trigger,
+    triggerConnector,
+    triggerIsSet,
+    triggerConnectorIsSet,
+    triggerAuthenticationIsRequired,
+    triggerIsAuthenticated,
+    triggerIsConfigured,
+    availableTriggers,
+    connectorsWithTriggers,
+  };
+
+  const actions = {
+    current: action,
+    actionConnector,
+    actionIsSet,
+    actionConnectorIsSet,
+    actionAuthenticationIsRequired,
+    actionIsAuthenticated,
+    actionIsConfigured,
+    availableActions,
+    connectorsWithActions,
+  };
+
   // update current workflow
   const updateWorkflow = (data: any) => {
     let newWorkflow = { ...workflow };
@@ -412,38 +440,21 @@ export const WorkflowContextProvider = ({
       value={{
         connectors,
         workflow,
-        setWorkflow,
-        connectorsWithActions,
-        connectorsWithTriggers,
-        triggerIsSet,
-        actionIsSet,
-        triggerIsAuthenticated,
-        actionIsAuthenticated,
-        triggerIsConfigured,
-        trigger,
-        availableTriggers,
-        availableActions,
-        action,
-        triggerConnector,
-        actionConnector,
-        triggerConnectorIsSet,
-        actionConnectorIsSet,
-        triggerAuthenticationIsRequired,
-        updateWorkflow,
-        actionIsConfigured,
         activeStep,
-        setActiveStep,
-        resetWorkflow,
-        setConnectors,
-        requiredActionFields,
-        saveWorkflow,
         loading,
-        setLoading,
         error,
-        setError,
         success,
+        setActiveStep,
+        setConnectors,
+        setWorkflow,
+        saveWorkflow,
+        resetWorkflow,
+        updateWorkflow,
+        setLoading,
+        setError,
         setSuccess,
-        actionAuthenticationIsRequired,
+        triggers,
+        actions,
       }}
     >
       {children}

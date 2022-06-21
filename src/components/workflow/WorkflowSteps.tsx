@@ -19,13 +19,8 @@ const Wrapper = styled.div`
 type Props = {};
 
 const WorkflowSteps = (props: Props) => {
-  const {
-    triggerIsSet,
-    actionIsSet,
-    triggerIsAuthenticated,
-    triggerIsConfigured,
-    activeStep,
-  } = useWorkflowContext();
+  const { actions, activeStep, triggers } = useWorkflowContext();
+  const { actionIsSet } = actions;
 
   return (
     <Wrapper>
@@ -33,11 +28,15 @@ const WorkflowSteps = (props: Props) => {
         <>
           <WorkflowProgress />
           <ConnectorsSelector step={1} index={0} />
-          {triggerIsSet && actionIsSet(0) && <TriggerConfiguration step={2} />}
-          {triggerIsSet &&
+          {triggers.triggerIsSet && actionIsSet(0) && (
+            <TriggerConfiguration step={2} />
+          )}
+          {triggers.triggerIsSet &&
             actionIsSet(0) &&
-            triggerIsAuthenticated &&
-            triggerIsConfigured && <ActionConfiguration index={0} step={3} />}
+            triggers.triggerIsAuthenticated &&
+            triggers.triggerIsConfigured && (
+              <ActionConfiguration index={0} step={3} />
+            )}
         </>
       ) : (
         <>{activeStep === "actionTest" && <ActionTest index={0} />}</>

@@ -24,13 +24,12 @@ type Props = {
 
 const TriggerInputField = ({ inputField }: Props) => {
   const {
-    trigger,
-    triggerConnector,
     workflow,
     updateWorkflow,
     setConnectors,
     connectors,
     setLoading,
+    triggers,
   } = useWorkflowContext();
   const [valChanged, setValChanged] = useState(false);
   const { user } = useAppContext();
@@ -43,7 +42,7 @@ const TriggerInputField = ({ inputField }: Props) => {
   const fieldOptions = inputField.choices?.map((choice) => ({
     value: typeof choice !== "string" ? choice.value : choice,
     label: typeof choice !== "string" ? choice.label : choice,
-    icon: triggerConnector ? triggerConnector.icon || "" : "",
+    icon: triggers.triggerConnector ? triggers.triggerConnector.icon || "" : "",
   }));
 
   const booleanOptions = [
@@ -98,14 +97,14 @@ const TriggerInputField = ({ inputField }: Props) => {
       if (
         (typeof inputField.updateFieldDefinition === "undefined" ||
           inputField.updateFieldDefinition) &&
-        trigger?.operation?.inputFieldProviderUrl
+        triggers.current?.operation?.inputFieldProviderUrl
       ) {
         if (workflow) {
           axios
             .post(
-              trigger.operation.inputFieldProviderUrl,
+              triggers.current.operation.inputFieldProviderUrl,
               jsonrpcObj("grinderyNexusConnectorUpdateFields", {
-                key: trigger.key,
+                key: triggers.current.key,
                 fieldData: workflow.trigger.input,
                 credentials: workflow.trigger.credentials,
               })
@@ -120,12 +119,18 @@ const TriggerInputField = ({ inputField }: Props) => {
               if (res && res.data && res.data.result) {
                 setConnectors([
                   ...(connectors || []).map((connector) => {
-                    if (connector && connector.key === triggerConnector?.key) {
+                    if (
+                      connector &&
+                      connector.key === triggers.triggerConnector?.key
+                    ) {
                       return {
                         ...connector,
                         triggers: [
                           ...(connector.triggers || []).map((trig) => {
-                            if (trig.key === trigger.key && trig.operation) {
+                            if (
+                              trig.key === triggers.current?.key &&
+                              trig.operation
+                            ) {
                               return {
                                 ...trig,
                                 operation: {
