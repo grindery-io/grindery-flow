@@ -23,8 +23,12 @@ const TabsWrapper = styled.div`
   & .MuiTab-root {
     text-transform: initial;
     font-weight: 400;
-    font-size: 12px;
+    font-size: var(--text-size-horizontal-tab-label);
     line-height: 150%;
+
+    @media (min-width: ${SCREEN.DESKTOP}) {
+      min-width: 150px;
+    }
   }
 `;
 
@@ -83,17 +87,26 @@ const ItemTitleWrapper = styled.div`
   flex-wrap: nowrap;
   gap: 4px;
   min-width: 70px;
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    gap: 8px;
+  }
 `;
 
 const ItemIcon = styled.img`
   width: 12px;
   height: 12px;
   display: block;
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    width: 24px;
+    height: 24px;
+  }
 `;
 
 const Title = styled.span`
   font-weight: 400;
-  font-size: 12px;
+  font-size: var(--text-size-history-item-label);
   line-height: 150%;
   color: #0b0d17;
 `;
@@ -122,7 +135,7 @@ const ItemAppIcon = styled.img`
 
 const ItemDate = styled.div`
   font-weight: 400;
-  font-size: 10px;
+  font-size: var(--text-size-history-date);
   line-height: 150%;
   color: #758796;
 `;

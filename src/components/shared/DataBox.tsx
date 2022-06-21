@@ -46,7 +46,7 @@ const DataBox = (props: Props) => {
         ...style,
         border: "1px solid #D3DEEC",
         borderRadius: size === "small" ? "5px" : "10px",
-        padding: size === "small" ? "10px" : "15px",
+        padding: size === "small" ? "var(--data-box-spacing)" : "15px",
         cursor: !onClick ? "default" : "pointer",
       }}
       onClick={(event: React.MouseEvent<HTMLElement>) => {

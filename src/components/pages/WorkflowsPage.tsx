@@ -78,7 +78,7 @@ const ItemTitleWrapper = styled.div`
 
 const Title = styled.span`
   font-weight: 400;
-  font-size: 12px;
+  font-size: var(--text-size-list-item-label);
   line-height: 150%;
   color: #0b0d17;
 `;

@@ -5,6 +5,7 @@ import useAppContext from "../../hooks/useAppContext";
 import Logo from "./Logo";
 import { ICONS, SCREEN } from "../../constants";
 import useWindowSize from "../../hooks/useWindowSize";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   border-bottom: 1px solid #dcdcdc;
@@ -87,6 +88,7 @@ const CompanyNameWrapper = styled.div`
     font-size: 16px;
     line-height: 110%;
     color: #0b0d17;
+    cursor: pointer;
   }
 `;
 
@@ -95,6 +97,7 @@ type Props = {};
 const AppHeader = (props: Props) => {
   const { user, setAppOpened, appOpened } = useAppContext();
   const size = useWindowSize();
+  let navigate = useNavigate();
 
   const handleClose = () => {
     setAppOpened(!appOpened);
@@ -105,7 +108,13 @@ const AppHeader = (props: Props) => {
       <LogoWrapper>
         <Logo variant="square" />
       </LogoWrapper>
-      <CompanyNameWrapper>Grindery Nexus</CompanyNameWrapper>
+      <CompanyNameWrapper
+        onClick={() => {
+          navigate("/");
+        }}
+      >
+        Grindery Nexus
+      </CompanyNameWrapper>
       {user && (
         <UserWrapper>
           <UserStatus />

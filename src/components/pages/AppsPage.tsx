@@ -74,6 +74,13 @@ const AppTitleWrapper = styled.div`
   gap: 10px;
 `;
 
+const Title = styled.div`
+  font-weight: 400;
+  font-size: var(--text-size-list-item-label);
+  line-height: 150%;
+  color: var(--color-black);
+`;
+
 const AppIconWrapper = styled.div`
   padding: 4px;
   background: #ffffff;
@@ -107,6 +114,7 @@ const AppCounter = styled.div`
 const AppCounterValue = styled.span`
   font-weight: 700;
   line-height: 1.25;
+  font-size: 12px;
   display: block;
 `;
 
@@ -148,7 +156,7 @@ const AppsPage = (props: Props) => {
                 <AppIconWrapper>
                   <AppIcon src={item.icon} alt={item.name} />
                 </AppIconWrapper>
-                <Text variant="body2" value={item.name} />
+                <Title>{item.name}</Title>
               </AppTitleWrapper>
             }
             RightComponent={

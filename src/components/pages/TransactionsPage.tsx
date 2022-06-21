@@ -39,8 +39,12 @@ const TabsWrapper = styled.div`
   & .MuiTab-root {
     text-transform: initial;
     font-weight: 400;
-    font-size: 12px;
+    font-size: var(--text-size-horizontal-tab-label);
     line-height: 150%;
+
+    @media (min-width: ${SCREEN.DESKTOP}) {
+      min-width: 150px;
+    }
   }
 `;
 
@@ -102,7 +106,7 @@ const GroupTitleWrapper = styled.div`
 
 const GroupTitle = styled.div`
   font-weight: 400;
-  font-size: 12px;
+  font-size: var(--text-size-transactions-subtitle);
   line-height: 150%;
   opacity: 0.5;
 `;
@@ -118,20 +122,20 @@ const GroupSummaryWrapper = styled.div`
 
 const GroupSummaryUsd = styled.div`
   font-weight: 400;
-  font-size: 12px;
+  font-size: var(--text-size-transactions-subtitle);
   line-height: 150%;
   color: #898989;
 `;
 
 const GroupSummarySeparator = styled.div`
   font-weight: 400;
-  font-size: 12px;
+  font-size: var(--text-size-transactions-subtitle);
   line-height: 150%;
 `;
 
 const GroupSummaryToken = styled.div`
   font-weight: 700;
-  font-size: 12px;
+  font-size: var(--text-size-transactions-subtitle);
   line-height: 150%;
 `;
 
@@ -161,13 +165,13 @@ const ItemIcon = styled.img`
 
 const ItemTitle = styled.div`
   font-weight: 400;
-  font-size: 14px;
+  font-size: var(--text-size-transactions-label);
   line-height: 150%;
 `;
 
 const ItemSubtitle = styled.div`
   font-weight: 400;
-  font-size: 12px;
+  font-size: var(--text-size-transactions-subtitle);
   line-height: 150%;
   color: #898989;
 `;
@@ -182,13 +186,13 @@ const ItemNumbers = styled.div`
 
 const ItemTokens = styled.div`
   font-weight: 400;
-  font-size: 12px;
+  font-size: var(--text-size-transactions-label);
   line-height: 150%;
 `;
 
 const ItemUSD = styled.div`
   font-weight: 400;
-  font-size: 12px;
+  font-size: var(--text-size-transactions-subtitle);
   line-height: 150%;
   color: #898989;
 `;
@@ -443,6 +447,8 @@ const TransactionsPage = (props: Props) => {
               value={searchTerm}
               onChange={handleSearchChange}
               size="small"
+              type="search"
+              icon="search"
             />
           </SearchInputWrapper>
         </SearchWrapper>

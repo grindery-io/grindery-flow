@@ -39,6 +39,13 @@ const Title = styled.div`
   gap: 8px;
 `;
 
+const TitleText = styled.div`
+  font-size: var(--text-size-dashboard-label);
+  font-weight: 400;
+  line-height: 150%;
+  color: var(--color-black);
+`;
+
 const Icon = styled.img`
   width: 20px;
 `;
@@ -98,7 +105,7 @@ const DashboardPage = (props: Props) => {
         LeftComponent={
           <Title>
             <Icon src={ICONS.BELL} alt="notifications icon" />
-            <Text value="Notifications" variant="body2" />
+            <TitleText>Notifications</TitleText>
           </Title>
         }
         BottomRightComponent={
@@ -110,7 +117,7 @@ const DashboardPage = (props: Props) => {
         LeftComponent={
           <Title>
             <Icon src={ICONS.WALLET} alt="wallet icon" />
-            <Text value="Aggregated Balance" variant="body2" />
+            <TitleText>Aggregated Balance</TitleText>
           </Title>
         }
         RightComponent={
@@ -138,7 +145,7 @@ const DashboardPage = (props: Props) => {
             style={{ cursor: "pointer" }}
           >
             <Icon src={ICONS.WORKFLOWS} alt="Workflows icon" />
-            <Text value="Workflows" variant="body2" />
+            <TitleText>Workflows</TitleText>
           </Title>
         }
         RightComponent={
@@ -173,7 +180,7 @@ const DashboardPage = (props: Props) => {
             style={{ cursor: "pointer" }}
           >
             <Icon src={ICONS.APPS} alt="(d)Apps icon" />
-            <Text value="(d)Apps" variant="body2" />
+            <TitleText>(d)Apps</TitleText>
           </Title>
         }
         RightComponent={
@@ -224,7 +231,7 @@ const DashboardPage = (props: Props) => {
             style={{ cursor: "pointer" }}
           >
             <Icon src={ICONS.HISTORY} alt="History icon" />
-            <Text value="History" variant="body2" />
+            <TitleText>History</TitleText>
           </Title>
         }
         RightComponent={
