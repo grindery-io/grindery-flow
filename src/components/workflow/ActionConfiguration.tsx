@@ -54,6 +54,10 @@ const AccountNameWrapper = styled.div`
   flex-wrap: nowrap;
 `;
 
+const AlertWrapper = styled.div`
+  margin-top: 20px;
+`;
+
 type Props = {
   index: number;
   step: number;
@@ -84,6 +88,7 @@ const ActionConfiguration = (props: Props) => {
   } = actions;
   const [email, setEmail] = useState("");
   const [gas, setGas] = useState("0.1");
+  const [actionError, setActionError] = useState("");
   const { addressBook, setAddressBook } = useAddressBook(user);
 
   const inputFields = (
@@ -96,20 +101,32 @@ const ActionConfiguration = (props: Props) => {
       : [];
 
   const handleTestClick = async () => {
-    setActiveStep("actionTest");
+    setActionError("");
+    if (!actionIsConfigured(index)) {
+      setActionError("Please complete all required fields.");
+    } else {
+      setActiveStep("actionTest");
+    }
   };
 
   const handleSaveClick = async () => {
-    saveWorkflow();
+    setActionError("");
+    if (!actionIsConfigured(index)) {
+      setActionError("Please complete all required fields.");
+    } else {
+      saveWorkflow();
+    }
   };
 
   const handleChainChange = (val: any) => {
+    setActionError("");
     updateWorkflow({
       ["actions[" + index + "].input._grinderyChain"]: val?.value || "",
     });
   };
 
   const handleContractChange = (val: any) => {
+    setActionError("");
     updateWorkflow({
       ["actions[" + index + "].input._grinderyContractAddress"]: val || "",
     });
@@ -366,38 +383,6 @@ const ActionConfiguration = (props: Props) => {
         </div>
       </TitleWrapper>
 
-      {actions.current(index)?.operation?.type === "blockchain:call" && (
-        <AlertField
-          color="warning"
-          icon={
-            <img src={ICONS.GAS_ALERT} width={20} height={20} alt="gas icon" />
-          }
-        >
-          <>
-            <div style={{ textAlign: "left" }}>
-              This action will require you to pay gas. Make sure your account
-              has funds. Current balance:{" "}
-              <a
-                href="#balance"
-                style={{
-                  fontWeight: "bold",
-                  color: "inherit",
-                  textDecoration: "underline",
-                }}
-              >
-                0.003 ETH
-              </a>
-            </div>
-            <GasInput
-              value={gas}
-              onChange={(e) => {
-                setGas(e.target.value);
-              }}
-            />
-          </>
-        </AlertField>
-      )}
-
       {actionAuthenticationIsRequired(index) && (
         <>
           {!actionIsAuthenticated(index) && (
@@ -469,8 +454,85 @@ const ActionConfiguration = (props: Props) => {
               index={index}
               addressBook={addressBook}
               setAddressBook={setAddressBook}
+              setActionError={setActionError}
             />
           ))}
+          {actions.current(index)?.operation?.type === "blockchain:call" && (
+            <AlertWrapper>
+              <AlertField
+                color="warning"
+                icon={
+                  <img
+                    src={ICONS.GAS_ALERT}
+                    width={20}
+                    height={20}
+                    alt="gas icon"
+                  />
+                }
+              >
+                <>
+                  <div style={{ textAlign: "left", marginBottom: "4px" }}>
+                    This action will require you to pay gas. Make sure your
+                    account has funds. Current balance:{" "}
+                    <a
+                      href="#balance"
+                      style={{
+                        fontWeight: "bold",
+                        color: "inherit",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      0.003 ETH
+                    </a>
+                  </div>
+                  <GasInput
+                    value={gas}
+                    onChange={(e) => {
+                      setGas(e.target.value);
+                    }}
+                  />
+                </>
+              </AlertField>
+            </AlertWrapper>
+          )}
+          {error && (
+            <AlertWrapper>
+              <AlertField
+                color="error"
+                icon={
+                  <img
+                    src={ICONS.ERROR_ALERT}
+                    width={20}
+                    height={20}
+                    alt="error icon"
+                  />
+                }
+              >
+                <div style={{ textAlign: "left", marginBottom: "4px" }}>
+                  Error: {error}
+                </div>
+              </AlertField>
+            </AlertWrapper>
+          )}
+          {actionError && (
+            <AlertWrapper>
+              <AlertField
+                color="error"
+                icon={
+                  <img
+                    src={ICONS.ERROR_ALERT}
+                    width={20}
+                    height={20}
+                    alt="error icon"
+                  />
+                }
+              >
+                <div style={{ textAlign: "left", marginBottom: "4px" }}>
+                  {actionError}
+                </div>
+              </AlertField>
+            </AlertWrapper>
+          )}
           {loading && (
             <div
               style={{ marginTop: 40, textAlign: "center", color: "#8C30F5" }}
@@ -478,32 +540,23 @@ const ActionConfiguration = (props: Props) => {
               <CircularProgress color="inherit" />
             </div>
           )}
-          {error && (
-            <div
-              style={{ marginTop: 40, textAlign: "center", color: "#FF5858" }}
-            >
-              Error: {error}
-            </div>
-          )}
-          {actionIsConfigured(index) && (
-            <div style={{ marginTop: 30 }}>
-              {actions.current(index)?.operation?.type !== "blockchain:call" ? (
-                <Button
-                  onClick={handleTestClick}
-                  value="Test & Continue"
-                  color="primary"
-                  disabled={loading}
-                />
-              ) : (
-                <Button
-                  onClick={handleSaveClick}
-                  value="Save & Close"
-                  color="primary"
-                  disabled={loading}
-                />
-              )}
-            </div>
-          )}
+          <div style={{ marginTop: 30 }}>
+            {actions.current(index)?.operation?.type !== "blockchain:call" ? (
+              <Button
+                onClick={handleTestClick}
+                value="Test & Continue"
+                color="primary"
+                disabled={loading}
+              />
+            ) : (
+              <Button
+                onClick={handleSaveClick}
+                value="Save & Close"
+                color="primary"
+                disabled={loading}
+              />
+            )}
+          </div>
         </div>
       )}
     </Wrapper>

@@ -9,7 +9,7 @@
       "name": "New spreadsheet row",
       "display": {
         "label": "New spreadsheet row",
-        "description": "4",
+        "description": "",
         "instructions": ""
       },
       "operation": {

@@ -5,7 +5,7 @@ import useAppContext from "../../hooks/useAppContext";
 import Logo from "./Logo";
 import { ICONS, SCREEN } from "../../constants";
 import useWindowSize from "../../hooks/useWindowSize";
-import { useNavigate } from "react-router-dom";
+import { useMatch, useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   border-bottom: 1px solid #dcdcdc;
@@ -37,10 +37,10 @@ const UserWrapper = styled.div`
   flex-direction: row;
   flex-wrap: nowrap;
   gap: 6px;
+  margin-left: auto;
 
   @media (min-width: ${SCREEN.DESKTOP}) {
     order: 4;
-    margin-left: auto;
   }
 `;
 
@@ -60,7 +60,6 @@ const UserId = styled.p`
 `;
 
 const CloseButtonWrapper = styled.div`
-  margin-left: auto;
   & .MuiIconButton-root img {
     width: 16px !important;
     height: 16px !important;
@@ -92,19 +91,36 @@ const CompanyNameWrapper = styled.div`
   }
 `;
 
+const BackWrapper = styled.div`
+  & img {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
 type Props = {};
 
 const AppHeader = (props: Props) => {
   const { user, setAppOpened, appOpened } = useAppContext();
   const size = useWindowSize();
   let navigate = useNavigate();
+  let matchNewWorfklow = useMatch("/workflows/new");
 
   const handleClose = () => {
     setAppOpened(!appOpened);
   };
 
+  const handleBack = () => {
+    navigate("/workflows");
+  };
+
   return (
     <Wrapper>
+      {user && matchNewWorfklow && (
+        <BackWrapper>
+          <IconButton icon={ICONS.BACK} onClick={handleBack} color="" />
+        </BackWrapper>
+      )}
       <LogoWrapper>
         <Logo variant="square" />
       </LogoWrapper>
@@ -123,13 +139,16 @@ const AppHeader = (props: Props) => {
           </UserId>
         </UserWrapper>
       )}
-      <CloseButtonWrapper>
-        {size === "desktop" && !appOpened ? (
-          <IconButton icon={ICONS.MENU} onClick={handleClose} color="" />
-        ) : (
-          <IconButton icon={ICONS.CLOSE} onClick={handleClose} color="" />
-        )}
-      </CloseButtonWrapper>
+
+      {(!matchNewWorfklow || size === "phone") && (
+        <CloseButtonWrapper>
+          {size === "desktop" && !appOpened ? (
+            <IconButton icon={ICONS.MENU} onClick={handleClose} color="" />
+          ) : (
+            <IconButton icon={ICONS.CLOSE} onClick={handleClose} color="" />
+          )}
+        </CloseButtonWrapper>
+      )}
     </Wrapper>
   );
 };

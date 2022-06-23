@@ -21,6 +21,7 @@ type Props = {
   index: any;
   addressBook: any;
   setAddressBook?: (i: any) => void;
+  setActionError: (i: string) => void;
 };
 
 const ActionInputField = ({
@@ -29,6 +30,7 @@ const ActionInputField = ({
   index,
   addressBook,
   setAddressBook,
+  setActionError,
 }: Props) => {
   const { user } = useAppContext();
   const { updateWorkflow, workflow } = useWorkflowContext();
@@ -44,6 +46,7 @@ const ActionInputField = ({
 
   const handleFieldChange = (value: any) => {
     //setVal(val);
+    setActionError("");
     if (inputField.choices) {
       setVal(Array.isArray(value) ? value : [value]);
     } else {

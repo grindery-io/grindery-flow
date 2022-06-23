@@ -63,6 +63,7 @@ const ConnectorsSelector = (props: Props) => {
     label: availableTrigger.display?.label,
     icon:
       availableTrigger.display?.icon || triggers.triggerConnector?.icon || "",
+    description: availableTrigger.display?.description,
   }));
 
   const triggerValue = triggerOptions.find(
@@ -79,6 +80,7 @@ const ConnectorsSelector = (props: Props) => {
         availableAction.display?.icon ||
         actions.actionConnector(index)?.icon ||
         "",
+      description: availableAction.display?.description,
     }));
 
   const actionValue = actionOptions.find(

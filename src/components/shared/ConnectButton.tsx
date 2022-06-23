@@ -35,12 +35,14 @@ const ConnectButton = (props: Props) => {
   return connection.status === "connected" ? null : "ethereum" in window ? (
     <ButtonWrapper>
       <Button
-        disabled={connection.status === "connecting"}
         onClick={() => {
-          createAuthProvider().then(connect);
+          if (connection.status !== "connecting") {
+            createAuthProvider().then(connect);
+          }
         }}
         icon={ICONS.GRINDERY}
         value="Sign in"
+        loading={connection.status === "connecting"}
       />
     </ButtonWrapper>
   ) : (

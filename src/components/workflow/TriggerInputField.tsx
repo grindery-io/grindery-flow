@@ -20,9 +20,10 @@ const InputWrapper = styled.div`
 
 type Props = {
   inputField: Field;
+  setTriggerError: (i: string) => void;
 };
 
-const TriggerInputField = ({ inputField }: Props) => {
+const TriggerInputField = ({ inputField, setTriggerError }: Props) => {
   const {
     workflow,
     updateWorkflow,
@@ -73,6 +74,7 @@ const TriggerInputField = ({ inputField }: Props) => {
   );
 
   const handleFieldChange = (e: any) => {
+    setTriggerError("");
     setLoading(true);
     setVal(
       (inputField.type === "string" || inputField.type === "number") &&
@@ -86,6 +88,7 @@ const TriggerInputField = ({ inputField }: Props) => {
   };
 
   const handleRichInputFieldChange = (richInputValue: string) => {
+    setTriggerError("");
     setLoading(true);
     setVal(richInputValue.trim());
     setValChanged(true);
@@ -241,7 +244,7 @@ const TriggerInputField = ({ inputField }: Props) => {
           {inputField.choices && (
             <SelectInput
               label={inputField.label || ""}
-              type="default"
+              type="searchLabel"
               placeholder={inputField.placeholder || ""}
               onChange={handleFieldChange}
               options={fieldOptions}

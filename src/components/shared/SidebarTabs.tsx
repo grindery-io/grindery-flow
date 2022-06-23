@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { TabComponent } from "grindery-ui";
-import { useNavigate } from "react-router-dom";
-import { RIGHTBAR_TABS, SCREEN } from "../../constants";
+import { TabComponent, Button } from "grindery-ui";
+import { useMatch, useNavigate } from "react-router-dom";
+import { ICONS, RIGHTBAR_TABS, SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import useWindowSize from "../../hooks/useWindowSize";
 
@@ -89,12 +89,27 @@ const Wrapper = styled.div`
   }
 `;
 
+const ButtonWrapper = styled.div`
+  margin: 20px 16px;
+
+  & .MuiButton-startIcon > img {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  & .MuiButton-root {
+    padding: 10px 15px;
+  }
+`;
+
 type Props = {};
 
 const SidebarTabs = (props: Props) => {
   const { user, appOpened } = useAppContext();
   const size = useWindowSize();
   let navigate = useNavigate();
+  let matchNewWorfklow = useMatch("/workflows/new");
   let path =
     RIGHTBAR_TABS.findIndex((tab) => {
       return tab.path === window.location.pathname;
@@ -104,7 +119,7 @@ const SidebarTabs = (props: Props) => {
         })
       : false;
 
-  return (
+  return !matchNewWorfklow || size === "phone" ? (
     <Wrapper
       style={{
         maxWidth: size === "desktop" && appOpened ? "210px" : "60px",
@@ -133,8 +148,20 @@ const SidebarTabs = (props: Props) => {
         type="icon"
         tabColor="#000000"
       />
+      {user && size === "desktop" && (
+        <ButtonWrapper>
+          <Button
+            value="Create workflow"
+            onClick={() => {
+              navigate("/workflows/new");
+            }}
+            icon={ICONS.PLUS_WHITE}
+            color="primary"
+          />
+        </ButtonWrapper>
+      )}
     </Wrapper>
-  );
+  ) : null;
 };
 
 export default SidebarTabs;

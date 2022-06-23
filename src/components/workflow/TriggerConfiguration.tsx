@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { CircularProgress, Text, Button } from "grindery-ui";
+import { CircularProgress, Text, Button, AlertField } from "grindery-ui";
 import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
 import TriggerInputField from "./TriggerInputField";
@@ -11,6 +11,7 @@ import ChainSelector from "./ChainSelector";
 import ContractSelector from "./ContractSelector";
 import useAddressBook from "../../hooks/useAddressBook";
 import useAppContext from "../../hooks/useAppContext";
+import { ICONS } from "../../constants";
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -54,6 +55,10 @@ const AccountNameWrapper = styled.div`
   flex-wrap: nowrap;
 `;
 
+const AlertWrapper = styled.div`
+  margin-top: 20px;
+`;
+
 type Props = {
   step: number;
 };
@@ -71,9 +76,10 @@ const TriggerConfiguration = (props: Props) => {
     loading,
     setLoading,
     triggers,
+    error,
   } = useWorkflowContext();
   const [email, setEmail] = useState("");
-
+  const [triggerError, setTriggerError] = useState("");
   const { addressBook, setAddressBook } = useAddressBook(user);
 
   const inputFields =
@@ -283,11 +289,17 @@ const TriggerConfiguration = (props: Props) => {
   };
 
   const handleContinueClick = () => {
-    setActiveStep(3);
+    setTriggerError("");
+    if (!triggers.triggerIsConfigured) {
+      setTriggerError("Please complete all required fields.");
+    } else {
+      setActiveStep(3);
+    }
   };
 
   const handleChangeAuth = () => {
     setEmail("");
+    setTriggerError("");
     updateWorkflow({
       "trigger.credentials": undefined,
       "trigger.input": {},
@@ -296,12 +308,14 @@ const TriggerConfiguration = (props: Props) => {
   };
 
   const handleChainChange = (val: any) => {
+    setTriggerError("");
     updateWorkflow({
       "trigger.input._grinderyChain": val?.value || "",
     });
   };
 
   const handleContractChange = (val: any) => {
+    setTriggerError("");
     updateWorkflow({
       "trigger.input._grinderyContractAddress": val || "",
     });
@@ -398,8 +412,50 @@ const TriggerConfiguration = (props: Props) => {
             />
           )}
           {inputFields.map((inputField: Field) => (
-            <TriggerInputField inputField={inputField} key={inputField.key} />
+            <TriggerInputField
+              inputField={inputField}
+              key={inputField.key}
+              setTriggerError={setTriggerError}
+            />
           ))}
+          {error && (
+            <AlertWrapper>
+              <AlertField
+                color="error"
+                icon={
+                  <img
+                    src={ICONS.ERROR_ALERT}
+                    width={20}
+                    height={20}
+                    alt="error icon"
+                  />
+                }
+              >
+                <div style={{ textAlign: "left", marginBottom: "4px" }}>
+                  Error: {error}
+                </div>
+              </AlertField>
+            </AlertWrapper>
+          )}
+          {triggerError && (
+            <AlertWrapper>
+              <AlertField
+                color="error"
+                icon={
+                  <img
+                    src={ICONS.ERROR_ALERT}
+                    width={20}
+                    height={20}
+                    alt="error icon"
+                  />
+                }
+              >
+                <div style={{ textAlign: "left", marginBottom: "4px" }}>
+                  {triggerError}
+                </div>
+              </AlertField>
+            </AlertWrapper>
+          )}
           {loading && (
             <div
               style={{ marginTop: 40, textAlign: "center", color: "#8C30F5" }}
@@ -407,11 +463,14 @@ const TriggerConfiguration = (props: Props) => {
               <CircularProgress color="inherit" />
             </div>
           )}
-          {triggers.triggerIsConfigured && !loading && (
-            <div style={{ marginTop: 40 }}>
-              <Button onClick={handleContinueClick} value="Continue" />
-            </div>
-          )}
+
+          <div style={{ marginTop: 40 }}>
+            <Button
+              onClick={handleContinueClick}
+              value="Continue"
+              disabled={loading}
+            />
+          </div>
         </div>
       )}
     </Wrapper>

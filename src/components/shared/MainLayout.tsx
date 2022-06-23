@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Button, Drawer } from "grindery-ui";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useMatch } from "react-router-dom";
 import { SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import AppHeader from "./AppHeader";
@@ -79,6 +79,7 @@ type Props = {};
 const MainLayout = (props: Props) => {
   const { workflows, user, appOpened, setAppOpened } = useAppContext();
   const size = useWindowSize();
+  let matchNewWorfklow = useMatch("/workflows/new");
 
   const renderContent = () => {
     if (!user) {
@@ -147,7 +148,11 @@ const MainLayout = (props: Props) => {
           <AppHeader />
           <div
             style={{
-              marginLeft: appOpened ? "210px" : "60px",
+              marginLeft: !matchNewWorfklow
+                ? appOpened
+                  ? "210px"
+                  : "60px"
+                : "0px",
               transition: "all 225ms cubic-bezier(0, 0, 0.2, 1) 0ms",
             }}
           >
