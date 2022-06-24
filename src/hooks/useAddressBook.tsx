@@ -1,17 +1,35 @@
 import { useState } from "react";
 
+const demo = [
+  {
+    value: "0x71788ff18e9e100b5848fa75ca157e9a55a34108",
+    label: "Demo DAO on Polygon",
+    icon: "/images/icons/address-book.svg",
+    group: "Address Book",
+    reference: "0x71788ff18e9e100b5848fa75ca157e9a55a34108",
+    insertValue: true,
+    isAddressBook: true,
+  },
+];
+
 const useAddressBook = (user: string) => {
   const cachedAddressBook = localStorage.getItem("gr_addressBook__" + user);
-  const [addressBook, setAddressBook] = useState(
-    cachedAddressBook ? JSON.parse(cachedAddressBook) : []
-  );
+  const filterAddressBook = cachedAddressBook
+    ? JSON.parse(cachedAddressBook).filter(
+        (addr: any) => addr && !demo.map((d) => d.value).includes(addr.value)
+      )
+    : [];
+  const [addressBook, setAddressBook] = useState([
+    ...demo,
+    ...filterAddressBook,
+  ]);
 
   const addAddress = (value: { address: string; name: string }) => {
     const newAddressBook = [
       {
         value: value.address,
         label: value.name,
-        icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAGqSURBVHgBnVTLbcJAEF0bJMSNdGA6IBUAFYQOAhUEX0CccC78LlYqwKkAUkEowR1kS/CJn2Q771nexES242Wk9axmPW/efHYNkYrjOK1mszk3DGMYx3FL6ImcTqdtbgxlWa/XHlQXy46iKKiKZJomg+/g057NZrJOo+u6rev1+gxjH8aD0JDlcmkB9DcAP+fzWaUo85w2m00Hjj1RQeri/+ifqGnCAmWRaRayyMcsAyQYlH86nR5YI+wlbNtSn6ID1hXKQtdfMQEBWQF0BFuPzLUBlYRhmB0hi5/L5VI4BYU1tG07QM32THGxWNhJdNN0UU+PjLUBKXD2kfKgVqvtlA370hktTHm1Ws3BaEyybEramBGCDMF8LHQYsuhg5tAZV+o9c+QBLIB9i7RzU88FBLMONUcF4E72DLbkujUajQEDVAIEO47IAbqbdw6GB9TSzzvLBZxMJvy5L+6QG0DeDNTIEvoi1WzeACKVD6y9qC49lOUFj8ujatBfhl6abiVJpyHIdjv7wH5B+WjGW0U8Nm+A9cT5VO/oDyDfPM4Xth2hKWR5PB7bZPoNqljWhJyzkjoAAAAASUVORK5CYII=",
+        icon: "/images/icons/address-book.svg",
         group: "Address Book",
         reference: value.address,
         insertValue: true,
