@@ -112,6 +112,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       setUser(connection.selfID.id);
       if (!workflows || workflows.length < 1) {
         navigate("/workflows");
+      } else {
+        navigate("/dashboard");
       }
     } else {
       setUser(null);
