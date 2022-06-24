@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { TabComponent, Button } from "grindery-ui";
+import { IconButton, TabComponent, Button } from "grindery-ui";
 import { useMatch, useNavigate } from "react-router-dom";
 import { ICONS, RIGHTBAR_TABS, SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
@@ -90,7 +90,7 @@ const Wrapper = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-  margin: 20px 16px;
+  margin: 10px 16px;
 
   & .MuiButton-startIcon > img {
     background: none;
@@ -100,6 +100,24 @@ const ButtonWrapper = styled.div`
 
   & .MuiButton-root {
     padding: 10px 15px;
+    white-space: nowrap;
+  }
+`;
+
+const IconButtonWrapper = styled.div`
+  margin: 20px 12px;
+  text-align: right;
+
+  & .MuiIconButton-root,
+  & .MuiIconButton-root:hover {
+    background: #8c30f5;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+  }
+
+  & .MuiIconButton-root img {
+    width: 16px !important;
+    height: 16px !important;
   }
 `;
 
@@ -148,7 +166,7 @@ const SidebarTabs = (props: Props) => {
         type="icon"
         tabColor="#000000"
       />
-      {user && size === "desktop" && (
+      {user && size === "desktop" && appOpened && (
         <ButtonWrapper>
           <Button
             value="Create workflow"
@@ -159,6 +177,17 @@ const SidebarTabs = (props: Props) => {
             color="primary"
           />
         </ButtonWrapper>
+      )}
+      {user && size === "desktop" && !appOpened && (
+        <IconButtonWrapper>
+          <IconButton
+            color=""
+            icon={ICONS.PLUS_WHITE}
+            onClick={() => {
+              navigate("/workflows/new");
+            }}
+          />
+        </IconButtonWrapper>
       )}
     </Wrapper>
   ) : null;

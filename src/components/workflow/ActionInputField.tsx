@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { RichInput, SelectInput } from "grindery-ui";
 import { Field } from "../../types/Connector";
@@ -38,74 +38,76 @@ const ActionInputField = ({
   const fieldOptions = inputField.choices?.map((choice) => ({
     value: typeof choice !== "string" ? choice.value : choice,
     label: typeof choice !== "string" ? choice.label : choice,
-    //icon: triggerConnector ? triggerConnector.icon || "" : "",
   }));
 
-  const workflowValue = workflow.actions[index].input[inputField.key];
-  const [val, setVal]: any = useState(workflowValue || "");
+  const booleanOptions = [
+    {
+      value: "true",
+      label: "True",
+      icon: "",
+    },
+    { value: "false", label: "False", icon: "" },
+  ];
 
-  const handleFieldChange = (value: any) => {
-    //setVal(val);
+  const workflowValue = (
+    workflow.actions[index].input[inputField.key] || ""
+  ).toString();
+
+  const handleFieldChange = (value: string) => {
     setActionError("");
-    if (inputField.choices) {
-      setVal(Array.isArray(value) ? value : [value]);
-    } else {
-      updateWorkflow({
-        ["actions[" + index + "].input." + inputField.key]: (
-          value || ""
-        ).trim(),
-      });
+    updateWorkflow({
+      ["actions[" + index + "].input." + inputField.key]: (value || "").trim(),
+    });
+  };
+
+  const renderField = (field: Field) => {
+    switch (field.type) {
+      case "boolean":
+        return (
+          <SelectInput
+            label={inputField.label || ""}
+            type="default"
+            placeholder={inputField.placeholder || ""}
+            onChange={handleFieldChange}
+            options={booleanOptions}
+            value={workflowValue}
+            tooltip={inputField.helpText}
+            required={!!inputField.required}
+          />
+        );
+      default:
+        return inputField.choices ? (
+          <SelectInput
+            label={inputField.label || ""}
+            type="default"
+            placeholder={inputField.placeholder || ""}
+            onChange={handleFieldChange}
+            options={fieldOptions}
+            value={workflowValue}
+            tooltip={inputField.helpText}
+            required={!!inputField.required}
+          />
+        ) : (
+          <RichInput
+            label={inputField.label || ""}
+            placeholder={inputField.placeholder || ""}
+            required={!!inputField.required}
+            tooltip={inputField.helpText || false}
+            options={options}
+            onChange={handleFieldChange}
+            value={workflowValue}
+            user={user}
+            hasAddressBook={inputField.useAddressBook}
+            addressBook={addressBook}
+            setAddressBook={setAddressBook}
+          />
+        );
     }
   };
 
-  useEffect(() => {
-    if (inputField.choices) {
-      const wfValue = Array.isArray(val)
-        ? val.map((v) => (v.value ? v.value : v)).join(" ")
-        : val.value
-        ? val.value
-        : val;
-
-      updateWorkflow({
-        ["actions[" + index + "].input." + inputField.key]: wfValue || "",
-      });
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [val, index, inputField]);
-
   return (
     <React.Fragment key={inputField.key}>
-      {!!inputField && (
-        <InputWrapper>
-          {inputField.choices ? (
-            <SelectInput
-              label={inputField.label || ""}
-              type="default"
-              placeholder={inputField.placeholder || ""}
-              onChange={handleFieldChange}
-              options={fieldOptions}
-              value={Array.isArray(val) ? val : [val]}
-              tooltip={inputField.helpText}
-              required={!!inputField.required}
-            />
-          ) : (
-            <RichInput
-              label={inputField.label || ""}
-              placeholder={inputField.placeholder || ""}
-              required={!!inputField.required}
-              tooltip={inputField.helpText || false}
-              options={options}
-              onChange={handleFieldChange}
-              value={val}
-              user={user}
-              hasAddressBook={inputField.useAddressBook}
-              addressBook={addressBook}
-              setAddressBook={setAddressBook}
-            />
-          )}
-        </InputWrapper>
-      )}
+      {!!inputField && <InputWrapper>{renderField(inputField)}</InputWrapper>}
     </React.Fragment>
   );
 };

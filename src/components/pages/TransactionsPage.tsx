@@ -340,8 +340,8 @@ const TransactionsPage = (props: Props) => {
       return obj;
     }, {});
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const handleSearchChange = (e: string) => {
+    setSearchTerm(e);
   };
 
   const renderItem = (item: Transaction) => {

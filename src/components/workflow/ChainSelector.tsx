@@ -1,35 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { AutoCompleteInput } from "grindery-ui";
-import { ICONS } from "../../constants";
-
-const options = [
-  {
-    value: "eip155:1",
-    label: "Ethereum",
-    icon: ICONS.CHAIN_ETHEREUM,
-  },
-  {
-    value: "eip155:42161",
-    label: "Arbitrum",
-    icon: ICONS.CHAIN_ARBITRUM,
-  },
-  {
-    value: "eip155:100",
-    label: "Gnosis Chain",
-    icon: ICONS.CHAIN_GNOSIS,
-  },
-  {
-    value: "eip155:137",
-    label: "Polygon",
-    icon: ICONS.CHAIN_POLYGON,
-  },
-  {
-    value: "eip155:42220",
-    label: "Celo",
-    icon: ICONS.CHAIN_CELO,
-  },
-];
+import { BLOCKCHAINS } from "../../constants";
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -43,13 +15,13 @@ const InputWrapper = styled.div`
 
 type Props = {
   onChange: (a: any) => void;
-  value: any;
+  value: string;
 };
 
 const ChainSelector = (props: Props) => {
   const { onChange, value } = props;
 
-  const val = options.find((opt) => opt.value === value);
+  const options = BLOCKCHAINS;
 
   return (
     <InputWrapper>
@@ -59,7 +31,7 @@ const ChainSelector = (props: Props) => {
         placeholder="Select a blockchain"
         onChange={onChange}
         options={options}
-        value={val ? [val] : []}
+        value={value}
         required
       />
     </InputWrapper>

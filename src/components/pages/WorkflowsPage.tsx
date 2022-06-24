@@ -130,8 +130,8 @@ const WorkflowsPage = (props: Props) => {
       )
     : items;
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const handleSearchChange = (e: string) => {
+    setSearchTerm(e);
   };
 
   const renderWorkflow = (item: Workflow) => {

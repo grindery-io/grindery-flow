@@ -118,17 +118,17 @@ const ActionConfiguration = (props: Props) => {
     }
   };
 
-  const handleChainChange = (val: any) => {
+  const handleChainChange = (value: string) => {
     setActionError("");
     updateWorkflow({
-      ["actions[" + index + "].input._grinderyChain"]: val?.value || "",
+      ["actions[" + index + "].input._grinderyChain"]: value || "",
     });
   };
 
-  const handleContractChange = (val: any) => {
+  const handleContractChange = (value: string) => {
     setActionError("");
     updateWorkflow({
-      ["actions[" + index + "].input._grinderyContractAddress"]: val || "",
+      ["actions[" + index + "].input._grinderyContractAddress"]: value || "",
     });
   };
 
@@ -431,15 +431,17 @@ const ActionConfiguration = (props: Props) => {
         <div>
           {actions.current(index)?.operation?.type === "blockchain:call" && (
             <ChainSelector
-              value={workflow.actions[index].input._grinderyChain || ""}
+              value={(
+                workflow.actions[index].input._grinderyChain || ""
+              ).toString()}
               onChange={handleChainChange}
             />
           )}
           {actions.current(index)?.operation?.type === "blockchain:call" && (
             <ContractSelector
-              value={
+              value={(
                 workflow.actions[index].input._grinderyContractAddress || ""
-              }
+              ).toString()}
               onChange={handleContractChange}
               options={options}
               addressBook={addressBook}
@@ -508,9 +510,7 @@ const ActionConfiguration = (props: Props) => {
                   />
                 }
               >
-                <div style={{ textAlign: "left", marginBottom: "4px" }}>
-                  Error: {error}
-                </div>
+                <div style={{ textAlign: "left" }}>Error: {error}</div>
               </AlertField>
             </AlertWrapper>
           )}
@@ -527,9 +527,7 @@ const ActionConfiguration = (props: Props) => {
                   />
                 }
               >
-                <div style={{ textAlign: "left", marginBottom: "4px" }}>
-                  {actionError}
-                </div>
+                <div style={{ textAlign: "left" }}>{actionError}</div>
               </AlertField>
             </AlertWrapper>
           )}

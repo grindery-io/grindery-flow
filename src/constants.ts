@@ -100,3 +100,31 @@ export const RIGHTBAR_TABS: {
     path: "/settings",
   },
 ];
+
+export const BLOCKCHAINS = [
+  {
+    value: "eip155:1",
+    label: "Ethereum",
+    icon: ICONS.CHAIN_ETHEREUM,
+  },
+  {
+    value: "eip155:42161",
+    label: "Arbitrum",
+    icon: ICONS.CHAIN_ARBITRUM,
+  },
+  {
+    value: "eip155:100",
+    label: "Gnosis Chain",
+    icon: ICONS.CHAIN_GNOSIS,
+  },
+  {
+    value: "eip155:137",
+    label: "Polygon",
+    icon: ICONS.CHAIN_POLYGON,
+  },
+  {
+    value: "eip155:42220",
+    label: "Celo",
+    icon: ICONS.CHAIN_CELO,
+  },
+];

@@ -15,7 +15,7 @@ const InputWrapper = styled.div`
 
 type Props = {
   onChange: (a: any) => void;
-  value: any;
+  value: string;
   options?: any[];
   addressBook: any[];
   setAddressBook: (i: any) => void;

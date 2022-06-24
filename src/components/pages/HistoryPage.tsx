@@ -163,8 +163,8 @@ const HistoryPage = (props: Props) => {
         ).length > 0
     );
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const handleSearchChange = (e: string) => {
+    setSearchTerm(e);
   };
   return (
     <RootWrapper>

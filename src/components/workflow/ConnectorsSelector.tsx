@@ -34,11 +34,7 @@ const ConnectorsSelector = (props: Props) => {
     })
   );
 
-  const triggerConnectorValue = triggerConnectorOptions.find(
-    (opt) =>
-      opt.value ===
-        (workflow && workflow.trigger && workflow.trigger.connector) || ""
-  );
+  const triggerConnectorValue = workflow.trigger.connector || "";
 
   const actionConnectorOptions = actions.connectorsWithActions.map(
     (connector) => ({
@@ -49,14 +45,7 @@ const ConnectorsSelector = (props: Props) => {
     })
   );
 
-  const actionConnectorValue = actionConnectorOptions.find(
-    (opt) =>
-      opt.value ===
-        (workflow &&
-          workflow.actions &&
-          workflow.actions[index] &&
-          workflow.actions[index].connector) || ""
-  );
+  const actionConnectorValue = workflow.actions[index].connector || "";
 
   const triggerOptions = triggers.availableTriggers.map((availableTrigger) => ({
     value: availableTrigger.key,
@@ -66,10 +55,7 @@ const ConnectorsSelector = (props: Props) => {
     description: availableTrigger.display?.description,
   }));
 
-  const triggerValue = triggerOptions.find(
-    (opt) =>
-      opt.value === (workflow.trigger && workflow.trigger.operation) || ""
-  );
+  const triggerValue = workflow.trigger.operation || "";
 
   const actionOptions = actions
     .availableActions(index)
@@ -83,40 +69,36 @@ const ConnectorsSelector = (props: Props) => {
       description: availableAction.display?.description,
     }));
 
-  const actionValue = actionOptions.find(
-    (opt) =>
-      opt.value ===
-        (workflow.actions[index] && workflow.actions[index].operation) || ""
-  );
+  const actionValue = workflow.actions[index].operation || "";
 
-  const handleTriggerConnectorChange = (val: any) => {
+  const handleTriggerConnectorChange = (value: string) => {
     updateWorkflow({
-      "trigger.connector": val?.value || "",
+      "trigger.connector": value || "",
       "trigger.input": {},
       "trigger.operation": "",
       "trigger.credentials": undefined,
     });
   };
 
-  const handleActionConnectorChange = (val: any) => {
+  const handleActionConnectorChange = (value: string) => {
     updateWorkflow({
-      ["actions[" + index + "].connector"]: val?.value || "",
+      ["actions[" + index + "].connector"]: value || "",
       ["actions[" + index + "].input"]: {},
       ["actions[" + index + "].operation"]: "",
       ["actions[" + index + "].credentials"]: undefined,
     });
   };
 
-  const handleTriggerChange = (val: any) => {
+  const handleTriggerChange = (value: string) => {
     updateWorkflow({
-      "trigger.operation": val?.value || "",
+      "trigger.operation": value || "",
       "trigger.input": {},
     });
   };
 
-  const handleActionChange = (val: any) => {
+  const handleActionChange = (value: string) => {
     updateWorkflow({
-      ["actions[" + index + "].operation"]: val?.value || "",
+      ["actions[" + index + "].operation"]: value || "",
       ["actions[" + index + "].input"]: {},
     });
   };
@@ -142,7 +124,7 @@ const ConnectorsSelector = (props: Props) => {
             placeholder="Select a Trigger"
             onChange={handleTriggerConnectorChange}
             options={triggerConnectorOptions}
-            value={triggerConnectorValue ? [triggerConnectorValue] : []}
+            value={triggerConnectorValue}
           />
         </InputWrapper>
       </div>
@@ -154,7 +136,7 @@ const ConnectorsSelector = (props: Props) => {
             placeholder="Search for protocol"
             onChange={handleActionConnectorChange}
             options={actionConnectorOptions}
-            value={actionConnectorValue ? [actionConnectorValue] : []}
+            value={actionConnectorValue}
           />
         </InputWrapper>
       </div>
@@ -168,7 +150,7 @@ const ConnectorsSelector = (props: Props) => {
               placeholder="Select a Trigger"
               onChange={handleTriggerChange}
               options={triggerOptions}
-              value={triggerValue ? [triggerValue] : []}
+              value={triggerValue}
             />
           </div>
           <div style={{ marginTop: 10 }}>
@@ -178,7 +160,7 @@ const ConnectorsSelector = (props: Props) => {
               placeholder="Select an Action"
               onChange={handleActionChange}
               options={actionOptions}
-              value={actionValue ? [actionValue] : []}
+              value={actionValue}
             />
           </div>
         </div>

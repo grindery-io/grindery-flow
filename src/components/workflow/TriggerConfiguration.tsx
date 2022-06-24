@@ -307,17 +307,17 @@ const TriggerConfiguration = (props: Props) => {
     handleAuthClick();
   };
 
-  const handleChainChange = (val: any) => {
+  const handleChainChange = (value: string) => {
     setTriggerError("");
     updateWorkflow({
-      "trigger.input._grinderyChain": val?.value || "",
+      "trigger.input._grinderyChain": value || "",
     });
   };
 
-  const handleContractChange = (val: any) => {
+  const handleContractChange = (value: string) => {
     setTriggerError("");
     updateWorkflow({
-      "trigger.input._grinderyContractAddress": val || "",
+      "trigger.input._grinderyContractAddress": value || "",
     });
   };
 
@@ -398,13 +398,15 @@ const TriggerConfiguration = (props: Props) => {
         <div style={{ marginTop: 40 }}>
           {triggers.current.operation?.type === "blockchain:event" && (
             <ChainSelector
-              value={workflow.trigger.input._grinderyChain || ""}
+              value={(workflow.trigger.input._grinderyChain || "").toString()}
               onChange={handleChainChange}
             />
           )}
           {triggers.current.operation?.type === "blockchain:event" && (
             <ContractSelector
-              value={workflow.trigger.input._grinderyContractAddress || ""}
+              value={(
+                workflow.trigger.input._grinderyContractAddress || ""
+              ).toString()}
               onChange={handleContractChange}
               options={[]}
               addressBook={addressBook}
@@ -431,9 +433,7 @@ const TriggerConfiguration = (props: Props) => {
                   />
                 }
               >
-                <div style={{ textAlign: "left", marginBottom: "4px" }}>
-                  Error: {error}
-                </div>
+                <div style={{ textAlign: "left" }}>Error: {error}</div>
               </AlertField>
             </AlertWrapper>
           )}
@@ -450,9 +450,7 @@ const TriggerConfiguration = (props: Props) => {
                   />
                 }
               >
-                <div style={{ textAlign: "left", marginBottom: "4px" }}>
-                  {triggerError}
-                </div>
+                <div style={{ textAlign: "left" }}>{triggerError}</div>
               </AlertField>
             </AlertWrapper>
           )}

@@ -129,8 +129,8 @@ const AppsPage = (props: Props) => {
     item.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
   );
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const handleSearchChange = (e: string) => {
+    setSearchTerm(e);
   };
   return (
     <Wrapper>

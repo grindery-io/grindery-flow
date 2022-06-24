@@ -55,42 +55,35 @@ const TriggerInputField = ({ inputField, setTriggerError }: Props) => {
     { value: "false", label: "False", icon: "" },
   ];
 
-  const workflowValue =
+  const workflowValue = (
     typeof workflow.trigger.input[inputField.key] !== "undefined"
       ? workflow.trigger.input[inputField.key]
-      : inputField.default || "";
+      : inputField.default || ""
+  ).toString();
 
-  const [val, setVal]: any = useState(
-    fieldOptions
-      ? fieldOptions.find(
-          (opt) =>
-            opt.value === (workflowValue && workflowValue.toString()) || ""
-        ) || []
-      : inputField.type === "boolean"
-      ? workflowValue
-        ? booleanOptions[0]
-        : booleanOptions[1]
-      : (workflowValue && workflowValue.toString()) || ""
-  );
-
-  const handleFieldChange = (e: any) => {
+  const handleFieldChange = (value: string) => {
     setTriggerError("");
     setLoading(true);
-    setVal(
-      (inputField.type === "string" || inputField.type === "number") &&
-        !fieldOptions
-        ? e?.target.value === 0
-          ? 0
-          : e?.target.value || ""
-        : e
-    );
-    setValChanged(true);
-  };
 
-  const handleRichInputFieldChange = (richInputValue: string) => {
-    setTriggerError("");
-    setLoading(true);
-    setVal(richInputValue.trim());
+    let newVal: string | number | boolean = "";
+    if (
+      (inputField.type === "string" && inputField.choices) ||
+      inputField.type === "boolean"
+    ) {
+      newVal = (value || "").trim();
+      if (inputField.type === "boolean") {
+        newVal = newVal === "true";
+      }
+    }
+    if (inputField.type === "string" && !fieldOptions) {
+      newVal = value.trim();
+    }
+    if (inputField.type === "number" && !fieldOptions) {
+      newVal = parseFloat(value);
+    }
+    updateWorkflow({
+      ["trigger.input." + inputField.key]: newVal,
+    });
     setValChanged(true);
   };
 
@@ -178,29 +171,66 @@ const TriggerInputField = ({ inputField, setTriggerError }: Props) => {
     []
   );
 
-  useEffect(() => {
-    let newVal: any = "";
-    if (
-      (inputField.type === "string" && inputField.choices) ||
-      inputField.type === "boolean"
-    ) {
-      newVal = val?.value === 0 ? 0 : val?.value || "";
-      if (inputField.type === "boolean") {
-        newVal = newVal === "true";
-      }
+  const renderField = (field: Field) => {
+    switch (field.type) {
+      case "boolean":
+        return (
+          <SelectInput
+            label={inputField.label || ""}
+            type="default"
+            placeholder={inputField.placeholder || ""}
+            onChange={handleFieldChange}
+            options={booleanOptions}
+            value={workflowValue}
+            tooltip={inputField.helpText}
+            required={!!inputField.required}
+          />
+        );
+      case "number":
+        return (
+          <RichInput
+            value={workflowValue}
+            label={inputField.label || ""}
+            placeholder={inputField.placeholder || ""}
+            tooltip={inputField.helpText}
+            required={!!inputField.required}
+            onChange={handleFieldChange}
+            user={user}
+            hasAddressBook={inputField.useAddressBook}
+            options={[]}
+            addressBook={addressBook}
+            setAddressBook={setAddressBook}
+          ></RichInput>
+        );
+      default:
+        return !inputField.choices ? (
+          <RichInput
+            value={workflowValue}
+            label={inputField.label || ""}
+            placeholder={inputField.placeholder || ""}
+            tooltip={inputField.helpText}
+            required={!!inputField.required}
+            onChange={handleFieldChange}
+            user={user}
+            hasAddressBook={inputField.useAddressBook}
+            options={[]}
+            addressBook={addressBook}
+            setAddressBook={setAddressBook}
+          ></RichInput>
+        ) : (
+          <SelectInput
+            label={inputField.label || ""}
+            type="searchLabel"
+            placeholder={inputField.placeholder || ""}
+            onChange={handleFieldChange}
+            options={fieldOptions}
+            value={workflowValue}
+            tooltip={inputField.helpText}
+            required={!!inputField.required}
+          />
+        );
     }
-    if (inputField.type === "string" && !fieldOptions) {
-      newVal = val;
-    }
-    if (inputField.type === "number" && !fieldOptions) {
-      newVal = parseFloat(val);
-    }
-    updateWorkflow({
-      ["trigger.input." + inputField.key]: newVal,
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [val]);
+  };
 
   useEffect(() => {
     if (valChanged) {
@@ -211,50 +241,7 @@ const TriggerInputField = ({ inputField, setTriggerError }: Props) => {
 
   return (
     <React.Fragment key={inputField.key}>
-      {!!inputField && (
-        <InputWrapper>
-          {(inputField.type === "number" ||
-            (inputField.type === "string" && !inputField.choices)) && (
-            <RichInput
-              value={val || ""}
-              label={inputField.label || ""}
-              placeholder={inputField.placeholder || ""}
-              tooltip={inputField.helpText}
-              required={!!inputField.required}
-              onChange={handleRichInputFieldChange}
-              user={user}
-              hasAddressBook={inputField.useAddressBook}
-              options={[]}
-              addressBook={addressBook}
-              setAddressBook={setAddressBook}
-            ></RichInput>
-          )}
-          {inputField.type === "boolean" && (
-            <SelectInput
-              label={inputField.label || ""}
-              type="default"
-              placeholder={inputField.placeholder || ""}
-              onChange={handleFieldChange}
-              options={booleanOptions}
-              value={Array.isArray(val) ? val : [val]}
-              tooltip={inputField.helpText}
-              required={!!inputField.required}
-            />
-          )}
-          {inputField.choices && (
-            <SelectInput
-              label={inputField.label || ""}
-              type="searchLabel"
-              placeholder={inputField.placeholder || ""}
-              onChange={handleFieldChange}
-              options={fieldOptions}
-              value={Array.isArray(val) ? val : [val]}
-              tooltip={inputField.helpText}
-              required={!!inputField.required}
-            />
-          )}
-        </InputWrapper>
-      )}
+      {!!inputField && <InputWrapper>{renderField(inputField)}</InputWrapper>}
     </React.Fragment>
   );
 };
