@@ -10,6 +10,15 @@ const demo = [
     insertValue: true,
     isAddressBook: true,
   },
+  {
+    value: "0x3be431fa62a476314812c62e2e1b263e559c5a16",
+    label: "Demo DAO on Gnosis",
+    icon: "/images/icons/address-book.svg",
+    group: "Address Book",
+    reference: "0x3be431fa62a476314812c62e2e1b263e559c5a16",
+    insertValue: true,
+    isAddressBook: true,
+  },
 ];
 
 const useAddressBook = (user: string) => {
