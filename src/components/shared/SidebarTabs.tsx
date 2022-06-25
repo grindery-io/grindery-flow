@@ -137,7 +137,7 @@ const SidebarTabs = (props: Props) => {
         })
       : false;
 
-  return !matchNewWorfklow || size === "phone" ? (
+  return (user && !matchNewWorfklow) || size === "phone" ? (
     <Wrapper
       style={{
         maxWidth: size === "desktop" && appOpened ? "210px" : "60px",

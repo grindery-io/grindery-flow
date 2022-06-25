@@ -140,8 +140,8 @@ const AppHeader = (props: Props) => {
         </UserWrapper>
       )}
 
-      {(!matchNewWorfklow || size === "phone") && (
-        <CloseButtonWrapper>
+      {user && (!matchNewWorfklow || size === "phone") && (
+        <CloseButtonWrapper style={{ marginLeft: !user ? "auto" : "0px" }}>
           {size === "desktop" && !appOpened ? (
             <IconButton icon={ICONS.MENU} onClick={handleClose} color="" />
           ) : (
