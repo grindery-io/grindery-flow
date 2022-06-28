@@ -24,9 +24,9 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Deployment
 
-Heroku will deploy any changes in the `heroku` branch automatically:
+Heroku will deploy any changes in the `master` branch automatically:
 
-1. Merge your changes into the `heroku` branch
-2. Push Heroku branch to GitHub
+1. Merge your changes into the `master` branch
+2. Push branch to GitHub
 
 **Deployment URL: http://grindery-nexus-frontend.herokuapp.com/**
