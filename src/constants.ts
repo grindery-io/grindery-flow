@@ -106,25 +106,32 @@ export const BLOCKCHAINS = [
     value: "eip155:1",
     label: "Ethereum",
     icon: ICONS.CHAIN_ETHEREUM,
+    token: "ETH",
   },
   {
     value: "eip155:42161",
     label: "Arbitrum",
     icon: ICONS.CHAIN_ARBITRUM,
+    token: "ETH",
   },
   {
     value: "eip155:100",
     label: "Gnosis Chain",
     icon: ICONS.CHAIN_GNOSIS,
+    token: "xDAI"
   },
   {
     value: "eip155:137",
     label: "Polygon",
     icon: ICONS.CHAIN_POLYGON,
+    token: "MATIC",
+    tokenAddress: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0"
   },
   {
     value: "eip155:42220",
     label: "Celo",
     icon: ICONS.CHAIN_CELO,
+    token: "CELO",
+    tokenAddress: "0x471EcE3750Da237f93B8E339c536989b8978a438"
   },
 ];

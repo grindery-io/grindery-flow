@@ -100,6 +100,7 @@ const RootPage = (props: Props) => {
             )
           }
         ></Route>
+        <Route path="/workflows/create" element={<CreateWorkflowPage />}></Route>
         <Route path="/workflows/new" element={<WorkflowBuilderPage />}></Route>
         <Route path="/d-apps" element={<AppsPage />}></Route>
         <Route path="/history" element={<HistoryPage />}></Route>

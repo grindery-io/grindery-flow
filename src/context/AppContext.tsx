@@ -113,7 +113,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       if (!workflows || workflows.length < 1) {
         navigate("/workflows");
       } else {
-        navigate("/dashboard");
+        navigate("/workflows/create");
       }
     } else {
       setUser(null);

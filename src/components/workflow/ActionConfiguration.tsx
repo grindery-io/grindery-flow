@@ -7,7 +7,7 @@ import { getOutputOptions, getParameterByName, jsonrpcObj } from "../../utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import ChainSelector from "./ChainSelector";
 import GasInput from "./GasInput";
-import { ICONS } from "../../constants";
+import { BLOCKCHAINS, ICONS } from "../../constants";
 import axios from "axios";
 import Check from "../icons/Check";
 import useAppContext from "../../hooks/useAppContext";
@@ -348,6 +348,8 @@ const ActionConfiguration = (props: Props) => {
 
   const operationType = actions.current(index)?.operation?.type;
 
+  const gasToken = workflow.actions[index].input._grinderyChain ? BLOCKCHAINS.find(chain=>chain.value === workflow.actions[index].input._grinderyChain) || "" : ""
+
   useEffect(() => {
     if (workflowActionCredentials) {
       testAuth(workflowActionCredentials);
@@ -459,7 +461,7 @@ const ActionConfiguration = (props: Props) => {
               setActionError={setActionError}
             />
           ))}
-          {actions.current(index)?.operation?.type === "blockchain:call" && (
+          {actions.current(index)?.operation?.type === "blockchain:call" && gasToken && (
             <AlertWrapper>
               <AlertField
                 color="warning"
@@ -484,7 +486,7 @@ const ActionConfiguration = (props: Props) => {
                         textDecoration: "underline",
                       }}
                     >
-                      0.003 ETH
+                      0.003 {gasToken.token}
                     </a>
                   </div>
                   <GasInput
@@ -492,6 +494,7 @@ const ActionConfiguration = (props: Props) => {
                     onChange={(e) => {
                       setGas(e.target.value);
                     }}
+                    suffix={gasToken.token}
                   />
                 </>
               </AlertField>

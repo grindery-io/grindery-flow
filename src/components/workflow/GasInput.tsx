@@ -15,11 +15,12 @@ const Label = styled.div`
   font-size: 14px;
   line-height: 150%;
   margin-right: 6px;
+  text-align: left;
 `;
 
 const InputWrapper = styled.div`
   margin-left: auto;
-  max-width: 92px;
+  max-width: 150px;
 
   & .MuiTextField-root {
     background: #fff !important;
