@@ -143,29 +143,6 @@ const SidebarTabs = (props: Props) => {
         maxWidth: size === "desktop" && appOpened ? "210px" : "60px",
       }}
     >
-      <TabComponent
-        value={path}
-        onChange={(index: number) => {
-          if (user) {
-            navigate(RIGHTBAR_TABS[index].path, { replace: true });
-          }
-        }}
-        options={RIGHTBAR_TABS.map((tab) => (
-          <>
-            <img
-              src={tab.icon}
-              alt={tab.name}
-              style={{ opacity: path !== tab.id ? "0.2" : 1 }}
-            />
-            <p>{tab.label}</p>
-          </>
-        ))}
-        orientation="vertical"
-        activeIndicatorColor="#0B0D17"
-        activeColor="#000000"
-        type="icon"
-        tabColor="#000000"
-      />
       {user && size === "desktop" && appOpened && (
         <ButtonWrapper>
           <Button
@@ -189,6 +166,29 @@ const SidebarTabs = (props: Props) => {
           />
         </IconButtonWrapper>
       )}
+      <TabComponent
+        value={path}
+        onChange={(index: number) => {
+          if (user) {
+            navigate(RIGHTBAR_TABS[index].path, { replace: true });
+          }
+        }}
+        options={RIGHTBAR_TABS.map((tab) => (
+          <>
+            <img
+              src={tab.icon}
+              alt={tab.name}
+              style={{ opacity: path !== tab.id ? "0.2" : 1 }}
+            />
+            <p>{tab.label}</p>
+          </>
+        ))}
+        orientation="vertical"
+        activeIndicatorColor="#0B0D17"
+        activeColor="#000000"
+        type="icon"
+        tabColor="#000000"
+      />
     </Wrapper>
   ) : null;
 };

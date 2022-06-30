@@ -14,7 +14,6 @@ const Wrapper = styled.div`
   @media (min-width: ${SCREEN.DESKTOP}) {
     padding: 60px 106px;
     margin: 40px 20px 0;
-    border: 1px solid #dcdcdc;
   }
 `;
 
