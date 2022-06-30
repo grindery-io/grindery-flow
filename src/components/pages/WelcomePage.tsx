@@ -90,7 +90,7 @@ const WelcomePage = (props: Props) => {
       </Title>
       <Img src="/images/welcome.svg" alt="Welcome" />
       <Desc>
-        We are the easiest way for people and organizations to connect Apps and
+        Grindery Nexus is the easiest way for people and organizations to connect Apps and
         dApps across chains and protocols.
       </Desc>
       <ButtonWrapper>
