@@ -87,7 +87,7 @@ const ActionConfiguration = (props: Props) => {
     actionIsAuthenticated,
   } = actions;
   const [email, setEmail] = useState("");
-  const [gas, setGas] = useState("0.1");
+  const [gas, setGas] = useState("0.001");
   const [actionError, setActionError] = useState("");
   const { addressBook, setAddressBook } = useAddressBook(user);
 
@@ -348,7 +348,11 @@ const ActionConfiguration = (props: Props) => {
 
   const operationType = actions.current(index)?.operation?.type;
 
-  const gasToken = workflow.actions[index].input._grinderyChain ? BLOCKCHAINS.find(chain=>chain.value === workflow.actions[index].input._grinderyChain) || "" : ""
+  const gasToken = workflow.actions[index].input._grinderyChain
+    ? BLOCKCHAINS.find(
+        (chain) => chain.value === workflow.actions[index].input._grinderyChain
+      ) || ""
+    : "";
 
   useEffect(() => {
     if (workflowActionCredentials) {
@@ -461,45 +465,46 @@ const ActionConfiguration = (props: Props) => {
               setActionError={setActionError}
             />
           ))}
-          {actions.current(index)?.operation?.type === "blockchain:call" && gasToken && (
-            <AlertWrapper>
-              <AlertField
-                color="warning"
-                icon={
-                  <img
-                    src={ICONS.GAS_ALERT}
-                    width={20}
-                    height={20}
-                    alt="gas icon"
-                  />
-                }
-              >
-                <>
-                  <div style={{ textAlign: "left", marginBottom: "4px" }}>
-                    This action will require you to pay gas. Make sure your
-                    account has funds. Current balance:{" "}
-                    <a
-                      href="#balance"
-                      style={{
-                        fontWeight: "bold",
-                        color: "inherit",
-                        textDecoration: "underline",
+          {actions.current(index)?.operation?.type === "blockchain:call" &&
+            gasToken && (
+              <AlertWrapper>
+                <AlertField
+                  color="warning"
+                  icon={
+                    <img
+                      src={ICONS.GAS_ALERT}
+                      width={20}
+                      height={20}
+                      alt="gas icon"
+                    />
+                  }
+                >
+                  <>
+                    <div style={{ textAlign: "left", marginBottom: "4px" }}>
+                      This action will require you to pay gas. Make sure your
+                      account has funds. Current balance:{" "}
+                      <a
+                        href="#balance"
+                        style={{
+                          fontWeight: "bold",
+                          color: "inherit",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        0.003 {gasToken.token}
+                      </a>
+                    </div>
+                    <GasInput
+                      value={gas}
+                      onChange={(e) => {
+                        setGas(e.target.value);
                       }}
-                    >
-                      0.003 {gasToken.token}
-                    </a>
-                  </div>
-                  <GasInput
-                    value={gas}
-                    onChange={(e) => {
-                      setGas(e.target.value);
-                    }}
-                    suffix={gasToken.token}
-                  />
-                </>
-              </AlertField>
-            </AlertWrapper>
-          )}
+                      suffix={gasToken.token}
+                    />
+                  </>
+                </AlertField>
+              </AlertWrapper>
+            )}
           {error && (
             <AlertWrapper>
               <AlertField
@@ -542,21 +547,12 @@ const ActionConfiguration = (props: Props) => {
             </div>
           )}
           <div style={{ marginTop: 30 }}>
-            {actions.current(index)?.operation?.type !== "blockchain:call" ? (
-              <Button
-                onClick={handleTestClick}
-                value="Test & Continue"
-                color="primary"
-                disabled={loading}
-              />
-            ) : (
-              <Button
-                onClick={handleSaveClick}
-                value="Save & Close"
-                color="primary"
-                disabled={loading}
-              />
-            )}
+            <Button
+              onClick={handleTestClick}
+              value="Test & Continue"
+              color="primary"
+              disabled={loading}
+            />
           </div>
         </div>
       )}

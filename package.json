@@ -1,6 +1,6 @@
 {
   "name": "grindery-nexus-frontend",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "dependencies": {
     "@self.id/react": "^0.3.2",

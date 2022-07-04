@@ -1,14 +1,16 @@
 import React, { useState, createContext, useEffect } from "react";
 import axios from "axios";
 import { useViewerConnection } from "@self.id/react";
+import _ from "lodash";
 import { Workflow } from "../types/Workflow";
-import { RIGHTBAR_TABS, WORKFLOW_ENGINE_URL } from "../constants";
+import {
+  RIGHTBAR_TABS,
+  WORKFLOW_ENGINE_URL,
+  WEB2_CONNECTORS_PATH,
+  WEB3_CONNECTORS_PATH,
+} from "../constants";
 import { Connector } from "../types/Connector";
 import { defaultFunc, jsonrpcObj } from "../utils";
-
-import gsheetConnector from "../samples/connectors/gsheet.json";
-import moloch from "../samples/connectors/moloch.json";
-import sendgrid from "../samples/connectors/sendgrid.json";
 import { useNavigate } from "react-router-dom";
 
 type ContextProps = {
@@ -56,7 +58,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   // user's workflows list
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
 
-  const connectors = [gsheetConnector, moloch, sendgrid];
+  // connectors list
+  const [connectors, setConnectors] = useState<Connector[]>([]);
 
   // change current active tab
   const changeTab = (name: string) => {
@@ -97,8 +100,47 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     setWorkflows([]);
   };
 
+  const getConnectors = async () => {
+    const responses = [];
+    const web2Connectors = await axios.get(WEB2_CONNECTORS_PATH);
+    for (let i = 0; i < web2Connectors.data.length; i++) {
+      const url = web2Connectors.data[i].download_url;
+      if (url) {
+        responses.push(
+          await axios.get(
+            `${url}${/\?/.test(url) ? "&" : "?"}v=${encodeURIComponent(
+              "2022.07.05v1"
+            )}`
+          )
+        );
+      }
+    }
+    const web3Connectors = await axios.get(WEB3_CONNECTORS_PATH);
+    for (let i = 0; i < web3Connectors.data.length; i++) {
+      const url = web3Connectors.data[i].download_url;
+      if (url) {
+        responses.push(
+          await axios.get(
+            `${url}${/\?/.test(url) ? "&" : "?"}v=${encodeURIComponent(
+              "2022.07.05v1"
+            )}`
+          )
+        );
+      }
+    }
+
+    setConnectors(
+      _.orderBy(
+        responses.filter((res) => res && res.data).map((res) => res.data),
+        ["name"],
+        ["asc"]
+      )
+    );
+  };
+
   useEffect(() => {
     if (user) {
+      getConnectors();
       getWorkflowsList();
     } else {
       clearWorkflows();

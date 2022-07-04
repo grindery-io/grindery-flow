@@ -3,6 +3,13 @@ import styled from "styled-components";
 import ConnectButton from "../shared/ConnectButton";
 import { SCREEN } from "../../constants";
 
+const Container = styled.div`
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    padding: 60px 106px;
+    margin: 40px 20px 0;
+  }
+`;
+
 const Wrapper = styled.div`
   padding: 24px 20px;
   display: flex;
@@ -10,10 +17,12 @@ const Wrapper = styled.div`
   align-items: stretch;
   justify-content: center;
   flex-wrap: nowrap;
-  min-height: calc(100% - 48px);
+  height: calc(100% - 48px);
   @media (min-width: ${SCREEN.DESKTOP}) {
-    padding: 60px 106px;
-    margin: 40px 20px 0;
+    padding: 40px 0;
+    margin: 0;
+    height: calc(100vh - 280px);
+    max-height: calc(100vh - 350px);
   }
 `;
 
@@ -36,8 +45,9 @@ const Img = styled.img`
   width: 335px;
   height: 322px;
   @media (min-width: ${SCREEN.DESKTOP}) {
-    width: 500px;
-    height: 480px;
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
   }
 `;
 
@@ -81,32 +91,34 @@ type Props = {};
 
 const WelcomePage = (props: Props) => {
   return (
-    <Wrapper>
-      <Title>
-        Welcome to
-        <br />
-        Grindery Nexus
-      </Title>
-      <Img src="/images/welcome.svg" alt="Welcome" />
-      <Desc>
-        Grindery Nexus is the easiest way for people and organizations to connect Apps and
-        dApps across chains and protocols.
-      </Desc>
-      <ButtonWrapper>
-        <ConnectButton />
-      </ButtonWrapper>
-      <Disclaimer>
-        Grindery Nexus uses{" "}
-        <a
-          href="https://blog.ceramic.network/what-is-3id-connect/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Ceramic 3ID
-        </a>{" "}
-        to authenticate users.
-      </Disclaimer>
-    </Wrapper>
+    <Container>
+      <Wrapper>
+        <Title>
+          Welcome to
+          <br />
+          Grindery Nexus
+        </Title>
+        <Img src="/images/welcome.svg" alt="Welcome" />
+        <Desc>
+          Grindery Nexus is the easiest way for people and organizations to
+          connect Apps and dApps across chains and protocols.
+        </Desc>
+        <ButtonWrapper>
+          <ConnectButton />
+        </ButtonWrapper>
+        <Disclaimer>
+          Grindery Nexus uses{" "}
+          <a
+            href="https://blog.ceramic.network/what-is-3id-connect/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Ceramic 3ID
+          </a>{" "}
+          to authenticate users.
+        </Disclaimer>
+      </Wrapper>
+    </Container>
   );
 };
 

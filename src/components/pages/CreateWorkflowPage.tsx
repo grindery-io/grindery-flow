@@ -4,6 +4,13 @@ import { Button } from "grindery-ui";
 import { ICONS, SCREEN } from "../../constants";
 import { useNavigate } from "react-router-dom";
 
+const Container = styled.div`
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    padding: 60px 106px;
+    margin: 40px 20px 0;
+  }
+`;
+
 const Wrapper = styled.div`
   padding: 24px 20px;
   display: flex;
@@ -13,8 +20,10 @@ const Wrapper = styled.div`
   flex-wrap: nowrap;
   min-height: calc(100% - 48px);
   @media (min-width: ${SCREEN.DESKTOP}) {
-    padding: 60px 106px;
-    margin: 40px 20px 0;
+    padding: 40px 0;
+    margin: 0;
+    height: calc(100vh - 280px);
+    max-height: calc(100vh - 350px);
   }
 `;
 
@@ -37,8 +46,9 @@ const Img = styled.img`
   width: 335px;
   height: 322px;
   @media (min-width: ${SCREEN.DESKTOP}) {
-    width: 500px;
-    height: 480px;
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
   }
 `;
 
@@ -72,26 +82,28 @@ type Props = {};
 const CreateWorkflowPage = (props: Props) => {
   let navigate = useNavigate();
   return (
-    <Wrapper>
-      <Title>
-        Create your first
-        <br />
-        workflow
-      </Title>
-      <Img src="/images/create-workflow.svg" alt="Create workflow" />
-      <Desc>
-        Create workflows to connect a Web2 to a Web3 App or viceversa.
-      </Desc>
-      <ButtonWrapper>
-        <Button
-          value="Create workflow"
-          onClick={() => {
-            navigate("/workflows/new");
-          }}
-          icon={ICONS.PLUS_WHITE}
-        />
-      </ButtonWrapper>
-    </Wrapper>
+    <Container>
+      <Wrapper>
+        <Title>
+          Create your first
+          <br />
+          workflow
+        </Title>
+        <Img src="/images/create-workflow.svg" alt="Create workflow" />
+        <Desc>
+          Create workflows to connect a Web2 to a Web3 App or viceversa.
+        </Desc>
+        <ButtonWrapper>
+          <Button
+            value="Create workflow"
+            onClick={() => {
+              navigate("/workflows/new");
+            }}
+            icon={ICONS.PLUS_WHITE}
+          />
+        </ButtonWrapper>
+      </Wrapper>
+    </Container>
   );
 };
 
