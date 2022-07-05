@@ -2,10 +2,57 @@ import React from "react";
 import styled from "styled-components";
 import { Text, SelectInput, AutoCompleteInput, Button } from "grindery-ui";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
+import { ICONS, SCREEN } from "../../constants";
 
 const InputWrapper = styled.div`
   & .paid-label {
     margin-left: auto;
+  }
+`;
+
+const AppsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    & > div {
+      width: calc(50% - 40px);
+      margin-top: 40px !important;
+    }
+  }
+`;
+
+const TriggerActionWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    & > div {
+      width: calc(50% - 40px);
+      margin-top: 40px !important;
+    }
+  }
+`;
+
+const JoinImage = styled.img`
+  display: none;
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    display: block;
+    width: 80px;
+    height: 54px;
+    margin-top: 48px;
   }
 `;
 
@@ -116,33 +163,35 @@ const ConnectorsSelector = (props: Props) => {
       <div style={{ textAlign: "center", marginTop: 20 }}>
         <Text variant="h3" value="Connect (d)Apps"></Text>
       </div>
-      <div style={{ marginTop: 40 }}>
-        <InputWrapper>
-          <AutoCompleteInput
-            label="This..."
-            size="full"
-            placeholder="Select a Trigger"
-            onChange={handleTriggerConnectorChange}
-            options={triggerConnectorOptions}
-            value={triggerConnectorValue}
-          />
-        </InputWrapper>
-      </div>
-      <div style={{ marginTop: 10 }}>
-        <InputWrapper>
-          <AutoCompleteInput
-            label="With..."
-            size="full"
-            placeholder="Search for protocol"
-            onChange={handleActionConnectorChange}
-            options={actionConnectorOptions}
-            value={actionConnectorValue}
-          />
-        </InputWrapper>
-      </div>
-
+      <AppsWrapper>
+        <div style={{ marginTop: 40 }}>
+          <InputWrapper>
+            <AutoCompleteInput
+              label="This..."
+              size="full"
+              placeholder="Select a Trigger"
+              onChange={handleTriggerConnectorChange}
+              options={triggerConnectorOptions}
+              value={triggerConnectorValue}
+            />
+          </InputWrapper>
+        </div>
+        <JoinImage src={ICONS.JOIN_CONNECTORS} alt="Add connectors" />
+        <div style={{ marginTop: 10 }}>
+          <InputWrapper>
+            <AutoCompleteInput
+              label="With..."
+              size="full"
+              placeholder="Search for protocol"
+              onChange={handleActionConnectorChange}
+              options={actionConnectorOptions}
+              value={actionConnectorValue}
+            />
+          </InputWrapper>
+        </div>
+      </AppsWrapper>
       {triggers.triggerConnectorIsSet && actions.actionConnectorIsSet(index) && (
-        <div>
+        <TriggerActionWrapper>
           <div style={{ marginTop: 40 }}>
             <SelectInput
               label="When this happens..."
@@ -153,6 +202,7 @@ const ConnectorsSelector = (props: Props) => {
               value={triggerValue}
             />
           </div>
+          <JoinImage src={ICONS.JOIN_ACTIONS} alt="Add trigger and actions" />
           <div style={{ marginTop: 10 }}>
             <SelectInput
               label="Then do this..."
@@ -163,7 +213,7 @@ const ConnectorsSelector = (props: Props) => {
               value={actionValue}
             />
           </div>
-        </div>
+        </TriggerActionWrapper>
       )}
       {triggers.triggerIsSet && actions.actionIsSet(index) && (
         <div style={{ marginTop: 30 }}>

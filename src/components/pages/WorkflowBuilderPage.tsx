@@ -8,8 +8,12 @@ type Props = {};
 const WorkflowBuilderPage = (props: Props) => {
   const { user, connectors } = useAppContext();
 
+  if (!connectors || !connectors.length) {
+    return null;
+  }
+
   return (
-    <WorkflowContextProvider user={user} availableConnectors={connectors || []}>
+    <WorkflowContextProvider user={user}>
       <WorkflowSteps />
     </WorkflowContextProvider>
   );

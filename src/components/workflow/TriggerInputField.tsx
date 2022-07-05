@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { debounce } from "throttle-debounce";
-import { RichInput, SelectInput } from "grindery-ui";
+import { RichInput, SelectInput, AutoCompleteInput } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import { jsonrpcObj } from "../../utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
@@ -171,6 +171,8 @@ const TriggerInputField = ({ inputField, setTriggerError }: Props) => {
     []
   );
 
+  console.log("connectors", connectors);
+
   const renderField = (field: Field) => {
     switch (field.type) {
       case "boolean":
@@ -218,9 +220,9 @@ const TriggerInputField = ({ inputField, setTriggerError }: Props) => {
             setAddressBook={setAddressBook}
           ></RichInput>
         ) : (
-          <SelectInput
+          <AutoCompleteInput
             label={inputField.label || ""}
-            type="searchLabel"
+            size="full"
             placeholder={inputField.placeholder || ""}
             onChange={handleFieldChange}
             options={fieldOptions}

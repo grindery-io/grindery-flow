@@ -36,6 +36,9 @@ export const ICONS: { [key: string]: string } = {
   MENU: "/images/icons/menu.svg",
   BACK: "/images/icons/back.svg",
   COLLAPSE: "/images/icons/collapse.svg",
+  CERAMIC_LOGO: "/images/icons/ceramic-logo.svg",
+  JOIN_CONNECTORS: "/images/icons/join-connectors.svg",
+  JOIN_ACTIONS: "/images/icons/join-actions.svg",
   // CHAINS
   CHAIN_ETHEREUM: "/images/icons/ethereum.svg",
   CHAIN_ARBITRUM: "/images/icons/arbitrum.svg",

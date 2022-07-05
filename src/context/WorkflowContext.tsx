@@ -71,7 +71,6 @@ type WorkflowContextProps = {
 type WorkflowContextProviderProps = {
   children: React.ReactNode;
   user: string | null;
-  availableConnectors: Connector[];
 };
 
 export const WorkflowContext = createContext<WorkflowContextProps>({
@@ -114,10 +113,9 @@ export const WorkflowContext = createContext<WorkflowContextProps>({
 export const WorkflowContextProvider = ({
   user,
   children,
-  availableConnectors,
 }: WorkflowContextProviderProps) => {
   let navigate = useNavigate();
-  const { getWorkflowsList } = useAppContext();
+  const { getWorkflowsList, connectors: availableConnectors } = useAppContext();
 
   // loaded nexus connectors CDS
   const [connectors, setConnectors] = useState<Connector[]>(

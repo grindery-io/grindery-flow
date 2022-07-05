@@ -40,7 +40,7 @@ const ConnectButton = (props: Props) => {
             createAuthProvider().then(connect);
           }
         }}
-        icon={ICONS.GRINDERY}
+        icon={ICONS.CERAMIC_LOGO}
         value="Sign in"
         loading={connection.status === "connecting"}
       />

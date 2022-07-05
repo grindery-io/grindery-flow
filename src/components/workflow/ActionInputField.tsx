@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { RichInput, SelectInput } from "grindery-ui";
+import { RichInput, SelectInput, AutoCompleteInput } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
@@ -77,9 +77,9 @@ const ActionInputField = ({
         );
       default:
         return inputField.choices ? (
-          <SelectInput
+          <AutoCompleteInput
             label={inputField.label || ""}
-            type="default"
+            size="full"
             placeholder={inputField.placeholder || ""}
             onChange={handleFieldChange}
             options={fieldOptions}
