@@ -4,6 +4,7 @@ import { RichInput, SelectInput, AutoCompleteInput } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
+import { BLOCKCHAINS } from "../../constants";
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -83,6 +84,17 @@ const ActionInputField = ({
             placeholder={inputField.placeholder || ""}
             onChange={handleFieldChange}
             options={fieldOptions}
+            value={workflowValue}
+            tooltip={inputField.helpText}
+            required={!!inputField.required}
+          />
+        ) : inputField.key === "_grinderyChain" ? (
+          <AutoCompleteInput
+            label={inputField.label || ""}
+            size="full"
+            placeholder={inputField.placeholder || ""}
+            onChange={handleFieldChange}
+            options={BLOCKCHAINS}
             value={workflowValue}
             tooltip={inputField.helpText}
             required={!!inputField.required}

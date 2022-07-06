@@ -7,6 +7,7 @@ import { Field } from "../../types/Connector";
 import { jsonrpcObj } from "../../utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
+import { BLOCKCHAINS } from "../../constants";
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -208,19 +209,32 @@ const TriggerInputField = ({
         );
       default:
         return !inputField.choices ? (
-          <RichInput
-            value={workflowValue}
-            label={inputField.label || ""}
-            placeholder={inputField.placeholder || ""}
-            tooltip={inputField.helpText}
-            required={!!inputField.required}
-            onChange={handleFieldChange}
-            user={user}
-            hasAddressBook={inputField.type === "address"}
-            options={[]}
-            addressBook={addressBook}
-            setAddressBook={setAddressBook}
-          ></RichInput>
+          inputField.key === "_grinderyChain" ? (
+            <AutoCompleteInput
+              label={inputField.label || ""}
+              size="full"
+              placeholder={inputField.placeholder || ""}
+              onChange={handleFieldChange}
+              options={BLOCKCHAINS}
+              value={workflowValue}
+              tooltip={inputField.helpText}
+              required={!!inputField.required}
+            />
+          ) : (
+            <RichInput
+              value={workflowValue}
+              label={inputField.label || ""}
+              placeholder={inputField.placeholder || ""}
+              tooltip={inputField.helpText}
+              required={!!inputField.required}
+              onChange={handleFieldChange}
+              user={user}
+              hasAddressBook={inputField.type === "address"}
+              options={[]}
+              addressBook={addressBook}
+              setAddressBook={setAddressBook}
+            ></RichInput>
+          )
         ) : (
           <AutoCompleteInput
             label={inputField.label || ""}
