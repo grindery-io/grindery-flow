@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useViewerConnection } from "@self.id/react";
-import { EthereumAuthProvider } from "@self.id/web";
+import { EthereumAuthProvider, useViewerConnection } from "@self.id/framework";
 import { Button } from "grindery-ui";
 import { ICONS } from "../../constants";
 

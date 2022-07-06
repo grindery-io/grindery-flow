@@ -3,6 +3,7 @@
   "version": "0.2.3",
   "private": true,
   "dependencies": {
+    "@self.id/framework": "^0.3.2",
     "@self.id/react": "^0.3.2",
     "@self.id/web": "^0.4.2",
     "@testing-library/jest-dom": "^5.14.1",

@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider } from "@self.id/react";
+import { Provider } from "@self.id/framework";
 import AppContextProvider from "./context/AppContext";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RootPage from "./components/pages/RootPage";

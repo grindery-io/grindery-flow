@@ -1,6 +1,6 @@
 import React, { useState, createContext, useEffect } from "react";
 import axios from "axios";
-import { useViewerConnection } from "@self.id/react";
+import { EthereumAuthProvider, useViewerConnection } from "@self.id/framework";
 import _ from "lodash";
 import { Workflow } from "../types/Workflow";
 import {
@@ -10,8 +10,16 @@ import {
   WEB3_CONNECTORS_PATH,
 } from "../constants";
 import { Connector } from "../types/Connector";
-import { defaultFunc, jsonrpcObj } from "../utils";
+import { defaultFunc, getSelfIdCookie, jsonrpcObj } from "../utils";
 import { useNavigate } from "react-router-dom";
+
+async function createAuthProvider() {
+  // The following assumes there is an injected `window.ethereum` provider
+  const addresses = await window.ethereum.request({
+    method: "eth_requestAccounts",
+  });
+  return new EthereumAuthProvider(window.ethereum, addresses[0]);
+}
 
 type ContextProps = {
   user: any;
@@ -47,7 +55,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   let navigate = useNavigate();
 
   // Auth hook
-  const [connection, disconnect] = useViewerConnection();
+  const [connection, connect, disconnect] = useViewerConnection();
 
   // app panel opened
   const [appOpened, setAppOpened] = useState<boolean>(true);
@@ -162,6 +170,18 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connection, workflows]);
+
+  useEffect(() => {
+    const cookie = getSelfIdCookie();
+    if (
+      cookie &&
+      "ethereum" in window &&
+      connection.status !== "connecting" &&
+      connection.status !== "connected"
+    ) {
+      createAuthProvider().then(connect);
+    }
+  }, [connection, connect]);
 
   return (
     <AppContext.Provider

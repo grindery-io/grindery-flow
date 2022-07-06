@@ -84,3 +84,11 @@ export const jsonrpcObj = (method: string, params: object) => {
 };
 
 export const defaultFunc = () => {};
+
+export const getSelfIdCookie = () => {
+  const cookieName = "self.id-local-id";
+  const b = document.cookie.match(
+    "(^|;)\\s*" + cookieName + "\\s*=\\s*([^;]+)"
+  );
+  return b ? b.pop() : "";
+};

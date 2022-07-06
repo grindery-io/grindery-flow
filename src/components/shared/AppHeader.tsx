@@ -144,10 +144,11 @@ const AppHeader = (props: Props) => {
         <CloseButtonWrapper style={{ marginLeft: !user ? "auto" : "0px" }}>
           {size === "desktop" && !appOpened ? (
             <IconButton icon={ICONS.MENU} onClick={handleClose} color="" />
-          ) : size === "desktop" ? 
-            <IconButton icon={ICONS.COLLAPSE} onClick={handleClose} color="" /> : 
+          ) : size === "desktop" ? (
+            <IconButton icon={ICONS.COLLAPSE} onClick={handleClose} color="" />
+          ) : (
             <IconButton icon={ICONS.CLOSE} onClick={handleClose} color="" />
-          }
+          )}
         </CloseButtonWrapper>
       )}
     </Wrapper>
