@@ -418,6 +418,8 @@ const TriggerConfiguration = (props: Props) => {
               inputField={inputField}
               key={inputField.key}
               setTriggerError={setTriggerError}
+              addressBook={addressBook}
+              setAddressBook={setAddressBook}
             />
           ))}
           {error && (

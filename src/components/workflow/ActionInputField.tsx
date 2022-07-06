@@ -97,7 +97,7 @@ const ActionInputField = ({
             onChange={handleFieldChange}
             value={workflowValue}
             user={user}
-            hasAddressBook={inputField.useAddressBook}
+            hasAddressBook={inputField.type === "address"}
             addressBook={addressBook}
             setAddressBook={setAddressBook}
           />

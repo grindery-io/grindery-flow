@@ -21,9 +21,16 @@ const InputWrapper = styled.div`
 type Props = {
   inputField: Field;
   setTriggerError: (i: string) => void;
+  addressBook: any;
+  setAddressBook?: (i: any) => void;
 };
 
-const TriggerInputField = ({ inputField, setTriggerError }: Props) => {
+const TriggerInputField = ({
+  inputField,
+  setTriggerError,
+  addressBook,
+  setAddressBook,
+}: Props) => {
   const {
     workflow,
     updateWorkflow,
@@ -34,11 +41,6 @@ const TriggerInputField = ({ inputField, setTriggerError }: Props) => {
   } = useWorkflowContext();
   const [valChanged, setValChanged] = useState(false);
   const { user } = useAppContext();
-
-  const cachedAddressBook = localStorage.getItem("gr_addressBook__" + user);
-  const [addressBook, setAddressBook] = React.useState(
-    cachedAddressBook ? JSON.parse(cachedAddressBook) : []
-  );
 
   const fieldOptions = inputField.choices?.map((choice) => ({
     value: typeof choice !== "string" ? choice.value : choice,
@@ -198,7 +200,7 @@ const TriggerInputField = ({ inputField, setTriggerError }: Props) => {
             required={!!inputField.required}
             onChange={handleFieldChange}
             user={user}
-            hasAddressBook={inputField.useAddressBook}
+            hasAddressBook={inputField.type === "address"}
             options={[]}
             addressBook={addressBook}
             setAddressBook={setAddressBook}
@@ -214,7 +216,7 @@ const TriggerInputField = ({ inputField, setTriggerError }: Props) => {
             required={!!inputField.required}
             onChange={handleFieldChange}
             user={user}
-            hasAddressBook={inputField.useAddressBook}
+            hasAddressBook={inputField.type === "address"}
             options={[]}
             addressBook={addressBook}
             setAddressBook={setAddressBook}
