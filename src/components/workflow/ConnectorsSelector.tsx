@@ -18,7 +18,7 @@ const AppsWrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
@@ -36,7 +36,7 @@ const TriggerActionWrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
@@ -49,7 +49,7 @@ const TriggerActionWrapper = styled.div`
 
 const JoinImage = styled.img`
   display: none;
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     display: block;
     width: 80px;
     height: 54px;

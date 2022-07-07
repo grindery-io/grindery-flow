@@ -8,10 +8,12 @@ import {
   WORKFLOW_ENGINE_URL,
   WEB2_CONNECTORS_PATH,
   WEB3_CONNECTORS_PATH,
+  SCREEN,
 } from "../constants";
 import { Connector } from "../types/Connector";
 import { defaultFunc, getSelfIdCookie, jsonrpcObj } from "../utils";
 import { useNavigate } from "react-router-dom";
+import useWindowSize from "../hooks/useWindowSize";
 
 async function createAuthProvider() {
   // The following assumes there is an injected `window.ethereum` provider
@@ -55,12 +57,18 @@ export const AppContext = createContext<ContextProps>({
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
   let navigate = useNavigate();
+  const { width } = useWindowSize();
 
   // Auth hook
   const [connection, connect, disconnect] = useViewerConnection();
 
   // app panel opened
-  const [appOpened, setAppOpened] = useState<boolean>(true);
+  const [appOpened, setAppOpened] = useState<boolean>(
+    width >= parseInt(SCREEN.TABLET.replace("px", "")) &&
+      width < parseInt(SCREEN.DESKTOP.replace("px", ""))
+      ? false
+      : true
+  );
 
   // User id
   const [user, setUser] = useState<any>(null);
@@ -205,6 +213,19 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       createAuthProvider().then(connect);
     }
   }, [connection, connect]);
+
+  useEffect(() => {
+    if (
+      width >= parseInt(SCREEN.TABLET_XL.replace("px", "")) &&
+      width < parseInt(SCREEN.DESKTOP.replace("px", "")) &&
+      appOpened
+    ) {
+      setAppOpened(false);
+    }
+    if (width < parseInt(SCREEN.TABLET.replace("px", "")) && !appOpened) {
+      setAppOpened(true);
+    }
+  }, [width]);
 
   return (
     <AppContext.Provider

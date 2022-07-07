@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   flex-wrap: nowrap;
   gap: 15px;
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     padding: 60px 106px;
     margin: 40px 20px 0;
     border: 1px solid #dcdcdc;

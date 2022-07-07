@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     transition: all 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
   }
 
@@ -43,7 +43,7 @@ const Wrapper = styled.div`
       display: none;
     }
 
-    @media (min-width: ${SCREEN.DESKTOP}) {
+    @media (min-width: ${SCREEN.TABLET}) {
       width: 210px !important;
       max-width: 210px !important;
       text-align: left !important;
@@ -71,7 +71,7 @@ const Wrapper = styled.div`
     background: #ffffff !important;
     z-index: 1;
 
-    @media (min-width: ${SCREEN.DESKTOP}) {
+    @media (min-width: ${SCREEN.TABLET}) {
       width: 210px;
     }
 
@@ -124,8 +124,8 @@ const IconButtonWrapper = styled.div`
 type Props = {};
 
 const SidebarTabs = (props: Props) => {
-  const { user, appOpened } = useAppContext();
-  const size = useWindowSize();
+  const { user, appOpened, setAppOpened } = useAppContext();
+  const { size, width } = useWindowSize();
   let navigate = useNavigate();
   let matchNewWorfklow = useMatch("/workflows/new");
   let path =
@@ -140,7 +140,13 @@ const SidebarTabs = (props: Props) => {
   return (user && !matchNewWorfklow) || size === "phone" ? (
     <Wrapper
       style={{
-        maxWidth: size === "desktop" && appOpened ? "210px" : "60px",
+        maxWidth:
+          size === "desktop" && appOpened
+            ? "210px"
+            : width >= parseInt(SCREEN.TABLET.replace("px", "")) &&
+              width < parseInt(SCREEN.TABLET_XL.replace("px", ""))
+            ? "0px"
+            : "60px",
       }}
     >
       {user && size === "desktop" && appOpened && (
@@ -171,6 +177,12 @@ const SidebarTabs = (props: Props) => {
         onChange={(index: number) => {
           if (user) {
             navigate(RIGHTBAR_TABS[index].path, { replace: true });
+            if (
+              width >= parseInt(SCREEN.TABLET.replace("px", "")) &&
+              width < parseInt(SCREEN.TABLET_XL.replace("px", ""))
+            ) {
+              setAppOpened(false);
+            }
           }
         }}
         options={RIGHTBAR_TABS.map((tab) => (

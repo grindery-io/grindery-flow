@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   padding: 24px 20px;
   gap: 20px;
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     padding: 60px 106px;
     margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
@@ -36,7 +36,7 @@ const SearchWrapper = styled.div`
     height: 16px !important;
   }
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     .MuiIconButton-root {
       margin-left: auto;
     }
@@ -53,7 +53,7 @@ const SearchInputWrapper = styled.div`
     margin-top: 0;
   }
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     flex: 0.5;
   }
 `;

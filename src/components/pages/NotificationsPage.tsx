@@ -5,7 +5,7 @@ import { SCREEN } from "../../constants";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     padding: 60px 106px;
     margin: 40px 20px 0;
     border: 1px solid #dcdcdc;

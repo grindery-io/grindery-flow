@@ -20,7 +20,7 @@ import CreateWorkflowPage from "./CreateWorkflowPage";
 import Button from "../shared/Button";
 
 const DrawerWrapper = styled.div`
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     .MuiPaper-root {
       transform: none !important;
       visibility: visible !important;
@@ -35,16 +35,18 @@ const BarWrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   width: 435px;
+  max-width: 100vw;
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     width: 100%;
+    max-width: 100%;
   }
 `;
 
 const TabsWrapper = styled.div`
   width: 100%;
   max-width: 60px;
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     max-width: 210px;
   }
 `;
@@ -54,7 +56,7 @@ const ContentWrapper = styled.div`
   max-width: 375px;
   padding-top: 67px;
   min-height: calc(100vh - 100px);
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     max-width: 1068px;
     margin-left: auto;
     margin-right: auto;
@@ -68,7 +70,7 @@ const OpenButtonWrapper = styled.div`
   position: absolute;
   top: 10px;
   right: 40px;
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     right: auto;
     left: 18px;
     top: 18px;
@@ -79,7 +81,7 @@ type Props = {};
 
 const RootPage = (props: Props) => {
   const { workflows, user, appOpened, setAppOpened } = useAppContext();
-  const size = useWindowSize();
+  const { size, width } = useWindowSize();
   let matchNewWorfklow = useMatch("/workflows/new");
 
   const renderContent = () => {
@@ -143,7 +145,13 @@ const RootPage = (props: Props) => {
             {user && (
               <TabsWrapper
                 style={{
-                  maxWidth: size === "desktop" && appOpened ? "210px" : "60px",
+                  maxWidth:
+                    size === "desktop" && appOpened
+                      ? "210px"
+                      : width >= parseInt(SCREEN.TABLET.replace("px", "")) &&
+                        width < parseInt(SCREEN.TABLET_XL.replace("px", ""))
+                      ? "0px"
+                      : "60px",
                 }}
               >
                 <SidebarTabs />
@@ -160,7 +168,13 @@ const RootPage = (props: Props) => {
               marginLeft:
                 user && !matchNewWorfklow
                   ? appOpened
-                    ? "210px"
+                    ? width >= parseInt(SCREEN.TABLET.replace("px", "")) &&
+                      width < parseInt(SCREEN.TABLET_XL.replace("px", ""))
+                      ? "0px"
+                      : "210px"
+                    : width >= parseInt(SCREEN.TABLET.replace("px", "")) &&
+                      width < parseInt(SCREEN.TABLET_XL.replace("px", ""))
+                    ? "0px"
                     : "60px"
                   : "0px",
               transition: "all 225ms cubic-bezier(0, 0, 0.2, 1) 0ms",

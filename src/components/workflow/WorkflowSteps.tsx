@@ -9,7 +9,7 @@ import ActionTest from "./ActionTest";
 import { SCREEN } from "../../constants";
 
 const Wrapper = styled.div`
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     padding: 30px 86px 30px;
     margin: 40px 20px 0;
     border: 1px solid #dcdcdc;

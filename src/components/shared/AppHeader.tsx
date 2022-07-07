@@ -19,11 +19,13 @@ const Wrapper = styled.div`
   position: fixed;
   background: #ffffff;
   width: 435px;
+  max-width: 100vw;
   box-sizing: border-box;
   z-index: 2;
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     width: 100%;
     top: 0;
+    max-width: 100%;
   }
 `;
 
@@ -39,7 +41,7 @@ const UserWrapper = styled.div`
   gap: 6px;
   margin-left: auto;
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     order: 4;
   }
 `;
@@ -65,7 +67,7 @@ const CloseButtonWrapper = styled.div`
     height: 16px !important;
   }
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     margin-left: 0;
     margin-right: 8px;
     order: 1;
@@ -73,14 +75,14 @@ const CloseButtonWrapper = styled.div`
 `;
 
 const LogoWrapper = styled.div`
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     order: 2;
   }
 `;
 
 const CompanyNameWrapper = styled.div`
   display: none;
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     display: block;
     order: 3;
     font-weight: 700;
@@ -102,7 +104,7 @@ type Props = {};
 
 const AppHeader = (props: Props) => {
   const { user, setAppOpened, appOpened } = useAppContext();
-  const size = useWindowSize();
+  const { size, width } = useWindowSize();
   let navigate = useNavigate();
   let matchNewWorfklow = useMatch("/workflows/new");
 
@@ -140,17 +142,25 @@ const AppHeader = (props: Props) => {
         </UserWrapper>
       )}
 
-      {user && (!matchNewWorfklow || size === "phone") && (
-        <CloseButtonWrapper style={{ marginLeft: !user ? "auto" : "0px" }}>
-          {size === "desktop" && !appOpened ? (
-            <IconButton icon={ICONS.MENU} onClick={handleClose} color="" />
-          ) : size === "desktop" ? (
-            <IconButton icon={ICONS.COLLAPSE} onClick={handleClose} color="" />
-          ) : (
-            <IconButton icon={ICONS.CLOSE} onClick={handleClose} color="" />
-          )}
-        </CloseButtonWrapper>
-      )}
+      {user &&
+        (!matchNewWorfklow || size === "phone") &&
+        ((width >= parseInt(SCREEN.TABLET.replace("px", "")) &&
+          width < parseInt(SCREEN.TABLET_XL.replace("px", ""))) ||
+          width >= parseInt(SCREEN.DESKTOP.replace("px", ""))) && (
+          <CloseButtonWrapper style={{ marginLeft: !user ? "auto" : "0px" }}>
+            {size === "desktop" && !appOpened ? (
+              <IconButton icon={ICONS.MENU} onClick={handleClose} color="" />
+            ) : size === "desktop" ? (
+              <IconButton
+                icon={ICONS.COLLAPSE}
+                onClick={handleClose}
+                color=""
+              />
+            ) : (
+              <IconButton icon={ICONS.CLOSE} onClick={handleClose} color="" />
+            )}
+          </CloseButtonWrapper>
+        )}
     </Wrapper>
   );
 };

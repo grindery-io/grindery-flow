@@ -30,7 +30,7 @@ const typeIconMapping: { [key: string]: string } = {
 };
 
 const RootWrapper = styled.div`
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
   }
@@ -43,7 +43,7 @@ const TabsWrapper = styled.div`
     font-size: var(--text-size-horizontal-tab-label);
     line-height: 150%;
 
-    @media (min-width: ${SCREEN.DESKTOP}) {
+    @media (min-width: ${SCREEN.TABLET}) {
       min-width: 150px;
     }
   }
@@ -58,7 +58,7 @@ const Wrapper = styled.div`
   flex-wrap: nowrap;
   gap: 20px;
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     padding: 60px 106px;
   }
 `;
@@ -82,7 +82,7 @@ const SearchInputWrapper = styled.div`
     margin-top: 0;
   }
 
-  @media (min-width: ${SCREEN.DESKTOP}) {
+  @media (min-width: ${SCREEN.TABLET}) {
     flex: 0.5;
   }
 `;
@@ -305,7 +305,7 @@ const TransactionsPage = (props: Props) => {
   const [dialog, setDialog] = useState<null | string | number>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [tab, setTab] = useState(0);
-  const size = useWindowSize();
+  const { size } = useWindowSize();
 
   const filteredItems = items
     .filter((item) => {
