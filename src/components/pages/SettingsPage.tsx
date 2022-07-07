@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Button, SelectSimple, SwitchInput } from "grindery-ui";
+import { SelectSimple, SwitchInput } from "grindery-ui";
 import useAppContext from "../../hooks/useAppContext";
 import { SCREEN } from "../../constants";
+import Button from "../shared/Button";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -116,6 +117,7 @@ const SettingsPage = (props: Props) => {
             disconnect();
           }}
           value="Disconnect"
+          align="left"
         />
       </DisconnectWrapper>
     </Wrapper>

@@ -142,7 +142,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     setConnectors(
       _.orderBy(
         responses.filter((res) => res && res.data).map((res) => res.data),
-        ["name"],
+        [(response) => response.name.toLowerCase()],
         ["asc"]
       )
     );

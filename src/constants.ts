@@ -1,5 +1,8 @@
 export const SCREEN = {
-  DESKTOP: "1200px",
+  TABLET: "768px",
+  TABLET_XL: "1024px",
+  DESKTOP: "1280px",
+  DESKTOP_XL: "1600px",
 };
 
 export const WORKFLOW_ENGINE_URL = "https://gnexus-orchestrator.herokuapp.com";

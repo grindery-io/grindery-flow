@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import _ from "lodash";
 import styled from "styled-components";
 import moment from "moment";
-import { Button, DialogBox, InputBox, TabComponent } from "grindery-ui";
+import { DialogBox, InputBox, TabComponent } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import { ICONS, SCREEN } from "../../constants";
 import transactions from "../../samples/transactions";
 import useWindowSize from "../../hooks/useWindowSize";
+import Button from "../shared/Button";
 
 type Transaction = {
   id: string | number;
@@ -416,6 +417,7 @@ const TransactionsPage = (props: Props) => {
             onClick={() => {
               setDialog(null);
             }}
+            fullWidth
           />
         </DialogBox>
       </React.Fragment>

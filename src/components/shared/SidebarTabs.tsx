@@ -90,7 +90,7 @@ const Wrapper = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-  margin: 10px 16px;
+  margin: 10px 16px 0px;
 
   & .MuiButton-startIcon > img {
     background: none;

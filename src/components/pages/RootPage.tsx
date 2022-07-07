@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Button, Drawer } from "grindery-ui";
+import { Drawer } from "grindery-ui";
 import { Route, Routes, Navigate, useMatch } from "react-router-dom";
 import { SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
@@ -17,6 +17,7 @@ import WelcomePage from "./WelcomePage";
 import WorkflowsPage from "./WorkflowsPage";
 import WorkflowBuilderPage from "./WorkflowBuilderPage";
 import CreateWorkflowPage from "./CreateWorkflowPage";
+import Button from "../shared/Button";
 
 const DrawerWrapper = styled.div`
   @media (min-width: ${SCREEN.DESKTOP}) {
@@ -100,7 +101,10 @@ const RootPage = (props: Props) => {
             )
           }
         ></Route>
-        <Route path="/workflows/create" element={<CreateWorkflowPage />}></Route>
+        <Route
+          path="/workflows/create"
+          element={<CreateWorkflowPage />}
+        ></Route>
         <Route path="/workflows/new" element={<WorkflowBuilderPage />}></Route>
         <Route path="/d-apps" element={<AppsPage />}></Route>
         <Route path="/history" element={<HistoryPage />}></Route>

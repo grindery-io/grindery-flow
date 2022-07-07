@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { CircularProgress, Text, Button, AlertField } from "grindery-ui";
+import { CircularProgress, Text, AlertField } from "grindery-ui";
 import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
 import TriggerInputField from "./TriggerInputField";
@@ -12,6 +12,7 @@ import ContractSelector from "./ContractSelector";
 import useAddressBook from "../../hooks/useAddressBook";
 import useAppContext from "../../hooks/useAppContext";
 import { ICONS } from "../../constants";
+import Button from "../shared/Button";
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -387,6 +388,7 @@ const TriggerConfiguration = (props: Props) => {
                   onClick={handleChangeAuth}
                   value="Change account"
                   variant="outlined"
+                  fullWidth
                 />
               </div>
             </AccountWrapper>

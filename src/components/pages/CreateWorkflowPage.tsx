@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { Button } from "grindery-ui";
-import { ICONS, SCREEN } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import { ICONS, SCREEN } from "../../constants";
+import Button from "../shared/Button";
 
 const Container = styled.div`
   @media (min-width: ${SCREEN.DESKTOP}) {
@@ -66,17 +66,6 @@ const Desc = styled.p`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  max-width: 200px;
-  margin: 0 auto;
-  width: 100%;
-  & .MuiButton-startIcon > img {
-    background: none;
-    border: none;
-    padding: 0;
-  }
-`;
-
 type Props = {};
 
 const CreateWorkflowPage = (props: Props) => {
@@ -93,15 +82,14 @@ const CreateWorkflowPage = (props: Props) => {
         <Desc>
           Create workflows to connect a Web2 to a Web3 App or viceversa.
         </Desc>
-        <ButtonWrapper>
-          <Button
-            value="Create workflow"
-            onClick={() => {
-              navigate("/workflows/new");
-            }}
-            icon={ICONS.PLUS_WHITE}
-          />
-        </ButtonWrapper>
+        <Button
+          value="Create workflow"
+          onClick={() => {
+            navigate("/workflows/new");
+          }}
+          icon={ICONS.PLUS_WHITE}
+          hideIconBorder
+        />
       </Wrapper>
     </Container>
   );

@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { Text, SelectInput, AutoCompleteInput, Button } from "grindery-ui";
+import { Text, SelectInput, AutoCompleteInput } from "grindery-ui";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import { ICONS, SCREEN } from "../../constants";
+import Button from "../shared/Button";
 
 const InputWrapper = styled.div`
   & .paid-label {

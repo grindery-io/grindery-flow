@@ -65,17 +65,6 @@ const Desc = styled.p`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  max-width: 200px;
-  margin: 0 auto;
-  width: 100%;
-  & .MuiButton-startIcon > img {
-    background: none;
-    border: none;
-    padding: 0;
-  }
-`;
-
 const Disclaimer = styled.div`
   font-weight: 400;
   font-size: 12px;
@@ -103,9 +92,7 @@ const WelcomePage = (props: Props) => {
           Grindery Nexus is the easiest way for people and organizations to
           connect Apps and dApps across chains and protocols.
         </Desc>
-        <ButtonWrapper>
-          <ConnectButton />
-        </ButtonWrapper>
+        <ConnectButton />
         <Disclaimer>
           Grindery Nexus uses{" "}
           <a

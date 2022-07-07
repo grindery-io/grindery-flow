@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { CircularProgress, AlertField, Text, Button } from "grindery-ui";
+import { CircularProgress, AlertField, Text } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import ActionInputField from "./ActionInputField";
 import { getOutputOptions, getParameterByName, jsonrpcObj } from "../../utils";
@@ -13,6 +13,7 @@ import Check from "../icons/Check";
 import useAppContext from "../../hooks/useAppContext";
 import ContractSelector from "./ContractSelector";
 import useAddressBook from "../../hooks/useAddressBook";
+import Button from "../shared/Button";
 
 const Wrapper = styled.div`
   padding: 20px 20px 40px;
@@ -426,6 +427,7 @@ const ActionConfiguration = (props: Props) => {
                   onClick={handleChangeAuth}
                   value="Change account"
                   variant="outlined"
+                  fullWidth
                 />
               </div>
             </AccountWrapper>

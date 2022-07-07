@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
-import { Button, Text, AlertField, CircularProgress } from "grindery-ui";
+import { Text, AlertField, CircularProgress } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import { jsonrpcObj, replaceTokens } from "../../utils";
 import { ICONS, WORKFLOW_ENGINE_URL } from "../../constants";
+import Button from "../shared/Button";
 
 const Wrapper = styled.div`
   padding: 24px 20px 40px;
