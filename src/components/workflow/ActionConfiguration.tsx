@@ -212,8 +212,8 @@ const ActionConfiguration = (props: Props) => {
         },
       })
         .then((res) => {
-          if (res && res.data && res.data.email) {
-            setEmail(res.data.email);
+          if (res && res.data) {
+            setEmail(res.data.email || res.data.sub || "Unknown username");
             updateWorkflow({
               ["actions[" + index + "].credentials"]: credentials,
             });
