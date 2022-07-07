@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { IconButton, InputBox, SwitchInput } from "grindery-ui";
 import DataBox from "../shared/DataBox";
@@ -117,7 +117,7 @@ const ItemActionsWrapper = styled.div`
 type Props = {};
 
 const WorkflowsPage = (props: Props) => {
-  const { workflows, connectors } = useAppContext();
+  const { workflows, connectors, getWorkflowExecutions } = useAppContext();
   const items = workflows || [];
   const [searchTerm, setSearchTerm] = useState("");
   let navigate = useNavigate();
@@ -173,6 +173,17 @@ const WorkflowsPage = (props: Props) => {
       />
     );
   };
+
+  /*useEffect(() => {
+    console.log("workflows", workflows);
+    if (workflows) {
+      workflows.forEach((wf) => {
+        getWorkflowExecutions(wf.key);
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workflows]);*/
 
   return (
     <Wrapper>

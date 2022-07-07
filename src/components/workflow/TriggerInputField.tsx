@@ -174,8 +174,6 @@ const TriggerInputField = ({
     []
   );
 
-  console.log("connectors", connectors);
-
   const renderField = (field: Field) => {
     switch (field.type) {
       case "boolean":

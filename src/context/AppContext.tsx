@@ -32,6 +32,7 @@ type ContextProps = {
   setWorkflows: (a: Workflow[]) => void;
   connectors: Connector[];
   getWorkflowsList: () => void;
+  getWorkflowExecutions: (a: string) => void;
 };
 
 type AppContextProps = {
@@ -49,6 +50,7 @@ export const AppContext = createContext<ContextProps>({
   setWorkflows: defaultFunc,
   connectors: [],
   getWorkflowsList: defaultFunc,
+  getWorkflowExecutions: defaultFunc,
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -146,6 +148,27 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     );
   };
 
+  const getWorkflowExecutions = (workflowKey: string) => {
+    axios
+      .post(
+        WORKFLOW_ENGINE_URL,
+        jsonrpcObj("or_getWorkflowExecutions", {
+          workflowKey: workflowKey,
+        })
+      )
+      .then((res) => {
+        if (res && res.data && res.data.error) {
+          console.error("or_getWorkflowExecutions error", res.data.error);
+        }
+        if (res && res.data && res.data.result) {
+          console.log("or_getWorkflowExecutions result", res.data.result);
+        }
+      })
+      .catch((err) => {
+        console.error("or_getWorkflowExecutions error", err);
+      });
+  };
+
   useEffect(() => {
     if (user) {
       getConnectors();
@@ -196,6 +219,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         setWorkflows,
         connectors,
         getWorkflowsList,
+        getWorkflowExecutions,
       }}
     >
       {children}
