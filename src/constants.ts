@@ -141,6 +141,78 @@ export const BLOCKCHAINS = [
     token: "CELO",
     tokenAddress: "0x471EcE3750Da237f93B8E339c536989b8978a438",
   },
+  {
+    value: "BitCoin",
+    label: "BitCoin",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Tron",
+    label: "Tron",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Elrond",
+    label: "Elrond",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Polkadot",
+    label: "Polkadot",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Kusama",
+    label: "Kusama",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Cardano",
+    label: "Cardano",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Soloana",
+    label: "Soloana",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Avalanche",
+    label: "Avalanche",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Stellar",
+    label: "Stellar",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Ripple",
+    label: "Ripple",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Tezos",
+    label: "Tezos",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Aurora",
+    label: "Aurora",
+    group: "Coming soon",
+    disabled: true,
+  },
 ];
 
 export const WEB2_CONNECTORS_PATH =
@@ -148,3 +220,102 @@ export const WEB2_CONNECTORS_PATH =
 
 export const WEB3_CONNECTORS_PATH =
   "https://api.github.com/repos/grindery-io/grindery-nexus-schema-v2/contents/cds/web3";
+
+export const COMING_SOON_TRIGGERS = [
+  {
+    value: "Email",
+    label: "Email",
+    group: "Coming soon",
+    disabled: true,
+    icon: "/images/coming-soon/email.png",
+  },
+  {
+    value: "WebHook",
+    label: "WebHook",
+    group: "Coming soon",
+    disabled: true,
+    icon: "/images/coming-soon/webhook.png",
+  },
+  {
+    value: "Storage",
+    label: "Storage",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "MassMail",
+    label: "MassMail",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Twitter",
+    label: "Twitter",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Airtable",
+    label: "Airtable",
+    group: "Coming soon",
+    disabled: true,
+    icon: "/images/coming-soon/airtable.png",
+  },
+  {
+    value: "Tyepform",
+    label: "Tyepform",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Salesforce",
+    label: "Salesforce",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Outlook",
+    label: "Outlook",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Asana",
+    label: "Asana",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Trello",
+    label: "Trello",
+    group: "Coming soon",
+    disabled: true,
+  },
+];
+
+export const COMING_SOON_ACTIONS = [
+  {
+    value: "Telegram",
+    label: "Telegram",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Slack",
+    label: "Slack",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Matter",
+    label: "Matter",
+    group: "Coming soon",
+    disabled: true,
+  },
+  {
+    value: "Element",
+    label: "Element",
+    group: "Coming soon",
+    disabled: true,
+  },
+];

@@ -2,7 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import { Text, SelectInput, AutoCompleteInput } from "grindery-ui";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
-import { ICONS, SCREEN } from "../../constants";
+import {
+  COMING_SOON_ACTIONS,
+  COMING_SOON_TRIGGERS,
+  ICONS,
+  SCREEN,
+} from "../../constants";
 import Button from "../shared/Button";
 
 const InputWrapper = styled.div`
@@ -73,25 +78,27 @@ const ConnectorsSelector = (props: Props) => {
     actions,
   } = useWorkflowContext();
 
-  const triggerConnectorOptions = triggers.connectorsWithTriggers.map(
-    (connector) => ({
+  const triggerConnectorOptions = [
+    ...triggers.connectorsWithTriggers.map((connector) => ({
       value: connector.key,
       label: connector.name,
       icon: connector.icon,
       paid: connector.pricing,
-    })
-  );
+    })),
+    ...COMING_SOON_TRIGGERS,
+  ];
 
   const triggerConnectorValue = workflow.trigger.connector || "";
 
-  const actionConnectorOptions = actions.connectorsWithActions.map(
-    (connector) => ({
+  const actionConnectorOptions = [
+    ...actions.connectorsWithActions.map((connector) => ({
       value: connector.key,
       label: connector.name,
       icon: connector.icon,
       paid: connector.pricing,
-    })
-  );
+    })),
+    ...COMING_SOON_ACTIONS,
+  ];
 
   const actionConnectorValue = workflow.actions[index].connector || "";
 
