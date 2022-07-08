@@ -374,7 +374,7 @@ export const COMING_SOON_ACTIONS = [
     label: "Matter",
     group: "Coming soon",
     disabled: true,
-    icon: "https://www.joinhrmatters.com/favicon.ico",
+    icon: "/images/coming-soon/matter.png",
   },
   {
     value: "Element",
