@@ -94,6 +94,8 @@ const RowIconWrapper = styled.div`
 
   & img {
     display: block;
+    width: 16px;
+    height: 16px;
   }
 `;
 
