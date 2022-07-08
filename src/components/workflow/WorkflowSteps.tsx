@@ -10,9 +10,16 @@ import { SCREEN } from "../../constants";
 
 const Wrapper = styled.div`
   @media (min-width: ${SCREEN.TABLET}) {
-    padding: 30px 86px 30px;
+    padding: 10px 20px 10px;
     margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
+  }
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    margin: 20px 20px 0;
+  }
+  @media (min-width: ${SCREEN.DESKTOP_XL}) {
+    padding: 30px 86px 30px;
+    margin: 40px 20px 0;
   }
 `;
 

@@ -57,12 +57,21 @@ const ContentWrapper = styled.div`
   padding-top: 67px;
   min-height: calc(100vh - 100px);
   @media (min-width: ${SCREEN.TABLET}) {
-    max-width: 1068px;
+    max-width: 728px;
     margin-left: auto;
     margin-right: auto;
     min-height: calc(100vh - 105px);
     padding-bottom: 40px;
     box-sizing: border-box;
+  }
+  @media (min-width: ${SCREEN.TABLET_XL}) {
+    max-width: 872px;
+  }
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    max-width: 936px;
+  }
+  @media (min-width: ${SCREEN.DESKTOP_XL}) {
+    max-width: 1068px;
   }
 `;
 

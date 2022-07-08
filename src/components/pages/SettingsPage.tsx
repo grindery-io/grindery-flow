@@ -8,9 +8,17 @@ import Button from "../shared/Button";
 const Wrapper = styled.div`
   padding: 24px 20px;
   @media (min-width: ${SCREEN.TABLET}) {
-    padding: 60px 106px;
+    padding: 40px;
     margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
+  }
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    margin: 20px 20px 0;
+  }
+
+  @media (min-width: ${SCREEN.DESKTOP_XL}) {
+    padding: 60px 106px;
+    margin: 40px 20px 0;
   }
 `;
 
