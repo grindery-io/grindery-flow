@@ -35,6 +35,7 @@ type ContextProps = {
   connectors: Connector[];
   getWorkflowsList: () => void;
   getWorkflowExecutions: (a: string) => void;
+  editWorkflow: (a: Workflow) => void;
 };
 
 type AppContextProps = {
@@ -53,6 +54,7 @@ export const AppContext = createContext<ContextProps>({
   connectors: [],
   getWorkflowsList: defaultFunc,
   getWorkflowExecutions: defaultFunc,
+  editWorkflow: defaultFunc,
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -102,7 +104,6 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
             res.data.result
               .map((result: any) => ({
                 ...result.workflow,
-                state: "on",
                 key: result.key,
               }))
               .filter((workflow: Workflow) => workflow)
@@ -177,6 +178,29 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       });
   };
 
+  const editWorkflow = (workflow: Workflow) => {
+    axios
+      .post(
+        WORKFLOW_ENGINE_URL,
+        jsonrpcObj("or_updateWorkflow", {
+          key: workflow.key,
+          userAccountId: user,
+          workflow: workflow,
+        })
+      )
+      .then((res) => {
+        if (res && res.data && res.data.error) {
+          console.error("or_updateWorkflow error", res.data.error);
+        }
+        if (res && res.data && res.data.result) {
+          getWorkflowsList();
+        }
+      })
+      .catch((err) => {
+        console.error("or_updateWorkflow error", err);
+      });
+  };
+
   useEffect(() => {
     if (user) {
       getConnectors();
@@ -190,11 +214,15 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   // set user id on success authentication
   useEffect(() => {
     if (connection.status === "connected") {
-      setUser(connection.selfID.id);
-      if (!workflows || workflows.length < 1) {
-        navigate("/workflows");
+      if (!user) {
+        setUser(connection.selfID.id);
+        if (!workflows || workflows.length < 1) {
+          navigate("/workflows/create");
+        } else {
+          navigate("/dashboard");
+        }
       } else {
-        navigate("/workflows/create");
+        setUser(connection.selfID.id);
       }
     } else {
       setUser(null);
@@ -225,7 +253,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     if (width < parseInt(SCREEN.TABLET.replace("px", "")) && !appOpened) {
       setAppOpened(true);
     }
-  }, [width]);
+  }, [width, appOpened]);
 
   return (
     <AppContext.Provider
@@ -241,6 +269,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         connectors,
         getWorkflowsList,
         getWorkflowExecutions,
+        editWorkflow,
       }}
     >
       {children}
