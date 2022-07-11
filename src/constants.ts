@@ -49,6 +49,10 @@ export const ICONS: { [key: string]: string } = {
   CHAIN_GNOSIS: "/images/icons/gnosis.svg",
   CHAIN_POLYGON: "/images/icons/polygon.svg",
   CHAIN_CELO: "/images/icons/celo.svg",
+  // Socials
+  SOCIAL_DISCORD: "/images/icons/social-discord.png",
+  SOCIAL_TG: "/images/icons/social-tg.png",
+  SOCIAL_TWITTER: "/images/icons/social-twitter.png",
 };
 
 export const RIGHTBAR_TABS: {
@@ -385,3 +389,7 @@ export const COMING_SOON_ACTIONS = [
     icon: "https://www.element.fi/favicon.ico",
   },
 ];
+
+export const HS_PORTAL_ID = "4798503";
+
+export const HS_FORM_ID = "80ae7474-b232-4eb8-bad7-a4b2d651d643";
