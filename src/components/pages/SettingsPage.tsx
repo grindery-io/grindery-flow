@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { SelectSimple, SwitchInput } from "grindery-ui";
-import useAppContext from "../../hooks/useAppContext";
 import { SCREEN } from "../../constants";
-import Button from "../shared/Button";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -73,7 +71,6 @@ const CurrencySettingWrapper = styled.div`
 type Props = {};
 
 const SettingsPage = (props: Props) => {
-  const { disconnect } = useAppContext();
   const cachedDevMode = localStorage.getItem("gr_dev_mode");
   const cachedPrimaryCurrency = localStorage.getItem("gr_primary_currency");
   const [devMode, setDevMode] = useState(cachedDevMode === "true");
@@ -118,16 +115,6 @@ const SettingsPage = (props: Props) => {
           </CurrencySettingWrapper>
         </>
       )}
-      <DisconnectWrapper>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            disconnect();
-          }}
-          value="Disconnect"
-          align="left"
-        />
-      </DisconnectWrapper>
     </Wrapper>
   );
 };

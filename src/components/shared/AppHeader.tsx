@@ -6,6 +6,7 @@ import Logo from "./Logo";
 import { ICONS, SCREEN } from "../../constants";
 import useWindowSize from "../../hooks/useWindowSize";
 import { useMatch, useNavigate } from "react-router-dom";
+import UserMenu from "./UserMenu";
 
 const Wrapper = styled.div`
   border-bottom: 1px solid #dcdcdc;
@@ -30,35 +31,10 @@ const Wrapper = styled.div`
 `;
 
 const UserWrapper = styled.div`
-  border: 1px solid #d3deec;
-  border-radius: 34px;
-  padding: 7px 8px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  gap: 6px;
   margin-left: auto;
-
   @media (min-width: ${SCREEN.TABLET}) {
     order: 4;
   }
-`;
-
-const UserStatus = styled.div`
-  background: #00b674;
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
-`;
-
-const UserId = styled.p`
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 150%;
-  margin: 0;
-  padding: 0;
 `;
 
 const CloseButtonWrapper = styled.div`
@@ -135,10 +111,7 @@ const AppHeader = (props: Props) => {
       </CompanyNameWrapper>
       {user && (
         <UserWrapper>
-          <UserStatus />
-          <UserId>
-            {user.substring(0, 5) + "..." + user.substring(user.length - 4)}
-          </UserId>
+          <UserMenu />
         </UserWrapper>
       )}
 

@@ -103,7 +103,7 @@ const EarlyAccessModal = (props: Props) => {
   const savedEmail = localStorage.getItem("gr_user_email");
   const [emailSaved, setEmailSaved] = useState(!!savedEmail);
 
-  return (!accessAllowed && user) || (user && emailSaved) ? (
+  return user && !accessAllowed && !emailSaved ? (
     <Wrapper>
       <FormWrapper>
         <FormContent>
