@@ -98,12 +98,12 @@ const Socials = styled.div`
 type Props = {};
 
 const EarlyAccessModal = (props: Props) => {
-  const { user } = useAppContext();
+  const { user, accessAllowed } = useAppContext();
   const [loading, setLoading] = useState(true);
   const savedEmail = localStorage.getItem("gr_user_email");
   const [emailSaved, setEmailSaved] = useState(!!savedEmail);
 
-  return user && !emailSaved ? (
+  return (!accessAllowed && user) || (user && emailSaved) ? (
     <Wrapper>
       <FormWrapper>
         <FormContent>

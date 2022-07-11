@@ -36,6 +36,7 @@ type ContextProps = {
   getWorkflowsList: () => void;
   getWorkflowExecutions: (a: string) => void;
   editWorkflow: (a: Workflow) => void;
+  accessAllowed: boolean;
 };
 
 type AppContextProps = {
@@ -55,6 +56,7 @@ export const AppContext = createContext<ContextProps>({
   getWorkflowsList: defaultFunc,
   getWorkflowExecutions: defaultFunc,
   editWorkflow: defaultFunc,
+  accessAllowed: false,
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -74,6 +76,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
   // User id
   const [user, setUser] = useState<any>(null);
+  const [accessAllowed, setAccessAllowed] = useState<boolean>(false);
 
   // user's workflows list
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
@@ -201,6 +204,35 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       });
   };
 
+  const checkUser = (userId: string) => {
+    axios
+      .post(
+        WORKFLOW_ENGINE_URL,
+        jsonrpcObj("or_isAllowedUser", {
+          userAccountId: userId,
+        })
+      )
+      .then((res) => {
+        if (res && res.data && res.data.error) {
+          console.error("or_isAllowedUser error", res.data.error);
+          setUser(userId);
+          setAccessAllowed(false);
+        }
+        if (res && res.data && res.data.result) {
+          setUser(userId);
+          setAccessAllowed(true);
+        } else {
+          setUser(userId);
+          setAccessAllowed(false);
+        }
+      })
+      .catch((err) => {
+        console.error("or_isAllowedUser error", err);
+        setUser(userId);
+        setAccessAllowed(false);
+      });
+  };
+
   useEffect(() => {
     if (user) {
       getConnectors();
@@ -215,7 +247,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   useEffect(() => {
     if (connection.status === "connected") {
       if (!user) {
-        setUser(connection.selfID.id);
+        //setUser(connection.selfID.id);
+        checkUser(connection.selfID.id);
         if (!workflows || workflows.length < 1) {
           navigate("/workflows/create");
         } else {
@@ -270,6 +303,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         getWorkflowsList,
         getWorkflowExecutions,
         editWorkflow,
+        accessAllowed,
       }}
     >
       {children}
