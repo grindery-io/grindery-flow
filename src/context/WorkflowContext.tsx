@@ -140,6 +140,7 @@ export const WorkflowContextProvider = ({
       },
     ],
     creator: "",
+    state: "on",
   });
 
   // is data loading
