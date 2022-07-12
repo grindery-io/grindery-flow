@@ -204,7 +204,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       });
   };
 
-  const checkUser = (userId: string) => {
+  const verifyUser = (userId: string) => {
     axios
       .post(
         WORKFLOW_ENGINE_URL,
@@ -248,7 +248,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     if (connection.status === "connected") {
       if (!user) {
         //setUser(connection.selfID.id);
-        checkUser(connection.selfID.id);
+        verifyUser(connection.selfID.id);
         if (!workflows || workflows.length < 1) {
           navigate("/workflows/create");
         } else {

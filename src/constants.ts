@@ -44,6 +44,8 @@ export const ICONS: { [key: string]: string } = {
   JOIN_ACTIONS: "/images/icons/join-actions.svg",
   PENCIL: "/images/icons/pencil.svg",
   DISCONNECT: "/images/icons/disconnect.svg",
+  CHECKBOX_CHECKED: "/images/icons/checkbox-checked.svg",
+  CHECKBOX_EMPTY: "/images/icons/checkbox-empty.svg",
   // CHAINS
   CHAIN_ETHEREUM: "/images/icons/ethereum.svg",
   CHAIN_ARBITRUM: "/images/icons/arbitrum.svg",

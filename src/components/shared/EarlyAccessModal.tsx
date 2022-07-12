@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { CircularProgress } from "grindery-ui";
+import axios from "axios";
+import { InputBox } from "grindery-ui";
 import styled from "styled-components";
-import HubspotForm from "react-hubspot-form";
-import { HS_FORM_ID, HS_PORTAL_ID, ICONS } from "../../constants";
+import { ICONS, WORKFLOW_ENGINE_URL } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
+import { jsonrpcObj } from "../../utils";
+import Button from "./Button";
+import CheckBox from "./CheckBox";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -95,15 +98,98 @@ const Socials = styled.div`
   }
 `;
 
+const CheckboxWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 15px;
+  margin-bottom: 10px;
+`;
+
+const CheckboxLabel = styled.label`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  color: #0b0d17;
+`;
+
+const ErrorWrapper = styled.p`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  color: #ff5858;
+  margin: 20px 0 10px;
+  padding: 0;
+  text-align: center;
+`;
+
+const SuccessMessage = styled.div`
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 130%;
+  text-align: center;
+  color: #000000;
+  margin: 10px 0 20px;
+  padding: 0;
+`;
+
 type Props = {};
 
 const EarlyAccessModal = (props: Props) => {
   const { user, accessAllowed } = useAppContext();
-  const [loading, setLoading] = useState(true);
-  const savedEmail = localStorage.getItem("gr_user_email");
-  const [emailSaved, setEmailSaved] = useState(!!savedEmail);
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  return user && !accessAllowed && !emailSaved ? (
+  const validate = () => {
+    if (!email) {
+      setError("Email is required");
+      return;
+    }
+    if (!consent) {
+      setError("Please, agree with our Terms of Service and Privacy Policy");
+      return;
+    }
+    requestEarlyAccess();
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value || "");
+  };
+
+  const requestEarlyAccess = () => {
+    setLoading(true);
+    setError("");
+    axios
+      .post(
+        WORKFLOW_ENGINE_URL,
+        jsonrpcObj("or_requestEarlyAccess", {
+          userAccountId: user,
+          email,
+        })
+      )
+      .then((res) => {
+        if (res && res.data && res.data.error) {
+          console.error("or_requestEarlyAccess error", res.data.error);
+          setError(res.data.error.message || "Server error, please, try again");
+        }
+        if (res && res.data && res.data.result) {
+          setSuccess("Thank you for submitting the form.");
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("or_requestEarlyAccess error", err);
+        setError(err.message);
+        setLoading(false);
+      });
+  };
+
+  return user && !accessAllowed ? (
     <Wrapper>
       <FormWrapper>
         <FormContent>
@@ -113,56 +199,80 @@ const EarlyAccessModal = (props: Props) => {
             get early access please provide us with en email address to notify
             you as soon as a sot become available
           </FormDesc>
-          <HubspotForm
-            portalId={HS_PORTAL_ID}
-            formId={HS_FORM_ID}
-            onSubmit={() => {
-              localStorage.setItem("gr_user_email", "true");
-              setEmailSaved(true);
-            }}
-            onReady={() => {
-              setLoading(false);
-            }}
-            loading={
-              <div
-                style={{ marginTop: 40, textAlign: "center", color: "#8C30F5" }}
-              >
-                <CircularProgress color="inherit" />
-              </div>
-            }
-          />
-          {!loading && (
+          {success ? (
+            <SuccessMessage>{success}</SuccessMessage>
+          ) : (
             <>
-              <SubtitleWrapper>
-                <Line />
-                <Subtitle>Or stay tuned via</Subtitle>
-                <Line />
-              </SubtitleWrapper>
-              <Socials>
-                <a
-                  href="https://discord.gg/PCMTWg3KzE"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img src={ICONS.SOCIAL_DISCORD} alt="Discord" />
-                </a>
-                <a
-                  href="https://t.me/grinderyio"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img src={ICONS.SOCIAL_TG} alt="Telegram" />
-                </a>
-                <a
-                  href="https://twitter.com/grindery_io"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img src={ICONS.SOCIAL_TWITTER} alt="Twitter" />
-                </a>
-              </Socials>
+              <InputBox
+                label="Email *"
+                placeholder=""
+                value={email}
+                onChange={handleEmailChange}
+                size="small"
+              />
+              <CheckboxWrapper>
+                <CheckBox
+                  checked={consent}
+                  onChange={(val) => {
+                    setConsent(val);
+                  }}
+                  style={{ marginTop: "4px" }}
+                />
+                <CheckboxLabel>
+                  To communicate with you we need you to provide us with
+                  information. To learn more, see our{" "}
+                  <a
+                    href="https://docs.google.com/document/u/1/d/e/2PACX-1vROgga4q_jago0wilXMB28BxXoymaaegLv5pwCSVZMi8QRCp7oXmfxIhMEXeVC8Hrg3eBBGooMMa641/pub"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Terms of Service
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    href="https://www.grindery.io/privacy"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Privacy Policy
+                  </a>
+                </CheckboxLabel>
+              </CheckboxWrapper>
+              {error && <ErrorWrapper>{error}</ErrorWrapper>}
+              <Button
+                value="Continue"
+                onClick={() => {
+                  validate();
+                }}
+                loading={loading}
+                disabled={loading}
+              />
             </>
           )}
+          <SubtitleWrapper>
+            <Line />
+            <Subtitle>Or stay tuned via</Subtitle>
+            <Line />
+          </SubtitleWrapper>
+          <Socials>
+            <a
+              href="https://discord.gg/PCMTWg3KzE"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src={ICONS.SOCIAL_DISCORD} alt="Discord" />
+            </a>
+            <a href="https://t.me/grinderyio" target="_blank" rel="noreferrer">
+              <img src={ICONS.SOCIAL_TG} alt="Telegram" />
+            </a>
+            <a
+              href="https://twitter.com/grindery_io"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src={ICONS.SOCIAL_TWITTER} alt="Twitter" />
+            </a>
+          </Socials>
         </FormContent>
       </FormWrapper>
     </Wrapper>
