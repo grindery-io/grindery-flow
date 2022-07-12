@@ -26,6 +26,7 @@ const blankWorkflow: Workflow = {
     },
   ],
   creator: "",
+  state: "on",
 };
 
 type WorkflowContextProps = {
