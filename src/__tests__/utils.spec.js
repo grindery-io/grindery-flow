@@ -1,0 +1,190 @@
+import {
+  getOutputOptions,
+  getParameterByName,
+  getSelfIdCookie,
+  jsonrpcObj,
+  replaceTokens,
+} from "../utils";
+import helloWorldConnector from "../samples/connectors/helloworld.json";
+
+describe("getParameterByName function", () => {
+  test("Return URL parameter value by name", () => {
+    const name = "test";
+    const url = "https://nexus.grindery.org?test=1";
+
+    const output = "1";
+
+    expect(getParameterByName(name, url)).toEqual(output);
+  });
+
+  test("Return null if parameter not found", () => {
+    const name = "test";
+    const url = "https://nexus.grindery.org";
+
+    const output = null;
+
+    expect(getParameterByName(name, url)).toEqual(output);
+  });
+
+  test("Use current URL if no url provided", () => {
+    const name = "test";
+
+    const output = null;
+
+    expect(getParameterByName(name)).toEqual(output);
+  });
+
+  test("Return empty string if parameter has no value", () => {
+    const name = "test";
+    const url = "https://nexus.grindery.org?test=";
+
+    const output = "";
+
+    expect(getParameterByName(name, url)).toEqual(output);
+  });
+});
+
+describe("replaceTokens function", () => {
+  test("Replace token in object with data from context", () => {
+    const input = {
+      input1: "{{test}}",
+    };
+    const context = {
+      test: "test value",
+    };
+
+    const output = {
+      input1: "test value",
+    };
+
+    expect(replaceTokens(input, context)).toEqual(output);
+  });
+
+  test("Replace tokens in object with empty string if no data found in context", () => {
+    const input = {
+      input1: "{{test}}",
+    };
+    const context = {};
+
+    const output = {
+      input1: "",
+    };
+
+    expect(replaceTokens(input, context)).toEqual(output);
+  });
+
+  test("Replace array of tokens in object with data from context", () => {
+    const input = {
+      input1: ["{{test}}", "{{test2}}"],
+    };
+    const context = {
+      test: "test value",
+      test2: "test value 2",
+    };
+
+    const output = {
+      input1: ["test value", "test value 2"],
+    };
+
+    expect(replaceTokens(input, context)).toEqual(output);
+  });
+
+  test("Return unmodified number if input is a number", () => {
+    const input = 1;
+    const context = {
+      test: "test value",
+      test2: "test value 2",
+    };
+
+    const output = 1;
+
+    expect(replaceTokens(input, context)).toEqual(output);
+  });
+});
+
+describe("getOutputOptions function", () => {
+  test("Return array of output options for provided operation", () => {
+    const operation = helloWorldConnector.triggers[0].operation;
+    const connector = helloWorldConnector;
+
+    const output = [
+      {
+        value: "{{trigger.random}}",
+        label: "A random string",
+        reference: "abc",
+        icon: helloWorldConnector.icon || "",
+        group: helloWorldConnector.name,
+      },
+      {
+        value: "{{trigger.random2[0]}}",
+        label: "A random strings[0]",
+        reference: "abc",
+        icon: helloWorldConnector.icon || "",
+        group: helloWorldConnector.name,
+      },
+      {
+        value: "{{trigger.random2[1]}}",
+        label: "A random strings[1]",
+        reference: "def",
+        icon: helloWorldConnector.icon || "",
+        group: helloWorldConnector.name,
+      },
+    ];
+
+    expect(getOutputOptions(operation, connector)).toEqual(output);
+  });
+
+  test("Return empty array if no operation provided", () => {
+    const operation = null;
+    const connector = helloWorldConnector;
+
+    const output = [];
+
+    expect(getOutputOptions(operation, connector)).toEqual(output);
+  });
+});
+
+describe("jsonrpcObj function", () => {
+  test("Return JSON RPC 2.0 request object", () => {
+    const method = "method_name";
+    const params = {
+      param1: "foo",
+      param2: "bar",
+    };
+
+    const output = {
+      jsonrpc: "2.0",
+      method: "method_name",
+      id: new Date(),
+      params: {
+        param1: "foo",
+        param2: "bar",
+      },
+    };
+
+    expect(jsonrpcObj(method, params)).toEqual(output);
+  });
+});
+
+describe("getSelfIdCookie function", () => {
+  test("Return SelfId cookie", () => {
+    Object.defineProperty(document, "cookie", {
+      writable: true,
+      value: "self.id-local-id=test_cookie",
+    });
+
+    const output = "test_cookie";
+
+    expect(getSelfIdCookie()).toEqual(output);
+  });
+
+  test("Return empty string if cookie doesn't exist", () => {
+    Object.defineProperty(document, "cookie", {
+      writable: true,
+      value: "",
+    });
+    const output = "";
+
+    expect(getSelfIdCookie()).toEqual(output);
+  });
+});
