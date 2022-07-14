@@ -178,7 +178,9 @@ const EarlyAccessModal = (props: Props) => {
           setError(res.data.error.message || "Server error, please, try again");
         }
         if (res && res.data && res.data.result) {
-          setSuccess("Thank you for submitting the form.");
+          setSuccess(
+            "Thank you! Your request will be manually reviewed. We'll notify you by email as soon as we have an available opening."
+          );
         }
         setLoading(false);
       })
@@ -196,8 +198,8 @@ const EarlyAccessModal = (props: Props) => {
           <FormTitle>Get early access!</FormTitle>
           <FormDesc>
             Grindery Nexus is currently in private beta. If you would like to
-            get early access please provide us with en email address to notify
-            you as soon as a sot become available
+            get early access please provide us with an email address to notify
+            you as soon as a slot become available
           </FormDesc>
           {success ? (
             <SuccessMessage>{success}</SuccessMessage>
