@@ -8,7 +8,7 @@ import {
 import helloWorldConnector from "../samples/connectors/helloworld.json";
 
 describe("getParameterByName function", () => {
-  test("Return URL parameter value by name", () => {
+  test("returns URL parameter value by name", () => {
     const name = "test";
     const url = "https://nexus.grindery.org?test=1";
 
@@ -17,7 +17,7 @@ describe("getParameterByName function", () => {
     expect(getParameterByName(name, url)).toEqual(output);
   });
 
-  test("Return null if parameter not found", () => {
+  test("returns null if parameter not found", () => {
     const name = "test";
     const url = "https://nexus.grindery.org";
 
@@ -26,7 +26,7 @@ describe("getParameterByName function", () => {
     expect(getParameterByName(name, url)).toEqual(output);
   });
 
-  test("Use current URL if no url provided", () => {
+  test("uses current URL if no url provided", () => {
     const name = "test";
 
     const output = null;
@@ -34,7 +34,7 @@ describe("getParameterByName function", () => {
     expect(getParameterByName(name)).toEqual(output);
   });
 
-  test("Return empty string if parameter has no value", () => {
+  test("returns empty string if parameter has no value", () => {
     const name = "test";
     const url = "https://nexus.grindery.org?test=";
 
@@ -45,7 +45,7 @@ describe("getParameterByName function", () => {
 });
 
 describe("replaceTokens function", () => {
-  test("Replace token in object with data from context", () => {
+  test("replaces token in object with data from context", () => {
     const input = {
       input1: "{{test}}",
     };
@@ -60,7 +60,7 @@ describe("replaceTokens function", () => {
     expect(replaceTokens(input, context)).toEqual(output);
   });
 
-  test("Replace tokens in object with empty string if no data found in context", () => {
+  test("replaces tokens in object with empty string if no data found in context", () => {
     const input = {
       input1: "{{test}}",
     };
@@ -73,7 +73,7 @@ describe("replaceTokens function", () => {
     expect(replaceTokens(input, context)).toEqual(output);
   });
 
-  test("Replace array of tokens in object with data from context", () => {
+  test("replaces array of tokens in object with data from context", () => {
     const input = {
       input1: ["{{test}}", "{{test2}}"],
     };
@@ -89,7 +89,7 @@ describe("replaceTokens function", () => {
     expect(replaceTokens(input, context)).toEqual(output);
   });
 
-  test("Return unmodified number if input is a number", () => {
+  test("returns unmodified number if input is a number", () => {
     const input = 1;
     const context = {
       test: "test value",
@@ -103,7 +103,7 @@ describe("replaceTokens function", () => {
 });
 
 describe("getOutputOptions function", () => {
-  test("Return array of output options for provided operation", () => {
+  test("returns array of output options for provided operation", () => {
     const operation = helloWorldConnector.triggers[0].operation;
     const connector = helloWorldConnector;
 
@@ -134,7 +134,7 @@ describe("getOutputOptions function", () => {
     expect(getOutputOptions(operation, connector)).toEqual(output);
   });
 
-  test("Return empty array if no operation provided", () => {
+  test("returns empty array if no operation provided", () => {
     const operation = null;
     const connector = helloWorldConnector;
 
@@ -145,7 +145,7 @@ describe("getOutputOptions function", () => {
 });
 
 describe("jsonrpcObj function", () => {
-  test("Return JSON RPC 2.0 request object", () => {
+  test("returns JSON RPC 2.0 request object", () => {
     const method = "method_name";
     const params = {
       param1: "foo",
@@ -167,7 +167,7 @@ describe("jsonrpcObj function", () => {
 });
 
 describe("getSelfIdCookie function", () => {
-  test("Return SelfId cookie", () => {
+  test("returns SelfId cookie", () => {
     Object.defineProperty(document, "cookie", {
       writable: true,
       value: "self.id-local-id=test_cookie",
@@ -178,7 +178,7 @@ describe("getSelfIdCookie function", () => {
     expect(getSelfIdCookie()).toEqual(output);
   });
 
-  test("Return empty string if cookie doesn't exist", () => {
+  test("returns empty string if cookie doesn't exist", () => {
     Object.defineProperty(document, "cookie", {
       writable: true,
       value: "",
