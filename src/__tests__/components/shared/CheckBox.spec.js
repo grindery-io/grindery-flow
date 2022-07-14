@@ -28,7 +28,7 @@ describe("CheckBox component", () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test("icon alt is changed when clicked", () => {
+  test("icon alt attribute is changed when clicked", () => {
     render(<CheckBoxTest />);
 
     expect(screen.getByAltText(/empty checkbox icon/i)).toBeTruthy();
