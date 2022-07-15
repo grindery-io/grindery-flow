@@ -1,19 +1,19 @@
 import React, { useState, createContext, useEffect } from "react";
-import axios from "axios";
 import { EthereumAuthProvider, useViewerConnection } from "@self.id/framework";
 import _ from "lodash";
 import { Workflow } from "../types/Workflow";
-import {
-  RIGHTBAR_TABS,
-  WORKFLOW_ENGINE_URL,
-  WEB2_CONNECTORS_PATH,
-  WEB3_CONNECTORS_PATH,
-  SCREEN,
-} from "../constants";
+import { RIGHTBAR_TABS, SCREEN } from "../constants";
 import { Connector } from "../types/Connector";
-import { defaultFunc, getSelfIdCookie, jsonrpcObj } from "../utils";
+import { defaultFunc, getSelfIdCookie } from "../helpers/utils";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../hooks/useWindowSize";
+import {
+  getWorkflowExecutions,
+  isAllowedUser,
+  listWorkflows,
+  updateWorkflow,
+} from "../helpers/engine";
+import { getCDSFiles } from "../helpers/github";
 
 async function createAuthProvider() {
   // The following assumes there is an injected `window.ethereum` provider
@@ -34,7 +34,7 @@ type ContextProps = {
   setWorkflows: (a: Workflow[]) => void;
   connectors: Connector[];
   getWorkflowsList: () => void;
-  getWorkflowExecutions: (a: string) => void;
+  getWorkflowHistory: (a: string) => void;
   editWorkflow: (a: Workflow) => void;
   accessAllowed: boolean;
 };
@@ -54,7 +54,7 @@ export const AppContext = createContext<ContextProps>({
   setWorkflows: defaultFunc,
   connectors: [],
   getWorkflowsList: defaultFunc,
-  getWorkflowExecutions: defaultFunc,
+  getWorkflowHistory: defaultFunc,
   editWorkflow: defaultFunc,
   accessAllowed: false,
 });
@@ -90,32 +90,22 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     navigate((tab && tab.path) || "/");
   };
 
-  const getWorkflowsList = () => {
-    axios
-      .post(
-        WORKFLOW_ENGINE_URL,
-        jsonrpcObj("or_listWorkflows", {
-          userAccountId: user,
-        })
-      )
-      .then((res) => {
-        if (res && res.data && res.data.error) {
-          console.log("or_listWorkflows error", res.data.error);
-        }
-        if (res && res.data && res.data.result) {
-          setWorkflows(
-            res.data.result
-              .map((result: any) => ({
-                ...result.workflow,
-                key: result.key,
-              }))
-              .filter((workflow: Workflow) => workflow)
-          );
-        }
-      })
-      .catch((err) => {
-        console.log("or_listWorkflows error", err);
-      });
+  const getWorkflowsList = async () => {
+    const res = await listWorkflows(user);
+
+    if (res && res.data && res.data.error) {
+      console.log("or_listWorkflows error", res.data.error);
+    }
+    if (res && res.data && res.data.result) {
+      setWorkflows(
+        res.data.result
+          .map((result: any) => ({
+            ...result.workflow,
+            key: result.key,
+          }))
+          .filter((workflow: Workflow) => workflow)
+      );
+    }
   };
 
   const clearWorkflows = () => {
@@ -123,33 +113,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   };
 
   const getConnectors = async () => {
-    const responses = [];
-    const web2Connectors = await axios.get(WEB2_CONNECTORS_PATH);
-    for (let i = 0; i < web2Connectors.data.length; i++) {
-      const url = web2Connectors.data[i].download_url;
-      if (url) {
-        responses.push(
-          await axios.get(
-            `${url}${/\?/.test(url) ? "&" : "?"}v=${encodeURIComponent(
-              "2022.07.05v1"
-            )}`
-          )
-        );
-      }
-    }
-    const web3Connectors = await axios.get(WEB3_CONNECTORS_PATH);
-    for (let i = 0; i < web3Connectors.data.length; i++) {
-      const url = web3Connectors.data[i].download_url;
-      if (url) {
-        responses.push(
-          await axios.get(
-            `${url}${/\?/.test(url) ? "&" : "?"}v=${encodeURIComponent(
-              "2022.07.05v1"
-            )}`
-          )
-        );
-      }
-    }
+    const responses = await getCDSFiles();
 
     setConnectors(
       _.orderBy(
@@ -160,77 +124,42 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     );
   };
 
-  const getWorkflowExecutions = (workflowKey: string) => {
-    axios
-      .post(
-        WORKFLOW_ENGINE_URL,
-        jsonrpcObj("or_getWorkflowExecutions", {
-          workflowKey: workflowKey,
-        })
-      )
-      .then((res) => {
-        if (res && res.data && res.data.error) {
-          console.error("or_getWorkflowExecutions error", res.data.error);
-        }
-        if (res && res.data && res.data.result) {
-          console.log("or_getWorkflowExecutions result", res.data.result);
-        }
-      })
-      .catch((err) => {
-        console.error("or_getWorkflowExecutions error", err);
-      });
+  const getWorkflowHistory = async (workflowKey: string) => {
+    const res = await getWorkflowExecutions(workflowKey);
+
+    if (res && res.data && res.data.error) {
+      console.error("or_getWorkflowExecutions error", res.data.error);
+    }
+    if (res && res.data && res.data.result) {
+      console.log("or_getWorkflowExecutions result", res.data.result);
+    }
   };
 
-  const editWorkflow = (workflow: Workflow) => {
-    axios
-      .post(
-        WORKFLOW_ENGINE_URL,
-        jsonrpcObj("or_updateWorkflow", {
-          key: workflow.key,
-          userAccountId: user,
-          workflow: workflow,
-        })
-      )
-      .then((res) => {
-        if (res && res.data && res.data.error) {
-          console.error("or_updateWorkflow error", res.data.error);
-        }
-        if (res && res.data && res.data.result) {
-          getWorkflowsList();
-        }
-      })
-      .catch((err) => {
-        console.error("or_updateWorkflow error", err);
-      });
+  const editWorkflow = async (workflow: Workflow) => {
+    const res = await updateWorkflow(workflow, user);
+
+    if (res && res.data && res.data.error) {
+      console.error("editWorkflow error", res.data.error);
+    }
+    if (res && res.data && res.data.result) {
+      getWorkflowsList();
+    }
   };
 
-  const verifyUser = (userId: string) => {
-    axios
-      .post(
-        WORKFLOW_ENGINE_URL,
-        jsonrpcObj("or_isAllowedUser", {
-          userAccountId: userId,
-        })
-      )
-      .then((res) => {
-        if (res && res.data && res.data.error) {
-          console.error("or_isAllowedUser error", res.data.error);
-          setUser(userId);
-          setAccessAllowed(false);
-        }
-        if (res && res.data && res.data.result) {
-          setUser(userId);
-          setAccessAllowed(true);
-        } else {
-          setUser(userId);
-          setAccessAllowed(false);
-        }
-      })
-      .catch((err) => {
-        console.error("or_isAllowedUser error", err);
-        setUser(userId);
-        setAccessAllowed(false);
-      });
+  const verifyUser = async (userId: string) => {
+    const res = await isAllowedUser(userId);
+    if (res && res.data && res.data.error) {
+      console.error("or_isAllowedUser error", res.data.error);
+      setUser(userId);
+      setAccessAllowed(false);
+    }
+    if (res && res.data && res.data.result) {
+      setUser(userId);
+      setAccessAllowed(true);
+    } else {
+      setUser(userId);
+      setAccessAllowed(false);
+    }
   };
 
   useEffect(() => {
@@ -301,7 +230,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         setWorkflows,
         connectors,
         getWorkflowsList,
-        getWorkflowExecutions,
+        getWorkflowHistory,
         editWorkflow,
         accessAllowed,
       }}

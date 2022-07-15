@@ -4,7 +4,7 @@ import axios from "axios";
 import { debounce } from "throttle-debounce";
 import { RichInput, SelectInput, AutoCompleteInput } from "grindery-ui";
 import { Field } from "../../types/Connector";
-import { jsonrpcObj } from "../../utils";
+import { jsonrpcObj } from "../../helpers/utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
 import { BLOCKCHAINS } from "../../constants";

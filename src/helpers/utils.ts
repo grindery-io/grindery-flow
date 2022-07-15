@@ -3,7 +3,7 @@ import {
   ActionOperation,
   Connector,
   TriggerOperation,
-} from "./types/Connector";
+} from "../types/Connector";
 
 export const getParameterByName = (
   name: string,

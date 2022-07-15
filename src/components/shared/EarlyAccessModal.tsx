@@ -4,7 +4,7 @@ import { InputBox } from "grindery-ui";
 import styled from "styled-components";
 import { ICONS, WORKFLOW_ENGINE_URL } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
-import { jsonrpcObj } from "../../utils";
+import { jsonrpcObj } from "../../helpers/utils";
 import Button from "./Button";
 import CheckBox from "./CheckBox";
 

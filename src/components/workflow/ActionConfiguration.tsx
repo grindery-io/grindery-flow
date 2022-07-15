@@ -3,7 +3,11 @@ import styled from "styled-components";
 import { CircularProgress, AlertField, Text } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import ActionInputField from "./ActionInputField";
-import { getOutputOptions, getParameterByName, jsonrpcObj } from "../../utils";
+import {
+  getOutputOptions,
+  getParameterByName,
+  jsonrpcObj,
+} from "../../helpers/utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import ChainSelector from "./ChainSelector";
 import GasInput from "./GasInput";
@@ -110,14 +114,14 @@ const ActionConfiguration = (props: Props) => {
     }
   };
 
-  const handleSaveClick = async () => {
+  /*const handleSaveClick = async () => {
     setActionError("");
     if (!actionIsConfigured(index)) {
       setActionError("Please complete all required fields.");
     } else {
       saveWorkflow();
     }
-  };
+  };*/
 
   const handleChainChange = (value: string) => {
     setActionError("");

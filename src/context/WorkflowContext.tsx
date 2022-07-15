@@ -1,12 +1,11 @@
 import React, { useState, createContext, useEffect } from "react";
 import _ from "lodash";
-import axios from "axios";
 import { Workflow } from "../types/Workflow";
 import { Action, Connector, Field, Trigger } from "../types/Connector";
-import { defaultFunc, jsonrpcObj } from "../utils";
-import { WORKFLOW_ENGINE_URL } from "../constants";
+import { defaultFunc } from "../helpers/utils";
 import useAppContext from "../hooks/useAppContext";
 import { useNavigate } from "react-router-dom";
+import { createWorkflow } from "../helpers/engine";
 
 // empty workflow declaration
 const blankWorkflow: Workflow = {
@@ -378,7 +377,7 @@ export const WorkflowContextProvider = ({
     setActiveStep(1);
   };
 
-  const saveWorkflow = () => {
+  const saveWorkflow = async () => {
     if (workflow) {
       const readyWorkflow = {
         ...workflow,
@@ -390,29 +389,16 @@ export const WorkflowContextProvider = ({
       setError(null);
       setSuccess(null);
       setLoading(true);
-      axios
-        .post(
-          WORKFLOW_ENGINE_URL,
-          jsonrpcObj("or_createWorkflow", {
-            userAccountId: readyWorkflow.creator,
-            workflow: readyWorkflow,
-          })
-        )
-        .then((res) => {
-          if (res && res.data && res.data.error) {
-            setError(res.data.error.message || null);
-          }
-          if (res && res.data && res.data.result) {
-            getWorkflowsList();
-            resetWorkflow();
-            navigate("/workflows");
-          }
-          setLoading(false);
-        })
-        .catch((err) => {
-          setError(err.message || null);
-          setLoading(false);
-        });
+      const res = await createWorkflow(readyWorkflow);
+      if (res && res.data && res.data.error) {
+        setError(res.data.error.message || null);
+      }
+      if (res && res.data && res.data.result) {
+        getWorkflowsList();
+        resetWorkflow();
+        navigate("/workflows");
+      }
+      setLoading(false);
     }
   };
 

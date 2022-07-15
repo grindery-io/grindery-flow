@@ -5,7 +5,7 @@ import { CircularProgress, Text, AlertField } from "grindery-ui";
 import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
 import TriggerInputField from "./TriggerInputField";
-import { getParameterByName, jsonrpcObj } from "../../utils";
+import { getParameterByName, jsonrpcObj } from "../../helpers/utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import ChainSelector from "./ChainSelector";
 import ContractSelector from "./ContractSelector";

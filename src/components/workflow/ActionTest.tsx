@@ -4,7 +4,7 @@ import styled from "styled-components";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import { Text, AlertField, CircularProgress } from "grindery-ui";
 import { Field } from "../../types/Connector";
-import { jsonrpcObj, replaceTokens } from "../../utils";
+import { jsonrpcObj, replaceTokens } from "../../helpers/utils";
 import { ICONS, WORKFLOW_ENGINE_URL } from "../../constants";
 import Button from "../shared/Button";
 
