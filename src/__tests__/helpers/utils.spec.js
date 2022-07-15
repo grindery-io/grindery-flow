@@ -4,8 +4,8 @@ import {
   getSelfIdCookie,
   jsonrpcObj,
   replaceTokens,
-} from "../utils";
-import helloWorldConnector from "../samples/connectors/helloworld.json";
+} from "../../helpers/utils";
+import helloWorldConnector from "../../samples/connectors/helloworld.json";
 
 describe("getParameterByName function", () => {
   test("returns URL parameter value by name", () => {
