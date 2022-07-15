@@ -18,7 +18,7 @@ const CheckBox = (props: Props) => {
     >
       <img
         src={checked ? ICONS.CHECKBOX_CHECKED : ICONS.CHECKBOX_EMPTY}
-        alt="checkbox icon"
+        alt={checked ? "filled checkbox icon" : "empty checkbox icon"}
         style={{ display: "block" }}
       />
     </div>

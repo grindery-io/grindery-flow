@@ -36,9 +36,14 @@
           {
             "key": "random",
             "label": "A random string"
+          },
+          {
+            "key": "random2",
+            "label": "A random strings",
+            "list": true
           }
         ],
-        "sample": { "random": "abc" }
+        "sample": { "random": "abc", "random2": ["abc", "def"] }
       }
     }
   ],
