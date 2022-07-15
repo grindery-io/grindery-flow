@@ -29,4 +29,4 @@ Heroku will deploy any changes in the `master` branch automatically:
 1. Merge your changes into the `master` branch
 2. Push branch to GitHub
 
-**Deployment URL: http://grindery-nexus-frontend.herokuapp.com/**
+**Deployment URL: https://nexus.grindery.org/**
