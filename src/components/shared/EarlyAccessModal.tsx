@@ -179,7 +179,7 @@ const EarlyAccessModal = (props: Props) => {
         }
         if (res && res.data && res.data.result) {
           setSuccess(
-            "Thank you! Your request will be manually reviewed. We'll notify you by email as soon as we have an available opening."
+            "Your request will be manually reviewed. We'll notify you by email as soon as we have an available opening."
           );
         }
         setLoading(false);
@@ -195,16 +195,29 @@ const EarlyAccessModal = (props: Props) => {
     <Wrapper>
       <FormWrapper>
         <FormContent>
-          <FormTitle>Get early access!</FormTitle>
-          <FormDesc>
-            Grindery Nexus is currently in private beta. If you would like to
-            get early access please provide us with an email address to notify
-            you as soon as a slot become available
-          </FormDesc>
           {success ? (
-            <SuccessMessage>{success}</SuccessMessage>
+            <>
+              <img
+                src="/images/thank-you.png"
+                alt="thank you"
+                style={{
+                  marginBottom: "10px",
+                  width: "604px",
+                  maxWidth: "100%",
+                  height: "auto",
+                }}
+              />
+              <FormTitle>Thank you!</FormTitle>
+              <SuccessMessage>{success}</SuccessMessage>
+            </>
           ) : (
             <>
+              <FormTitle>Get early access!</FormTitle>
+              <FormDesc>
+                Grindery Nexus is currently in private beta. If you would like
+                to get early access please provide us with an email address to
+                notify you as soon as a slot become available
+              </FormDesc>
               <InputBox
                 label="Email *"
                 placeholder=""
