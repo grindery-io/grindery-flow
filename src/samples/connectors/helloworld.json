@@ -82,11 +82,11 @@
   ],
   "recipes": [
     {
-      "key": "helloWorldRecipe",
-      "name": "Hello World Recipe",
+      "key": "helloWorldRecipeWithTrigger",
+      "name": "Hello World Recipe with trigger",
       "display": {
-        "label": "Hello World Recipe",
-        "description": "This is a test recipe"
+        "label": "Hello World Recipe with trigger",
+        "description": "This is a test recipe with trigger and action"
       },
       "inputFields": [
         {
@@ -123,6 +123,44 @@
           "operation": "helloWorldAction",
           "input": {
             "message": "{{input.message}}"
+          }
+        }
+      ]
+    },
+    {
+      "key": "helloWorldRecipeWithActions",
+      "name": "Hello World Recipe with actions",
+      "display": {
+        "label": "Hello World Recipe with actions",
+        "description": "This is a test recipe with two actions and no trigger"
+      },
+      "inputFields": [
+        {
+          "key": "message1",
+          "label": "First message",
+          "type": "string",
+          "required": true,
+          "default": "Hello"
+        },
+        {
+          "key": "message2",
+          "label": "Second message",
+          "type": "string",
+          "required": true,
+          "default": "World"
+        }
+      ],
+      "actions": [
+        {
+          "operation": "helloWorldAction",
+          "input": {
+            "message": "{{input.message1}}"
+          }
+        },
+        {
+          "operation": "helloWorldAction",
+          "input": {
+            "message": "{{input.message2}}"
           }
         }
       ]
