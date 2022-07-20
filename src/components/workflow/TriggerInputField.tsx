@@ -255,6 +255,13 @@ const TriggerInputField = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valChanged, updateFieldsDefinition]);
 
+  useEffect(() => {
+    if (inputField && inputField.default) {
+      handleFieldChange(inputField.default);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputField]);
+
   return (
     <React.Fragment key={inputField.key}>
       {!!inputField && <InputWrapper>{renderField(inputField)}</InputWrapper>}

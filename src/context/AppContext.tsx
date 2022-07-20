@@ -14,6 +14,7 @@ import {
   updateWorkflow,
 } from "../helpers/engine";
 import { getCDSFiles } from "../helpers/github";
+import helloWorldConnector from "../samples/connectors/helloworld.json";
 
 async function createAuthProvider() {
   // The following assumes there is an injected `window.ethereum` provider
@@ -117,7 +118,10 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
     setConnectors(
       _.orderBy(
-        responses.filter((res) => res && res.data).map((res) => res.data),
+        [
+          ...responses.filter((res) => res && res.data).map((res) => res.data),
+          helloWorldConnector,
+        ],
         [(response) => response.name.toLowerCase()],
         ["asc"]
       )

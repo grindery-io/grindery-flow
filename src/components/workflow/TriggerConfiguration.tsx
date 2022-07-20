@@ -90,6 +90,11 @@ const TriggerConfiguration = (props: Props) => {
       triggers.current.operation.inputFields.filter(
         (inputField: Field) => inputField && !inputField.computed
       )) ||
+    (triggers.current &&
+      triggers.current.inputFields &&
+      triggers.current.inputFields.filter(
+        (inputField: Field) => inputField && !inputField.computed
+      )) ||
     [];
 
   const clearCredentials = () => {
@@ -324,10 +329,19 @@ const TriggerConfiguration = (props: Props) => {
 
   const workflowTriggerCredentials = workflow.trigger.credentials;
 
+  const setTriggerType = () => {
+    if (triggers && triggers.current && triggers.current.inputFields) {
+      updateWorkflow({
+        "trigger.type": "recipe",
+      });
+    }
+  };
+
   useEffect(() => {
     if (workflowTriggerCredentials) {
       testAuth(workflowTriggerCredentials);
     }
+    setTriggerType();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

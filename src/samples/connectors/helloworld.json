@@ -79,5 +79,53 @@
         }
       }
     }
+  ],
+  "recipes": [
+    {
+      "key": "helloWorldRecipe",
+      "name": "Hello World Recipe",
+      "display": {
+        "label": "Hello World Recipe",
+        "description": "This is a test recipe"
+      },
+      "inputFields": [
+        {
+          "key": "interval",
+          "label": "Delay before signal in milliseconds",
+          "type": "number",
+          "required": true,
+          "default": "10000"
+        },
+        {
+          "key": "recurring",
+          "label": "Recurring",
+          "type": "boolean",
+          "required": true,
+          "default": "true"
+        },
+        {
+          "key": "message",
+          "label": "Message",
+          "type": "string",
+          "required": true,
+          "default": "Hello!"
+        }
+      ],
+      "trigger": {
+        "operation": "helloWorldTrigger",
+        "input": {
+          "interval": "{{input.interval}}",
+          "recurring": "{{input.recurring}}"
+        }
+      },
+      "actions": [
+        {
+          "operation": "helloWorldAction",
+          "input": {
+            "message": "{{input.message}}"
+          }
+        }
+      ]
+    }
   ]
 }

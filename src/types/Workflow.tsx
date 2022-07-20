@@ -8,7 +8,7 @@ export type Workflow = {
 };
 
 export type Operation = {
-  type: "action" | "trigger";
+  type: "action" | "trigger" | "recipe";
   connector: string;
   operation: string;
   input: { [key: string]: string | number | boolean };

@@ -1,7 +1,14 @@
 import React, { useState, createContext, useEffect } from "react";
 import _ from "lodash";
 import { Workflow } from "../types/Workflow";
-import { Action, Connector, Field, Trigger } from "../types/Connector";
+import {
+  Action,
+  Connector,
+  Field,
+  SelectedAction,
+  SelectedTrigger,
+  Trigger,
+} from "../types/Connector";
 import { defaultFunc } from "../helpers/utils";
 import useAppContext from "../hooks/useAppContext";
 import { useNavigate } from "react-router-dom";
@@ -45,7 +52,7 @@ type WorkflowContextProps = {
   updateWorkflow: (a: any) => void;
   setConnectors: (a: Connector[]) => void;
   triggers: {
-    current?: Trigger;
+    current?: SelectedTrigger;
     triggerConnector?: Connector;
     triggerIsSet: boolean;
     triggerConnectorIsSet: boolean;
@@ -56,7 +63,7 @@ type WorkflowContextProps = {
     connectorsWithTriggers: Connector[];
   };
   actions: {
-    current: (i: number) => Action | undefined;
+    current: (i: number) => SelectedAction | undefined;
     actionConnector: (i: number) => Connector | undefined;
     actionIsSet: (i: number) => boolean;
     actionConnectorIsSet: (i: number) => boolean;
@@ -158,13 +165,26 @@ export const WorkflowContextProvider = ({
   // filter connectors that has triggers
   const connectorsWithTriggers = connectors.filter(
     (connector) =>
-      connector && connector.triggers && connector.triggers.length > 0
+      connector &&
+      ((connector.triggers && connector.triggers.length > 0) ||
+        (connector.recipes &&
+          connector.recipes.filter((recipe) => recipe && recipe.trigger)
+            .length > 0))
   );
 
   // filter connectors that has actions
   const connectorsWithActions = connectors.filter(
     (connector) =>
-      connector && connector.actions && connector.actions.length > 0
+      connector &&
+      ((connector.actions && connector.actions.length > 0) ||
+        (connector.recipes &&
+          connector.recipes.filter(
+            (recipe) =>
+              recipe &&
+              recipe.actions &&
+              recipe.actions.length > 0 &&
+              !recipe.trigger
+          ).length > 0))
   );
 
   // check if trigger connector is selected
@@ -216,10 +236,15 @@ export const WorkflowContextProvider = ({
   );
 
   // current trigger object
-  const trigger = triggerConnector?.triggers?.find(
-    (connectorTrigger: { key: any }) =>
-      connectorTrigger && connectorTrigger.key === workflowTriggerOperation
-  );
+  const trigger: SelectedTrigger | undefined =
+    triggerConnector?.triggers?.find(
+      (connectorTrigger: { key: any }) =>
+        connectorTrigger && connectorTrigger.key === workflowTriggerOperation
+    ) ||
+    triggerConnector?.recipes?.find(
+      (connectorRecipe: { key: any }) =>
+        connectorRecipe && connectorRecipe.key === workflowTriggerOperation
+    );
 
   // current action's connector object
   const actionConnector = (index: number) =>
@@ -231,11 +256,16 @@ export const WorkflowContextProvider = ({
     );
 
   // current action object
-  const action = (index: number) =>
+  const action: (index: number) => SelectedAction | undefined = (index) =>
     actionConnector(index)?.actions?.find(
       (connectorAction: { key: any }) =>
         connectorAction &&
         connectorAction.key === workflowActionOperation(index)
+    ) ||
+    actionConnector(index)?.recipes?.find(
+      (connectorRecipe: { key: any }) =>
+        connectorRecipe &&
+        connectorRecipe.key === workflowActionOperation(index)
     );
 
   // chech if trigger is authenticated (if required)
@@ -257,6 +287,11 @@ export const WorkflowContextProvider = ({
       trigger.operation &&
       trigger.operation.inputFields &&
       trigger.operation.inputFields
+        .filter((field: Field) => field && field.required)
+        .map((field: Field) => field.key)) ||
+    (trigger &&
+      trigger.inputFields &&
+      trigger.inputFields
         .filter((field: Field) => field && field.required)
         .map((field: Field) => field.key)) ||
     [];
@@ -285,7 +320,11 @@ export const WorkflowContextProvider = ({
     return (
       (action(index)?.operation?.inputFields || [])
         .filter((field: Field) => field && field.required)
-        .map((field: Field) => field.key) || []
+        .map((field: Field) => field.key) ||
+      (action(index)?.inputFields || [])
+        .filter((field: Field) => field && field.required)
+        .map((field: Field) => field.key) ||
+      []
     );
   };
 
@@ -319,15 +358,30 @@ export const WorkflowContextProvider = ({
     );
 
   // list available triggers for the selected connector
-  const availableTriggers =
-    (triggerConnectorIsSet &&
+  const availableTriggers = [
+    ...((triggerConnectorIsSet &&
       selectedTriggerConnector &&
       selectedTriggerConnector.triggers) ||
-    [];
+      []),
+    ...((triggerConnectorIsSet &&
+      selectedTriggerConnector &&
+      selectedTriggerConnector.recipes &&
+      selectedTriggerConnector.recipes.filter((recipe) => recipe.trigger)) ||
+      []),
+  ];
 
   // list available actions for the selected connector
-  const availableActions = (index: number) =>
-    (triggerConnectorIsSet && selectedActionConnector(index)?.actions) || [];
+  const availableActions = (index: number) => [
+    ...((actionConnectorIsSet(index) &&
+      selectedActionConnector(index)?.actions) ||
+      []),
+    ...((actionConnectorIsSet(index) &&
+      selectedActionConnector(index) &&
+      selectedActionConnector(index)?.recipes?.filter(
+        (recipe) => recipe.actions && !recipe.trigger
+      )) ||
+      []),
+  ];
 
   // check if trigger authentication is required
   const triggerAuthenticationIsRequired = Boolean(

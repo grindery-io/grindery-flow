@@ -5,6 +5,7 @@ export type Connector = {
   platformVersion: string;
   triggers?: Trigger[];
   actions?: Action[];
+  recipes?: Recipe[];
   authentication?: Authentication;
   icon?: string;
   pricing?: string;
@@ -98,6 +99,29 @@ export type ChainCallOperationArgs = {
 };
 
 // END Actions
+
+// Recipes
+
+export type Recipe = {
+  key: string;
+  name: string;
+  display: Display;
+  inputFields?: Field[];
+  trigger?: RecipeOperation;
+  actions?: RecipeOperation[];
+};
+
+export type RecipeOperation = {
+  connector?: string;
+  operation: string;
+  input: RecipeOperationInput;
+};
+
+export type RecipeOperationInput = {
+  [key: string]: string | number | boolean;
+};
+
+// END Recipes
 
 // Authentication
 
@@ -196,3 +220,7 @@ export type Request = {
 };
 
 // END Shared
+
+export type SelectedTrigger = Trigger & Recipe;
+
+export type SelectedAction = Action & Recipe;

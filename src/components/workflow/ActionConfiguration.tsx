@@ -97,7 +97,9 @@ const ActionConfiguration = (props: Props) => {
   const { addressBook, setAddressBook } = useAddressBook(user);
 
   const inputFields = (
-    actions.current(index)?.operation?.inputFields || []
+    actions.current(index)?.operation?.inputFields ||
+    actions.current(index)?.inputFields ||
+    []
   ).filter((inputField: Field) => inputField && !inputField.computed);
 
   const options =
@@ -359,10 +361,24 @@ const ActionConfiguration = (props: Props) => {
       ) || ""
     : "";
 
+  const setActionType = () => {
+    if (
+      actions &&
+      actions.current(index) &&
+      actions.current(index)?.inputFields
+    ) {
+      updateWorkflow({
+        ["actions[" + index + "].type"]: "recipe",
+      });
+    }
+  };
+
   useEffect(() => {
     if (workflowActionCredentials) {
       testAuth(workflowActionCredentials);
     }
+
+    setActionType();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
