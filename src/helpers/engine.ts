@@ -70,3 +70,16 @@ export const createWorkflow = async (workflow: Workflow) => {
       console.log("or_createWorkflow error", err.message);
     });
 };
+
+export const getWorkflowExecutionLog = async (executionId: string) => {
+  return await axios
+    .post(
+      WORKFLOW_ENGINE_URL,
+      jsonrpcObj("or_getWorkflowExecutionLog", {
+        executionId: executionId,
+      })
+    )
+    .catch((err) => {
+      console.error("or_getWorkflowExecutionLog error", err.message);
+    });
+};

@@ -16,3 +16,20 @@ export type Operation = {
   authentication?: string;
   credentials?: { [key: string]: string | number | boolean };
 };
+
+export type WorkflowExecution = {
+  executionId: string;
+  startedAt: number;
+};
+
+export type WorkflowExecutionLog = {
+  workflowKey: string;
+  sessionId: string;
+  executionId: string;
+  startedAt: number;
+  endedAt?: number;
+  stepIndex?: number;
+  input?: any;
+  output?: any;
+  error?: any;
+};

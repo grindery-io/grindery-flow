@@ -1,13 +1,18 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, createContext, useEffect, useCallback } from "react";
 import { EthereumAuthProvider, useViewerConnection } from "@self.id/framework";
 import _ from "lodash";
-import { Workflow } from "../types/Workflow";
+import {
+  Workflow,
+  WorkflowExecution,
+  WorkflowExecutionLog,
+} from "../types/Workflow";
 import { RIGHTBAR_TABS, SCREEN } from "../constants";
 import { Connector } from "../types/Connector";
 import { defaultFunc, getSelfIdCookie } from "../helpers/utils";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../hooks/useWindowSize";
 import {
+  getWorkflowExecutionLog,
   getWorkflowExecutions,
   isAllowedUser,
   listWorkflows,
@@ -35,7 +40,14 @@ type ContextProps = {
   setWorkflows: (a: Workflow[]) => void;
   connectors: Connector[];
   getWorkflowsList: () => void;
-  getWorkflowHistory: (a: string) => void;
+  getWorkflowHistory: (
+    a: string,
+    b: (c: WorkflowExecutionLog[]) => void
+  ) => void;
+  getWorkflowExecution: (
+    a: string,
+    b: (c: WorkflowExecutionLog[]) => void
+  ) => void;
   editWorkflow: (a: Workflow) => void;
   accessAllowed: boolean;
 };
@@ -56,6 +68,7 @@ export const AppContext = createContext<ContextProps>({
   connectors: [],
   getWorkflowsList: defaultFunc,
   getWorkflowHistory: defaultFunc,
+  getWorkflowExecution: defaultFunc,
   editWorkflow: defaultFunc,
   accessAllowed: false,
 });
@@ -128,16 +141,42 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     );
   };
 
-  const getWorkflowHistory = async (workflowKey: string) => {
-    const res = await getWorkflowExecutions(workflowKey);
+  const getWorkflowHistory = useCallback(
+    async (
+      workflowKey: string,
+      callback: (newItems: WorkflowExecutionLog[]) => void
+    ) => {
+      const res = await getWorkflowExecutions(workflowKey);
 
-    if (res && res.data && res.data.error) {
-      console.error("or_getWorkflowExecutions error", res.data.error);
-    }
-    if (res && res.data && res.data.result) {
-      console.log("or_getWorkflowExecutions result", res.data.result);
-    }
-  };
+      if (res && res.data && res.data.error) {
+        console.error("or_getWorkflowExecutions error", res.data.error);
+      }
+      if (res && res.data && res.data.result) {
+        const executions = res.data.result;
+        executions.forEach((execution: WorkflowExecution) => {
+          getWorkflowExecution(execution.executionId, callback);
+        });
+      }
+    },
+    []
+  );
+
+  const getWorkflowExecution = useCallback(
+    async (
+      executionId: string,
+      callback: (newItems: WorkflowExecutionLog[]) => void
+    ) => {
+      const res = await getWorkflowExecutionLog(executionId);
+
+      if (res && res.data && res.data.error) {
+        console.error("or_getWorkflowExecutionLog error", res.data.error);
+      }
+      if (res && res.data && res.data.result) {
+        callback(res.data.result);
+      }
+    },
+    []
+  );
 
   const editWorkflow = async (workflow: Workflow) => {
     const res = await updateWorkflow(workflow, user);
@@ -235,6 +274,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         connectors,
         getWorkflowsList,
         getWorkflowHistory,
+        getWorkflowExecution,
         editWorkflow,
         accessAllowed,
       }}

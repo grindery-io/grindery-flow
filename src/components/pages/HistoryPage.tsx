@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
+import _ from "lodash";
 import { InputBox, TabComponent } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import { ICONS, SCREEN } from "../../constants";
-import logs from "../../samples/logs";
 import useWindowSize from "../../hooks/useWindowSize";
+import useAppContext from "../../hooks/useAppContext";
+import { WorkflowExecutionLog } from "../../types/Workflow";
 
 const statusIconMapping: { [key: string]: string } = {
   Executed: ICONS.EXECUTED,
@@ -153,29 +155,75 @@ const ItemDate = styled.div`
 type Props = {};
 
 const HistoryPage = (props: Props) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [items, setItems] = useState(logs);
+  const { workflows, getWorkflowHistory, connectors } = useAppContext();
+  const [items, setItems] = useState<WorkflowExecutionLog[][]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [tab, setTab] = useState(0);
   const { size } = useWindowSize();
 
-  const filteredItems = items
-    .filter((item) => {
-      if (tab === 0) return true;
-      if (tab === 1 && item.status === "Executed") return true;
-      if (tab === 2 && item.status === "Error") return true;
-      return false;
-    })
-    .filter(
+  const filteredItems = _.orderBy(
+    items
+      .filter((item: WorkflowExecutionLog[]) => {
+        if (tab === 0) return true;
+        if (
+          tab === 1 &&
+          item.filter((log: WorkflowExecutionLog) => log.error).length < 1
+        ) {
+          return true;
+        }
+        if (
+          tab === 2 &&
+          item.filter((log: WorkflowExecutionLog) => log.error).length > 0
+        ) {
+          return true;
+        }
+        return false;
+      })
+      .filter((item) => {
+        const workflowKey = item[0].workflowKey;
+        const workflow = workflows.find((wf) => wf.key === workflowKey);
+        const apps: any[] = [
+          connectors.find(
+            (connector) => connector.key === workflow?.trigger.connector
+          ),
+          ...(workflow?.actions || []).map((action) =>
+            connectors.find((connector) => connector.key === action.connector)
+          ),
+        ].map((connector) => ({
+          name: connector?.name,
+          icon: connector?.icon || "",
+        }));
+        return (
+          apps.filter((app) =>
+            app.name.toLowerCase().includes(searchTerm.toLowerCase())
+          ).length > 0
+        );
+      }),
+    [
       (item) =>
-        item.apps.filter((app) =>
-          app.name.toLowerCase().includes(searchTerm.toLowerCase())
-        ).length > 0
-    );
+        item[item.length - 1].endedAt || item[item.length - 1].startedAt,
+    ],
+    ["desc"]
+  );
 
   const handleSearchChange = (e: string) => {
     setSearchTerm(e);
   };
+
+  const addExecutions = useCallback((newItems: WorkflowExecutionLog[]) => {
+    setItems((items) => [...items, newItems]);
+  }, []);
+
+  useEffect(() => {
+    if (workflows && workflows.length > 0) {
+      workflows.forEach((workflow) => {
+        if (workflow.key) {
+          getWorkflowHistory(workflow.key, addExecutions);
+        }
+      });
+    }
+  }, [workflows, addExecutions, getWorkflowHistory]);
+
   return (
     <RootWrapper>
       <TabsWrapper>
@@ -208,37 +256,75 @@ const HistoryPage = (props: Props) => {
         </SearchWrapper>
         <ItemsWrapper>
           {filteredItems.map((item, i) => (
-            <DataBox
-              key={item.timestamp + i}
-              size="small"
-              LeftComponent={
-                <ItemTitleWrapper>
-                  <ItemIcon
-                    src={statusIconMapping[item.status]}
-                    alt={item.status}
-                  />
-                  <Title>{item.status}</Title>
-                </ItemTitleWrapper>
-              }
-              CenterComponent={
-                <ItemAppsWrapper>
-                  {item.apps.map((app, i2) => (
-                    <ItemAppWrapper key={item.timestamp + i + i2}>
-                      <ItemAppIcon src={app.icon} alt={app.name} />
-                    </ItemAppWrapper>
-                  ))}
-                </ItemAppsWrapper>
-              }
-              RightComponent={
-                <ItemDate>
-                  {moment(item.timestamp).format("MMM DD, YYYY HH:mm:ss")}
-                </ItemDate>
-              }
-            />
+            <WorkflowExecutionRow item={item} />
           ))}
         </ItemsWrapper>
       </Wrapper>
     </RootWrapper>
+  );
+};
+
+type WorkflowExecutionRowProps = {
+  item: WorkflowExecutionLog[];
+};
+
+const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
+  const { workflows, connectors } = useAppContext();
+  const { item } = props;
+  const executionId = item[0].executionId;
+  const workflowKey = item[0].workflowKey;
+  const executedAt =
+    item[item.length - 1].endedAt || item[item.length - 1].startedAt;
+  const status =
+    item.filter((log: WorkflowExecutionLog) => log.error).length > 0
+      ? "Error"
+      : "Executed";
+  const workflow = workflows.find((wf) => wf.key === workflowKey);
+
+  const apps: any[] = [
+    connectors.find(
+      (connector) => connector.key === workflow?.trigger.connector
+    ),
+    ...(workflow?.actions || []).map((action) =>
+      connectors.find((connector) => connector.key === action.connector)
+    ),
+  ].map((connector) => ({
+    name: connector?.name,
+    icon: connector?.icon || "",
+  }));
+
+  if (item.length < 1) {
+    return null;
+  }
+
+  return (
+    <DataBox
+      key={executionId}
+      size="small"
+      LeftComponent={
+        <ItemTitleWrapper>
+          <ItemIcon src={statusIconMapping[status]} alt={status} />
+          <Title>{status}</Title>
+        </ItemTitleWrapper>
+      }
+      CenterComponent={
+        <ItemAppsWrapper>
+          {apps.length > 0 &&
+            apps
+              .filter((app: any) => app.icon)
+              .map((app: any, i2) => (
+                <ItemAppWrapper key={executionId + i2} title={app.name}>
+                  <ItemAppIcon src={app.icon} alt={app.name} />
+                </ItemAppWrapper>
+              ))}
+        </ItemAppsWrapper>
+      }
+      RightComponent={
+        <ItemDate>
+          {moment(executedAt).format("MMM DD, YYYY HH:mm:ss")}
+        </ItemDate>
+      }
+    />
   );
 };
 
