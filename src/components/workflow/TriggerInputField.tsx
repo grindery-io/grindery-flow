@@ -67,7 +67,7 @@ const TriggerInputField = ({
   const handleFieldChange = (value: string) => {
     setTriggerError("");
 
-    let newVal: string | number | boolean = "";
+    let newVal: string | number | boolean = value.trim();
     if (
       (inputField.type === "string" && inputField.choices) ||
       inputField.type === "boolean"

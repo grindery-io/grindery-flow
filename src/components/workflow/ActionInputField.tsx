@@ -69,8 +69,24 @@ const ActionInputField = ({
 
   const handleFieldChange = (value: string) => {
     setActionError("");
+    let newVal: string | number | boolean = value.trim();
+    if (
+      (inputField.type === "string" && inputField.choices) ||
+      inputField.type === "boolean"
+    ) {
+      newVal = (value || "").trim();
+      if (inputField.type === "boolean") {
+        newVal = newVal === "true";
+      }
+    }
+    if (inputField.type === "string" && !fieldOptions) {
+      newVal = value.trim();
+    }
+    if (inputField.type === "number" && !fieldOptions) {
+      newVal = parseFloat(value);
+    }
     updateWorkflow({
-      ["actions[" + index + "].input." + inputField.key]: (value || "").trim(),
+      ["actions[" + index + "].input." + inputField.key]: newVal,
     });
     setValChanged(true);
   };
