@@ -190,12 +190,15 @@ const HistoryPage = (props: Props) => {
             connectors.find((connector) => connector.key === action.connector)
           ),
         ].map((connector) => ({
-          name: connector?.name,
+          name: connector?.name || "",
           icon: connector?.icon || "",
         }));
         return (
-          apps.filter((app) =>
-            app.name.toLowerCase().includes(searchTerm.toLowerCase())
+          apps.filter(
+            (app) =>
+              app &&
+              app.aname &&
+              app.name.toLowerCase().includes(searchTerm.toLowerCase())
           ).length > 0
         );
       }),
@@ -289,7 +292,7 @@ const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
       connectors.find((connector) => connector.key === action.connector)
     ),
   ].map((connector) => ({
-    name: connector?.name,
+    name: connector?.name || "",
     icon: connector?.icon || "",
   }));
 
