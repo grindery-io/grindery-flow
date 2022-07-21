@@ -139,7 +139,13 @@ const ActionTest = (props: Props) => {
       label: field.label || field.key,
       icon: actionConnector(index)?.icon,
       value: values[field.key] || "",
-    })) || [];
+    })) ||
+    actions.current(index)?.inputFields?.map((field: Field) => ({
+      label: field.label || field.key,
+      icon: actionConnector(index)?.icon,
+      value: values[field.key] || "",
+    })) ||
+    [];
 
   const handleTestClick = () => {
     testWorkflowAction(index);

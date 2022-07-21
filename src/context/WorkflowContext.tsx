@@ -282,19 +282,21 @@ export const WorkflowContextProvider = ({
     );
 
   // list trigger's required field names
-  const requiredTriggerFields =
-    (trigger &&
+  const requiredTriggerFields = [
+    ...((trigger &&
       trigger.operation &&
       trigger.operation.inputFields &&
       trigger.operation.inputFields
         .filter((field: Field) => field && field.required)
         .map((field: Field) => field.key)) ||
-    (trigger &&
+      []),
+    ...((trigger &&
       trigger.inputFields &&
       trigger.inputFields
         .filter((field: Field) => field && field.required)
         .map((field: Field) => field.key)) ||
-    [];
+      []),
+  ];
 
   // check if trigger is configured (all required fields is set)
   const triggerIsConfigured = Boolean(
@@ -317,15 +319,14 @@ export const WorkflowContextProvider = ({
 
   // list action's required field names
   const requiredActionFields = (index: number) => {
-    return (
-      (action(index)?.operation?.inputFields || [])
+    return [
+      ...((action(index)?.operation?.inputFields || [])
         .filter((field: Field) => field && field.required)
-        .map((field: Field) => field.key) ||
-      (action(index)?.inputFields || [])
+        .map((field: Field) => field.key) || []),
+      ...((action(index)?.inputFields || [])
         .filter((field: Field) => field && field.required)
-        .map((field: Field) => field.key) ||
-      []
-    );
+        .map((field: Field) => field.key) || []),
+    ];
   };
 
   // check if action is configured (all required fields is set)
