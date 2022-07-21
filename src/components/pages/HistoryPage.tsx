@@ -197,7 +197,7 @@ const HistoryPage = (props: Props) => {
           apps.filter(
             (app) =>
               app &&
-              app.aname &&
+              app.name &&
               app.name.toLowerCase().includes(searchTerm.toLowerCase())
           ).length > 0
         );
