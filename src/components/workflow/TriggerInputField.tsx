@@ -66,7 +66,6 @@ const TriggerInputField = ({
 
   const handleFieldChange = (value: string) => {
     setTriggerError("");
-    setLoading(true);
 
     let newVal: string | number | boolean = "";
     if (
@@ -250,10 +249,22 @@ const TriggerInputField = ({
 
   useEffect(() => {
     if (valChanged) {
-      updateFieldsDefinition();
+      if (
+        (typeof inputField.updateFieldDefinition === "undefined" ||
+          inputField.updateFieldDefinition) &&
+        triggers.current?.operation?.inputFieldProviderUrl
+      ) {
+        setLoading(true);
+        updateFieldsDefinition();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valChanged, updateFieldsDefinition]);
+  }, [
+    valChanged,
+    updateFieldsDefinition,
+    inputField.updateFieldDefinition,
+    setLoading,
+  ]);
 
   useEffect(() => {
     if (inputField && inputField.default) {

@@ -69,7 +69,6 @@ const ActionInputField = ({
 
   const handleFieldChange = (value: string) => {
     setActionError("");
-    setLoading(true);
     updateWorkflow({
       ["actions[" + index + "].input." + inputField.key]: (value || "").trim(),
     });
@@ -220,8 +219,23 @@ const ActionInputField = ({
     if (valChanged) {
       updateFieldsDefinition();
     }
+    if (valChanged) {
+      if (
+        (typeof inputField.updateFieldDefinition === "undefined" ||
+          inputField.updateFieldDefinition) &&
+        actions.current(index)?.operation?.inputFieldProviderUrl
+      ) {
+        setLoading(true);
+        updateFieldsDefinition();
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valChanged, updateFieldsDefinition]);
+  }, [
+    valChanged,
+    updateFieldsDefinition,
+    setLoading,
+    inputField.updateFieldDefinition,
+  ]);
 
   useEffect(() => {
     if (inputField && inputField.default) {
