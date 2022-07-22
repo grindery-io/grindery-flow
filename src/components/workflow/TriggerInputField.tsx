@@ -8,6 +8,7 @@ import { jsonrpcObj } from "../../helpers/utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
 import { BLOCKCHAINS } from "../../constants";
+import InputFieldError from "../shared/InputFieldError";
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -24,6 +25,8 @@ type Props = {
   setTriggerError: (i: string) => void;
   addressBook: any;
   setAddressBook?: (i: any) => void;
+  errors: any;
+  setErrors: (a: any) => void;
 };
 
 const TriggerInputField = ({
@@ -31,6 +34,8 @@ const TriggerInputField = ({
   setTriggerError,
   addressBook,
   setAddressBook,
+  errors,
+  setErrors,
 }: Props) => {
   const {
     workflow,
@@ -64,10 +69,23 @@ const TriggerInputField = ({
       : inputField.default || ""
   ).toString();
 
+  console.log(inputField.key, workflowValue);
+
   const handleFieldChange = (value: string) => {
     setTriggerError("");
+    setErrors(
+      typeof errors !== "boolean"
+        ? [
+            ...errors.filter(
+              (error: any) => error && error.field !== inputField.key
+            ),
+          ]
+        : errors
+    );
 
-    let newVal: string | number | boolean = value.trim();
+    let newVal: string | number | boolean | (string | number | boolean)[] = (
+      value || ""
+    ).trim();
     if (
       (inputField.type === "string" && inputField.choices) ||
       inputField.type === "boolean"
@@ -81,7 +99,10 @@ const TriggerInputField = ({
       newVal = value.trim();
     }
     if (inputField.type === "number" && !fieldOptions) {
-      newVal = parseFloat(value);
+      newVal = value ? parseFloat(value) : "";
+    }
+    if (inputField.list) {
+      newVal = [newVal].filter((val) => val);
     }
     updateWorkflow({
       ["trigger.input." + inputField.key]: newVal,
@@ -275,7 +296,25 @@ const TriggerInputField = ({
 
   return (
     <React.Fragment key={inputField.key}>
-      {!!inputField && <InputWrapper>{renderField(inputField)}</InputWrapper>}
+      {!!inputField && (
+        <InputWrapper>
+          {renderField(inputField)}
+          {errors &&
+            typeof errors !== "boolean" &&
+            errors.length > 0 &&
+            errors.find(
+              (error: any) => error && error.field === inputField.key
+            ) && (
+              <InputFieldError>
+                {(
+                  errors.find(
+                    (error: any) => error && error.field === inputField.key
+                  ).message || ""
+                ).replace(`'${inputField.key}'`, "")}
+              </InputFieldError>
+            )}
+        </InputWrapper>
+      )}
     </React.Fragment>
   );
 };

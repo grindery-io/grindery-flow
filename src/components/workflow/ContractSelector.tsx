@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { RichInput } from "grindery-ui";
 import useAppContext from "../../hooks/useAppContext";
+import InputFieldError from "../shared/InputFieldError";
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -19,11 +20,38 @@ type Props = {
   options?: any[];
   addressBook: any[];
   setAddressBook: (i: any) => void;
+  errors?: any;
+  setErrors?: (a: any) => void;
 };
 
 const ContractSelector = (props: Props) => {
   const { user } = useAppContext();
-  const { onChange, value, options, addressBook, setAddressBook } = props;
+  const {
+    onChange,
+    value,
+    options,
+    addressBook,
+    setAddressBook,
+    errors,
+    setErrors,
+  } = props;
+
+  const handleChange = (value: any) => {
+    if (setErrors) {
+      setErrors(
+        typeof errors !== "boolean"
+          ? [
+              ...errors.filter(
+                (error: any) =>
+                  error && error.field !== "_grinderyContractAddress"
+              ),
+            ]
+          : errors
+      );
+    }
+
+    onChange(value);
+  };
 
   return (
     <InputWrapper>
@@ -33,13 +61,28 @@ const ContractSelector = (props: Props) => {
         required
         //tooltip={inputField.helpText || false}
         options={options}
-        onChange={onChange}
+        onChange={handleChange}
         value={value}
         user={user}
         hasAddressBook
         addressBook={addressBook}
         setAddressBook={setAddressBook}
       />
+      {errors &&
+        typeof errors !== "boolean" &&
+        errors.length > 0 &&
+        errors.find(
+          (error: any) => error && error.field === "_grinderyContractAddress"
+        ) && (
+          <InputFieldError>
+            {(
+              errors.find(
+                (error: any) =>
+                  error && error.field === "_grinderyContractAddress"
+              ).message || ""
+            ).replace(`'_grinderyContractAddress'`, "")}
+          </InputFieldError>
+        )}
     </InputWrapper>
   );
 };

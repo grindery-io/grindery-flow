@@ -6,6 +6,7 @@ import ActionInputField from "./ActionInputField";
 import {
   getOutputOptions,
   getParameterByName,
+  getValidationScheme,
   jsonrpcObj,
 } from "../../helpers/utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
@@ -61,6 +62,7 @@ const AccountNameWrapper = styled.div`
 
 const AlertWrapper = styled.div`
   margin-top: 20px;
+  transform: translateY(10px);
 `;
 
 type Props = {
@@ -70,12 +72,12 @@ type Props = {
 
 const ActionConfiguration = (props: Props) => {
   const { index, step } = props;
-  const { user } = useAppContext();
+  const { user, validator } = useAppContext();
   const {
     activeStep,
     workflow,
     updateWorkflow,
-    saveWorkflow,
+    //saveWorkflow,
     loading,
     error,
     setActiveStep,
@@ -87,7 +89,7 @@ const ActionConfiguration = (props: Props) => {
   } = useWorkflowContext();
   const {
     actionConnector,
-    actionIsConfigured,
+    //actionIsConfigured,
     actionAuthenticationIsRequired,
     actionIsAuthenticated,
   } = actions;
@@ -95,6 +97,7 @@ const ActionConfiguration = (props: Props) => {
   const [gas, setGas] = useState("0.001");
   const [actionError, setActionError] = useState("");
   const { addressBook, setAddressBook } = useAddressBook(user);
+  const [errors, setErrors] = useState<any>(false);
 
   const inputFields = (
     actions.current(index)?.operation?.inputFields ||
@@ -109,11 +112,43 @@ const ActionConfiguration = (props: Props) => {
 
   const handleTestClick = async () => {
     setActionError("");
-    if (!actionIsConfigured(index)) {
+    setErrors(true);
+
+    const validationSchema = getValidationScheme([
+      ...(actions.current(index)?.inputFields ||
+        actions.current(index)?.operation?.inputFields ||
+        []),
+      ...(actions.current(index)?.operation?.type === "blockchain:call"
+        ? [
+            {
+              key: "_grinderyContractAddress",
+              type: "string",
+              required: true,
+            },
+            {
+              key: "_grinderyChain",
+              type: "string",
+              required: true,
+            },
+          ]
+        : []),
+    ]);
+
+    const check = validator.compile(validationSchema);
+
+    const validated = check(workflow.actions[index].input);
+
+    if (typeof validated === "boolean") {
+      setActiveStep("actionTest");
+    } else {
+      setErrors(validated);
+      setActionError("Please complete all required fields.");
+    }
+    /*if (!actionIsConfigured(index)) {
       setActionError("Please complete all required fields.");
     } else {
       setActiveStep("actionTest");
-    }
+    }*/
   };
 
   /*const handleSaveClick = async () => {
@@ -463,6 +498,8 @@ const ActionConfiguration = (props: Props) => {
                 workflow.actions[index].input._grinderyChain || ""
               ).toString()}
               onChange={handleChainChange}
+              errors={errors}
+              setErrors={setErrors}
             />
           )}
           {actions.current(index)?.operation?.type === "blockchain:call" && (
@@ -474,6 +511,8 @@ const ActionConfiguration = (props: Props) => {
               options={options}
               addressBook={addressBook}
               setAddressBook={setAddressBook}
+              errors={errors}
+              setErrors={setErrors}
             />
           )}
           {inputFields.map((inputField: Field) => (
@@ -485,6 +524,8 @@ const ActionConfiguration = (props: Props) => {
               addressBook={addressBook}
               setAddressBook={setAddressBook}
               setActionError={setActionError}
+              errors={errors}
+              setErrors={setErrors}
             />
           ))}
           {actions.current(index)?.operation?.type === "blockchain:call" &&

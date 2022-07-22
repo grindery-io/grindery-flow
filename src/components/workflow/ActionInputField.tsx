@@ -8,6 +8,7 @@ import { BLOCKCHAINS } from "../../constants";
 import { debounce } from "throttle-debounce";
 import axios from "axios";
 import { jsonrpcObj } from "../../helpers/utils";
+import InputFieldError from "../shared/InputFieldError";
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -26,6 +27,8 @@ type Props = {
   addressBook: any;
   setAddressBook?: (i: any) => void;
   setActionError: (i: string) => void;
+  errors: any;
+  setErrors: (a: any) => void;
 };
 
 const ActionInputField = ({
@@ -35,6 +38,8 @@ const ActionInputField = ({
   addressBook,
   setAddressBook,
   setActionError,
+  errors,
+  setErrors,
 }: Props) => {
   const { user } = useAppContext();
   const {
@@ -69,7 +74,18 @@ const ActionInputField = ({
 
   const handleFieldChange = (value: string) => {
     setActionError("");
-    let newVal: string | number | boolean = value.trim();
+    setErrors(
+      typeof errors !== "boolean"
+        ? [
+            ...errors.filter(
+              (error: any) => error && error.field !== inputField.key
+            ),
+          ]
+        : errors
+    );
+
+    let newVal: string | number | boolean | (string | number | boolean)[] =
+      value.trim();
     if (
       (inputField.type === "string" && inputField.choices) ||
       inputField.type === "boolean"
@@ -83,7 +99,10 @@ const ActionInputField = ({
       newVal = value.trim();
     }
     if (inputField.type === "number" && !fieldOptions) {
-      newVal = parseFloat(value);
+      newVal = value ? parseFloat(value) : "";
+    }
+    if (inputField.list) {
+      newVal = [newVal].filter((val) => val);
     }
     updateWorkflow({
       ["actions[" + index + "].input." + inputField.key]: newVal,
@@ -233,9 +252,6 @@ const ActionInputField = ({
 
   useEffect(() => {
     if (valChanged) {
-      updateFieldsDefinition();
-    }
-    if (valChanged) {
       if (
         (typeof inputField.updateFieldDefinition === "undefined" ||
           inputField.updateFieldDefinition) &&
@@ -262,7 +278,25 @@ const ActionInputField = ({
 
   return (
     <React.Fragment key={inputField.key}>
-      {!!inputField && <InputWrapper>{renderField(inputField)}</InputWrapper>}
+      {!!inputField && (
+        <InputWrapper>
+          {renderField(inputField)}
+          {errors &&
+            typeof errors !== "boolean" &&
+            errors.length > 0 &&
+            errors.find(
+              (error: any) => error && error.field === inputField.key
+            ) && (
+              <InputFieldError>
+                {(
+                  errors.find(
+                    (error: any) => error && error.field === inputField.key
+                  ).message || ""
+                ).replace(`'${inputField.key}'`, "")}
+              </InputFieldError>
+            )}
+        </InputWrapper>
+      )}
     </React.Fragment>
   );
 };

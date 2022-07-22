@@ -1,6 +1,7 @@
 import React, { useState, createContext, useEffect, useCallback } from "react";
 import { EthereumAuthProvider, useViewerConnection } from "@self.id/framework";
 import _ from "lodash";
+import Validator from "fastest-validator";
 import {
   Workflow,
   WorkflowExecution,
@@ -20,6 +21,8 @@ import {
 } from "../helpers/engine";
 import { getCDSFiles } from "../helpers/github";
 import helloWorldConnector from "../samples/connectors/helloworld.json";
+
+const validator = new Validator();
 
 async function createAuthProvider() {
   // The following assumes there is an injected `window.ethereum` provider
@@ -50,6 +53,7 @@ type ContextProps = {
   ) => void;
   editWorkflow: (a: Workflow) => void;
   accessAllowed: boolean;
+  validator: any;
 };
 
 type AppContextProps = {
@@ -71,6 +75,7 @@ export const AppContext = createContext<ContextProps>({
   getWorkflowExecution: defaultFunc,
   editWorkflow: defaultFunc,
   accessAllowed: false,
+  validator: validator,
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -277,6 +282,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         getWorkflowExecution,
         editWorkflow,
         accessAllowed,
+        validator,
       }}
     >
       {children}

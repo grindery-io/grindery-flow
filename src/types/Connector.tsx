@@ -196,6 +196,7 @@ export type Field = {
   computed?: boolean;
   updateFieldDefinition?: boolean;
   inputFormat?: string;
+  validation?: any;
 };
 
 export type FieldChoice =

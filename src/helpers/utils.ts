@@ -2,6 +2,7 @@ import _ from "lodash";
 import {
   ActionOperation,
   Connector,
+  Field,
   TriggerOperation,
 } from "../types/Connector";
 
@@ -91,4 +92,35 @@ export const getSelfIdCookie = () => {
     "(^|;)\\s*" + cookieName + "\\s*=\\s*([^;]+)"
   );
   return b ? b.pop() : "";
+};
+
+export const getValidationScheme = (inputFields: Field[]) => {
+  const sanitizeType = (type: string) => {
+    if (type === "integer") {
+      return "number";
+    }
+    if (type !== "string" && type !== "boolean" && type !== "number") {
+      return "string";
+    } else {
+      return type;
+    }
+  };
+  const schema: any = {};
+  inputFields.forEach((field: Field) => {
+    schema[field.key] = {
+      type: field.validation?.type || sanitizeType(field.type || ""),
+      optional: !field.required,
+      empty: !field.required,
+      ...field.validation,
+    };
+    if (field.type === "datetime") {
+      schema[field.key].type = "date";
+    }
+    if (field.list) {
+      schema[field.key].items = schema[field.key].type;
+      schema[field.key].type = "array";
+    }
+  });
+  console.log("schema", schema);
+  return schema;
 };

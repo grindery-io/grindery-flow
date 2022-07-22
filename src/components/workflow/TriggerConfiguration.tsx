@@ -5,7 +5,11 @@ import { CircularProgress, Text, AlertField } from "grindery-ui";
 import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
 import TriggerInputField from "./TriggerInputField";
-import { getParameterByName, jsonrpcObj } from "../../helpers/utils";
+import {
+  getParameterByName,
+  getValidationScheme,
+  jsonrpcObj,
+} from "../../helpers/utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import ChainSelector from "./ChainSelector";
 import ContractSelector from "./ContractSelector";
@@ -58,6 +62,7 @@ const AccountNameWrapper = styled.div`
 
 const AlertWrapper = styled.div`
   margin-top: 20px;
+  transform: translateY(10px);
 `;
 
 type Props = {
@@ -66,7 +71,7 @@ type Props = {
 
 const TriggerConfiguration = (props: Props) => {
   const { step } = props;
-  const { user } = useAppContext();
+  const { user, validator } = useAppContext();
   const {
     workflow,
     updateWorkflow,
@@ -82,6 +87,7 @@ const TriggerConfiguration = (props: Props) => {
   const [email, setEmail] = useState("");
   const [triggerError, setTriggerError] = useState("");
   const { addressBook, setAddressBook } = useAddressBook(user);
+  const [errors, setErrors] = useState<any>(false);
 
   const inputFields =
     (triggers.current &&
@@ -296,11 +302,44 @@ const TriggerConfiguration = (props: Props) => {
 
   const handleContinueClick = () => {
     setTriggerError("");
-    if (!triggers.triggerIsConfigured) {
-      setTriggerError("Please complete all required fields.");
-    } else {
+    setErrors(true);
+
+    const validationSchema = getValidationScheme([
+      ...(triggers.current?.inputFields ||
+        triggers.current?.operation?.inputFields ||
+        []),
+      ...(triggers.current?.operation?.type === "blockchain:event"
+        ? [
+            {
+              key: "_grinderyContractAddress",
+              type: "string",
+              required: true,
+            },
+            {
+              key: "_grinderyChain",
+              type: "string",
+              required: true,
+            },
+          ]
+        : []),
+    ]);
+
+    const check = validator.compile(validationSchema);
+
+    const validated = check(workflow.trigger.input);
+
+    if (typeof validated === "boolean") {
       setActiveStep(3);
+    } else {
+      setErrors(validated);
+      setTriggerError("Please complete all required fields.");
     }
+
+    /* if (!triggers.triggerIsConfigured) {
+        setTriggerError("Please complete all required fields.");
+      } else {
+        setActiveStep(3);
+      } */
   };
 
   const handleChangeAuth = () => {
@@ -416,6 +455,8 @@ const TriggerConfiguration = (props: Props) => {
             <ChainSelector
               value={(workflow.trigger.input._grinderyChain || "").toString()}
               onChange={handleChainChange}
+              errors={errors}
+              setErrors={setErrors}
             />
           )}
           {triggers.current.operation?.type === "blockchain:event" && (
@@ -427,6 +468,8 @@ const TriggerConfiguration = (props: Props) => {
               options={[]}
               addressBook={addressBook}
               setAddressBook={setAddressBook}
+              errors={errors}
+              setErrors={setErrors}
             />
           )}
           {inputFields.map((inputField: Field) => (
@@ -436,6 +479,8 @@ const TriggerConfiguration = (props: Props) => {
               setTriggerError={setTriggerError}
               addressBook={addressBook}
               setAddressBook={setAddressBook}
+              errors={errors}
+              setErrors={setErrors}
             />
           ))}
           {error && (
