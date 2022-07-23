@@ -26,6 +26,17 @@ const ChainSelector = (props: Props) => {
 
   const options = BLOCKCHAINS;
 
+  const error =
+    (errors &&
+      typeof errors !== "boolean" &&
+      errors.length > 0 &&
+      errors.find((error: any) => error && error.field === "_grinderyChain") &&
+      (
+        errors.find((error: any) => error && error.field === "_grinderyChain")
+          .message || ""
+      ).replace(`'_grinderyChain'`, "")) ||
+    false;
+
   const handleChange = (value: any) => {
     if (setErrors) {
       setErrors(
@@ -52,21 +63,8 @@ const ChainSelector = (props: Props) => {
         options={options}
         value={value}
         required
+        error={error}
       />
-      {errors &&
-        typeof errors !== "boolean" &&
-        errors.length > 0 &&
-        errors.find(
-          (error: any) => error && error.field === "_grinderyChain"
-        ) && (
-          <InputFieldError>
-            {(
-              errors.find(
-                (error: any) => error && error.field === "_grinderyChain"
-              ).message || ""
-            ).replace(`'_grinderyChain'`, "")}
-          </InputFieldError>
-        )}
     </InputWrapper>
   );
 };

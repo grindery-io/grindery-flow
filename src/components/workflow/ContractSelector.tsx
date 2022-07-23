@@ -36,6 +36,20 @@ const ContractSelector = (props: Props) => {
     setErrors,
   } = props;
 
+  const error =
+    (errors &&
+      typeof errors !== "boolean" &&
+      errors.length > 0 &&
+      errors.find(
+        (error: any) => error && error.field === "_grinderyContractAddress"
+      ) &&
+      (
+        errors.find(
+          (error: any) => error && error.field === "_grinderyContractAddress"
+        ).message || ""
+      ).replace(`'_grinderyContractAddress'`, "")) ||
+    false;
+
   const handleChange = (value: any) => {
     if (setErrors) {
       setErrors(
@@ -67,22 +81,8 @@ const ContractSelector = (props: Props) => {
         hasAddressBook
         addressBook={addressBook}
         setAddressBook={setAddressBook}
+        error={error}
       />
-      {errors &&
-        typeof errors !== "boolean" &&
-        errors.length > 0 &&
-        errors.find(
-          (error: any) => error && error.field === "_grinderyContractAddress"
-        ) && (
-          <InputFieldError>
-            {(
-              errors.find(
-                (error: any) =>
-                  error && error.field === "_grinderyContractAddress"
-              ).message || ""
-            ).replace(`'_grinderyContractAddress'`, "")}
-          </InputFieldError>
-        )}
     </InputWrapper>
   );
 };

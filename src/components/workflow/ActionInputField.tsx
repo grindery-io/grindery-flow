@@ -72,6 +72,17 @@ const ActionInputField = ({
     ""
   ).toString();
 
+  const error =
+    (errors &&
+      typeof errors !== "boolean" &&
+      errors.length > 0 &&
+      errors.find((error: any) => error && error.field === inputField.key) &&
+      (
+        errors.find((error: any) => error && error.field === inputField.key)
+          .message || ""
+      ).replace(`'${inputField.key}'`, "")) ||
+    false;
+
   const handleFieldChange = (value: string) => {
     setActionError("");
     setErrors(
@@ -207,6 +218,7 @@ const ActionInputField = ({
             value={workflowValue}
             tooltip={inputField.helpText}
             required={!!inputField.required}
+            error={error}
           />
         );
       default:
@@ -220,6 +232,7 @@ const ActionInputField = ({
             value={workflowValue}
             tooltip={inputField.helpText}
             required={!!inputField.required}
+            error={error}
           />
         ) : inputField.key === "_grinderyChain" ? (
           <AutoCompleteInput
@@ -231,6 +244,7 @@ const ActionInputField = ({
             value={workflowValue}
             tooltip={inputField.helpText}
             required={!!inputField.required}
+            error={error}
           />
         ) : (
           <RichInput
@@ -245,6 +259,7 @@ const ActionInputField = ({
             hasAddressBook={inputField.type === "address"}
             addressBook={addressBook}
             setAddressBook={setAddressBook}
+            error={error}
           />
         );
     }
@@ -278,25 +293,7 @@ const ActionInputField = ({
 
   return (
     <React.Fragment key={inputField.key}>
-      {!!inputField && (
-        <InputWrapper>
-          {renderField(inputField)}
-          {errors &&
-            typeof errors !== "boolean" &&
-            errors.length > 0 &&
-            errors.find(
-              (error: any) => error && error.field === inputField.key
-            ) && (
-              <InputFieldError>
-                {(
-                  errors.find(
-                    (error: any) => error && error.field === inputField.key
-                  ).message || ""
-                ).replace(`'${inputField.key}'`, "")}
-              </InputFieldError>
-            )}
-        </InputWrapper>
-      )}
+      {!!inputField && <InputWrapper>{renderField(inputField)}</InputWrapper>}
     </React.Fragment>
   );
 };
