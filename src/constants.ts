@@ -167,6 +167,12 @@ export const BLOCKCHAINS = [
     icon: ICONS.CHAIN_GNOSIS,
     token: "xDAI",
   },
+  {
+    value: "eip155:1666600000",
+    label: "Harmony",
+    icon: "/images/coming-soon/harmony.png",
+    token: "ONE",
+  },
 
   // Coming soon
   {
@@ -182,13 +188,6 @@ export const BLOCKCHAINS = [
     group: "Coming soon",
     disabled: true,
     icon: "/images/coming-soon/algorand.png",
-  },
-  {
-    value: "Harmony",
-    label: "Harmony",
-    group: "Coming soon",
-    disabled: true,
-    icon: "/images/coming-soon/harmony.png",
   },
   {
     value: "Flow",
