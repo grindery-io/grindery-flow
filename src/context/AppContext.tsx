@@ -20,7 +20,7 @@ import {
   updateWorkflow,
 } from "../helpers/engine";
 import { getCDSFiles } from "../helpers/github";
-import helloWorldConnector from "../samples/connectors/helloworld.json";
+//import helloWorldConnector from "../samples/connectors/helloworld.json";
 
 const validator = new Validator();
 
@@ -136,10 +136,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
     setConnectors(
       _.orderBy(
-        [
-          ...responses.filter((res) => res && res.data).map((res) => res.data),
-          helloWorldConnector,
-        ],
+        [...responses.filter((res) => res && res.data).map((res) => res.data)],
         [(response) => response.name.toLowerCase()],
         ["asc"]
       )

@@ -308,15 +308,32 @@ const TriggerConfiguration = (props: Props) => {
       ...(triggers.current?.inputFields ||
         triggers.current?.operation?.inputFields ||
         []),
-      ...(triggers.current?.operation?.type === "blockchain:event"
+      ...(triggers.current?.operation?.type === "blockchain:event" &&
+      (
+        triggers.current?.operation?.inputFields ||
+        triggers.current?.inputFields ||
+        []
+      ).filter((inputfield: Field) => inputfield.key === "_grinderyChain")
+        .length < 1
         ? [
             {
-              key: "_grinderyContractAddress",
+              key: "_grinderyChain",
               type: "string",
               required: true,
             },
+          ]
+        : []),
+      ...(triggers.current?.operation?.type === "blockchain:event" &&
+      (
+        triggers.current?.operation?.inputFields ||
+        triggers.current?.inputFields ||
+        []
+      ).filter(
+        (inputfield: Field) => inputfield.key === "_grinderyContractAddress"
+      ).length < 1
+        ? [
             {
-              key: "_grinderyChain",
+              key: "_grinderyContractAddress",
               type: "string",
               required: true,
             },
@@ -451,27 +468,41 @@ const TriggerConfiguration = (props: Props) => {
 
       {triggers.triggerIsAuthenticated && (
         <div style={{ marginTop: 40 }}>
-          {triggers.current.operation?.type === "blockchain:event" && (
-            <ChainSelector
-              value={(workflow.trigger.input._grinderyChain || "").toString()}
-              onChange={handleChainChange}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          )}
-          {triggers.current.operation?.type === "blockchain:event" && (
-            <ContractSelector
-              value={(
-                workflow.trigger.input._grinderyContractAddress || ""
-              ).toString()}
-              onChange={handleContractChange}
-              options={[]}
-              addressBook={addressBook}
-              setAddressBook={setAddressBook}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          )}
+          {triggers.current.operation?.type === "blockchain:event" &&
+            (
+              triggers.current?.operation?.inputFields ||
+              triggers.current?.inputFields ||
+              []
+            ).filter((inputfield: Field) => inputfield.key === "_grinderyChain")
+              .length < 1 && (
+              <ChainSelector
+                value={(workflow.trigger.input._grinderyChain || "").toString()}
+                onChange={handleChainChange}
+                errors={errors}
+                setErrors={setErrors}
+              />
+            )}
+          {triggers.current.operation?.type === "blockchain:event" &&
+            (
+              triggers.current?.operation?.inputFields ||
+              triggers.current?.inputFields ||
+              []
+            ).filter(
+              (inputfield: Field) =>
+                inputfield.key === "_grinderyContractAddress"
+            ).length < 1 && (
+              <ContractSelector
+                value={(
+                  workflow.trigger.input._grinderyContractAddress || ""
+                ).toString()}
+                onChange={handleContractChange}
+                options={[]}
+                addressBook={addressBook}
+                setAddressBook={setAddressBook}
+                errors={errors}
+                setErrors={setErrors}
+              />
+            )}
           {inputFields.map((inputField: Field) => (
             <TriggerInputField
               inputField={inputField}
