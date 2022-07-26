@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { CircularProgress, AlertField, Text } from "grindery-ui";
 import { Field } from "../../types/Connector";
@@ -425,6 +425,23 @@ const ActionConfiguration = (props: Props) => {
     }
   };
 
+  const setComputedDefaultValues = useCallback(() => {
+    let input = {} as any;
+    (
+      actions.current(index)?.operation?.inputFields ||
+      actions.current(index)?.inputFields ||
+      []
+    ).forEach((inputField: Field) => {
+      if (inputField.computed && inputField.default) {
+        input["actions[" + index + "].input." + inputField.key] =
+          inputField.default;
+      }
+    });
+    updateWorkflow(input);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actions.current(index)]);
+
   useEffect(() => {
     if (workflowActionCredentials) {
       testAuth(workflowActionCredentials);
@@ -440,6 +457,10 @@ const ActionConfiguration = (props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operationType, gas]);
+
+  useEffect(() => {
+    setComputedDefaultValues();
+  }, [setComputedDefaultValues]);
 
   if (!activeStep || step !== activeStep) {
     return null;

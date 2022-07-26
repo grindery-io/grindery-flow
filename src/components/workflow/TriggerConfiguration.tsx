@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { CircularProgress, Text, AlertField } from "grindery-ui";
@@ -393,6 +393,22 @@ const TriggerConfiguration = (props: Props) => {
     }
   };
 
+  const setComputedDefaultValues = useCallback(() => {
+    let input = {} as any;
+    (
+      triggers.current?.operation?.inputFields ||
+      triggers.current?.inputFields ||
+      []
+    ).forEach((inputField: Field) => {
+      if (inputField.computed && inputField.default) {
+        input["trigger.input." + inputField.key] = inputField.default;
+      }
+    });
+    updateWorkflow(input);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggers.current]);
+
   useEffect(() => {
     if (workflowTriggerCredentials) {
       testAuth(workflowTriggerCredentials);
@@ -400,6 +416,10 @@ const TriggerConfiguration = (props: Props) => {
     setTriggerType();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setComputedDefaultValues();
+  }, [setComputedDefaultValues]);
 
   if (!activeStep || step !== activeStep) {
     return null;

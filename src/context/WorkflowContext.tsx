@@ -308,13 +308,13 @@ export const WorkflowContextProvider = ({
         typeof workflow.trigger.input[field] !== "undefined" &&
         workflow.trigger.input[field] !== "" &&
         workflow.trigger.input[field] !== null
-    ).length === requiredTriggerFields.length /*&&
+    ).length === requiredTriggerFields.length &&
       (trigger &&
       trigger.operation &&
       trigger.operation.type === "blockchain:event"
         ? workflow.trigger.input._grinderyChain &&
           workflow.trigger.input._grinderyContractAddress
-        : true)*/
+        : true)
   );
 
   // list action's required field names
@@ -334,12 +334,12 @@ export const WorkflowContextProvider = ({
     return Boolean(
       requiredActionFields(index).filter(
         (field: string) => workflow.actions[index]?.input?.[field]
-      ).length === requiredActionFields(index).length /*&&
+      ).length === requiredActionFields(index).length &&
         (action(index)?.operation?.type === "blockchain:call"
           ? workflow.actions[index].input._grinderyChain &&
             workflow.actions[index].input._grinderyContractAddress &&
             workflow.actions[index].input._grinderyGasLimit
-          : true)*/
+          : true)
     );
   };
 
