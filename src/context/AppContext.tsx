@@ -1,7 +1,6 @@
 import React, { useState, createContext, useEffect, useCallback } from "react";
 import { EthereumAuthProvider, useViewerConnection } from "@self.id/framework";
 import _ from "lodash";
-import Validator from "fastest-validator";
 import {
   Workflow,
   WorkflowExecution,
@@ -20,9 +19,8 @@ import {
   updateWorkflow,
 } from "../helpers/engine";
 import { getCDSFiles } from "../helpers/github";
-import helloWorldConnector from "../samples/connectors/helloworld.json";
-
-const validator = new Validator();
+//import helloWorldConnector from "../samples/connectors/helloworld.json";
+import { validator } from "../helpers/validator";
 
 async function createAuthProvider() {
   // The following assumes there is an injected `window.ethereum` provider
@@ -136,10 +134,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
     setConnectors(
       _.orderBy(
-        [
-          ...responses.filter((res) => res && res.data).map((res) => res.data),
-          helloWorldConnector,
-        ],
+        [...responses.filter((res) => res && res.data).map((res) => res.data)],
         [(response) => response.name.toLowerCase()],
         ["asc"]
       )

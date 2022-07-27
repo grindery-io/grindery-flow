@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { CircularProgress, Text, AlertField } from "grindery-ui";
@@ -308,15 +308,32 @@ const TriggerConfiguration = (props: Props) => {
       ...(triggers.current?.inputFields ||
         triggers.current?.operation?.inputFields ||
         []),
-      ...(triggers.current?.operation?.type === "blockchain:event"
+      ...(triggers.current?.operation?.type === "blockchain:event" &&
+      (
+        triggers.current?.operation?.inputFields ||
+        triggers.current?.inputFields ||
+        []
+      ).filter((inputfield: Field) => inputfield.key === "_grinderyChain")
+        .length < 1
         ? [
             {
-              key: "_grinderyContractAddress",
+              key: "_grinderyChain",
               type: "string",
               required: true,
             },
+          ]
+        : []),
+      ...(triggers.current?.operation?.type === "blockchain:event" &&
+      (
+        triggers.current?.operation?.inputFields ||
+        triggers.current?.inputFields ||
+        []
+      ).filter(
+        (inputfield: Field) => inputfield.key === "_grinderyContractAddress"
+      ).length < 1
+        ? [
             {
-              key: "_grinderyChain",
+              key: "_grinderyContractAddress",
               type: "string",
               required: true,
             },
@@ -376,6 +393,22 @@ const TriggerConfiguration = (props: Props) => {
     }
   };
 
+  const setComputedDefaultValues = useCallback(() => {
+    let input = {} as any;
+    (
+      triggers.current?.operation?.inputFields ||
+      triggers.current?.inputFields ||
+      []
+    ).forEach((inputField: Field) => {
+      if (inputField.computed && inputField.default) {
+        input["trigger.input." + inputField.key] = inputField.default;
+      }
+    });
+    updateWorkflow(input);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggers.current]);
+
   useEffect(() => {
     if (workflowTriggerCredentials) {
       testAuth(workflowTriggerCredentials);
@@ -383,6 +416,10 @@ const TriggerConfiguration = (props: Props) => {
     setTriggerType();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setComputedDefaultValues();
+  }, [setComputedDefaultValues]);
 
   if (!activeStep || step !== activeStep) {
     return null;
@@ -451,27 +488,41 @@ const TriggerConfiguration = (props: Props) => {
 
       {triggers.triggerIsAuthenticated && (
         <div style={{ marginTop: 40 }}>
-          {triggers.current.operation?.type === "blockchain:event" && (
-            <ChainSelector
-              value={(workflow.trigger.input._grinderyChain || "").toString()}
-              onChange={handleChainChange}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          )}
-          {triggers.current.operation?.type === "blockchain:event" && (
-            <ContractSelector
-              value={(
-                workflow.trigger.input._grinderyContractAddress || ""
-              ).toString()}
-              onChange={handleContractChange}
-              options={[]}
-              addressBook={addressBook}
-              setAddressBook={setAddressBook}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          )}
+          {triggers.current.operation?.type === "blockchain:event" &&
+            (
+              triggers.current?.operation?.inputFields ||
+              triggers.current?.inputFields ||
+              []
+            ).filter((inputfield: Field) => inputfield.key === "_grinderyChain")
+              .length < 1 && (
+              <ChainSelector
+                value={(workflow.trigger.input._grinderyChain || "").toString()}
+                onChange={handleChainChange}
+                errors={errors}
+                setErrors={setErrors}
+              />
+            )}
+          {triggers.current.operation?.type === "blockchain:event" &&
+            (
+              triggers.current?.operation?.inputFields ||
+              triggers.current?.inputFields ||
+              []
+            ).filter(
+              (inputfield: Field) =>
+                inputfield.key === "_grinderyContractAddress"
+            ).length < 1 && (
+              <ContractSelector
+                value={(
+                  workflow.trigger.input._grinderyContractAddress || ""
+                ).toString()}
+                onChange={handleContractChange}
+                options={[]}
+                addressBook={addressBook}
+                setAddressBook={setAddressBook}
+                errors={errors}
+                setErrors={setErrors}
+              />
+            )}
           {inputFields.map((inputField: Field) => (
             <TriggerInputField
               inputField={inputField}

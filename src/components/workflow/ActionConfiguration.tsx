@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { CircularProgress, AlertField, Text } from "grindery-ui";
 import { Field } from "../../types/Connector";
@@ -118,15 +118,32 @@ const ActionConfiguration = (props: Props) => {
       ...(actions.current(index)?.inputFields ||
         actions.current(index)?.operation?.inputFields ||
         []),
-      ...(actions.current(index)?.operation?.type === "blockchain:call"
+      ...(actions.current(index)?.operation?.type === "blockchain:event" &&
+      (
+        actions.current(index)?.operation?.inputFields ||
+        actions.current(index)?.inputFields ||
+        []
+      ).filter((inputfield: Field) => inputfield.key === "_grinderyChain")
+        .length < 1
         ? [
             {
-              key: "_grinderyContractAddress",
+              key: "_grinderyChain",
               type: "string",
               required: true,
             },
+          ]
+        : []),
+      ...(actions.current(index)?.operation?.type === "blockchain:event" &&
+      (
+        actions.current(index)?.operation?.inputFields ||
+        actions.current(index)?.inputFields ||
+        []
+      ).filter(
+        (inputfield: Field) => inputfield.key === "_grinderyContractAddress"
+      ).length < 1
+        ? [
             {
-              key: "_grinderyChain",
+              key: "_grinderyContractAddress",
               type: "string",
               required: true,
             },
@@ -408,6 +425,23 @@ const ActionConfiguration = (props: Props) => {
     }
   };
 
+  const setComputedDefaultValues = useCallback(() => {
+    let input = {} as any;
+    (
+      actions.current(index)?.operation?.inputFields ||
+      actions.current(index)?.inputFields ||
+      []
+    ).forEach((inputField: Field) => {
+      if (inputField.computed && inputField.default) {
+        input["actions[" + index + "].input." + inputField.key] =
+          inputField.default;
+      }
+    });
+    updateWorkflow(input);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actions.current(index)]);
+
   useEffect(() => {
     if (workflowActionCredentials) {
       testAuth(workflowActionCredentials);
@@ -423,6 +457,10 @@ const ActionConfiguration = (props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operationType, gas]);
+
+  useEffect(() => {
+    setComputedDefaultValues();
+  }, [setComputedDefaultValues]);
 
   if (!activeStep || step !== activeStep) {
     return null;
@@ -492,29 +530,43 @@ const ActionConfiguration = (props: Props) => {
 
       {actionIsAuthenticated(index) && (
         <div>
-          {actions.current(index)?.operation?.type === "blockchain:call" && (
-            <ChainSelector
-              value={(
-                workflow.actions[index].input._grinderyChain || ""
-              ).toString()}
-              onChange={handleChainChange}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          )}
-          {actions.current(index)?.operation?.type === "blockchain:call" && (
-            <ContractSelector
-              value={(
-                workflow.actions[index].input._grinderyContractAddress || ""
-              ).toString()}
-              onChange={handleContractChange}
-              options={options}
-              addressBook={addressBook}
-              setAddressBook={setAddressBook}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          )}
+          {actions.current(index)?.operation?.type === "blockchain:call" &&
+            (
+              actions.current(index)?.operation?.inputFields ||
+              actions.current(index)?.inputFields ||
+              []
+            ).filter((inputfield: Field) => inputfield.key === "_grinderyChain")
+              .length < 1 && (
+              <ChainSelector
+                value={(
+                  workflow.actions[index].input._grinderyChain || ""
+                ).toString()}
+                onChange={handleChainChange}
+                errors={errors}
+                setErrors={setErrors}
+              />
+            )}
+          {actions.current(index)?.operation?.type === "blockchain:call" &&
+            (
+              actions.current(index)?.operation?.inputFields ||
+              actions.current(index)?.inputFields ||
+              []
+            ).filter(
+              (inputfield: Field) =>
+                inputfield.key === "_grinderyContractAddress"
+            ).length < 1 && (
+              <ContractSelector
+                value={(
+                  workflow.actions[index].input._grinderyContractAddress || ""
+                ).toString()}
+                onChange={handleContractChange}
+                options={options}
+                addressBook={addressBook}
+                setAddressBook={setAddressBook}
+                errors={errors}
+                setErrors={setErrors}
+              />
+            )}
           {inputFields.map((inputField: Field) => (
             <ActionInputField
               key={inputField.key}

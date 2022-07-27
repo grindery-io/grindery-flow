@@ -190,7 +190,7 @@ export const BLOCKCHAINS = [
     icon: "/images/coming-soon/algorand.png",
   },
   {
-    value: "Flow",
+    value: "flow:mainnet",
     label: "Flow",
     group: "Coming soon",
     disabled: true,
