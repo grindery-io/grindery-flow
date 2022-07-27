@@ -1,0 +1,57 @@
+// @ts-nocheck
+import Validator from "fastest-validator";
+
+const validator = new Validator({
+  messages: {
+    address: "The field must be a blockchain address.",
+    evmAddress: "The field must be an EVM compatible blockchain address.",
+    flowAddress: "The field must be a Flow compatible blockchain address.",
+  },
+});
+
+validator.add("address", function ({ schema, messages }, path, context) {
+  return {
+    source: `
+              if (value && !/^0x[a-fA-F0-9]{40}$/g.test(value) && !/^0x[a-zA-Z0-9]{16}$/g.test(value) && !/^[a-zA-Z0-9]{16}$/g.test(value) && value !== '0x0')
+                  ${this.makeError({
+                    type: "address",
+                    actual: "value",
+                    messages,
+                  })}
+  
+              return value;
+          `,
+  };
+});
+
+validator.add("evmAddress", function ({ schema, messages }, path, context) {
+  return {
+    source: `
+            if (value && !/^0x[a-fA-F0-9]{40}$/g.test(value) && value !== '0x0')
+                ${this.makeError({
+                  type: "evmAddress",
+                  actual: "value",
+                  messages,
+                })}
+
+            return value;
+        `,
+  };
+});
+
+validator.add("flowAddress", function ({ schema, messages }, path, context) {
+  return {
+    source: `
+              if (value && !/^0x[a-zA-Z0-9]{16}$/g.test(value) && !/^[a-zA-Z0-9]{16}$/g.test(value) && value !== '0x0')
+                  ${this.makeError({
+                    type: "flowAddress",
+                    actual: "value",
+                    messages,
+                  })}
+  
+              return value;
+          `,
+  };
+});
+
+export { validator };

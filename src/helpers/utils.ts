@@ -99,7 +99,12 @@ export const getValidationScheme = (inputFields: Field[]) => {
     if (type === "integer") {
       return "number";
     }
-    if (type !== "string" && type !== "boolean" && type !== "number") {
+    if (
+      type !== "string" &&
+      type !== "boolean" &&
+      type !== "number" &&
+      type !== "address"
+    ) {
       return "string";
     } else {
       return type;
@@ -121,6 +126,6 @@ export const getValidationScheme = (inputFields: Field[]) => {
       schema[field.key].type = "array";
     }
   });
-  console.log("schema", schema);
+
   return schema;
 };
