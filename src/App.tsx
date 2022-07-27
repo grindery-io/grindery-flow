@@ -1,14 +1,14 @@
 import React from "react";
-import { Provider } from "@self.id/framework";
 import AppContextProvider from "./context/AppContext";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RootPage from "./components/pages/RootPage";
 import AuthPage from "./components/pages/AuthPage";
 import EarlyAccessModal from "./components/shared/EarlyAccessModal";
+import GrinderyNexusContextProvider from "use-grindery-nexus";
 
 function App() {
   return (
-    <Provider client={{ ceramic: "testnet-clay" }}>
+    <GrinderyNexusContextProvider authenticateUser={false}>
       <BrowserRouter>
         <AppContextProvider>
           <EarlyAccessModal />
@@ -18,7 +18,7 @@ function App() {
           </Routes>
         </AppContextProvider>
       </BrowserRouter>
-    </Provider>
+    </GrinderyNexusContextProvider>
   );
 }
 

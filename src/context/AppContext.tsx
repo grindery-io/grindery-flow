@@ -1,6 +1,6 @@
 import React, { useState, createContext, useEffect, useCallback } from "react";
-import { EthereumAuthProvider, useViewerConnection } from "@self.id/framework";
 import _ from "lodash";
+import { useGrinderyNexus } from "use-grindery-nexus";
 import {
   Workflow,
   WorkflowExecution,
@@ -21,14 +21,6 @@ import {
 import { getCDSFiles } from "../helpers/github";
 //import helloWorldConnector from "../samples/connectors/helloworld.json";
 import { validator } from "../helpers/validator";
-
-async function createAuthProvider() {
-  // The following assumes there is an injected `window.ethereum` provider
-  const addresses = await window.ethereum.request({
-    method: "eth_requestAccounts",
-  });
-  return new EthereumAuthProvider(window.ethereum, addresses[0]);
-}
 
 type ContextProps = {
   user: any;
@@ -81,7 +73,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const { width } = useWindowSize();
 
   // Auth hook
-  const [connection, connect, disconnect] = useViewerConnection();
+  const { user, setUser, connection, connect, disconnect, connectUser } =
+    useGrinderyNexus();
 
   // app panel opened
   const [appOpened, setAppOpened] = useState<boolean>(
@@ -92,7 +85,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   );
 
   // User id
-  const [user, setUser] = useState<any>(null);
+  //const [user, setUser] = useState<any>(null);
   const [accessAllowed, setAccessAllowed] = useState<boolean>(false);
 
   // user's workflows list
@@ -108,7 +101,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   };
 
   const getWorkflowsList = async () => {
-    const res = await listWorkflows(user);
+    const res = await listWorkflows(user || "");
 
     if (res && res.data && res.data.error) {
       console.log("or_listWorkflows error", res.data.error);
@@ -141,26 +134,6 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     );
   };
 
-  const getWorkflowHistory = useCallback(
-    async (
-      workflowKey: string,
-      callback: (newItems: WorkflowExecutionLog[]) => void
-    ) => {
-      const res = await getWorkflowExecutions(workflowKey);
-
-      if (res && res.data && res.data.error) {
-        console.error("or_getWorkflowExecutions error", res.data.error);
-      }
-      if (res && res.data && res.data.result) {
-        const executions = res.data.result;
-        executions.forEach((execution: WorkflowExecution) => {
-          getWorkflowExecution(execution.executionId, callback);
-        });
-      }
-    },
-    []
-  );
-
   const getWorkflowExecution = useCallback(
     async (
       executionId: string,
@@ -178,8 +151,28 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     []
   );
 
+  const getWorkflowHistory = useCallback(
+    async (
+      workflowKey: string,
+      callback: (newItems: WorkflowExecutionLog[]) => void
+    ) => {
+      const res = await getWorkflowExecutions(workflowKey);
+
+      if (res && res.data && res.data.error) {
+        console.error("or_getWorkflowExecutions error", res.data.error);
+      }
+      if (res && res.data && res.data.result) {
+        const executions = res.data.result;
+        executions.forEach((execution: WorkflowExecution) => {
+          getWorkflowExecution(execution.executionId, callback);
+        });
+      }
+    },
+    [getWorkflowExecution]
+  );
+
   const editWorkflow = async (workflow: Workflow) => {
-    const res = await updateWorkflow(workflow, user);
+    const res = await updateWorkflow(workflow, user || "");
 
     if (res && res.data && res.data.error) {
       console.error("editWorkflow error", res.data.error);
@@ -217,7 +210,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
   // set user id on success authentication
   useEffect(() => {
-    if (connection.status === "connected") {
+    if (connection?.status === "connected") {
       if (!user) {
         //setUser(connection.selfID.id);
         verifyUser(connection.selfID.id);
@@ -226,24 +219,22 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         } else {
           navigate("/dashboard");
         }
-      } else {
-        setUser(connection.selfID.id);
       }
     } else {
       setUser(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connection, workflows]);
+  }, [connection, workflows, user]);
 
   useEffect(() => {
     const cookie = getSelfIdCookie();
     if (
       cookie &&
       "ethereum" in window &&
-      connection.status !== "connecting" &&
-      connection.status !== "connected"
+      connection?.status !== "connecting" &&
+      connection?.status !== "connected"
     ) {
-      createAuthProvider().then(connect);
+      connectUser();
     }
   }, [connection, connect]);
 

@@ -10153,6 +10153,13 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
+"use-grindery-nexus@https://github.com/grindery-io/use-grindery-nexus":
+  version "0.1.0"
+  resolved "https://github.com/grindery-io/use-grindery-nexus#a3144373d66e47923e70a3b302a704e23d7e6770"
+  dependencies:
+    "@self.id/framework" "^0.3.2"
+    key-did-provider-ed25519 "^2.0.0"
+
 util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"

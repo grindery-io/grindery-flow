@@ -1,7 +1,7 @@
 import React from "react";
-import { EthereumAuthProvider, useViewerConnection } from "@self.id/framework";
 import { ICONS } from "../../constants";
 import Button from "./Button";
+import { useGrinderyNexus } from "use-grindery-nexus";
 
 declare global {
   interface Window {
@@ -9,28 +9,21 @@ declare global {
   }
 }
 
-async function createAuthProvider() {
-  const addresses = await window.ethereum.request({
-    method: "eth_requestAccounts",
-  });
-  return new EthereumAuthProvider(window.ethereum, addresses[0]);
-}
-
 type Props = {};
 
 const ConnectButton = (props: Props) => {
-  const [connection, connect] = useViewerConnection();
+  const { connection, connectUser } = useGrinderyNexus();
 
-  return connection.status === "connected" ? null : "ethereum" in window ? (
+  return connection?.status === "connected" ? null : "ethereum" in window ? (
     <Button
       onClick={() => {
-        if (connection.status !== "connecting") {
-          createAuthProvider().then(connect);
+        if (connection?.status !== "connecting") {
+          connectUser();
         }
       }}
       icon={ICONS.CERAMIC_LOGO}
       value="Sign in"
-      loading={connection.status === "connecting"}
+      loading={connection?.status === "connecting"}
       hideIconBorder
     />
   ) : (
