@@ -138,7 +138,7 @@ const SuccessMessage = styled.div`
 type Props = {};
 
 const EarlyAccessModal = (props: Props) => {
-  const { user, accessAllowed } = useAppContext();
+  const { user, accessAllowed, verifying } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
@@ -191,7 +191,7 @@ const EarlyAccessModal = (props: Props) => {
       });
   };
 
-  return user && !accessAllowed ? (
+  return user && !accessAllowed && !verifying ? (
     <Wrapper>
       <FormWrapper>
         <FormContent>

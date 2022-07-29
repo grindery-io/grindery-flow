@@ -3,6 +3,7 @@ import styled from "styled-components";
 import moment from "moment";
 import _ from "lodash";
 import { InputBox, TabComponent } from "grindery-ui";
+import { useSearchParams } from "react-router-dom";
 import DataBox from "../shared/DataBox";
 import { ICONS, SCREEN } from "../../constants";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -155,10 +156,19 @@ const ItemDate = styled.div`
 type Props = {};
 
 const HistoryPage = (props: Props) => {
-  const { workflows, getWorkflowHistory, connectors } = useAppContext();
-  const [items, setItems] = useState<WorkflowExecutionLog[][]>([]);
+  const {
+    workflowExecutions,
+    setWorkflowExecutions,
+    workflows,
+    getWorkflowHistory,
+    connectors,
+  } = useAppContext();
+  let [searchParams] = useSearchParams();
+  const initialTab = parseInt(searchParams.get("tab") || "0");
+
+  const items = workflowExecutions;
   const [searchTerm, setSearchTerm] = useState("");
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState(initialTab);
   const { size } = useWindowSize();
 
   const filteredItems = _.orderBy(
@@ -213,11 +223,15 @@ const HistoryPage = (props: Props) => {
     setSearchTerm(e);
   };
 
-  const addExecutions = useCallback((newItems: WorkflowExecutionLog[]) => {
-    setItems((items) => [...items, newItems]);
-  }, []);
+  const addExecutions = useCallback(
+    (newItems: WorkflowExecutionLog[]) => {
+      setWorkflowExecutions((items) => [...items, newItems]);
+    },
+    [setWorkflowExecutions]
+  );
 
   useEffect(() => {
+    setWorkflowExecutions([]);
     if (workflows && workflows.length > 0) {
       workflows.forEach((workflow) => {
         if (workflow.key) {
@@ -225,7 +239,7 @@ const HistoryPage = (props: Props) => {
         }
       });
     }
-  }, [workflows, addExecutions, getWorkflowHistory]);
+  }, [workflows, addExecutions, getWorkflowHistory, setWorkflowExecutions]);
 
   return (
     <RootWrapper>
@@ -296,6 +310,11 @@ const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
     icon: connector?.icon || "",
   }));
 
+  const errorText = item
+    .filter((log: WorkflowExecutionLog) => log.error)
+    .map((log: WorkflowExecutionLog) => log.error)
+    .join("; ");
+
   if (item.length < 1) {
     return null;
   }
@@ -306,7 +325,11 @@ const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
       size="small"
       LeftComponent={
         <ItemTitleWrapper>
-          <ItemIcon src={statusIconMapping[status]} alt={status} />
+          <ItemIcon
+            src={statusIconMapping[status]}
+            alt={status}
+            title={status === "Error" ? errorText : undefined}
+          />
           <Title>{status}</Title>
         </ItemTitleWrapper>
       }

@@ -8,7 +8,7 @@ import {
 } from "../types/Workflow";
 import { RIGHTBAR_TABS, SCREEN } from "../constants";
 import { Connector } from "../types/Connector";
-import { defaultFunc, getSelfIdCookie } from "../helpers/utils";
+import { defaultFunc } from "../helpers/utils";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../hooks/useWindowSize";
 import {
@@ -24,8 +24,7 @@ import { validator } from "../helpers/validator";
 
 type ContextProps = {
   user: any;
-  setUser?: (a: any) => void;
-  changeTab: (a: string) => void;
+  changeTab: (a: string, b?: string) => void;
   disconnect: any;
   appOpened: boolean;
   setAppOpened: (a: boolean) => void;
@@ -44,6 +43,11 @@ type ContextProps = {
   editWorkflow: (a: Workflow) => void;
   accessAllowed: boolean;
   validator: any;
+  verifying: boolean;
+  workflowExecutions: WorkflowExecutionLog[][];
+  setWorkflowExecutions: React.Dispatch<
+    React.SetStateAction<WorkflowExecutionLog[][]>
+  >;
 };
 
 type AppContextProps = {
@@ -52,7 +56,6 @@ type AppContextProps = {
 
 export const AppContext = createContext<ContextProps>({
   user: "",
-  setUser: defaultFunc,
   changeTab: defaultFunc,
   disconnect: defaultFunc,
   appOpened: true,
@@ -66,6 +69,9 @@ export const AppContext = createContext<ContextProps>({
   editWorkflow: defaultFunc,
   accessAllowed: false,
   validator: validator,
+  verifying: true,
+  workflowExecutions: [],
+  setWorkflowExecutions: defaultFunc,
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -73,8 +79,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const { width } = useWindowSize();
 
   // Auth hook
-  const { user, setUser, connection, connect, disconnect, connectUser } =
-    useGrinderyNexus();
+  const { user, disconnect } = useGrinderyNexus();
 
   // app panel opened
   const [appOpened, setAppOpened] = useState<boolean>(
@@ -94,10 +99,18 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   // connectors list
   const [connectors, setConnectors] = useState<Connector[]>([]);
 
+  // verification state
+  const [verifying, setVerifying] = useState<boolean>(true);
+
+  // workflows executions
+  const [workflowExecutions, setWorkflowExecutions] = useState<
+    WorkflowExecutionLog[][]
+  >([]);
+
   // change current active tab
-  const changeTab = (name: string) => {
+  const changeTab = (name: string, query = "") => {
     const tab = RIGHTBAR_TABS.find((tab) => tab.name === name);
-    navigate((tab && tab.path) || "/");
+    navigate(((tab && tab.path) || "/") + (query ? "?" + query : ""));
   };
 
   const getWorkflowsList = async () => {
@@ -183,20 +196,34 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   };
 
   const verifyUser = async (userId: string) => {
+    setVerifying(true);
     const res = await isAllowedUser(userId);
     if (res && res.data && res.data.error) {
       console.error("or_isAllowedUser error", res.data.error);
-      setUser(userId);
       setAccessAllowed(false);
     }
     if (res && res.data && res.data.result) {
-      setUser(userId);
       setAccessAllowed(true);
     } else {
-      setUser(userId);
       setAccessAllowed(false);
     }
+    setVerifying(false);
   };
+
+  const addExecutions = useCallback((newItems: WorkflowExecutionLog[]) => {
+    setWorkflowExecutions((items) => [...items, newItems]);
+  }, []);
+
+  useEffect(() => {
+    setWorkflowExecutions([]);
+    if (workflows && workflows.length > 0) {
+      workflows.forEach((workflow) => {
+        if (workflow.key) {
+          getWorkflowHistory(workflow.key, addExecutions);
+        }
+      });
+    }
+  }, [workflows, addExecutions, getWorkflowHistory]);
 
   useEffect(() => {
     if (user) {
@@ -208,35 +235,14 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // set user id on success authentication
+  // verify user on success authentication
   useEffect(() => {
-    if (connection?.status === "connected") {
-      if (!user) {
-        //setUser(connection.selfID.id);
-        verifyUser(connection.selfID.id);
-        if (!workflows || workflows.length < 1) {
-          navigate("/workflows/create");
-        } else {
-          navigate("/dashboard");
-        }
-      }
-    } else {
-      setUser(null);
+    if (user) {
+      verifyUser(user);
+      navigate("/dashboard");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connection, workflows, user]);
-
-  useEffect(() => {
-    const cookie = getSelfIdCookie();
-    if (
-      cookie &&
-      "ethereum" in window &&
-      connection?.status !== "connecting" &&
-      connection?.status !== "connected"
-    ) {
-      connectUser();
-    }
-  }, [connection, connect]);
+  }, [user]);
 
   useEffect(() => {
     if (
@@ -255,7 +261,6 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     <AppContext.Provider
       value={{
         user,
-        setUser,
         changeTab,
         disconnect,
         appOpened,
@@ -269,6 +274,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         editWorkflow,
         accessAllowed,
         validator,
+        verifying,
+        workflowExecutions,
+        setWorkflowExecutions,
       }}
     >
       {children}

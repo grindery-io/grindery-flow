@@ -26,7 +26,7 @@
     "styled-components": "^5.3.5",
     "throttle-debounce": "^5.0.0",
     "typescript": "^4.4.2",
-    "use-grindery-nexus": "https://github.com/grindery-io/use-grindery-nexus"
+    "use-grindery-nexus": "^0.2.1"
   },
   "scripts": {
     "start": "react-scripts start",

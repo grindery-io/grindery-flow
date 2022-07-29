@@ -93,13 +93,9 @@ const WelcomePage = (props: Props) => {
         </Desc>
         <ConnectButton />
         <Disclaimer>
-          Grindery Nexus uses{" "}
-          <a
-            href="https://blog.ceramic.network/what-is-3id-connect/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Ceramic 3ID
+          Grindery Ping uses{" "}
+          <a href="https://metamask.io/" target="_blank" rel="noreferrer">
+            MetaMask
           </a>{" "}
           to authenticate users.
         </Disclaimer>

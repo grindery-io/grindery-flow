@@ -8,7 +8,7 @@ import GrinderyNexusContextProvider from "use-grindery-nexus";
 
 function App() {
   return (
-    <GrinderyNexusContextProvider authenticateUser={false}>
+    <GrinderyNexusContextProvider>
       <BrowserRouter>
         <AppContextProvider>
           <EarlyAccessModal />

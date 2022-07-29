@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Foco from "react-foco";
 import { ICONS } from "../../constants";
-import useAppContext from "../../hooks/useAppContext";
+import { useGrinderyNexus } from "use-grindery-nexus";
 
 const UserContainer = styled.div`
   position: relative;
@@ -90,9 +90,9 @@ const UserDropdownContent = styled.div`
 type Props = {};
 
 const UserMenu = (props: Props) => {
-  const { user, disconnect } = useAppContext();
+  const { address, disconnect } = useGrinderyNexus();
   const [menuOpened, setMenuOpened] = useState(false);
-  return user ? (
+  return address ? (
     <UserContainer>
       <Foco
         onClickOutside={() => {
@@ -109,7 +109,9 @@ const UserMenu = (props: Props) => {
         >
           <UserStatus />
           <UserId>
-            {user.substring(0, 5) + "..." + user.substring(user.length - 4)}
+            {address.substring(0, 5) +
+              "..." +
+              address.substring(address.length - 4)}
           </UserId>
         </UserWrapper>
 

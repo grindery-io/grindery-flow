@@ -40,6 +40,7 @@ export const ICONS: { [key: string]: string } = {
   BACK: "/images/icons/back.svg",
   COLLAPSE: "/images/icons/collapse.svg",
   CERAMIC_LOGO: "/images/icons/ceramic-logo.svg",
+  METAMASK_LOGO: "/images/icons/metamask-logo.svg",
   JOIN_CONNECTORS: "/images/icons/join-connectors.svg",
   JOIN_ACTIONS: "/images/icons/join-actions.svg",
   PENCIL: "/images/icons/pencil.svg",

@@ -12,18 +12,15 @@ declare global {
 type Props = {};
 
 const ConnectButton = (props: Props) => {
-  const { connection, connectUser } = useGrinderyNexus();
+  const { connect, user } = useGrinderyNexus();
 
-  return connection?.status === "connected" ? null : "ethereum" in window ? (
+  return user ? null : "ethereum" in window ? (
     <Button
       onClick={() => {
-        if (connection?.status !== "connecting") {
-          connectUser();
-        }
+        connect();
       }}
-      icon={ICONS.CERAMIC_LOGO}
-      value="Sign in"
-      loading={connection?.status === "connecting"}
+      icon={ICONS.METAMASK_LOGO}
+      value="Connect"
       hideIconBorder
     />
   ) : (

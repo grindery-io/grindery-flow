@@ -5,6 +5,7 @@ import DataBox from "../shared/DataBox";
 import { ICONS, SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import { useNavigate } from "react-router-dom";
+import { WorkflowExecutionLog } from "../../types/Workflow";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -106,7 +107,17 @@ type Props = {};
 
 const DashboardPage = (props: Props) => {
   let navigate = useNavigate();
-  const { workflows, changeTab } = useAppContext();
+  const { workflows, changeTab, workflowExecutions } = useAppContext();
+
+  const errorExecutionsNum = workflowExecutions.filter(
+    (item: WorkflowExecutionLog[]) =>
+      item.filter((log: WorkflowExecutionLog) => log.error).length < 1
+  ).length;
+  const successExecutionsNum = workflowExecutions.filter(
+    (item: WorkflowExecutionLog[]) =>
+      item.filter((log: WorkflowExecutionLog) => log.error).length < 1
+  ).length;
+
   return (
     <Wrapper>
       <DataBox
@@ -258,22 +269,22 @@ const DashboardPage = (props: Props) => {
           <CountsWrapper>
             <CountWrapper
               onClick={() => {
-                changeTab("HISTORY");
+                changeTab("HISTORY", "tab=2");
               }}
               style={{ cursor: "pointer" }}
             >
-              <Text value="2" variant="h3" />
+              <Text value={errorExecutionsNum.toString()} variant="h3" />
               <div style={{ marginBottom: 2 }}>
                 <Text value="Errors" variant="caption" />
               </div>
             </CountWrapper>
             <CountWrapper
               onClick={() => {
-                changeTab("HISTORY");
+                changeTab("HISTORY", "tab=1");
               }}
               style={{ cursor: "pointer" }}
             >
-              <Text value="3" variant="h3" />
+              <Text value={successExecutionsNum.toString()} variant="h3" />
               <div style={{ marginBottom: 2 }}>
                 <Text value="Executed" variant="caption" />
               </div>
