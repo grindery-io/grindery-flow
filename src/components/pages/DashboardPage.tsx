@@ -111,7 +111,7 @@ const DashboardPage = (props: Props) => {
 
   const errorExecutionsNum = workflowExecutions.filter(
     (item: WorkflowExecutionLog[]) =>
-      item.filter((log: WorkflowExecutionLog) => log.error).length < 1
+      item.filter((log: WorkflowExecutionLog) => log.error).length > 0
   ).length;
   const successExecutionsNum = workflowExecutions.filter(
     (item: WorkflowExecutionLog[]) =>

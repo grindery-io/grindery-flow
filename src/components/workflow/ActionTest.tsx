@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
 import styled from "styled-components";
+import NexusClient from "grindery-nexus-client";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import { Text, AlertField, CircularProgress } from "grindery-ui";
 import { Field } from "../../types/Connector";
-import { jsonrpcObj, replaceTokens } from "../../helpers/utils";
-import { ICONS, WORKFLOW_ENGINE_URL } from "../../constants";
+import { replaceTokens } from "../../helpers/utils";
+import { ICONS } from "../../constants";
 import Button from "../shared/Button";
 
 const Wrapper = styled.div`
@@ -159,36 +159,27 @@ const ActionTest = (props: Props) => {
     saveWorkflow();
   };
 
-  const testWorkflowAction = (index: number) => {
+  const testWorkflowAction = async (index: number) => {
     if (workflow) {
       if (workflow.actions && workflow.actions[index]) {
         setError(null);
         setSuccess(null);
         setLoading(true);
-        axios
-          .post(
-            WORKFLOW_ENGINE_URL,
-            jsonrpcObj("or_testAction", {
-              userAccountId: workflow.creator,
-              step: workflow.actions[index],
-              input: replaceTokens(workflow.actions[index].input || {}, {
-                trigger: triggers.current?.operation?.sample || {},
-              }),
-            })
-          )
-          .then((res) => {
-            if (res && res.data && res.data.error) {
-              setError(res.data.error.message || null);
-            }
-            if (res && res.data && res.data.result) {
-              setSuccess("Test action sent!");
-            }
-            setLoading(false);
+        const res = await NexusClient.testAction(
+          workflow.creator,
+          workflow.actions[index],
+          replaceTokens(workflow.actions[index].input || {}, {
+            trigger: triggers.current?.operation?.sample || {},
           })
-          .catch((err) => {
-            setError(err.message || null);
-            setLoading(false);
-          });
+        ).catch((err) => {
+          console.error("testAction error:", err.message);
+          setError(err.message || null);
+        });
+
+        if (res) {
+          setSuccess("Test action sent!");
+        }
+        setLoading(false);
       }
     }
   };

@@ -1,6 +1,7 @@
 import React, { useState, createContext, useEffect, useCallback } from "react";
 import _ from "lodash";
 import { useGrinderyNexus } from "use-grindery-nexus";
+import NexusClient from "grindery-nexus-client";
 import {
   Workflow,
   WorkflowExecution,
@@ -11,14 +12,6 @@ import { Connector } from "../types/Connector";
 import { defaultFunc } from "../helpers/utils";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../hooks/useWindowSize";
-import {
-  getWorkflowExecutionLog,
-  getWorkflowExecutions,
-  isAllowedUser,
-  listWorkflows,
-  updateWorkflow,
-} from "../helpers/engine";
-import { getCDSFiles } from "../helpers/github";
 //import helloWorldConnector from "../samples/connectors/helloworld.json";
 import { validator } from "../helpers/validator";
 
@@ -114,14 +107,13 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   };
 
   const getWorkflowsList = async () => {
-    const res = await listWorkflows(user || "");
+    const res = await NexusClient.listWorkflows(user || "").catch((err) => {
+      console.error("listWorkflows error:", err.message);
+    });
 
-    if (res && res.data && res.data.error) {
-      console.log("or_listWorkflows error", res.data.error);
-    }
-    if (res && res.data && res.data.result) {
+    if (res) {
       setWorkflows(
-        res.data.result
+        res
           .map((result: any) => ({
             ...result.workflow,
             key: result.key,
@@ -136,15 +128,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   };
 
   const getConnectors = async () => {
-    const responses = await getCDSFiles();
-
-    setConnectors(
-      _.orderBy(
-        [...responses.filter((res) => res && res.data).map((res) => res.data)],
-        [(response) => response.name.toLowerCase()],
-        ["asc"]
-      )
-    );
+    const cdss = await NexusClient.getConnectors();
+    setConnectors(_.orderBy(cdss, [(cds) => cds.name.toLowerCase()], ["asc"]));
   };
 
   const getWorkflowExecution = useCallback(
@@ -152,13 +137,14 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       executionId: string,
       callback: (newItems: WorkflowExecutionLog[]) => void
     ) => {
-      const res = await getWorkflowExecutionLog(executionId);
+      const res = await NexusClient.getWorkflowExecutionLog(executionId).catch(
+        (err) => {
+          console.error("getWorkflowExecutionLog error:", err.message);
+        }
+      );
 
-      if (res && res.data && res.data.error) {
-        console.error("or_getWorkflowExecutionLog error", res.data.error);
-      }
-      if (res && res.data && res.data.result) {
-        callback(res.data.result);
+      if (res) {
+        callback(res);
       }
     },
     []
@@ -169,13 +155,14 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       workflowKey: string,
       callback: (newItems: WorkflowExecutionLog[]) => void
     ) => {
-      const res = await getWorkflowExecutions(workflowKey);
+      //const res = await getWorkflowExecutions(workflowKey);
+      const executions = await NexusClient.getWorkflowExecutions(
+        workflowKey
+      ).catch((err) => {
+        console.error("getWorkflowExecutions error:", err.message);
+      });
 
-      if (res && res.data && res.data.error) {
-        console.error("or_getWorkflowExecutions error", res.data.error);
-      }
-      if (res && res.data && res.data.result) {
-        const executions = res.data.result;
+      if (executions) {
         executions.forEach((execution: WorkflowExecution) => {
           getWorkflowExecution(execution.executionId, callback);
         });
@@ -185,24 +172,26 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   );
 
   const editWorkflow = async (workflow: Workflow) => {
-    const res = await updateWorkflow(workflow, user || "");
+    const res = await NexusClient.updateWorkflow(
+      workflow.key,
+      user || "",
+      workflow
+    ).catch((err) => {
+      console.error("updateWorkflow error:", err.message);
+    });
 
-    if (res && res.data && res.data.error) {
-      console.error("editWorkflow error", res.data.error);
-    }
-    if (res && res.data && res.data.result) {
+    if (res) {
       getWorkflowsList();
     }
   };
 
   const verifyUser = async (userId: string) => {
     setVerifying(true);
-    const res = await isAllowedUser(userId);
-    if (res && res.data && res.data.error) {
-      console.error("or_isAllowedUser error", res.data.error);
+    const res = await NexusClient.isAllowedUser(userId).catch((err) => {
+      console.error("isAllowedUser error:", err.message);
       setAccessAllowed(false);
-    }
-    if (res && res.data && res.data.result) {
+    });
+    if (res) {
       setAccessAllowed(true);
     } else {
       setAccessAllowed(false);

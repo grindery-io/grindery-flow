@@ -28,10 +28,6 @@ const Title = styled.h2`
   margin: 0 0 40px;
 `;
 
-const DisconnectWrapper = styled.div`
-  margin: 40px 0 0;
-`;
-
 const DevModeWrapper = styled.div`
   display: flex;
   flex-direction: row;

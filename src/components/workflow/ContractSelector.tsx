@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { RichInput } from "grindery-ui";
 import useAppContext from "../../hooks/useAppContext";
-import InputFieldError from "../shared/InputFieldError";
 
 const InputWrapper = styled.div`
   width: 100%;

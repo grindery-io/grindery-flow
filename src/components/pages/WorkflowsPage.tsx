@@ -4,7 +4,6 @@ import { IconButton, InputBox, SwitchInput } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import useAppContext from "../../hooks/useAppContext";
 import { ICONS, SCREEN } from "../../constants";
-import { Workflow } from "../../types/Workflow";
 import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`

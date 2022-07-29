@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { AutoCompleteInput } from "grindery-ui";
 import { BLOCKCHAINS } from "../../constants";
-import InputFieldError from "../shared/InputFieldError";
 
 const InputWrapper = styled.div`
   width: 100%;

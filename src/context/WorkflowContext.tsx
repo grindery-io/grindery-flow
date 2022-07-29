@@ -1,5 +1,7 @@
 import React, { useState, createContext, useEffect } from "react";
 import _ from "lodash";
+import NexusClient from "grindery-nexus-client";
+import { useNavigate } from "react-router-dom";
 import { Workflow } from "../types/Workflow";
 import {
   Action,
@@ -11,8 +13,6 @@ import {
 } from "../types/Connector";
 import { defaultFunc } from "../helpers/utils";
 import useAppContext from "../hooks/useAppContext";
-import { useNavigate } from "react-router-dom";
-import { createWorkflow } from "../helpers/engine";
 
 // empty workflow declaration
 const blankWorkflow: Workflow = {
@@ -444,11 +444,12 @@ export const WorkflowContextProvider = ({
       setError(null);
       setSuccess(null);
       setLoading(true);
-      const res = await createWorkflow(readyWorkflow);
-      if (res && res.data && res.data.error) {
-        setError(res.data.error.message || null);
-      }
-      if (res && res.data && res.data.result) {
+      const res = await NexusClient.createWorkflow(readyWorkflow).catch(
+        (err) => {
+          console.error("createWorkflow error:", err.message);
+        }
+      );
+      if (res) {
         getWorkflowsList();
         resetWorkflow();
         navigate("/workflows");

@@ -8,7 +8,6 @@ import { BLOCKCHAINS } from "../../constants";
 import { debounce } from "throttle-debounce";
 import axios from "axios";
 import { jsonrpcObj } from "../../helpers/utils";
-import InputFieldError from "../shared/InputFieldError";
 
 const InputWrapper = styled.div`
   width: 100%;

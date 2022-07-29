@@ -8,7 +8,6 @@ import { jsonrpcObj } from "../../helpers/utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
 import { BLOCKCHAINS } from "../../constants";
-import InputFieldError from "../shared/InputFieldError";
 
 const InputWrapper = styled.div`
   width: 100%;
