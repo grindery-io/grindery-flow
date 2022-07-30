@@ -135,16 +135,22 @@ const ActionTest = (props: Props) => {
   });
 
   const rows =
-    actions.current(index)?.operation?.inputFields?.map((field: Field) => ({
-      label: field.label || field.key,
-      icon: actionConnector(index)?.icon,
-      value: values[field.key] || "",
-    })) ||
-    actions.current(index)?.inputFields?.map((field: Field) => ({
-      label: field.label || field.key,
-      icon: actionConnector(index)?.icon,
-      value: values[field.key] || "",
-    })) ||
+    actions.current(index)?.operation?.inputFields?.map((field: Field) => {
+      const v = values[field.key];
+      return {
+        label: field.label || field.key,
+        icon: actionConnector(index)?.icon,
+        value: Array.isArray(v) ? v.join("\n") : v || "",
+      };
+    }) ||
+    actions.current(index)?.inputFields?.map((field: Field) => {
+      const v = values[field.key];
+      return {
+        label: field.label || field.key,
+        icon: actionConnector(index)?.icon,
+        value: Array.isArray(v) ? v.join("\n") : v || "",
+      };
+    }) ||
     [];
 
   const handleTestClick = () => {
@@ -183,6 +189,14 @@ const ActionTest = (props: Props) => {
       }
     }
   };
+
+  const renderValue = (value: any) => (
+    <>
+      {value.split("\n").map((v: any) => (
+        <p style={{ padding: "5px 0", margin: "0px" }}>{v}</p>
+      ))}
+    </>
+  );
 
   return (
     <Wrapper>
@@ -252,7 +266,9 @@ const ActionTest = (props: Props) => {
                     {row.label}
                   </RowLabelWrapper>
                 </td>
-                <td>{row.value}</td>
+                <td style={{ whiteSpace: "pre-wrap" }}>
+                  {renderValue(row.value)}
+                </td>
               </tr>
             ))}
           </tbody>

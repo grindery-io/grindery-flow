@@ -19,6 +19,7 @@ import useAppContext from "../../hooks/useAppContext";
 import ContractSelector from "./ContractSelector";
 import useAddressBook from "../../hooks/useAddressBook";
 import Button from "../shared/Button";
+import WorkflowInputField from "./WorkflowInputField";
 
 const Wrapper = styled.div`
   padding: 20px 20px 40px;
@@ -567,7 +568,7 @@ const ActionConfiguration = (props: Props) => {
                 setErrors={setErrors}
               />
             )}
-          {inputFields.map((inputField: Field) => (
+          {/*inputFields.map((inputField: Field) => (
             <ActionInputField
               key={inputField.key}
               inputField={inputField}
@@ -576,6 +577,20 @@ const ActionConfiguration = (props: Props) => {
               addressBook={addressBook}
               setAddressBook={setAddressBook}
               setActionError={setActionError}
+              errors={errors}
+              setErrors={setErrors}
+            />
+          ))*/}
+          {inputFields.map((inputField: Field) => (
+            <WorkflowInputField
+              type="action"
+              key={inputField.key}
+              inputField={inputField}
+              options={options}
+              index={index}
+              addressBook={addressBook}
+              setAddressBook={setAddressBook}
+              setError={setActionError}
               errors={errors}
               setErrors={setErrors}
             />

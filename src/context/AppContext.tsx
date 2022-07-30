@@ -1,12 +1,16 @@
 import React, { useState, createContext, useEffect, useCallback } from "react";
 import _ from "lodash";
 import { useGrinderyNexus } from "use-grindery-nexus";
-import NexusClient from "grindery-nexus-client";
-import {
+import NexusClient, {
   Workflow,
   WorkflowExecution,
   WorkflowExecutionLog,
-} from "../types/Workflow";
+} from "grindery-nexus-client";
+/*import {
+  Workflow,
+  WorkflowExecution,
+  WorkflowExecutionLog,
+} from "../types/Workflow";*/
 import { RIGHTBAR_TABS, SCREEN } from "../constants";
 import { Connector } from "../types/Connector";
 import { defaultFunc } from "../helpers/utils";

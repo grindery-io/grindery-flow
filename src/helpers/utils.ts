@@ -122,7 +122,10 @@ export const getValidationScheme = (inputFields: Field[]) => {
       schema[field.key].type = "date";
     }
     if (field.list) {
-      schema[field.key].items = schema[field.key].type;
+      schema[field.key].items = {
+        type: field.validation?.type || sanitizeType(field.type || ""),
+        empty: !field.required,
+      };
       schema[field.key].type = "array";
     }
   });

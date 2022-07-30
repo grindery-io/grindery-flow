@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { CircularProgress, Text, AlertField } from "grindery-ui";
 import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
-import TriggerInputField from "./TriggerInputField";
+//import TriggerInputField from "./TriggerInputField";
 import {
   getParameterByName,
   getValidationScheme,
@@ -17,6 +17,7 @@ import useAddressBook from "../../hooks/useAddressBook";
 import useAppContext from "../../hooks/useAppContext";
 import { ICONS } from "../../constants";
 import Button from "../shared/Button";
+import WorkflowInputField from "./WorkflowInputField";
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -523,11 +524,23 @@ const TriggerConfiguration = (props: Props) => {
                 setErrors={setErrors}
               />
             )}
-          {inputFields.map((inputField: Field) => (
+          {/*inputFields.map((inputField: Field) => (
             <TriggerInputField
               inputField={inputField}
               key={inputField.key}
               setTriggerError={setTriggerError}
+              addressBook={addressBook}
+              setAddressBook={setAddressBook}
+              errors={errors}
+              setErrors={setErrors}
+            />
+          ))*/}
+          {inputFields.map((inputField: Field) => (
+            <WorkflowInputField
+              type="trigger"
+              inputField={inputField}
+              key={inputField.key}
+              setError={setTriggerError}
               addressBook={addressBook}
               setAddressBook={setAddressBook}
               errors={errors}
