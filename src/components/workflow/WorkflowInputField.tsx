@@ -391,7 +391,7 @@ const WorkflowInputField = ({
           {valuesNum.length > 0 &&
             inputField.list &&
             valuesNum.map((idx, i) => (
-              <InputWrapper key={idx.toString()}>
+              <InputWrapper key={idx.toString()} style={{ marginTop: "0px" }}>
                 {renderField(
                   { ...inputField, key: inputField.key + "_" + (i + 1) },
                   inputField.list ? i + 1 : undefined

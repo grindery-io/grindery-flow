@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { CircularProgress, Text, AlertField } from "grindery-ui";
 import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
-//import TriggerInputField from "./TriggerInputField";
 import {
   getParameterByName,
   getValidationScheme,
@@ -524,17 +523,6 @@ const TriggerConfiguration = (props: Props) => {
                 setErrors={setErrors}
               />
             )}
-          {/*inputFields.map((inputField: Field) => (
-            <TriggerInputField
-              inputField={inputField}
-              key={inputField.key}
-              setTriggerError={setTriggerError}
-              addressBook={addressBook}
-              setAddressBook={setAddressBook}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          ))*/}
           {inputFields.map((inputField: Field) => (
             <WorkflowInputField
               type="trigger"

@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { CircularProgress, AlertField, Text } from "grindery-ui";
 import { Field } from "../../types/Connector";
-import ActionInputField from "./ActionInputField";
 import {
   getOutputOptions,
   getParameterByName,
@@ -568,19 +567,6 @@ const ActionConfiguration = (props: Props) => {
                 setErrors={setErrors}
               />
             )}
-          {/*inputFields.map((inputField: Field) => (
-            <ActionInputField
-              key={inputField.key}
-              inputField={inputField}
-              options={options}
-              index={index}
-              addressBook={addressBook}
-              setAddressBook={setAddressBook}
-              setActionError={setActionError}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          ))*/}
           {inputFields.map((inputField: Field) => (
             <WorkflowInputField
               type="action"
