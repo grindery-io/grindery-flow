@@ -107,7 +107,7 @@ type Props = {};
 
 const DashboardPage = (props: Props) => {
   let navigate = useNavigate();
-  const { workflows, changeTab, workflowExecutions } = useAppContext();
+  const { workflows, changeTab, workflowExecutions, apps } = useAppContext();
 
   const errorExecutionsNum = workflowExecutions.filter(
     (item: WorkflowExecutionLog[]) =>
@@ -210,7 +210,7 @@ const DashboardPage = (props: Props) => {
               onClick={() => {
                 changeTab("APPS");
               }}
-              icon={ICONS.PLUS_SMALL}
+              icon={ICONS.ARROW_RIGHT}
             />
           </IconButtonWrapper>
         }
@@ -222,20 +222,9 @@ const DashboardPage = (props: Props) => {
               }}
               style={{ cursor: "pointer" }}
             >
-              <Text value="1" variant="h3" />
+              <Text value={apps.length.toString()} variant="h3" />
               <div style={{ marginBottom: 2 }}>
-                <Text value="dApp" variant="caption" />
-              </div>
-            </CountWrapper>
-            <CountWrapper
-              onClick={() => {
-                changeTab("APPS");
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              <Text value="4" variant="h3" />
-              <div style={{ marginBottom: 2 }}>
-                <Text value="Apps" variant="caption" />
+                <Text value="(d)Apps" variant="caption" />
               </div>
             </CountWrapper>
           </CountsWrapper>

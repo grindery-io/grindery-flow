@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import useWindowSize from "../hooks/useWindowSize";
 //import helloWorldConnector from "../samples/connectors/helloworld.json";
 import { validator } from "../helpers/validator";
+import { Operation } from "../types/Workflow";
 
 type ContextProps = {
   user: any;
@@ -45,6 +46,7 @@ type ContextProps = {
   setWorkflowExecutions: React.Dispatch<
     React.SetStateAction<WorkflowExecutionLog[][]>
   >;
+  apps: any[];
 };
 
 type AppContextProps = {
@@ -69,6 +71,7 @@ export const AppContext = createContext<ContextProps>({
   verifying: true,
   workflowExecutions: [],
   setWorkflowExecutions: defaultFunc,
+  apps: [],
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -103,6 +106,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const [workflowExecutions, setWorkflowExecutions] = useState<
     WorkflowExecutionLog[][]
   >([]);
+
+  const [apps, setApps] = useState<any[]>([]);
 
   // change current active tab
   const changeTab = (name: string, query = "") => {
@@ -207,6 +212,42 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     setWorkflowExecutions((items) => [...items, newItems]);
   }, []);
 
+  const getApps = (workflowsList: Workflow[], connectorsList: Connector[]) => {
+    if (workflowsList && workflowsList.length > 0) {
+      const usedConnectorsKeys = _.uniq(
+        _.flatten(
+          workflowsList.map((workflow: Workflow) => [
+            workflow.trigger.connector,
+            ...workflow.actions.map((action: Operation) => action.connector),
+          ])
+        )
+      );
+      const usedApps = _.orderBy(
+        usedConnectorsKeys.map((connectorKey: string) => {
+          const connectorObject = connectorsList.find(
+            (connector: Connector) => connector.key === connectorKey
+          );
+          return {
+            name: (connectorObject && connectorObject.name) || "",
+            icon: (connectorObject && connectorObject.icon) || "",
+            workflows: workflowsList.filter(
+              (workflow: Workflow) =>
+                workflow.trigger.connector === connectorKey ||
+                workflow.actions.filter(
+                  (action: Operation) => action.connector === connectorKey
+                ).length > 0
+            ).length,
+          };
+        }),
+        ["workflows", "name"],
+        ["desc"]
+      );
+      setApps(usedApps);
+    } else {
+      setApps([]);
+    }
+  };
+
   useEffect(() => {
     setWorkflowExecutions([]);
     if (workflows && workflows.length > 0) {
@@ -250,6 +291,10 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     }
   }, [width, appOpened]);
 
+  useEffect(() => {
+    getApps(workflows, connectors);
+  }, [workflows, connectors]);
+
   return (
     <AppContext.Provider
       value={{
@@ -270,6 +315,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         verifying,
         workflowExecutions,
         setWorkflowExecutions,
+        apps,
       }}
     >
       {children}

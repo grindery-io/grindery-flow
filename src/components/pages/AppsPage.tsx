@@ -4,6 +4,7 @@ import { IconButton, Text, InputBox } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import apps from "../../samples/apps";
 import { ICONS, SCREEN } from "../../constants";
+import useAppContext from "../../hooks/useAppContext";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -130,8 +131,8 @@ const AppCounterValue = styled.span`
 type Props = {};
 
 const AppsPage = (props: Props) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [items, setItems] = useState(apps);
+  const { apps } = useAppContext();
+  const items = apps;
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredItems = items.filter((item) =>
@@ -153,7 +154,6 @@ const AppsPage = (props: Props) => {
             icon="search"
           />
         </SearchInputWrapper>
-        <IconButton icon={ICONS.PLUS} color="" />
       </SearchWrapper>
       <AppsWrapper>
         {filteredItems.map((item) => (
