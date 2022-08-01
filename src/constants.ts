@@ -5,7 +5,7 @@ export const SCREEN = {
   DESKTOP_XL: "1600px",
 };
 
-export const WORKFLOW_ENGINE_URL = "https://gnexus-orchestrator.herokuapp.com";
+export const WORKFLOW_ENGINE_URL = "https://orchestrator.grindery.org/";
 
 export const ICONS: { [key: string]: string } = {
   WALLET: "/images/icons/wallet.svg",
