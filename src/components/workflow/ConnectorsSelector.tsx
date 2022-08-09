@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Text, SelectInput, AutoCompleteInput } from "grindery-ui";
+import { Text, Select, Autocomplete } from "grindery-ui";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import {
   COMING_SOON_ACTIONS,
@@ -174,7 +174,7 @@ const ConnectorsSelector = (props: Props) => {
       <AppsWrapper>
         <div style={{ marginTop: 40 }}>
           <InputWrapper>
-            <AutoCompleteInput
+            <Autocomplete
               label="This..."
               size="full"
               placeholder="Select a Trigger"
@@ -187,7 +187,7 @@ const ConnectorsSelector = (props: Props) => {
         <JoinImage src={ICONS.JOIN_CONNECTORS} alt="Add connectors" />
         <div style={{ marginTop: 10 }}>
           <InputWrapper>
-            <AutoCompleteInput
+            <Autocomplete
               label="With..."
               size="full"
               placeholder="Search for protocol"
@@ -201,7 +201,7 @@ const ConnectorsSelector = (props: Props) => {
       {triggers.triggerConnectorIsSet && actions.actionConnectorIsSet(index) && (
         <TriggerActionWrapper>
           <div style={{ marginTop: 40 }}>
-            <SelectInput
+            <Select
               label="When this happens..."
               type="default"
               placeholder="Select a Trigger"
@@ -212,7 +212,7 @@ const ConnectorsSelector = (props: Props) => {
           </div>
           <JoinImage src={ICONS.JOIN_ACTIONS} alt="Add trigger and actions" />
           <div style={{ marginTop: 10 }}>
-            <SelectInput
+            <Select
               label="Then do this..."
               type="default"
               placeholder="Select an Action"

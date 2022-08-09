@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { AutoCompleteInput } from "grindery-ui";
+import { Autocomplete } from "grindery-ui";
 import { BLOCKCHAINS } from "../../constants";
 
 const InputWrapper = styled.div`
@@ -54,7 +54,7 @@ const ChainSelector = (props: Props) => {
 
   return (
     <InputWrapper>
-      <AutoCompleteInput
+      <Autocomplete
         label="Blockchain"
         size="full"
         placeholder="Select a blockchain"

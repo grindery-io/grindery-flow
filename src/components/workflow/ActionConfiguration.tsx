@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { CircularProgress, AlertField, Text } from "grindery-ui";
+import { CircularProgress, Alert, Text } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import {
   getOutputOptions,
@@ -584,7 +584,7 @@ const ActionConfiguration = (props: Props) => {
           {actions.current(index)?.operation?.type === "blockchain:call" &&
             gasToken && (
               <AlertWrapper>
-                <AlertField
+                <Alert
                   color="warning"
                   icon={
                     <img
@@ -618,12 +618,12 @@ const ActionConfiguration = (props: Props) => {
                       suffix={gasToken.token}
                     />
                   </>
-                </AlertField>
+                </Alert>
               </AlertWrapper>
             )}
           {error && (
             <AlertWrapper>
-              <AlertField
+              <Alert
                 color="error"
                 icon={
                   <img
@@ -635,12 +635,12 @@ const ActionConfiguration = (props: Props) => {
                 }
               >
                 <div style={{ textAlign: "left" }}>Error: {error}</div>
-              </AlertField>
+              </Alert>
             </AlertWrapper>
           )}
           {actionError && (
             <AlertWrapper>
-              <AlertField
+              <Alert
                 color="error"
                 icon={
                   <img
@@ -652,7 +652,7 @@ const ActionConfiguration = (props: Props) => {
                 }
               >
                 <div style={{ textAlign: "left" }}>{actionError}</div>
-              </AlertField>
+              </Alert>
             </AlertWrapper>
           )}
           {loading && (

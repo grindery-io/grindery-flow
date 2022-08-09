@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { SwitchInput, InputSuffix } from "grindery-ui";
+import { Switch, SuffixInput } from "grindery-ui";
 import { SCREEN } from "../../constants";
 
 const Wrapper = styled.div`
@@ -83,12 +83,12 @@ const NotificationsPage = (props: Props) => {
 
       <BalanceAlertWrapper>
         <Label>Low balance alert</Label>
-        <SwitchInput value={balanceAlert} onChange={handleBalanceAlertChange} />
+        <Switch value={balanceAlert} onChange={handleBalanceAlertChange} />
       </BalanceAlertWrapper>
       <AlertConfigWrapper>
         <Label>Alert when is qual or lower than</Label>
         <div style={{ marginLeft: "auto", maxWidth: 84 }}>
-          <InputSuffix
+          <SuffixInput
             value={alertConfig}
             onChange={handleCurrencyChange}
             suffix="ETH"

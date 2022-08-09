@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { IconButton, InputBox, SwitchInput } from "grindery-ui";
+import { IconButton, TextInput, Switch } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import useAppContext from "../../hooks/useAppContext";
 import { ICONS, SCREEN } from "../../constants";
@@ -192,7 +192,7 @@ const WorkflowsPage = (props: Props) => {
     <Wrapper>
       <SearchWrapper>
         <SearchInputWrapper>
-          <InputBox
+          <TextInput
             placeholder={"Workflows"}
             value={searchTerm}
             onChange={handleSearchChange}
@@ -342,7 +342,7 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
       }
       RightComponent={
         <ItemActionsWrapper>
-          <SwitchInput value={enabled} onChange={handleStateChange} />
+          <Switch value={enabled} onChange={handleStateChange} />
         </ItemActionsWrapper>
       }
     />

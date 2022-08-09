@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import NexusClient from "grindery-nexus-client";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
-import { Text, AlertField, CircularProgress } from "grindery-ui";
+import { Text, Alert, CircularProgress } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import { replaceTokens } from "../../helpers/utils";
 import { ICONS } from "../../constants";
@@ -219,7 +219,7 @@ const ActionTest = (props: Props) => {
       </TitleWrapper>
       {success && (
         <AlertWrapper>
-          <AlertField
+          <Alert
             color="success"
             icon={
               <img
@@ -231,12 +231,12 @@ const ActionTest = (props: Props) => {
             }
           >
             <div style={{ textAlign: "left" }}>{success}</div>
-          </AlertField>
+          </Alert>
         </AlertWrapper>
       )}
       {error && (
         <AlertWrapper>
-          <AlertField
+          <Alert
             color="error"
             icon={
               <img
@@ -248,7 +248,7 @@ const ActionTest = (props: Props) => {
             }
           >
             <div style={{ textAlign: "left" }}>{error}</div>
-          </AlertField>
+          </Alert>
         </AlertWrapper>
       )}
       <TableWrapper>

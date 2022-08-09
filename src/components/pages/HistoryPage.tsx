@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import _ from "lodash";
-import { InputBox, TabComponent } from "grindery-ui";
+import { TextInput, Tabs } from "grindery-ui";
 import { useSearchParams } from "react-router-dom";
 import DataBox from "../shared/DataBox";
 import { ICONS, SCREEN } from "../../constants";
@@ -244,7 +244,7 @@ const HistoryPage = (props: Props) => {
   return (
     <RootWrapper>
       <TabsWrapper>
-        <TabComponent
+        <Tabs
           value={tab}
           onChange={(index: number) => {
             setTab(index);
@@ -261,7 +261,7 @@ const HistoryPage = (props: Props) => {
       <Wrapper>
         <SearchWrapper>
           <SearchInputWrapper>
-            <InputBox
+            <TextInput
               placeholder={"History"}
               value={searchTerm}
               onChange={handleSearchChange}

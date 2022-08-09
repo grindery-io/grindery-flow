@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import _ from "lodash";
 import styled from "styled-components";
 import moment from "moment";
-import { DialogBox, InputBox, TabComponent } from "grindery-ui";
+import { Dialog, TextInput, Tabs } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import { ICONS, SCREEN } from "../../constants";
 import transactions from "../../samples/transactions";
@@ -390,7 +390,7 @@ const TransactionsPage = (props: Props) => {
             </ItemNumbers>
           }
         />
-        <DialogBox
+        <Dialog
           open={dialog === item.id}
           onClose={() => {
             setDialog(null);
@@ -429,7 +429,7 @@ const TransactionsPage = (props: Props) => {
             }}
             fullWidth
           />
-        </DialogBox>
+        </Dialog>
       </React.Fragment>
     );
   };
@@ -437,7 +437,7 @@ const TransactionsPage = (props: Props) => {
   return (
     <RootWrapper>
       <TabsWrapper>
-        <TabComponent
+        <Tabs
           value={tab}
           onChange={(index: number) => {
             setTab(index);
@@ -454,7 +454,7 @@ const TransactionsPage = (props: Props) => {
       <Wrapper>
         <SearchWrapper>
           <SearchInputWrapper>
-            <InputBox
+            <TextInput
               placeholder={"Transactions"}
               value={searchTerm}
               onChange={handleSearchChange}

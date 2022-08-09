@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { InputBox } from "grindery-ui";
+import { TextInput } from "grindery-ui";
 import styled from "styled-components";
 import { ICONS, WORKFLOW_ENGINE_URL } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
@@ -218,7 +218,7 @@ const EarlyAccessModal = (props: Props) => {
                 to get early access please provide us with an email address to
                 notify you as soon as a slot become available
               </FormDesc>
-              <InputBox
+              <TextInput
                 label="Email *"
                 placeholder=""
                 value={email}

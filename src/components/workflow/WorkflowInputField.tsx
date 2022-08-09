@@ -1,11 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  IconButton,
-  RichInput,
-  SelectInput,
-  AutoCompleteInput,
-} from "grindery-ui";
+import { IconButton, RichInput, Select, Autocomplete } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
@@ -310,25 +305,13 @@ const WorkflowInputField = ({
     switch (field.type) {
       case "boolean":
         return (
-          <SelectInput
-            {...commonProps}
-            type="default"
-            options={booleanOptions}
-          />
+          <Select {...commonProps} type="default" options={booleanOptions} />
         );
       default:
         return field.choices ? (
-          <AutoCompleteInput
-            {...commonProps}
-            size="full"
-            options={fieldOptions}
-          />
+          <Autocomplete {...commonProps} size="full" options={fieldOptions} />
         ) : field.key === "_grinderyChain" ? (
-          <AutoCompleteInput
-            {...commonProps}
-            size="full"
-            options={BLOCKCHAINS}
-          />
+          <Autocomplete {...commonProps} size="full" options={BLOCKCHAINS} />
         ) : (
           <RichInput
             {...commonProps}

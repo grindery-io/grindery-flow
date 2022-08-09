@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { IconButton, TabComponent, Button } from "grindery-ui";
+import { IconButton, Tabs, Button } from "grindery-ui";
 import { useMatch, useNavigate } from "react-router-dom";
 import { ICONS, RIGHTBAR_TABS, SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
@@ -172,7 +172,7 @@ const SidebarTabs = (props: Props) => {
           />
         </IconButtonWrapper>
       )}
-      <TabComponent
+      <Tabs
         value={path}
         onChange={(index: number) => {
           if (user) {

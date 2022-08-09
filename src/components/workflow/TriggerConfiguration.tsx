@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { CircularProgress, Text, AlertField } from "grindery-ui";
+import { CircularProgress, Text, Alert } from "grindery-ui";
 import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
 import {
@@ -537,7 +537,7 @@ const TriggerConfiguration = (props: Props) => {
           ))}
           {error && (
             <AlertWrapper>
-              <AlertField
+              <Alert
                 color="error"
                 icon={
                   <img
@@ -549,12 +549,12 @@ const TriggerConfiguration = (props: Props) => {
                 }
               >
                 <div style={{ textAlign: "left" }}>Error: {error}</div>
-              </AlertField>
+              </Alert>
             </AlertWrapper>
           )}
           {triggerError && (
             <AlertWrapper>
-              <AlertField
+              <Alert
                 color="error"
                 icon={
                   <img
@@ -566,7 +566,7 @@ const TriggerConfiguration = (props: Props) => {
                 }
               >
                 <div style={{ textAlign: "left" }}>{triggerError}</div>
-              </AlertField>
+              </Alert>
             </AlertWrapper>
           )}
           {loading && (

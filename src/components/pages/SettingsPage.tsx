@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { SelectSimple, SwitchInput } from "grindery-ui";
+import { SelectSimple, Switch } from "grindery-ui";
 import { SCREEN } from "../../constants";
 
 const Wrapper = styled.div`
@@ -88,7 +88,7 @@ const SettingsPage = (props: Props) => {
 
       <DevModeWrapper>
         <Label>Developer mode</Label>
-        <SwitchInput value={devMode} onChange={handleDevModeChange} />
+        <Switch value={devMode} onChange={handleDevModeChange} />
       </DevModeWrapper>
       <HelpText>
         This will enable a series of features intended for development and

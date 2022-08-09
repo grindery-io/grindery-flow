@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { InputSuffix } from "grindery-ui";
+import { SuffixInput } from "grindery-ui";
 
 const Wrapper = styled.div`
   display: flex;
@@ -40,7 +40,7 @@ const GasInput = (props: Props) => {
     <Wrapper>
       <Label>Set gas limit for this action:</Label>
       <InputWrapper>
-        <InputSuffix
+        <SuffixInput
           value={value}
           onChange={onChange}
           suffix={suffix || "ETH"}

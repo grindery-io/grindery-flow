@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { IconButton, Text, InputBox } from "grindery-ui";
+import { Text, TextInput } from "grindery-ui";
 import DataBox from "../shared/DataBox";
-import apps from "../../samples/apps";
-import { ICONS, SCREEN } from "../../constants";
+import { SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 
 const Wrapper = styled.div`
@@ -146,7 +145,7 @@ const AppsPage = (props: Props) => {
     <Wrapper>
       <SearchWrapper>
         <SearchInputWrapper>
-          <InputBox
+          <TextInput
             placeholder={"(d)Apps"}
             value={searchTerm}
             onChange={handleSearchChange}
