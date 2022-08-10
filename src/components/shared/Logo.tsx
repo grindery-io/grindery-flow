@@ -6,10 +6,11 @@ import { useNavigate } from "react-router-dom";
 
 type Props = {
   variant?: "horizontal" | "square";
+  width?: string;
 };
 
 const Logo = (props: Props) => {
-  const { variant } = props;
+  const { variant, width } = props;
   let navigate = useNavigate();
 
   const returnSrc = () => {
@@ -28,7 +29,12 @@ const Logo = (props: Props) => {
       <img
         src={returnSrc()}
         alt="Grindery Nexus logo"
-        style={{ display: "block", margin: "0 auto", cursor: "pointer" }}
+        style={{
+          display: "block",
+          margin: "0 auto",
+          cursor: "pointer",
+          width: width || "auto",
+        }}
         onClick={() => {
           navigate("/");
         }}

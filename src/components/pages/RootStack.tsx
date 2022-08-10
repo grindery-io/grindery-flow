@@ -4,8 +4,8 @@ import { Drawer } from "grindery-ui";
 import { Route, Routes, Navigate, useMatch } from "react-router-dom";
 import { SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
-import AppHeader from "./../shared/AppHeader";
-import SidebarTabs from "./../shared/SidebarTabs";
+import AppHeader from "../shared/AppHeader";
+import SidebarTabs from "../shared/SidebarTabs";
 import useWindowSize from "../../hooks/useWindowSize";
 import AppsPage from "./AppsPage";
 import DashboardPage from "./DashboardPage";
@@ -88,7 +88,7 @@ const OpenButtonWrapper = styled.div`
 
 type Props = {};
 
-const RootPage = (props: Props) => {
+const RootStack = (props: Props) => {
   const { workflows, user, appOpened, setAppOpened } = useAppContext();
   const { size, width } = useWindowSize();
   let matchNewWorfklow = useMatch("/workflows/new");
@@ -197,4 +197,4 @@ const RootPage = (props: Props) => {
   );
 };
 
-export default RootPage;
+export default RootStack;
