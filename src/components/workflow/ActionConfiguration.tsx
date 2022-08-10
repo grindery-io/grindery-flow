@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { CircularProgress, Alert, Text } from "grindery-ui";
+import NexusClient from "grindery-nexus-client";
 import { Field } from "../../types/Connector";
 import {
   getOutputOptions,
@@ -317,15 +318,15 @@ const ActionConfiguration = (props: Props) => {
     if (actions.current(index)?.operation?.inputFieldProviderUrl) {
       if (workflow) {
         setLoading(true);
-        axios
-          .post(
-            actions.current(index)?.operation?.inputFieldProviderUrl || "",
-            jsonrpcObj("grinderyNexusConnectorUpdateFields", {
-              key: actions.current(index)?.key,
-              fieldData: {},
-              credentials: workflow.actions[index].credentials,
-            })
-          )
+        NexusClient.callInputProvider(
+          actions.actionConnector(index)?.key || "",
+          actions.current(index)?.key || "",
+          jsonrpcObj("grinderyNexusConnectorUpdateFields", {
+            key: actions.current(index)?.key,
+            fieldData: {},
+            credentials: workflow.actions[index].credentials,
+          })
+        )
           .then((res) => {
             if (res && res.data && res.data.error) {
               console.log(
@@ -333,8 +334,8 @@ const ActionConfiguration = (props: Props) => {
                 res.data.error
               );
             }
-            if (res && res.data && res.data.result) {
-              if (res.data.result.inputFields && connectors) {
+            if (res && res.inputFields) {
+              if (res.inputFields && connectors) {
                 setConnectors([
                   ...connectors.map((connector) => {
                     if (
@@ -354,16 +355,14 @@ const ActionConfiguration = (props: Props) => {
                                 operation: {
                                   ...act.operation,
                                   inputFields:
-                                    res.data.result.inputFields ||
+                                    res.inputFields ||
                                     act.operation.inputFields,
                                   outputFields:
-                                    res.data.result.outputFields ||
+                                    res.outputFields ||
                                     act.operation.outputFields ||
                                     [],
                                   sample:
-                                    res.data.result.sample ||
-                                    act.operation.sample ||
-                                    {},
+                                    res.sample || act.operation.sample || {},
                                 },
                               };
                             } else {

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { CircularProgress, Text, Alert } from "grindery-ui";
+import NexusClient from "grindery-nexus-client";
 import Check from "./../icons/Check";
 import { Field } from "../../types/Connector";
 import {
@@ -228,15 +229,15 @@ const TriggerConfiguration = (props: Props) => {
     if (triggers.current?.operation?.inputFieldProviderUrl) {
       if (workflow) {
         setLoading(true);
-        axios
-          .post(
-            triggers.current.operation.inputFieldProviderUrl,
-            jsonrpcObj("grinderyNexusConnectorUpdateFields", {
-              key: triggers.current.key,
-              fieldData: {},
-              credentials: workflow.trigger.credentials,
-            })
-          )
+        NexusClient.callInputProvider(
+          triggers.triggerConnector?.key || "",
+          triggers.current.key,
+          jsonrpcObj("grinderyNexusConnectorUpdateFields", {
+            key: triggers.current.key,
+            fieldData: {},
+            credentials: workflow.trigger.credentials,
+          })
+        )
           .then((res) => {
             if (res && res.data && res.data.error) {
               console.log(
@@ -244,8 +245,8 @@ const TriggerConfiguration = (props: Props) => {
                 res.data.error
               );
             }
-            if (res && res.data && res.data.result) {
-              if (res.data.result.inputFields && connectors) {
+            if (res) {
+              if (res.inputFields && connectors) {
                 setConnectors([
                   ...connectors.map((connector) => {
                     if (
@@ -265,16 +266,14 @@ const TriggerConfiguration = (props: Props) => {
                                 operation: {
                                   ...trig.operation,
                                   inputFields:
-                                    res.data.result.inputFields ||
+                                    res.inputFields ||
                                     trig.operation.inputFields,
                                   outputFields:
-                                    res.data.result.outputFields ||
+                                    res.outputFields ||
                                     trig.operation.outputFields ||
                                     [],
                                   sample:
-                                    res.data.result.sample ||
-                                    trig.operation.sample ||
-                                    {},
+                                    res.sample || trig.operation.sample || {},
                                 },
                               };
                             } else {
