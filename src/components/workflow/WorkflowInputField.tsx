@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { IconButton, RichInput, Select, Autocomplete } from "grindery-ui";
+import NexusClient from "grindery-nexus-client";
 import { Field } from "../../types/Connector";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
 import { BLOCKCHAINS, ICONS } from "../../constants";
 import { debounce } from "throttle-debounce";
-import axios from "axios";
 import { jsonrpcObj } from "../../helpers/utils";
 
 const InputWrapper = styled.div`
@@ -183,15 +183,15 @@ const WorkflowInputField = ({
         operation?.operation?.inputFieldProviderUrl
       ) {
         if (workflow) {
-          axios
-            .post(
-              operation?.operation?.inputFieldProviderUrl || "",
-              jsonrpcObj("grinderyNexusConnectorUpdateFields", {
-                key: operation?.key,
-                fieldData: workflowStep.input,
-                credentials: workflowStep.credentials,
-              })
-            )
+          NexusClient.callInputProvider(
+            currentConnector?.key || "",
+            operation.key,
+            jsonrpcObj("grinderyNexusConnectorUpdateFields", {
+              key: operation.key,
+              fieldData: workflowStep.input,
+              credentials: workflowStep.credentials,
+            })
+          )
             .then((res) => {
               if (res && res.data && res.data.error) {
                 console.error(
@@ -199,7 +199,7 @@ const WorkflowInputField = ({
                   res.data.error
                 );
               }
-              if (res && res.data && res.data.result) {
+              if (res) {
                 setConnectors([
                   ...(connectors || []).map((connector) => {
                     if (connector && connector.key === currentConnector?.key) {
@@ -217,16 +217,14 @@ const WorkflowInputField = ({
                                 operation: {
                                   ...act.operation,
                                   inputFields:
-                                    res.data.result.inputFields ||
+                                    res.inputFields ||
                                     act.operation.inputFields,
                                   outputFields:
-                                    res.data.result.outputFields ||
+                                    res.outputFields ||
                                     act.operation.outputFields ||
                                     [],
                                   sample:
-                                    res.data.result.sample ||
-                                    act.operation.sample ||
-                                    {},
+                                    res.sample || act.operation.sample || {},
                                 },
                               };
                             } else {
@@ -246,16 +244,14 @@ const WorkflowInputField = ({
                                 operation: {
                                   ...trig.operation,
                                   inputFields:
-                                    res.data.result.inputFields ||
+                                    res.inputFields ||
                                     trig.operation.inputFields,
                                   outputFields:
-                                    res.data.result.outputFields ||
+                                    res.outputFields ||
                                     trig.operation.outputFields ||
                                     [],
                                   sample:
-                                    res.data.result.sample ||
-                                    trig.operation.sample ||
-                                    {},
+                                    res.sample || trig.operation.sample || {},
                                 },
                               };
                             } else {
