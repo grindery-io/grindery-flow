@@ -8,6 +8,7 @@ import {
   getParameterByName,
   getValidationScheme,
   jsonrpcObj,
+  replaceTokens,
 } from "../../helpers/utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import ChainSelector from "./ChainSelector";
@@ -258,22 +259,39 @@ const ActionConfiguration = (props: Props) => {
       actionConnector(index)?.authentication?.test &&
       actionConnector(index)?.authentication?.test.url
     ) {
-      const headers = actionConnector(index)?.authentication?.test.headers;
-      const url = actionConnector(index)?.authentication?.test.url || "";
       const method = actionConnector(index)?.authentication?.test.method;
-      axios({
-        method: method,
-        url: `${url}${
-          /\?/.test(url) ? "&" : "?"
-        }timestamp=${new Date().getTime()}`,
-        headers: {
+      const url = actionConnector(index)?.authentication?.test.url || "";
+      // `${url}${/\?/.test(url) ? "&" : "?"}timestamp=${new Date().getTime()}`,
+      const data = replaceTokens(
+        actionConnector(index)?.authentication?.test.body || {},
+        credentials
+      );
+      const headers = replaceTokens(
+        actionConnector(index)?.authentication?.test.headers || {},
+        credentials
+      );
+      /*
+      {
           ...headers,
           Authorization: "Bearer " + credentials.access_token,
-        },
+        }
+        */
+      axios({
+        method,
+        url,
+        headers,
+        data,
       })
         .then((res) => {
           if (res && res.data) {
-            setEmail(res.data.email || res.data.sub || "Unknown username");
+            setEmail(
+              res.data.email ||
+                res.data.sub ||
+                res.data.name ||
+                (res.data.team && res.data.team.name) ||
+                (res.data.profile && res.data.profile.real_name) ||
+                "Unknown username"
+            );
             updateWorkflow({
               ["actions[" + index + "].credentials"]: credentials,
             });

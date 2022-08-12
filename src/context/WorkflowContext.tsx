@@ -472,7 +472,7 @@ export const WorkflowContextProvider = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  if (window.location.origin.includes("http://localhost")) {
+  if (window.location.origin.includes("//localhost")) {
     console.log("connectors", connectors);
     console.log("workflow", workflow);
   }

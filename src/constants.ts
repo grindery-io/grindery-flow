@@ -372,13 +372,6 @@ export const COMING_SOON_ACTIONS = [
     icon: "https://telegram.org/favicon.ico",
   },
   {
-    value: "Slack",
-    label: "Slack",
-    group: "Coming soon",
-    disabled: true,
-    icon: "https://a.slack-edge.com/cebaa/img/ico/favicon.ico",
-  },
-  {
     value: "Matter",
     label: "Matter",
     group: "Coming soon",

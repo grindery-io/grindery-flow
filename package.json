@@ -1,6 +1,6 @@
 {
   "name": "grindery-nexus-frontend",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
@@ -19,6 +19,7 @@
     "grindery-ui": "^0.5.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.3",
+    "qs": "^6.11.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-foco": "^1.3.1",
@@ -31,6 +32,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:https": "HTTPS=true SSL_CRT_FILE=localhost.pem SSL_KEY_FILE=localhost-key.pem react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

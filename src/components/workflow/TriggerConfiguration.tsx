@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import qs from "qs";
 import styled from "styled-components";
 import { CircularProgress, Text, Alert } from "grindery-ui";
 import NexusClient from "grindery-nexus-client";
@@ -9,6 +10,7 @@ import {
   getParameterByName,
   getValidationScheme,
   jsonrpcObj,
+  replaceTokens,
 } from "../../helpers/utils";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import ChainSelector from "./ChainSelector";
@@ -113,6 +115,7 @@ const TriggerConfiguration = (props: Props) => {
   const receiveMessage = (e: any) => {
     if (e.origin === window.location.origin) {
       const { data } = e;
+      console.log("data", data);
 
       if (data.gr_url) {
         const codeParam = getParameterByName("code", data.gr_url);
@@ -166,19 +169,22 @@ const TriggerConfiguration = (props: Props) => {
       triggers.triggerConnector.authentication &&
       triggers.triggerConnector.authentication.test
     ) {
-      const headers = triggers.triggerConnector.authentication.test.headers;
       const url = triggers.triggerConnector.authentication.test.url;
       const method = triggers.triggerConnector.authentication.test.method;
+      const data = replaceTokens(
+        triggers.triggerConnector.authentication?.test.body || {},
+        credentials
+      );
+      const headers = replaceTokens(
+        triggers.triggerConnector.authentication.test.headers || {},
+        credentials
+      );
       if (url) {
         axios({
           method: method,
-          url: `${url}${
-            /\?/.test(url) ? "&" : "?"
-          }timestamp=${new Date().getTime()}`,
-          headers: {
-            ...headers,
-            Authorization: "Bearer " + credentials.access_token,
-          },
+          url: url,
+          headers,
+          data,
         })
           .then((res) => {
             if (res && res.data && res.data.email) {
