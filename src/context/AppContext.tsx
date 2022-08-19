@@ -49,6 +49,7 @@ type ContextProps = {
   apps: any[];
   handleDevModeChange: (a: boolean) => void;
   devMode: boolean;
+  deleteWorkflow: (a: string, b: string) => void;
 };
 
 type AppContextProps = {
@@ -76,6 +77,7 @@ export const AppContext = createContext<ContextProps>({
   apps: [],
   handleDevModeChange: defaultFunc,
   devMode: false,
+  deleteWorkflow: defaultFunc,
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -261,6 +263,17 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     setDevMode(e);
   };
 
+  const deleteWorkflow = async (userAccountId: string, key: string) => {
+    const res = await NexusClient.deleteWorkflow(userAccountId, key).catch(
+      (err) => {
+        console.error("deleteWorkflow error:", err.message);
+      }
+    );
+    if (res) {
+      getWorkflowsList();
+    }
+  };
+
   useEffect(() => {
     setWorkflowExecutions([]);
     if (workflows && workflows.length > 0) {
@@ -331,6 +344,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         apps,
         devMode,
         handleDevModeChange,
+        deleteWorkflow,
       }}
     >
       {children}
