@@ -438,7 +438,7 @@ export const WorkflowContextProvider = ({
         ...workflow,
         signature: JSON.stringify(workflow),
       };
-      if (window.location.origin.includes("http://localhost")) {
+      if (window.location.origin.includes("//localhost")) {
         console.log("readyWorkflow", readyWorkflow);
       }
       setError(null);

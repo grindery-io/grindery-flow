@@ -8,11 +8,11 @@ import AppHeader from "../shared/AppHeader";
 import SidebarTabs from "../shared/SidebarTabs";
 import useWindowSize from "../../hooks/useWindowSize";
 import AppsPage from "./AppsPage";
-import DashboardPage from "./DashboardPage";
+//import DashboardPage from "./DashboardPage";
 import HistoryPage from "./HistoryPage";
-import NotificationsPage from "./NotificationsPage";
+//import NotificationsPage from "./NotificationsPage";
 import SettingsPage from "./SettingsPage";
-import TransactionsPage from "./TransactionsPage";
+//import TransactionsPage from "./TransactionsPage";
 import WelcomePage from "./WelcomePage";
 import WorkflowsPage from "./WorkflowsPage";
 import WorkflowBuilderPage from "./WorkflowBuilderPage";
@@ -100,8 +100,8 @@ const RootStack = (props: Props) => {
 
     return (
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />}></Route>
-        <Route path="/dashboard" element={<DashboardPage />}></Route>
+        <Route path="/" element={<Navigate to="/workflows" replace />}></Route>
+        {/*<Route path="/dashboard" element={<DashboardPage />}></Route>*/}
         <Route
           path="/workflows"
           element={
@@ -119,8 +119,8 @@ const RootStack = (props: Props) => {
         <Route path="/workflows/new" element={<WorkflowBuilderPage />}></Route>
         <Route path="/d-apps" element={<AppsPage />}></Route>
         <Route path="/history" element={<HistoryPage />}></Route>
-        <Route path="/transactions" element={<TransactionsPage />}></Route>
-        <Route path="/notifications" element={<NotificationsPage />}></Route>
+        {/*<Route path="/transactions" element={<TransactionsPage />}></Route>
+        <Route path="/notifications" element={<NotificationsPage />}></Route>*/}
         <Route path="/settings" element={<SettingsPage />}></Route>
       </Routes>
     );

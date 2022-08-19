@@ -9,6 +9,7 @@ export type Connector = {
   authentication?: Authentication;
   icon?: string;
   pricing?: string;
+  html_url?: string;
 };
 
 // Triggers

@@ -4,7 +4,7 @@ import { IconButton, TextInput, Switch } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import useAppContext from "../../hooks/useAppContext";
 import { ICONS, SCREEN } from "../../constants";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -171,17 +171,42 @@ const TitleInput = styled.input`
 type Props = {};
 
 const WorkflowsPage = (props: Props) => {
-  const { workflows } = useAppContext();
+  const { workflows, connectors } = useAppContext();
   const items = workflows || [];
-  const [searchTerm, setSearchTerm] = useState("");
+  let [searchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("search") || ""
+  );
   let navigate = useNavigate();
 
   const filteredItems = searchTerm
-    ? items.filter(
-        (item) =>
-          item.title &&
-          item.title.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+    ? items
+        .map((item) => ({
+          ...item,
+          triggerAppName:
+            connectors.find((c) => c.key === item.trigger.connector)?.name ||
+            null,
+          actionsAppName: item.actions
+            .map(
+              (action: any) =>
+                connectors.find((a) => a.key === action.connector)?.name
+            )
+            .filter((a: any) => a)
+            .join(", "),
+        }))
+        .filter(
+          (item) =>
+            (item.title &&
+              item.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (item.triggerAppName &&
+              item.triggerAppName
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())) ||
+            (item.actionsAppName &&
+              item.actionsAppName
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()))
+        )
     : items;
 
   const handleSearchChange = (e: string) => {

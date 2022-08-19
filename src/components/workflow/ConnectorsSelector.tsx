@@ -6,9 +6,12 @@ import {
   COMING_SOON_ACTIONS,
   COMING_SOON_TRIGGERS,
   ICONS,
+  NOT_READY_ACTIONS,
+  NOT_READY_TRIGGERS,
   SCREEN,
 } from "../../constants";
 import Button from "../shared/Button";
+import useAppContext from "../../hooks/useAppContext";
 
 const InputWrapper = styled.div`
   & .paid-label {
@@ -69,6 +72,7 @@ type Props = {
 
 const ConnectorsSelector = (props: Props) => {
   const { step, index } = props;
+  const { devMode } = useAppContext();
   const {
     workflow,
     activeStep,
@@ -79,25 +83,71 @@ const ConnectorsSelector = (props: Props) => {
   } = useWorkflowContext();
 
   const triggerConnectorOptions = [
-    ...triggers.connectorsWithTriggers.map((connector) => ({
-      value: connector.key,
-      label: connector.name,
-      icon: connector.icon,
-      paid: connector.pricing,
-    })),
-    ...COMING_SOON_TRIGGERS,
+    ...triggers.connectorsWithTriggers
+      .map((connector) => ({
+        value: connector.key,
+        label: connector.name,
+        icon: connector.icon,
+        paid: connector.pricing,
+      }))
+      .filter(
+        (connector: any) =>
+          !NOT_READY_TRIGGERS.find(
+            (notReadyKey) => notReadyKey && notReadyKey === connector.value
+          )
+      ),
+    ...[
+      ...triggers.connectorsWithTriggers
+        .map((connector) => ({
+          value: connector.key,
+          label: connector.name,
+          icon: connector.icon,
+          disabled: true,
+          group: "Coming soon",
+          paid: connector.pricing,
+        }))
+        .filter((connector: any) =>
+          NOT_READY_TRIGGERS.find(
+            (notReadyKey) => notReadyKey && notReadyKey === connector.value
+          )
+        ),
+      ...COMING_SOON_TRIGGERS,
+    ],
   ];
 
   const triggerConnectorValue = workflow.trigger.connector || "";
 
   const actionConnectorOptions = [
-    ...actions.connectorsWithActions.map((connector) => ({
-      value: connector.key,
-      label: connector.name,
-      icon: connector.icon,
-      paid: connector.pricing,
-    })),
-    ...COMING_SOON_ACTIONS,
+    ...actions.connectorsWithActions
+      .map((connector) => ({
+        value: connector.key,
+        label: connector.name,
+        icon: connector.icon,
+        paid: connector.pricing,
+      }))
+      .filter(
+        (connector: any) =>
+          !NOT_READY_ACTIONS.find(
+            (notReadyKey) => notReadyKey && notReadyKey === connector.value
+          )
+      ),
+    ...[
+      ...actions.connectorsWithActions
+        .map((connector) => ({
+          value: connector.key,
+          label: connector.name,
+          icon: connector.icon,
+          disabled: true,
+          group: "Coming soon",
+          paid: connector.pricing,
+        }))
+        .filter((connector: any) =>
+          NOT_READY_ACTIONS.find(
+            (notReadyKey) => notReadyKey && notReadyKey === connector.value
+          )
+        ),
+      ...COMING_SOON_ACTIONS,
+    ],
   ];
 
   const actionConnectorValue = workflow.actions[index].connector || "";
@@ -172,7 +222,7 @@ const ConnectorsSelector = (props: Props) => {
         <Text variant="h3" value="Connect (d)Apps"></Text>
       </div>
       <AppsWrapper>
-        <div style={{ marginTop: 40 }}>
+        <div style={{ marginTop: 40, position: "relative" }}>
           <InputWrapper>
             <Autocomplete
               label="This..."
@@ -183,9 +233,26 @@ const ConnectorsSelector = (props: Props) => {
               value={triggerConnectorValue}
             />
           </InputWrapper>
+          {triggerConnectorValue &&
+            devMode &&
+            triggers.triggerConnector?.html_url && (
+              <div style={{ position: "absolute", bottom: 0, right: 0 }}>
+                <a
+                  href={triggers.triggerConnector?.html_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    fontSize: "12px",
+                    lineHeight: "150%",
+                  }}
+                >
+                  Edit CDS file
+                </a>
+              </div>
+            )}
         </div>
         <JoinImage src={ICONS.JOIN_CONNECTORS} alt="Add connectors" />
-        <div style={{ marginTop: 10 }}>
+        <div style={{ marginTop: 10, position: "relative" }}>
           <InputWrapper>
             <Autocomplete
               label="With..."
@@ -196,6 +263,23 @@ const ConnectorsSelector = (props: Props) => {
               value={actionConnectorValue}
             />
           </InputWrapper>
+          {actionConnectorValue &&
+            devMode &&
+            actions.actionConnector(0)?.html_url && (
+              <div style={{ position: "absolute", bottom: 0, right: 0 }}>
+                <a
+                  href={actions.actionConnector(0)?.html_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    fontSize: "12px",
+                    lineHeight: "150%",
+                  }}
+                >
+                  Edit CDS file
+                </a>
+              </div>
+            )}
         </div>
       </AppsWrapper>
       {triggers.triggerConnectorIsSet && actions.actionConnectorIsSet(index) && (

@@ -47,6 +47,8 @@ type ContextProps = {
     React.SetStateAction<WorkflowExecutionLog[][]>
   >;
   apps: any[];
+  handleDevModeChange: (a: boolean) => void;
+  devMode: boolean;
 };
 
 type AppContextProps = {
@@ -72,11 +74,17 @@ export const AppContext = createContext<ContextProps>({
   workflowExecutions: [],
   setWorkflowExecutions: defaultFunc,
   apps: [],
+  handleDevModeChange: defaultFunc,
+  devMode: false,
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
   let navigate = useNavigate();
   const { width } = useWindowSize();
+
+  // Dev mode state
+  const cachedDevMode = localStorage.getItem("gr_dev_mode");
+  const [devMode, setDevMode] = useState(cachedDevMode === "true");
 
   // Auth hook
   const { user, disconnect } = useGrinderyNexus();
@@ -248,6 +256,11 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     }
   };
 
+  const handleDevModeChange = (e: boolean) => {
+    localStorage.setItem("gr_dev_mode", e.toString());
+    setDevMode(e);
+  };
+
   useEffect(() => {
     setWorkflowExecutions([]);
     if (workflows && workflows.length > 0) {
@@ -273,7 +286,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   useEffect(() => {
     if (user) {
       verifyUser(user);
-      navigate("/dashboard");
+      navigate("/workflows");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
@@ -316,6 +329,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         workflowExecutions,
         setWorkflowExecutions,
         apps,
+        devMode,
+        handleDevModeChange,
       }}
     >
       {children}

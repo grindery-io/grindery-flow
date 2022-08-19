@@ -240,7 +240,7 @@ const ActionConfiguration = (props: Props) => {
                 }
               })
               .catch((err) => {
-                console.log("getAccessTokenRequest err", err);
+                console.error("getAccessTokenRequest err", err);
               });
           }
         }
@@ -347,7 +347,7 @@ const ActionConfiguration = (props: Props) => {
         )
           .then((res) => {
             if (res && res.data && res.data.error) {
-              console.log(
+              console.error(
                 "grinderyNexusConnectorUpdateFields error",
                 res.data.error
               );
@@ -399,7 +399,7 @@ const ActionConfiguration = (props: Props) => {
             setLoading(false);
           })
           .catch((err) => {
-            console.log("grinderyNexusConnectorUpdateFields error", err);
+            console.error("grinderyNexusConnectorUpdateFields error", err);
             setLoading(false);
           });
       }

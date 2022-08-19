@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { SelectSimple, Switch } from "grindery-ui";
+import { Switch } from "grindery-ui";
 import { SCREEN } from "../../constants";
+import useAppContext from "../../hooks/useAppContext";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -55,32 +56,27 @@ const HelpText = styled.p`
   margin: 0 0 20px;
 `;
 
-const CurrencySettingWrapper = styled.div`
+/*const CurrencySettingWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap;
   margin: 0 0 10px;
-`;
+`;*/
 
 type Props = {};
 
 const SettingsPage = (props: Props) => {
-  const cachedDevMode = localStorage.getItem("gr_dev_mode");
-  const cachedPrimaryCurrency = localStorage.getItem("gr_primary_currency");
-  const [devMode, setDevMode] = useState(cachedDevMode === "true");
-  const [currency, setCurrency] = useState(cachedPrimaryCurrency || "USD");
-
-  const handleDevModeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    localStorage.setItem("gr_dev_mode", e.target.checked.toString());
-    setDevMode(e.target.checked);
+  const { devMode, handleDevModeChange } = useAppContext();
+  const handleDevModeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleDevModeChange(e.target.checked);
   };
 
-  const handleCurrencyChange = (e: any) => {
+  /*const handleCurrencyChange = (e: any) => {
     localStorage.setItem("gr_primary_currency", e.target.value);
     setCurrency(e.target.value);
-  };
+  };*/
 
   return (
     <Wrapper>
@@ -88,13 +84,13 @@ const SettingsPage = (props: Props) => {
 
       <DevModeWrapper>
         <Label>Developer mode</Label>
-        <Switch value={devMode} onChange={handleDevModeChange} />
+        <Switch value={devMode} onChange={handleDevModeToggle} />
       </DevModeWrapper>
       <HelpText>
         This will enable a series of features intended for development and
         debugging. use them carefully or better don't use them at all.
       </HelpText>
-      {devMode && (
+      {/*devMode && (
         <>
           <CurrencySettingWrapper>
             <Label>Primary currency</Label>
@@ -110,7 +106,7 @@ const SettingsPage = (props: Props) => {
             </div>
           </CurrencySettingWrapper>
         </>
-      )}
+              )*/}
     </Wrapper>
   );
 };

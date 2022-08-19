@@ -4,6 +4,7 @@ import { Text, TextInput } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import { SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   padding: 24px 20px;
@@ -133,6 +134,7 @@ const AppsPage = (props: Props) => {
   const { apps } = useAppContext();
   const items = apps;
   const [searchTerm, setSearchTerm] = useState("");
+  let navigate = useNavigate();
 
   const filteredItems = items.filter((item) =>
     item.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
@@ -157,6 +159,9 @@ const AppsPage = (props: Props) => {
       <AppsWrapper>
         {filteredItems.map((item) => (
           <DataBox
+            onClick={() => {
+              navigate("/workflows?search=" + item.name);
+            }}
             key={item.name}
             size="small"
             LeftComponent={

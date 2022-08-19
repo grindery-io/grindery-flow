@@ -32,6 +32,7 @@ const Wrapper = styled.div`
 
 const UserWrapper = styled.div`
   margin-left: auto;
+  order: 4;
   @media (min-width: ${SCREEN.TABLET}) {
     order: 4;
   }
@@ -51,6 +52,7 @@ const CloseButtonWrapper = styled.div`
 `;
 
 const LogoWrapper = styled.div`
+  order: 1;
   @media (min-width: ${SCREEN.TABLET}) {
     order: 2;
   }
@@ -76,10 +78,21 @@ const BackWrapper = styled.div`
   }
 `;
 
+const DevModeIndicator = styled.div`
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 150%;
+  color: #ff5858;
+  order: 2;
+  @media (min-width: ${SCREEN.TABLET}) {
+    order: 3;
+  }
+`;
+
 type Props = {};
 
 const AppHeader = (props: Props) => {
-  const { user, setAppOpened, appOpened } = useAppContext();
+  const { user, setAppOpened, appOpened, devMode } = useAppContext();
   const { size, width } = useWindowSize();
   let navigate = useNavigate();
   let matchNewWorfklow = useMatch("/workflows/new");
@@ -109,6 +122,7 @@ const AppHeader = (props: Props) => {
       >
         Grindery Nexus
       </CompanyNameWrapper>
+      {devMode && <DevModeIndicator>Developer mode</DevModeIndicator>}
       {user && (
         <UserWrapper>
           <UserMenu />

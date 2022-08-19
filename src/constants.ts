@@ -67,35 +67,42 @@ export const RIGHTBAR_TABS: {
   label: string;
   path: string;
 }[] = [
-  {
+  /*{
     id: 0,
     name: "DASHBOARD",
     icon: ICONS.DASHBOARD,
     label: "Dashboard",
     path: "/dashboard",
-  },
+  },*/
   {
-    id: 1,
+    id: 0,
     name: "WORKFLOWS",
     icon: ICONS.WORKFLOWS,
     label: "Workflows",
     path: "/workflows",
   },
   {
-    id: 2,
+    id: 1,
     name: "APPS",
     icon: ICONS.APPS,
     label: "(d)Apps",
     path: "/d-apps",
   },
   {
-    id: 3,
+    id: 2,
     name: "HISTORY",
     icon: ICONS.HISTORY,
     label: "History",
     path: "/history",
   },
   {
+    id: 3,
+    name: "SETTINGS",
+    icon: ICONS.SETTINGS,
+    label: "Settings",
+    path: "/settings",
+  },
+  /*{
     id: 4,
     name: "TRANSACTIONS",
     icon: ICONS.TRANSACTIONS,
@@ -108,14 +115,7 @@ export const RIGHTBAR_TABS: {
     icon: ICONS.BELL,
     label: "Notifications",
     path: "/notifications",
-  },
-  {
-    id: 6,
-    name: "SETTINGS",
-    icon: ICONS.SETTINGS,
-    label: "Settings",
-    path: "/settings",
-  },
+  },*/
 ];
 
 export const BLOCKCHAINS = [
@@ -282,6 +282,29 @@ export const WEB2_CONNECTORS_PATH =
 
 export const WEB3_CONNECTORS_PATH =
   "https://api.github.com/repos/grindery-io/grindery-nexus-schema-v2/contents/cds/web3";
+
+export const NOT_READY_TRIGGERS = [
+  "hubspot",
+  "zapier",
+  "gnosisSafe",
+  "juicebox",
+  "multis",
+  "parcel",
+  "snapshot",
+  "superfluid",
+  "syndicate",
+  "xmtp",
+];
+
+export const NOT_READY_ACTIONS = [
+  "sendGrid",
+  "hubspot",
+  "zapier",
+  "doraFactory",
+  "gnosisSafe",
+  "multis",
+  "superfluid",
+];
 
 export const COMING_SOON_TRIGGERS = [
   {
