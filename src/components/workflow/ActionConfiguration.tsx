@@ -599,6 +599,10 @@ const ActionConfiguration = (props: Props) => {
             />
           ))}
           {actions.current(index)?.operation?.type === "blockchain:call" &&
+            workflow.actions[index].input._grinderyChain &&
+            /eip155:/i.test(
+              workflow.actions[index].input._grinderyChain.toString()
+            ) &&
             gasToken && (
               <AlertWrapper>
                 <Alert
