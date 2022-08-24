@@ -198,6 +198,7 @@ export type Field = {
   updateFieldDefinition?: boolean;
   inputFormat?: string;
   validation?: any;
+  readonly?: boolean;
 };
 
 export type FieldChoice =

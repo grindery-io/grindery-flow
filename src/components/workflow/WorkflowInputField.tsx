@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { IconButton, RichInput, Select, Autocomplete } from "grindery-ui";
+import {
+  TextInput,
+  IconButton,
+  RichInput,
+  Select,
+  Autocomplete,
+} from "grindery-ui";
 import NexusClient from "grindery-nexus-client";
 import { Field } from "../../types/Connector";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
@@ -34,6 +40,12 @@ const IconButtonWrapper = styled.div`
   & .MuiIconButton-root img {
     width: 16px !important;
     height: 16px !important;
+  }
+`;
+
+const ReadOnlyWrapper = styled.div`
+  & .MuiOutlinedInput-root {
+    margin-top: 0px;
   }
 `;
 
@@ -297,6 +309,14 @@ const WorkflowInputField = ({
       error: !field.list ? error : !v ? error : false,
       value: v,
     };
+
+    if (field.readonly) {
+      return (
+        <ReadOnlyWrapper>
+          <TextInput {...commonProps} readonly />
+        </ReadOnlyWrapper>
+      );
+    }
 
     switch (field.type) {
       case "boolean":

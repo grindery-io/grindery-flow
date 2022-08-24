@@ -425,6 +425,11 @@ const TriggerConfiguration = (props: Props) => {
     setComputedDefaultValues();
   }, [setComputedDefaultValues]);
 
+  useEffect(() => {
+    updateFieldsDefinition();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (!activeStep || step !== activeStep) {
     return null;
   }
