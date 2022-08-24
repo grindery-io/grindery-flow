@@ -49,7 +49,7 @@ type ContextProps = {
   apps: any[];
   handleDevModeChange: (a: boolean) => void;
   devMode: boolean;
-  deleteWorkflow: (a: string, b: string) => void;
+  deleteWorkflow: (userAccountId: string, key: string) => void;
 };
 
 type AppContextProps = {

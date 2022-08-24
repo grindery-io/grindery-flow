@@ -25,6 +25,10 @@ const InputWrapper = styled.div`
   & .MuiTextField-root {
     background: #fff !important;
   }
+
+  & .MuiOutlinedInput-root {
+    background: #fff !important;
+  }
 `;
 
 type Props = {

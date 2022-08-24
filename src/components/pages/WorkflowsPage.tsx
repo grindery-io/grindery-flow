@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { IconButton, TextInput, Switch } from "grindery-ui";
+import { Menu, IconButton, TextInput, Switch } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import useAppContext from "../../hooks/useAppContext";
 import { ICONS, SCREEN } from "../../constants";
@@ -168,6 +168,13 @@ const TitleInput = styled.input`
   }
 `;
 
+const MenuButtonWrapper = styled.div`
+  & img {
+    width: 12px;
+    height: 12px;
+  }
+`;
+
 type Props = {};
 
 const WorkflowsPage = (props: Props) => {
@@ -248,11 +255,12 @@ type WorkflowRowProps = {
 };
 
 const WorkflowRow = ({ item }: WorkflowRowProps) => {
-  const { connectors, editWorkflow } = useAppContext();
+  const { connectors, editWorkflow, deleteWorkflow, user } = useAppContext();
   const [title, setTitle] = useState(item.title || "");
   const [editTitle, setEditTitle] = useState(false);
   const [enabled, setEnabled] = useState(item.state === "on");
   const [width, setWidth] = useState(0);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const inputEl = useRef<HTMLInputElement>(null);
   const titleEl = useRef<HTMLSpanElement>(null);
 
@@ -298,6 +306,24 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
       ...wf,
       signature: JSON.stringify(wf),
     });
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleDelete = () => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete the workflow?\nIt will be disabled and you won't be able to restore it."
+      )
+    ) {
+      deleteWorkflow(user, item.key);
+    }
   };
 
   useEffect(() => {
@@ -368,6 +394,34 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
       RightComponent={
         <ItemActionsWrapper>
           <Switch value={enabled} onChange={handleStateChange} />
+          <MenuButtonWrapper>
+            <IconButton onClick={handleMenuOpen} icon={ICONS.DOTS_HORIZONTAL} />
+          </MenuButtonWrapper>
+          <Menu
+            anchorEl={anchorEl}
+            onClose={handleMenuClose}
+            closeOnClick
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            items={[
+              {
+                key: "1",
+                label: "Rename",
+                onClick: handleTitleClick,
+              },
+              {
+                key: "2",
+                label: "Delete",
+                onClick: handleDelete,
+              },
+            ]}
+          />
         </ItemActionsWrapper>
       }
     />
