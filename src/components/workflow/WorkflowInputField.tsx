@@ -303,7 +303,7 @@ const WorkflowInputField = ({
       onChange: (v: string) => {
         handleFieldChange(v, idx);
       },
-      label: field.label || "",
+      label: field.label || field.key || "",
       required: !!field.required,
       tooltip: field.helpText || false,
       error: !field.list ? error : !v ? error : false,
