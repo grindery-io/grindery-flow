@@ -24,8 +24,10 @@ const InputWrapper = styled.div`
   width: 100%;
   margin-top: 20px;
   gap: 10px;
+  max-width: 100%;
   & > *:first-child {
     flex: 1;
+    min-width: 0;
   }
   & > .MuiBox-root > .MuiBox-root {
     align-items: center;
