@@ -243,7 +243,7 @@ const WorkflowsPage = (props: Props) => {
       </SearchWrapper>
       <ItemsWrapper>
         {filteredItems.map((item) => (
-          <WorkflowRow key={item.key + item.title + item.state} item={item} />
+          <WorkflowRow key={item.key} item={item} />
         ))}
       </ItemsWrapper>
     </Wrapper>
