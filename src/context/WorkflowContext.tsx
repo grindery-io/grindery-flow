@@ -1,6 +1,5 @@
 import React, { useState, createContext, useEffect } from "react";
 import _ from "lodash";
-import NexusClient from "grindery-nexus-client";
 import { useNavigate } from "react-router-dom";
 import { Workflow } from "../types/Workflow";
 import {
@@ -122,7 +121,11 @@ export const WorkflowContextProvider = ({
   children,
 }: WorkflowContextProviderProps) => {
   let navigate = useNavigate();
-  const { getWorkflowsList, connectors: availableConnectors } = useAppContext();
+  const {
+    getWorkflowsList,
+    connectors: availableConnectors,
+    client,
+  } = useAppContext();
 
   // loaded nexus connectors CDS
   const [connectors, setConnectors] = useState<Connector[]>(
@@ -444,11 +447,9 @@ export const WorkflowContextProvider = ({
       setError(null);
       setSuccess(null);
       setLoading(true);
-      const res = await NexusClient.createWorkflow(readyWorkflow).catch(
-        (err) => {
-          console.error("createWorkflow error:", err.message);
-        }
-      );
+      const res = await client?.createWorkflow(readyWorkflow).catch((err) => {
+        console.error("createWorkflow error:", err.message);
+      });
       if (res) {
         getWorkflowsList();
         resetWorkflow();

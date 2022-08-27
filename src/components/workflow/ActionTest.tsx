@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import NexusClient from "grindery-nexus-client";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import { Text, Alert, CircularProgress } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import { replaceTokens } from "../../helpers/utils";
 import { ICONS } from "../../constants";
 import Button from "../shared/Button";
+import useAppContext from "../../hooks/useAppContext";
 
 const Wrapper = styled.div`
   padding: 24px 20px 40px;
@@ -122,6 +122,7 @@ type Props = {
 
 const ActionTest = (props: Props) => {
   const { index } = props;
+  const { client } = useAppContext();
   const { workflow, setActiveStep, saveWorkflow, triggers, actions } =
     useWorkflowContext();
   const { actionConnector } = actions;
@@ -171,16 +172,18 @@ const ActionTest = (props: Props) => {
         setError(null);
         setSuccess(null);
         setLoading(true);
-        const res = await NexusClient.testAction(
-          workflow.creator,
-          workflow.actions[index],
-          replaceTokens(workflow.actions[index].input || {}, {
-            trigger: triggers.current?.operation?.sample || {},
-          })
-        ).catch((err) => {
-          console.error("testAction error:", err.message);
-          setError(err.message || null);
-        });
+        const res = await client
+          ?.testAction(
+            workflow.creator,
+            workflow.actions[index],
+            replaceTokens(workflow.actions[index].input || {}, {
+              trigger: triggers.current?.operation?.sample || {},
+            })
+          )
+          .catch((err) => {
+            console.error("testAction error:", err.message);
+            setError(err.message || null);
+          });
 
         if (res) {
           setSuccess("Test action sent!");

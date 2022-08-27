@@ -50,6 +50,7 @@ type ContextProps = {
   handleDevModeChange: (a: boolean) => void;
   devMode: boolean;
   deleteWorkflow: (userAccountId: string, key: string) => void;
+  client: NexusClient | null;
 };
 
 type AppContextProps = {
@@ -78,6 +79,7 @@ export const AppContext = createContext<ContextProps>({
   handleDevModeChange: defaultFunc,
   devMode: false,
   deleteWorkflow: defaultFunc,
+  client: null,
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -89,7 +91,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const [devMode, setDevMode] = useState(cachedDevMode === "true");
 
   // Auth hook
-  const { user, disconnect } = useGrinderyNexus();
+  const { user, disconnect, token } = useGrinderyNexus();
 
   // app panel opened
   const [appOpened, setAppOpened] = useState<boolean>(
@@ -119,6 +121,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
   const [apps, setApps] = useState<any[]>([]);
 
+  const [client, setClient] = useState<NexusClient | null>(null);
+
   // change current active tab
   const changeTab = (name: string, query = "") => {
     const tab = RIGHTBAR_TABS.find((tab) => tab.name === name);
@@ -126,7 +130,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   };
 
   const getWorkflowsList = async () => {
-    const res = await NexusClient.listWorkflows(user || "").catch((err) => {
+    const res = await client?.listWorkflows(user || "").catch((err) => {
       console.error("listWorkflows error:", err.message);
     });
 
@@ -147,7 +151,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   };
 
   const getConnectors = async () => {
-    const cdss = await NexusClient.getConnectors();
+    const cdss = await client?.getConnectors();
     setConnectors(_.orderBy(cdss, [(cds) => cds.name.toLowerCase()], ["asc"]));
   };
 
@@ -156,17 +160,17 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       executionId: string,
       callback: (newItems: WorkflowExecutionLog[]) => void
     ) => {
-      const res = await NexusClient.getWorkflowExecutionLog(executionId).catch(
-        (err) => {
+      const res = await client
+        ?.getWorkflowExecutionLog(executionId)
+        .catch((err) => {
           console.error("getWorkflowExecutionLog error:", err.message);
-        }
-      );
+        });
 
       if (res) {
         callback(res);
       }
     },
-    []
+    [client]
   );
 
   const getWorkflowHistory = useCallback(
@@ -175,11 +179,11 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       callback: (newItems: WorkflowExecutionLog[]) => void
     ) => {
       //const res = await getWorkflowExecutions(workflowKey);
-      const executions = await NexusClient.getWorkflowExecutions(
-        workflowKey
-      ).catch((err) => {
-        console.error("getWorkflowExecutions error:", err.message);
-      });
+      const executions = await client
+        ?.getWorkflowExecutions(workflowKey)
+        .catch((err) => {
+          console.error("getWorkflowExecutions error:", err.message);
+        });
 
       if (executions) {
         executions.forEach((execution: WorkflowExecution) => {
@@ -187,17 +191,15 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         });
       }
     },
-    [getWorkflowExecution]
+    [getWorkflowExecution, client]
   );
 
   const editWorkflow = async (workflow: Workflow) => {
-    const res = await NexusClient.updateWorkflow(
-      workflow.key,
-      user || "",
-      workflow
-    ).catch((err) => {
-      console.error("updateWorkflow error:", err.message);
-    });
+    const res = await client
+      ?.updateWorkflow(workflow.key, user || "", workflow)
+      .catch((err) => {
+        console.error("updateWorkflow error:", err.message);
+      });
 
     if (res) {
       getWorkflowsList();
@@ -206,7 +208,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
   const verifyUser = async (userId: string) => {
     setVerifying(true);
-    const res = await NexusClient.isAllowedUser(userId).catch((err) => {
+    const res = await client?.isAllowedUser(userId).catch((err) => {
       console.error("isAllowedUser error:", err.message);
       setAccessAllowed(false);
     });
@@ -264,14 +266,20 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   };
 
   const deleteWorkflow = async (userAccountId: string, key: string) => {
-    const res = await NexusClient.deleteWorkflow(userAccountId, key).catch(
-      (err) => {
+    const res = await client
+      ?.deleteWorkflow(userAccountId, key)
+      .catch((err) => {
         console.error("deleteWorkflow error:", err.message);
-      }
-    );
+      });
     if (res) {
       getWorkflowsList();
     }
+  };
+
+  const initClient = (accessToken: string) => {
+    const nexus = new NexusClient();
+    nexus.authenticate(accessToken);
+    setClient(nexus);
   };
 
   useEffect(() => {
@@ -286,23 +294,30 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   }, [workflows, addExecutions, getWorkflowHistory]);
 
   useEffect(() => {
-    if (user) {
+    if (user && accessAllowed && client) {
       getConnectors();
       getWorkflowsList();
     } else {
       clearWorkflows();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, accessAllowed, client]);
+
+  useEffect(() => {
+    if (user && client) {
+      verifyUser(user);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, client]);
 
   // verify user on success authentication
   useEffect(() => {
-    if (user) {
-      verifyUser(user);
+    if (user && token?.access_token) {
+      initClient(token?.access_token);
       navigate("/workflows");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, token?.access_token]);
 
   useEffect(() => {
     if (
@@ -345,6 +360,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         devMode,
         handleDevModeChange,
         deleteWorkflow,
+        client,
       }}
     >
       {children}

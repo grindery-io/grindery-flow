@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { CircularProgress, Alert, Text } from "grindery-ui";
-import NexusClient from "grindery-nexus-client";
 import { Field } from "../../types/Connector";
 import {
   getOutputOptions,
@@ -74,7 +73,7 @@ type Props = {
 
 const ActionConfiguration = (props: Props) => {
   const { index, step } = props;
-  const { user, validator } = useAppContext();
+  const { user, validator, client } = useAppContext();
   const {
     activeStep,
     workflow,
@@ -336,15 +335,16 @@ const ActionConfiguration = (props: Props) => {
     if (actions.current(index)?.operation?.inputFieldProviderUrl) {
       if (workflow) {
         setLoading(true);
-        NexusClient.callInputProvider(
-          actions.actionConnector(index)?.key || "",
-          actions.current(index)?.key || "",
-          jsonrpcObj("grinderyNexusConnectorUpdateFields", {
-            key: actions.current(index)?.key,
-            fieldData: {},
-            credentials: workflow.actions[index].credentials,
-          })
-        )
+        client
+          ?.callInputProvider(
+            actions.actionConnector(index)?.key || "",
+            actions.current(index)?.key || "",
+            jsonrpcObj("grinderyNexusConnectorUpdateFields", {
+              key: actions.current(index)?.key,
+              fieldData: {},
+              credentials: workflow.actions[index].credentials,
+            })
+          )
           .then((res) => {
             if (res && res.data && res.data.error) {
               console.error(

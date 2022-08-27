@@ -7,7 +7,6 @@ import {
   Select,
   Autocomplete,
 } from "grindery-ui";
-import NexusClient from "grindery-nexus-client";
 import { Field } from "../../types/Connector";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
@@ -74,7 +73,7 @@ const WorkflowInputField = ({
   errors,
   setErrors,
 }: Props) => {
-  const { user } = useAppContext();
+  const { user, client } = useAppContext();
   const {
     updateWorkflow,
     workflow,
@@ -197,15 +196,16 @@ const WorkflowInputField = ({
         operation?.operation?.inputFieldProviderUrl
       ) {
         if (workflow) {
-          NexusClient.callInputProvider(
-            currentConnector?.key || "",
-            operation.key,
-            jsonrpcObj("grinderyNexusConnectorUpdateFields", {
-              key: operation.key,
-              fieldData: workflowStep.input,
-              credentials: workflowStep.credentials,
-            })
-          )
+          client
+            ?.callInputProvider(
+              currentConnector?.key || "",
+              operation.key,
+              jsonrpcObj("grinderyNexusConnectorUpdateFields", {
+                key: operation.key,
+                fieldData: workflowStep.input,
+                credentials: workflowStep.credentials,
+              })
+            )
             .then((res) => {
               if (res && res.data && res.data.error) {
                 console.error(
