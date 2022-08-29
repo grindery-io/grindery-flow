@@ -13,7 +13,7 @@ import NexusClient, {
 } from "../types/Workflow";*/
 import { RIGHTBAR_TABS, SCREEN } from "../constants";
 import { Connector } from "../types/Connector";
-import { defaultFunc } from "../helpers/utils";
+import { defaultFunc, getStagingConnectors } from "../helpers/utils";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../hooks/useWindowSize";
 //import helloWorldConnector from "../samples/connectors/helloworld.json";
@@ -151,8 +151,19 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   };
 
   const getConnectors = async () => {
+    let stagedCdss = [];
     const cdss = await client?.getConnectors();
-    setConnectors(_.orderBy(cdss, [(cds) => cds.name.toLowerCase()], ["asc"]));
+    if (window.location.origin.includes("staging")) {
+      stagedCdss = await getStagingConnectors();
+    }
+
+    setConnectors(
+      _.orderBy(
+        stagedCdss.length > 0 ? stagedCdss : cdss,
+        [(cds) => cds.name.toLowerCase()],
+        ["asc"]
+      )
+    );
   };
 
   const getWorkflowExecution = useCallback(

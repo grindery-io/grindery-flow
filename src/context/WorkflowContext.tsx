@@ -32,9 +32,11 @@ const blankWorkflow: Workflow = {
   ],
   creator: "",
   state: "on",
-  source: window.location.origin.includes("//localhost")
-    ? "urn:grindery-staging:nexus"
-    : "urn:grindery:nexus",
+  source:
+    window.location.origin.includes("//localhost") ||
+    window.location.origin.includes("staging")
+      ? "urn:grindery-staging:nexus"
+      : "urn:grindery:nexus",
 };
 
 type WorkflowContextProps = {
