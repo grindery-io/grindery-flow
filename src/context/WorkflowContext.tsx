@@ -32,6 +32,9 @@ const blankWorkflow: Workflow = {
   ],
   creator: "",
   state: "on",
+  source: window.location.origin.includes("//localhost")
+    ? "urn:grindery-staging:nexus"
+    : "urn:grindery:nexus",
 };
 
 type WorkflowContextProps = {
@@ -133,25 +136,7 @@ export const WorkflowContextProvider = ({
   );
 
   // workflow state
-  const [workflow, setWorkflow] = useState<Workflow>({
-    title: "New workflow",
-    trigger: {
-      type: "trigger",
-      connector: "",
-      operation: "",
-      input: {},
-    },
-    actions: [
-      {
-        type: "action",
-        connector: "",
-        operation: "",
-        input: {},
-      },
-    ],
-    creator: "",
-    state: "on",
-  });
+  const [workflow, setWorkflow] = useState<Workflow>(blankWorkflow);
 
   // is data loading
   const [loading, setLoading] = useState(false);

@@ -58,15 +58,18 @@ const Disclaimer = styled.div`
 type Props = {};
 
 const SignInPage = (props: Props) => {
-  const { user } = useGrinderyNexus();
+  const { user, code } = useGrinderyNexus();
   let [searchParams] = useSearchParams();
   let navigate = useNavigate();
   const redirect_uri = searchParams.get("redirect_uri");
+  const response_type = searchParams.get("response_type");
 
   useEffect(() => {
-    if (user) {
+    if (user && code) {
       setTimeout(() => {
         if (
+          response_type &&
+          response_type === "code" &&
           redirect_uri &&
           // eslint-disable-next-line no-useless-escape
           /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi.test(
@@ -75,13 +78,13 @@ const SignInPage = (props: Props) => {
         ) {
           window.location.href = `${redirect_uri}${
             /\?/.test(redirect_uri) ? "&" : "?"
-          }userAccountID=${encodeURIComponent(user)}`;
+          }code=${code}`;
         } else {
           navigate("/dashboard");
         }
       }, 1000);
     }
-  }, [user, redirect_uri, navigate]);
+  }, [user, redirect_uri, navigate, code, response_type]);
 
   return (
     <Container>
