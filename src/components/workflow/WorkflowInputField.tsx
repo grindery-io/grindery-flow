@@ -10,7 +10,7 @@ import {
 import { Field } from "../../types/Connector";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
-import { BLOCKCHAINS, ICONS } from "../../constants";
+import { BLOCKCHAINS, ICONS, isLocalOrStaging } from "../../constants";
 import { debounce } from "throttle-debounce";
 import { jsonrpcObj } from "../../helpers/utils";
 
@@ -204,7 +204,8 @@ const WorkflowInputField = ({
                 key: operation.key,
                 fieldData: workflowStep.input,
                 credentials: workflowStep.credentials,
-              })
+              }),
+              isLocalOrStaging ? "staging" : undefined
             )
             .then((res) => {
               if (res && res.data && res.data.error) {

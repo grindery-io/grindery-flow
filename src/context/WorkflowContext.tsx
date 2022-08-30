@@ -12,6 +12,7 @@ import {
 } from "../types/Connector";
 import { defaultFunc } from "../helpers/utils";
 import useAppContext from "../hooks/useAppContext";
+import { isLocalOrStaging } from "../constants";
 
 // empty workflow declaration
 const blankWorkflow: Workflow = {
@@ -32,11 +33,9 @@ const blankWorkflow: Workflow = {
   ],
   creator: "",
   state: "on",
-  source:
-    window.location.origin.includes("//localhost") ||
-    window.location.origin.includes("staging")
-      ? "urn:grindery-staging:nexus"
-      : "urn:grindery:nexus",
+  source: isLocalOrStaging
+    ? "urn:grindery-staging:nexus"
+    : "urn:grindery:nexus",
 };
 
 type WorkflowContextProps = {
@@ -428,7 +427,7 @@ export const WorkflowContextProvider = ({
         ...workflow,
         signature: JSON.stringify(workflow),
       };
-      if (window.location.origin.includes("//localhost")) {
+      if (isLocalOrStaging) {
         console.log("readyWorkflow", readyWorkflow);
       }
       setError(null);
@@ -460,7 +459,7 @@ export const WorkflowContextProvider = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  if (window.location.origin.includes("//localhost")) {
+  if (isLocalOrStaging) {
     console.log("connectors", connectors);
     console.log("workflow", workflow);
   }

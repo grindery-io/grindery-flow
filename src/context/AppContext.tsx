@@ -11,7 +11,7 @@ import NexusClient, {
   WorkflowExecution,
   WorkflowExecutionLog,
 } from "../types/Workflow";*/
-import { RIGHTBAR_TABS, SCREEN } from "../constants";
+import { isLocalOrStaging, RIGHTBAR_TABS, SCREEN } from "../constants";
 import { Connector } from "../types/Connector";
 import { defaultFunc, getStagingConnectors } from "../helpers/utils";
 import { useNavigate } from "react-router-dom";
@@ -153,7 +153,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const getConnectors = async () => {
     let stagedCdss = [];
     const cdss = await client?.getConnectors();
-    if (window.location.origin.includes("staging")) {
+    if (isLocalOrStaging) {
       stagedCdss = await getStagingConnectors();
     }
 

@@ -15,7 +15,7 @@ import ChainSelector from "./ChainSelector";
 import ContractSelector from "./ContractSelector";
 import useAddressBook from "../../hooks/useAddressBook";
 import useAppContext from "../../hooks/useAppContext";
-import { ICONS } from "../../constants";
+import { ICONS, isLocalOrStaging } from "../../constants";
 import Button from "../shared/Button";
 import WorkflowInputField from "./WorkflowInputField";
 
@@ -240,7 +240,8 @@ const TriggerConfiguration = (props: Props) => {
               key: triggers.current.key,
               fieldData: {},
               credentials: workflow.trigger.credentials,
-            })
+            }),
+            isLocalOrStaging ? "staging" : undefined
           )
           .then((res) => {
             if (res && res.data && res.data.error) {

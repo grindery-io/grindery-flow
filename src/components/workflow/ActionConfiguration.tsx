@@ -12,7 +12,7 @@ import {
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import ChainSelector from "./ChainSelector";
 import GasInput from "./GasInput";
-import { BLOCKCHAINS, ICONS } from "../../constants";
+import { BLOCKCHAINS, ICONS, isLocalOrStaging } from "../../constants";
 import axios from "axios";
 import Check from "../icons/Check";
 import useAppContext from "../../hooks/useAppContext";
@@ -343,7 +343,8 @@ const ActionConfiguration = (props: Props) => {
               key: actions.current(index)?.key,
               fieldData: {},
               credentials: workflow.actions[index].credentials,
-            })
+            }),
+            isLocalOrStaging ? "staging" : undefined
           )
           .then((res) => {
             if (res && res.data && res.data.error) {

@@ -4,7 +4,7 @@ import useWorkflowContext from "../../hooks/useWorkflowContext";
 import { Text, Alert, CircularProgress } from "grindery-ui";
 import { Field } from "../../types/Connector";
 import { replaceTokens } from "../../helpers/utils";
-import { ICONS } from "../../constants";
+import { ICONS, isLocalOrStaging } from "../../constants";
 import Button from "../shared/Button";
 import useAppContext from "../../hooks/useAppContext";
 
@@ -178,7 +178,8 @@ const ActionTest = (props: Props) => {
             workflow.actions[index],
             replaceTokens(workflow.actions[index].input || {}, {
               trigger: triggers.current?.operation?.sample || {},
-            })
+            }),
+            isLocalOrStaging ? "staging" : undefined
           )
           .catch((err) => {
             console.error("testAction error:", err.message);
