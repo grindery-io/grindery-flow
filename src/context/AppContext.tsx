@@ -119,8 +119,10 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     WorkflowExecutionLog[][]
   >([]);
 
+  // list of apps used in workflows
   const [apps, setApps] = useState<any[]>([]);
 
+  // Nexus API client
   const [client, setClient] = useState<NexusClient | null>(null);
 
   // change current active tab
