@@ -18,6 +18,7 @@ import WorkflowsPage from "./WorkflowsPage";
 import WorkflowBuilderPage from "./WorkflowBuilderPage";
 import CreateWorkflowPage from "./CreateWorkflowPage";
 import Button from "../shared/Button";
+import WorkspaceCreatePage from "./WorkspaceCreatePage";
 
 const DrawerWrapper = styled.div`
   @media (min-width: ${SCREEN.TABLET}) {
@@ -54,7 +55,7 @@ const TabsWrapper = styled.div`
 const ContentWrapper = styled.div`
   width: 100%;
   max-width: 375px;
-  padding-top: 67px;
+  padding-top: 75px;
   min-height: calc(100vh - 100px);
   @media (min-width: ${SCREEN.TABLET}) {
     max-width: 728px;
@@ -122,6 +123,7 @@ const RootStack = (props: Props) => {
         {/*<Route path="/transactions" element={<TransactionsPage />}></Route>
         <Route path="/notifications" element={<NotificationsPage />}></Route>*/}
         <Route path="/settings" element={<SettingsPage />}></Route>
+        <Route path="/workspaces/new" element={<WorkspaceCreatePage />} />
       </Routes>
     );
     /**/

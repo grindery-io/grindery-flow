@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   height: calc(100vh - 67px);
   max-height: calc(100vh - 67px);
   position: fixed;
-  top: 67px;
+  top: 75px;
   overflow-y: auto;
   overflow-x: hidden;
 

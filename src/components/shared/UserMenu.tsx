@@ -61,6 +61,7 @@ const UserDropdownContent = styled.div`
   padding: 10px;
 
   & button {
+    font-family: Roboto;
     background: transparent;
     display: flex;
     flex-direction: row;

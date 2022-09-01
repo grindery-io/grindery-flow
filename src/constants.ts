@@ -55,6 +55,9 @@ export const ICONS: { [key: string]: string } = {
   CHAIN_GNOSIS: "/images/icons/gnosis.svg",
   CHAIN_POLYGON: "/images/icons/polygon.svg",
   CHAIN_CELO: "/images/icons/celo.svg",
+  CARET_DOWN: "/images/icons/caret-down.svg",
+  PLUS_BLACK: "/images/icons/plus-black.svg",
+  EDIT: "/images/icons/edit.svg",
   // Socials
   SOCIAL_DISCORD: "/images/icons/social-discord.png",
   SOCIAL_TG: "/images/icons/social-tg.png",

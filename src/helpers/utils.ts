@@ -120,9 +120,9 @@ export const getValidationScheme = (inputFields: Field[]) => {
   inputFields.forEach((field: Field) => {
     schema[field.key] = {
       type: sanitizeType(field.type || ""),
+      ...field.validation,
       optional: !field.required,
       empty: !field.required,
-      ...field.validation,
     };
     if (field.list) {
       schema[field.key].items = {

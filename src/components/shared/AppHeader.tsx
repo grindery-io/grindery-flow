@@ -7,6 +7,7 @@ import { ICONS, SCREEN } from "../../constants";
 import useWindowSize from "../../hooks/useWindowSize";
 import { useMatch, useNavigate } from "react-router-dom";
 import UserMenu from "./UserMenu";
+import WorkspaceSelector from "./WorkspaceSelector";
 
 const Wrapper = styled.div`
   border-bottom: 1px solid #dcdcdc;
@@ -79,10 +80,19 @@ const BackWrapper = styled.div`
 `;
 
 const DevModeIndicator = styled.div`
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 150%;
-  color: #ff5858;
+  display: none;
+  @media (min-width: ${SCREEN.TABLET}) {
+    display: block;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 150%;
+    color: #ff5858;
+    order: 3;
+  }
+`;
+
+const WorkspaceSelectorWrapper = styled.div`
+  margin-left: 14px;
   order: 2;
   @media (min-width: ${SCREEN.TABLET}) {
     order: 3;
@@ -122,6 +132,11 @@ const AppHeader = (props: Props) => {
       >
         Grindery Nexus
       </CompanyNameWrapper>
+      {user && !matchNewWorfklow && (
+        <WorkspaceSelectorWrapper>
+          <WorkspaceSelector />
+        </WorkspaceSelectorWrapper>
+      )}
       {devMode && <DevModeIndicator>Developer mode</DevModeIndicator>}
       {user && (
         <UserWrapper>
