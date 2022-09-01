@@ -290,7 +290,6 @@ export const WEB3_CONNECTORS_PATH =
 export const NOT_READY_TRIGGERS = [
   "hubspot",
   "zapier",
-  "gnosisSafe",
   "juicebox",
   "multis",
   "parcel",
@@ -305,7 +304,6 @@ export const NOT_READY_ACTIONS = [
   "hubspot",
   "zapier",
   "doraFactory",
-  "gnosisSafe",
   "multis",
   "superfluid",
 ];
