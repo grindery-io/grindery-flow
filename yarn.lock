@@ -9482,10 +9482,10 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
-use-grindery-nexus@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/use-grindery-nexus/-/use-grindery-nexus-0.3.2.tgz#42acfd947a66d156f0a713935ae5ccb63187cccf"
-  integrity sha512-93GhGUKLkh0yi9UBN9UHiCww/4chmhTezZ/6W4D1FqBrdOJClOA1ijutoU/2Wo3v3yNM2e3IlMiX5c1YJqxnzg==
+use-grindery-nexus@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/use-grindery-nexus/-/use-grindery-nexus-0.3.4.tgz#2ef3e7b9ffb2ba23b731fb70bb85583a2ffde768"
+  integrity sha512-TcGt210TDO/WUYfoYmPnmAmRNbUHeBpWRAKbwF4RE4vErKDiVfTWM4IHAGd9F0ps+dSUGUFpr954Sgkvs8/FKQ==
   dependencies:
     bignumber.js "^9.0.2"
     ethers "^5.6.9"
