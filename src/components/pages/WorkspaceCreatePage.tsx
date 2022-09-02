@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   max-width: 604px;
-  padding: 40px 20px 0;
+  padding: 40px 20px;
   margin: 0 auto;
 
   h1 {
@@ -70,8 +70,12 @@ const Box = styled.div`
   }
 
   & .rich-input__label-tooltip {
-    font-size: 14px;
-    margin-bottom: 3.5px;
+    font-size: 14px !important;
+    margin-bottom: 3.5px !important;
+  }
+
+  & .rich-input div[contenteditable="false"] {
+    cursor: not-allowed;
   }
 `;
 
@@ -239,6 +243,7 @@ const WorkspaceCreatePage = (props: Props) => {
             placeholder="Enter workspace name"
             options={[]}
             error={fieldError("name", errors)}
+            singleLine
           />
         </div>
         <div>
@@ -271,6 +276,8 @@ const WorkspaceCreatePage = (props: Props) => {
           placeholder="0x0000000000000000000000000000"
           options={[]}
           error={fieldError("admin", errors)}
+          singleLine
+          readonly={admin === userAddress}
         />
         <CheckboxWrapper>
           <CheckBox
