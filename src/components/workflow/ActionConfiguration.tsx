@@ -14,6 +14,7 @@ import ChainSelector from "./ChainSelector";
 import GasInput from "./GasInput";
 import { BLOCKCHAINS, ICONS, isLocalOrStaging } from "../../constants";
 import axios from "axios";
+import qs from "qs";
 import Check from "../icons/Check";
 import useAppContext from "../../hooks/useAppContext";
 import ContractSelector from "./ContractSelector";
@@ -222,15 +223,22 @@ const ActionConfiguration = (props: Props) => {
               typeof getAccessTokenRequest.body === "object"
                 ? getAccessTokenRequest.body
                 : {};
+            const data = {
+              ...body,
+              code: codeParam,
+              redirect_uri: window.location.origin + "/auth",
+            };
             axios({
               method: getAccessTokenRequest.method,
               url: getAccessTokenRequest.url,
               headers: getAccessTokenRequest.headers || {},
-              data: {
-                ...body,
-                code: codeParam,
-                redirect_uri: window.location.origin + "/auth",
-              },
+              data:
+                getAccessTokenRequest.headers &&
+                getAccessTokenRequest.headers["Content-Type"] &&
+                getAccessTokenRequest.headers["Content-Type"] ===
+                  "application/x-www-form-urlencoded"
+                  ? qs.stringify(data)
+                  : data,
             })
               .then((res) => {
                 if (res && res.data) {
@@ -287,6 +295,7 @@ const ActionConfiguration = (props: Props) => {
               res.data.email ||
                 res.data.sub ||
                 res.data.name ||
+                res.data.username ||
                 (res.data.team && res.data.team.name) ||
                 (res.data.profile && res.data.profile.real_name) ||
                 "Unknown username"
