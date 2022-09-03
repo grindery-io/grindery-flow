@@ -51,3 +51,7 @@ a {
 .MuiSwitch-thumb {
   margin-top: 1px;
 }
+
+.MuiTooltip-tooltip {
+  white-space: pre-wrap;
+}

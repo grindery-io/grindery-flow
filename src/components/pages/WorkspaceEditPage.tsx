@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { RichInput, Alert } from "grindery-ui";
 import Jdenticon from "react-jdenticon";
-import CheckBox from "../shared/CheckBox";
 import useAppContext from "../../hooks/useAppContext";
 import Button from "../shared/Button";
 import { getValidationScheme } from "../../helpers/utils";
@@ -11,9 +10,7 @@ import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 import { useNavigate } from "react-router-dom";
 
 const STRINGS = {
-  TITLE: "Create New Workspace",
-  DESCRIPTION:
-    "Grindery Nexus is a free, open-source platform to connect Apps and dApps across chains and protocols. Create your own Workspace now to collaborate with teams and organize your Workflow lists.",
+  TITLE: "Manage Workspace",
   SECTION_TITLE_1: "Profile",
   FIELDS: {
     AVATAR: {
@@ -26,13 +23,6 @@ const STRINGS = {
     ABOUT: {
       LABEL: "About",
       PLACEHOLDER: "Enter description",
-    },
-    ADMIN: {
-      LABEL: "Admin address",
-      PLACEHOLDER: "0x0000000000000000000000000000",
-    },
-    ADMIN_CHECKBOX: {
-      LABEL: "Use currently loggen in account.",
     },
     ADMINS: {
       LABEL: "Admins",
@@ -47,12 +37,11 @@ const STRINGS = {
         "Members can create, edit, delete, enable, disable workflows associated with this workspace.\n\nInvite members by EVM wallet address. Enter each address on the new line.",
     },
   },
-  SECTION_TITLE_2: "Admin",
-  SECTION_DESCRIPTION_2:
-    "The admin is the account that will be able to edit/manage a Workspace as well as invite and/or remove members and admins of a Workspace. Additional Workspace admins can be added later.",
-  SECTION_TITLE_3: "Moderation",
-  SECTION_DESCRIPTION_3: "Who can manage this Workspace and create Workflows?",
-  SUBMIT_BUTTON: "Create Workspace",
+  SECTION_TITLE_2: "Moderation",
+  SECTION_DESCRIPTION_2: "Who can manage this Workspace and create Workflows?",
+  SUBMIT_BUTTON: "Save Workspace",
+  DELETE_BUTTON: "Delete Workspace",
+  LEAVE_BUTTON: "Leave Workspace",
 };
 
 const Wrapper = styled.div`
@@ -121,6 +110,10 @@ const Box = styled.div`
 
   & .rich-input div[contenteditable="false"] {
     cursor: not-allowed;
+
+    & p {
+      opacity: 0.5 !important;
+    }
   }
 `;
 
@@ -139,22 +132,24 @@ const Avatar = styled.div`
   }
 `;
 
-const CheckboxWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  gap: 16px;
-  margin-top: 24px;
+const ButtonWrapper = styled.div`
+  margin-top: 14px;
+  & .MuiButton-root {
+    &:hover {
+      box-shadow: none;
+    }
+  }
 `;
 
-const CheckboxLabel = styled.label`
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 150%;
-  color: #0b0d17;
-  cursor: pointer;
+const DeleteButtonWrapper = styled.div`
+  & .MuiButton-root {
+    background-color: #ff5858;
+
+    &:hover {
+      background-color: #ff5858;
+      box-shadow: none;
+    }
+  }
 `;
 
 const AlertWrapper = styled.div`
@@ -163,25 +158,40 @@ const AlertWrapper = styled.div`
 
 type Props = {};
 
-const WorkspaceCreatePage = (props: Props) => {
+const WorkspaceEditPage = (props: Props) => {
   const { user, validator } = useAppContext();
-  const { workspaces, setWorkspaces, setWorkspace } = useWorkspaceContext();
-  const [name, setName] = useState("");
-  const [about, setAbout] = useState("");
-  const userArr = user.split(":");
-  const userAddress = userArr[userArr.length - 1];
-  const [admin, setAdmin] = useState(userAddress);
-  const [admins, setAdmins] = useState("");
-  const [members, setMembers] = useState("");
-  const [adminFieldKey, setAdminFieldKey] = useState(1);
+  const { workspaces, setWorkspaces, setWorkspace, workspace } =
+    useWorkspaceContext();
+  const id = workspace;
+  const [currentWorkspace, setCurrentWorkspace] = useState(
+    workspaces.find((ws) => ws.id === id) || workspaces[0]
+  );
+  const isMember = currentWorkspace.members.includes(user);
+  const isAdmin =
+    currentWorkspace.admins.includes(user) || currentWorkspace.admin === user;
+  const [name, setName] = useState(currentWorkspace?.name || "");
+  const [key, setKey] = useState(id);
+  const [about, setAbout] = useState(currentWorkspace?.about || "");
+  const [admins, setAdmins] = useState(
+    (currentWorkspace?.admins.join("\n") || "").replace(
+      new RegExp("eip155:1:", "g"),
+      ""
+    )
+  );
+  const [members, setMembers] = useState(
+    (currentWorkspace?.members.join("\n") || "").replace(
+      new RegExp("eip155:1:", "g"),
+      ""
+    )
+  );
   const [formError, setFormError] = useState("");
   const [errors, setErrors] = useState<any>(false);
-
+  const admin = currentWorkspace.admin;
+  //const id = workspace?.id || encodeURIComponent(workspace?.name || "id");
   let navigate = useNavigate();
 
   const validationSchema = getValidationScheme([
     { key: "name", required: true, type: "string" },
-    { key: "admin", required: true, type: "evmAddress" },
     { key: "admins", required: false, type: "evmAddress", list: true },
     { key: "members", required: false, type: "evmAddress", list: true },
   ]);
@@ -192,7 +202,6 @@ const WorkspaceCreatePage = (props: Props) => {
     const validated = check({
       name,
       about,
-      admin,
       admins: admins.split("\n"),
       members: members.split("\n"),
     });
@@ -200,22 +209,50 @@ const WorkspaceCreatePage = (props: Props) => {
     if (typeof validated === "boolean") {
       // all good
       const newWorkspace = {
-        id: encodeURIComponent(name),
+        id: id || "",
         name,
         about,
-        admin: "eip155:1:" + admin,
         admins: admins.split("\n").map((address) => `eip155:1:${address}`),
         members: members.split("\n").map((address) => `eip155:1:${address}`),
+        admin: admin,
       };
       setErrors(false);
       setFormError("");
-      const newWorkspaces = [newWorkspace, ...workspaces];
+      const newWorkspaces = [
+        ...workspaces.map((ws) => (ws.id === id ? newWorkspace : ws)),
+      ];
       setWorkspaces(newWorkspaces);
       setWorkspace(newWorkspace.id);
       navigate("/");
     } else {
       setErrors(validated);
       setFormError("Please complete all required fields.");
+    }
+  };
+
+  const handleDelete = () => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete the workspace?\nAll workflows associated with this workspace will be disabled and you won't be able to restore them."
+      )
+    ) {
+      const newWorkspaces = [...workspaces.filter((ws) => ws.id !== id)];
+      setWorkspaces(newWorkspaces);
+      setWorkspace(newWorkspaces[0].id);
+      navigate("/");
+    }
+  };
+
+  const handleLeave = () => {
+    if (
+      window.confirm(
+        "Are you sure you want to leave the workspace?\nYou will lose access to all workflows associated with this workspace."
+      )
+    ) {
+      const newWorkspaces = [...workspaces.filter((ws) => ws.id !== id)];
+      setWorkspaces(newWorkspaces);
+      setWorkspace(newWorkspaces[0].id);
+      navigate("/");
     }
   };
 
@@ -261,10 +298,36 @@ const WorkspaceCreatePage = (props: Props) => {
     );
   };
 
-  return (
+  useEffect(() => {
+    if (id) {
+      const newCurrentWorkspace =
+        workspaces.find((ws) => ws.id === id) || workspaces[0];
+      setCurrentWorkspace(newCurrentWorkspace);
+      setName(newCurrentWorkspace?.name || "");
+      setAbout(newCurrentWorkspace?.about || "");
+      setAdmins(
+        (newCurrentWorkspace?.admins.join("\n") || "").replace(
+          new RegExp("eip155:1:", "g"),
+          ""
+        )
+      );
+      setMembers(
+        (newCurrentWorkspace?.members.join("\n") || "").replace(
+          new RegExp("eip155:1:", "g"),
+          ""
+        )
+      );
+      setFormError("");
+      setErrors(false);
+      setKey(id);
+    }
+  }, [id, workspaces]);
+
+  console.log("id", id);
+
+  return id ? (
     <Wrapper>
       <h1>{STRINGS.TITLE}</h1>
-      <p>{STRINGS.DESCRIPTION}</p>
       <h3>{STRINGS.SECTION_TITLE_1}</h3>
       <Box>
         <div style={{ marginBottom: "24px" }}>
@@ -275,6 +338,7 @@ const WorkspaceCreatePage = (props: Props) => {
         </div>
         <div style={{ marginBottom: "24px" }}>
           <RichInput
+            key={key + "name"}
             label={STRINGS.FIELDS.NAME.LABEL}
             onChange={(value: string) => {
               setName(value);
@@ -285,10 +349,12 @@ const WorkspaceCreatePage = (props: Props) => {
             options={[]}
             error={fieldError("name", errors)}
             singleLine
+            readonly={isMember && !isAdmin}
           />
         </div>
         <div>
           <RichInput
+            key={key + "about"}
             label={STRINGS.FIELDS.ABOUT.LABEL}
             onChange={(value: string) => {
               setAbout(value);
@@ -296,89 +362,49 @@ const WorkspaceCreatePage = (props: Props) => {
             value={about}
             placeholder={STRINGS.FIELDS.ABOUT.PLACEHOLDER}
             options={[]}
+            readonly={isMember && !isAdmin}
           />
         </div>
       </Box>
-      <h3>{STRINGS.SECTION_TITLE_2}</h3>
-      <p>{STRINGS.SECTION_DESCRIPTION_2}</p>
-      <Box>
-        <RichInput
-          key={adminFieldKey}
-          label={STRINGS.FIELDS.ADMIN.LABEL}
-          onChange={(value: string) => {
-            setAdmin(value);
-            updateErrors("admin", errors);
-          }}
-          value={admin}
-          placeholder={STRINGS.FIELDS.ADMIN.PLACEHOLDER}
-          options={[]}
-          error={fieldError("admin", errors)}
-          singleLine
-          readonly={admin === userAddress}
-        />
-        <CheckboxWrapper>
-          <CheckBox
-            checked={admin === userAddress}
-            onChange={(val) => {
-              if (val) {
-                setAdmin(userAddress);
-                setAdminFieldKey(adminFieldKey + 1);
-              } else {
-                setAdmin("");
-                setAdminFieldKey(adminFieldKey + 1);
-              }
-              updateErrors("admin", errors);
-            }}
-          />
-          <CheckboxLabel
-            onClick={() => {
-              if (admin === userAddress) {
-                setAdmin("");
-                setAdminFieldKey(adminFieldKey + 1);
-              } else {
-                setAdmin(userAddress);
-                setAdminFieldKey(adminFieldKey + 1);
-              }
-              updateErrors("admin", errors);
-            }}
-          >
-            {STRINGS.FIELDS.ADMIN_CHECKBOX.LABEL}
-          </CheckboxLabel>
-        </CheckboxWrapper>
-      </Box>
-      <h3>{STRINGS.SECTION_TITLE_3}</h3>
-      <p>{STRINGS.SECTION_DESCRIPTION_3}</p>
-      <Box>
-        <div style={{ marginBottom: "24px" }}>
-          <RichInput
-            label={STRINGS.FIELDS.ADMINS.LABEL}
-            onChange={(value: string) => {
-              setAdmins(value);
-              updateErrors("admins[", errors, true);
-            }}
-            value={admins}
-            placeholder={STRINGS.FIELDS.ADMINS.PLACEHOLDER}
-            options={[]}
-            tooltip={STRINGS.FIELDS.ADMINS.TOOLTIP}
-            error={fieldError("admins[", errors, true)}
-          />
-        </div>
-        <div>
-          <RichInput
-            label={STRINGS.FIELDS.MEMBERS.LABEL}
-            onChange={(value: string) => {
-              setMembers(value);
-              updateErrors("members[", errors, true);
-            }}
-            value={members}
-            placeholder={STRINGS.FIELDS.MEMBERS.PLACEHOLDER}
-            options={[]}
-            tooltip={STRINGS.FIELDS.MEMBERS.TOOLTIP}
-            style={{ marginBottom: 0 }}
-            error={fieldError("members[", errors, true)}
-          />
-        </div>
-      </Box>
+      {isAdmin && (
+        <>
+          <h3>{STRINGS.SECTION_TITLE_2}</h3>
+          <p>{STRINGS.SECTION_DESCRIPTION_2}</p>
+          <Box>
+            <div style={{ marginBottom: "24px" }}>
+              <RichInput
+                key={key + "admin"}
+                label={STRINGS.FIELDS.ADMINS.LABEL}
+                onChange={(value: string) => {
+                  setAdmins(value);
+                  updateErrors("admins[", errors, true);
+                }}
+                value={admins}
+                placeholder={STRINGS.FIELDS.ADMINS.PLACEHOLDER}
+                options={[]}
+                tooltip={STRINGS.FIELDS.ADMINS.TOOLTIP}
+                error={fieldError("admins[", errors, true)}
+              />
+            </div>
+            <div>
+              <RichInput
+                key={key + "members"}
+                label={STRINGS.FIELDS.MEMBERS.LABEL}
+                onChange={(value: string) => {
+                  setMembers(value);
+                  updateErrors("members[", errors, true);
+                }}
+                value={members}
+                placeholder={STRINGS.FIELDS.MEMBERS.PLACEHOLDER}
+                options={[]}
+                tooltip={STRINGS.FIELDS.MEMBERS.TOOLTIP}
+                style={{ marginBottom: 0 }}
+                error={fieldError("members[", errors, true)}
+              />
+            </div>
+          </Box>
+        </>
+      )}
       {formError && (
         <AlertWrapper>
           <Alert
@@ -396,15 +422,39 @@ const WorkspaceCreatePage = (props: Props) => {
           </Alert>
         </AlertWrapper>
       )}
-      <div style={{ marginTop: "14px" }}>
-        <Button
-          onClick={handleSubmit}
-          value={STRINGS.SUBMIT_BUTTON}
-          fullWidth
-        />
-      </div>
+      {isAdmin && (
+        <>
+          <ButtonWrapper>
+            <Button
+              onClick={handleSubmit}
+              value={STRINGS.SUBMIT_BUTTON}
+              fullWidth
+            />
+          </ButtonWrapper>
+          {id !== user + ":personal" && (
+            <DeleteButtonWrapper>
+              <Button
+                onClick={handleDelete}
+                value={STRINGS.DELETE_BUTTON}
+                fullWidth
+                color="error"
+              />
+            </DeleteButtonWrapper>
+          )}
+        </>
+      )}
+      {isMember && (
+        <DeleteButtonWrapper style={{ marginTop: "14px" }}>
+          <Button
+            onClick={handleLeave}
+            value={STRINGS.LEAVE_BUTTON}
+            fullWidth
+            color="error"
+          />
+        </DeleteButtonWrapper>
+      )}
     </Wrapper>
-  );
+  ) : null;
 };
 
-export default WorkspaceCreatePage;
+export default WorkspaceEditPage;

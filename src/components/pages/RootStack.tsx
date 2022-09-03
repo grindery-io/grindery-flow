@@ -19,6 +19,7 @@ import WorkflowBuilderPage from "./WorkflowBuilderPage";
 import CreateWorkflowPage from "./CreateWorkflowPage";
 import Button from "../shared/Button";
 import WorkspaceCreatePage from "./WorkspaceCreatePage";
+import WorkspaceEditPage from "./WorkspaceEditPage";
 
 const DrawerWrapper = styled.div`
   @media (min-width: ${SCREEN.TABLET}) {
@@ -124,6 +125,7 @@ const RootStack = (props: Props) => {
         <Route path="/notifications" element={<NotificationsPage />}></Route>*/}
         <Route path="/settings" element={<SettingsPage />}></Route>
         <Route path="/workspaces/new" element={<WorkspaceCreatePage />} />
+        <Route path="/workspaces/manage" element={<WorkspaceEditPage />} />
       </Routes>
     );
     /**/

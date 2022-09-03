@@ -12,11 +12,11 @@ export type Workspace = {
 };
 
 type ContextProps = {
-  workspace: null | Workspace;
+  workspace: null | string;
   workspaces: Workspace[];
   createWorkspace: (data: any) => void;
   leaveWorkspace: (workspaceId: string) => void;
-  setWorkspace: (workspace: Workspace) => void;
+  setWorkspace: (workspaceId: string) => void;
   setWorkspaces: (workspaces: Workspace[]) => void;
 };
 
@@ -34,7 +34,7 @@ const defaultWorkspace = {
 };
 
 const defaultContext = {
-  workspace: defaultWorkspace,
+  workspace: null,
   workspaces: [defaultWorkspace],
   createWorkspace: defaultFunc,
   leaveWorkspace: defaultFunc,
@@ -51,7 +51,7 @@ export const WorkspaceContextProvider = ({
   const { user, client } = useAppContext();
 
   // Currently active workspace.
-  const [workspace, setWorkspace] = useState<null | Workspace>(null);
+  const [workspace, setWorkspace] = useState<null | string>(null);
 
   // List of workspaces
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
@@ -94,7 +94,7 @@ export const WorkspaceContextProvider = ({
 
   useEffect(() => {
     if (!workspace && workspaces && workspaces.length > 0) {
-      setWorkspace(workspaces[0]);
+      setWorkspace(workspaces[0].id);
     }
   }, [workspaces, workspace]);
 

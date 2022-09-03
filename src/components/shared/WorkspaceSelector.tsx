@@ -169,9 +169,10 @@ const WorkspaceSelector = (props: Props) => {
   const { workspace, workspaces, setWorkspace } = useWorkspaceContext();
   const [selectorOpened, setSelectorOpened] = useState(false);
   let navigate = useNavigate();
-
-  const name = workspace?.name;
-  const role = getUserRole(workspace, user);
+  const currentWorkspace =
+    workspaces.find((ws) => ws.id === workspace) || workspaces[0];
+  const name = currentWorkspace?.name;
+  const role = getUserRole(currentWorkspace, user);
 
   const items = workspaces;
 
@@ -182,6 +183,17 @@ const WorkspaceSelector = (props: Props) => {
   const handleCreateClick = () => {
     navigate("workspaces/new");
     setSelectorOpened(false);
+  };
+
+  const handleEditClick = (
+    e: React.MouseEvent<HTMLImageElement>,
+    id: string
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setWorkspace(id);
+    navigate("/workspaces/manage");
+    setSelectorOpened(!selectorOpened);
   };
 
   if (isLocalOrStaging) {
@@ -214,7 +226,9 @@ const WorkspaceSelector = (props: Props) => {
             {items.map((item: any) => (
               <DropdownItem
                 onClick={() => {
-                  setWorkspace(item);
+                  setWorkspace(item.id);
+                  setSelectorOpened(!selectorOpened);
+                  navigate("/");
                 }}
                 key={item.id}
               >
@@ -227,8 +241,7 @@ const WorkspaceSelector = (props: Props) => {
                   src={ICONS.EDIT}
                   alt=""
                   onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+                    handleEditClick(e, item.id);
                   }}
                 />
               </DropdownItem>
