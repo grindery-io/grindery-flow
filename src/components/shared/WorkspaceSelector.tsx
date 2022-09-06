@@ -152,13 +152,13 @@ const DropdownItem = styled.div`
 type Props = {};
 
 const getUserRole = (workspace: Workspace | null, user: string) => {
-  if (workspace?.admin === user) {
+  if (workspace?.creator === user) {
     return "admin";
   }
-  if (workspace?.admins.includes(user)) {
+  if (workspace?.admins?.includes(user)) {
     return "admin";
   }
-  if (workspace?.members.includes(user)) {
+  if (workspace?.members?.includes(user)) {
     return "member";
   }
   return "";
@@ -170,8 +170,8 @@ const WorkspaceSelector = (props: Props) => {
   const [selectorOpened, setSelectorOpened] = useState(false);
   let navigate = useNavigate();
   const currentWorkspace =
-    workspaces.find((ws) => ws.id === workspace) || workspaces[0];
-  const name = currentWorkspace?.name;
+    workspaces.find((ws) => ws.key === workspace) || workspaces[0];
+  const name = currentWorkspace?.title;
   const role = getUserRole(currentWorkspace, user);
 
   const items = workspaces;
@@ -223,27 +223,29 @@ const WorkspaceSelector = (props: Props) => {
         </Selector>
         <Dropdown className={selectorOpened ? "opened" : ""}>
           <DropdownContent>
-            {items.map((item: any) => (
+            {items.map((item: Workspace) => (
               <DropdownItem
                 onClick={() => {
-                  setWorkspace(item.id);
+                  setWorkspace(item.key);
                   setSelectorOpened(!selectorOpened);
                   navigate("/");
                 }}
-                key={item.id}
+                key={item.key}
               >
                 <div className="avatar">
-                  <Jdenticon size="16" value={encodeURIComponent(item.name)} />
+                  <Jdenticon size="16" value={encodeURIComponent(item.title)} />
                 </div>
-                <span>{item.name || ""}</span>
-                <img
-                  className="edit-item"
-                  src={ICONS.EDIT}
-                  alt=""
-                  onClick={(e) => {
-                    handleEditClick(e, item.id);
-                  }}
-                />
+                <span>{item.title || ""}</span>
+                {item.key !== "personal" && (
+                  <img
+                    className="edit-item"
+                    src={ICONS.EDIT}
+                    alt=""
+                    onClick={(e) => {
+                      handleEditClick(e, item.key);
+                    }}
+                  />
+                )}
               </DropdownItem>
             ))}
             <DropdownItem onClick={handleCreateClick}>

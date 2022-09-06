@@ -1,23 +1,40 @@
 import React, { useState, createContext, useEffect } from "react";
+import { useGrinderyNexus } from "use-grindery-nexus";
 import { defaultFunc, replaceTokens } from "../helpers/utils";
+import { workspacesRequest } from "../helpers/workspaces";
 import useAppContext from "../hooks/useAppContext";
 
 export type Workspace = {
-  id: string;
-  name: string;
-  about: string;
-  admin: string;
-  admins: string[];
-  members: string[];
+  key: string;
+  title: string;
+  about?: string;
+  creator: string;
+  admins?: string[];
+  members?: string[];
 };
 
 type ContextProps = {
   workspace: null | string;
   workspaces: Workspace[];
-  createWorkspace: (data: any) => void;
+  createWorkspace: (
+    userId: string,
+    data: any,
+    token: string
+  ) => Promise<string>;
   leaveWorkspace: (workspaceId: string) => void;
   setWorkspace: (workspaceId: string) => void;
   setWorkspaces: (workspaces: Workspace[]) => void;
+  isLoaded: boolean;
+  deleteWorkspace: (
+    userId: string,
+    data: any,
+    token: string
+  ) => Promise<boolean>;
+  updateWorkspace: (
+    userId: string,
+    data: any,
+    token: string
+  ) => Promise<boolean>;
 };
 
 type WorkspaceContextProps = {
@@ -25,21 +42,30 @@ type WorkspaceContextProps = {
 };
 
 const defaultWorkspace = {
-  id: "{{user}}:personal",
-  name: "My workspace",
-  about: "Workspace description",
-  admin: "{{user}}",
-  admins: [],
+  key: "personal",
+  title: "My workspace",
+  about: "",
+  creator: "{{user}}",
+  admins: ["{{user}}"],
   members: [],
 };
 
 const defaultContext = {
   workspace: null,
   workspaces: [defaultWorkspace],
-  createWorkspace: defaultFunc,
+  createWorkspace: async () => {
+    return "";
+  },
   leaveWorkspace: defaultFunc,
   setWorkspace: defaultFunc,
   setWorkspaces: defaultFunc,
+  deleteWorkspace: async () => {
+    return true;
+  },
+  updateWorkspace: async () => {
+    return true;
+  },
+  isLoaded: false,
 };
 
 export const WorkspaceContext = createContext<ContextProps>(defaultContext);
@@ -48,7 +74,9 @@ export const WorkspaceContextProvider = ({
   children,
 }: WorkspaceContextProps) => {
   // App main context
-  const { user, client } = useAppContext();
+  const { user, token } = useGrinderyNexus();
+
+  const access_token = token?.access_token;
 
   // Currently active workspace.
   const [workspace, setWorkspace] = useState<null | string>(null);
@@ -56,45 +84,81 @@ export const WorkspaceContextProvider = ({
   // List of workspaces
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
+  // Is initial list of workspaces loaded
+  const [isLoaded, setIsLoaded] = useState(false);
+
   // Get list of user's workspaces
-  const listWorkspaces = async (userId: string) => {
+  const listWorkspaces = async (userId: string, token: string) => {
+    const res = await workspacesRequest("or_listWorkspaces", {}, token);
+    let spaces: Workspace[] = [];
+    if (res && res.data && res.data.result) {
+      console.log("or_listWorkspaces res", res.data.result);
+      spaces = [...res.data.result];
+    }
+
     setWorkspaces([
       replaceTokens(defaultWorkspace, { user: userId }),
-      {
-        name: "Test workspace",
-        id: "1",
-        about: "Workspace description",
-        admin: "123",
-        admins: ["eip155:1:0x4245cd11b5a9E54F57bE19B643E564AA4Ee86D1b"],
-        members: [],
-      },
-      {
-        name: "Grindery Core",
-        id: "3",
-        about: "Workspace description",
-        admin: "123",
-        admins: [],
-        members: ["eip155:1:0x4245cd11b5a9E54F57bE19B643E564AA4Ee86D1b"],
-      },
+      ...spaces,
     ]);
+    setIsLoaded(true);
   };
 
   // Create new workspace
-  const createWorkspace = async (data: any) => {};
+  const createWorkspace = async (userId: string, data: any, token: string) => {
+    const res = await workspacesRequest("or_createWorkspace", data, token);
+    if (res && res.data && res.data.result) {
+      console.log("or_createWorkspace res", res.data.result);
+      listWorkspaces(userId, token);
+      if (res.data.result.key) {
+        return res.data.result.key;
+      }
+    }
+    return "";
+  };
+
+  // Update workspace
+  const updateWorkspace = async (userId: string, data: any, token: string) => {
+    const res = await workspacesRequest("or_updateWorkspace", data, token);
+    if (res && res.data && res.data.result) {
+      console.log("or_updateWorkspace res", res.data.result);
+      listWorkspaces(userId, token);
+      return true;
+    }
+    return false;
+  };
 
   // Leave current workspace
   const leaveWorkspace = async (workspaceId: string) => {};
 
-  // Get list of user's workspaces when user and client is known
-  useEffect(() => {
-    if (user && client) {
-      listWorkspaces(user);
+  // Delete workspace
+  const deleteWorkspace = async (
+    userId: string,
+    workspaceKey: string,
+    token: string
+  ) => {
+    const res = await workspacesRequest(
+      "or_deleteWorkspace",
+      { key: workspaceKey },
+      token
+    );
+    if (res && res.data && res.data.result) {
+      console.log("or_deleteWorkspace res", res.data.result);
+      listWorkspaces(userId, token);
+      return true;
     }
-  }, [user, client]);
+    return false;
+  };
+
+  // Get list of user's workspaces when user and access token is known
+  useEffect(() => {
+    if (user && access_token) {
+      listWorkspaces(user, access_token);
+    }
+  }, [user, access_token]);
 
   useEffect(() => {
     if (!workspace && workspaces && workspaces.length > 0) {
-      setWorkspace(workspaces[0].id);
+      setWorkspace(workspaces[0].key);
     }
   }, [workspaces, workspace]);
 
@@ -114,6 +178,9 @@ export const WorkspaceContextProvider = ({
         leaveWorkspace,
         setWorkspace,
         setWorkspaces,
+        isLoaded,
+        deleteWorkspace,
+        updateWorkspace,
       }}
     >
       {children}

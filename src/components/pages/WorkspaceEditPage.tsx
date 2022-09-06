@@ -159,48 +159,57 @@ const AlertWrapper = styled.div`
 type Props = {};
 
 const WorkspaceEditPage = (props: Props) => {
-  const { user, validator } = useAppContext();
-  const { workspaces, setWorkspaces, setWorkspace, workspace } =
-    useWorkspaceContext();
+  const { user, validator, access_token } = useAppContext();
+  const {
+    workspaces,
+    setWorkspaces,
+    setWorkspace,
+    workspace,
+    isLoaded,
+    deleteWorkspace,
+    updateWorkspace,
+  } = useWorkspaceContext();
   const id = workspace;
   const [currentWorkspace, setCurrentWorkspace] = useState(
-    workspaces.find((ws) => ws.id === id) || workspaces[0]
+    workspaces.find((ws) => ws.key === id) || workspaces[0]
   );
-  const isMember = currentWorkspace.members.includes(user);
+  const isMember = currentWorkspace?.members?.includes(user);
   const isAdmin =
-    currentWorkspace.admins.includes(user) || currentWorkspace.admin === user;
-  const [name, setName] = useState(currentWorkspace?.name || "");
+    currentWorkspace?.admins?.includes(user) ||
+    currentWorkspace?.creator === user;
+  const isPersonal = id === "personal";
+  const [title, setTitle] = useState(currentWorkspace?.title || "");
   const [key, setKey] = useState(id);
   const [about, setAbout] = useState(currentWorkspace?.about || "");
   const [admins, setAdmins] = useState(
-    (currentWorkspace?.admins.join("\n") || "").replace(
+    (currentWorkspace?.admins?.join("\n") || "").replace(
       new RegExp("eip155:1:", "g"),
       ""
-    )
+    ) || ""
   );
   const [members, setMembers] = useState(
-    (currentWorkspace?.members.join("\n") || "").replace(
+    (currentWorkspace?.members?.join("\n") || "").replace(
       new RegExp("eip155:1:", "g"),
       ""
-    )
+    ) || ""
   );
   const [formError, setFormError] = useState("");
   const [errors, setErrors] = useState<any>(false);
-  const admin = currentWorkspace.admin;
+  //const admin = currentWorkspace?.creator;
   //const id = workspace?.id || encodeURIComponent(workspace?.name || "id");
   let navigate = useNavigate();
 
   const validationSchema = getValidationScheme([
-    { key: "name", required: true, type: "string" },
+    { key: "title", required: true, type: "string" },
     { key: "admins", required: false, type: "evmAddress", list: true },
     { key: "members", required: false, type: "evmAddress", list: true },
   ]);
 
   const check = validator.compile(validationSchema);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validated = check({
-      name,
+      title,
       about,
       admins: admins.split("\n"),
       members: members.split("\n"),
@@ -208,38 +217,50 @@ const WorkspaceEditPage = (props: Props) => {
 
     if (typeof validated === "boolean") {
       // all good
-      const newWorkspace = {
-        id: id || "",
-        name,
-        about,
-        admins: admins.split("\n").map((address) => `eip155:1:${address}`),
-        members: members.split("\n").map((address) => `eip155:1:${address}`),
-        admin: admin,
-      };
+
       setErrors(false);
       setFormError("");
-      const newWorkspaces = [
-        ...workspaces.map((ws) => (ws.id === id ? newWorkspace : ws)),
-      ];
-      setWorkspaces(newWorkspaces);
-      setWorkspace(newWorkspace.id);
-      navigate("/");
+      const res = await updateWorkspace(
+        user,
+        {
+          key: id,
+          title,
+        },
+        access_token || ""
+      ).catch((err) => {
+        setFormError("Network error. Please try again later.");
+      });
+      if (!res) {
+        setFormError("Network error. Please try again later.");
+      }
     } else {
       setErrors(validated);
       setFormError("Please complete all required fields.");
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    setFormError("");
     if (
       window.confirm(
         "Are you sure you want to delete the workspace?\nAll workflows associated with this workspace will be disabled and you won't be able to restore them."
       )
     ) {
-      const newWorkspaces = [...workspaces.filter((ws) => ws.id !== id)];
-      setWorkspaces(newWorkspaces);
-      setWorkspace(newWorkspaces[0].id);
-      navigate("/");
+      //const newWorkspaces = [...workspaces.filter((ws) => ws.key !== id)];
+      //setWorkspaces(newWorkspaces);
+      const res = await deleteWorkspace(
+        user,
+        currentWorkspace.key,
+        access_token || ""
+      ).catch((err) => {
+        setFormError(err.message);
+      });
+      if (res) {
+        setWorkspace("personal");
+        navigate("/");
+      } else {
+        setFormError("Network error. Please try again later.");
+      }
     }
   };
 
@@ -249,9 +270,9 @@ const WorkspaceEditPage = (props: Props) => {
         "Are you sure you want to leave the workspace?\nYou will lose access to all workflows associated with this workspace."
       )
     ) {
-      const newWorkspaces = [...workspaces.filter((ws) => ws.id !== id)];
+      const newWorkspaces = [...workspaces.filter((ws) => ws.key !== id)];
       setWorkspaces(newWorkspaces);
-      setWorkspace(newWorkspaces[0].id);
+      setWorkspace(newWorkspaces[0].key);
       navigate("/");
     }
   };
@@ -301,21 +322,21 @@ const WorkspaceEditPage = (props: Props) => {
   useEffect(() => {
     if (id) {
       const newCurrentWorkspace =
-        workspaces.find((ws) => ws.id === id) || workspaces[0];
+        workspaces.find((ws) => ws.key === id) || workspaces[0];
       setCurrentWorkspace(newCurrentWorkspace);
-      setName(newCurrentWorkspace?.name || "");
+      setTitle(newCurrentWorkspace?.title || "");
       setAbout(newCurrentWorkspace?.about || "");
       setAdmins(
-        (newCurrentWorkspace?.admins.join("\n") || "").replace(
+        (newCurrentWorkspace?.admins?.join("\n") || "").replace(
           new RegExp("eip155:1:", "g"),
           ""
-        )
+        ) || ""
       );
       setMembers(
-        (newCurrentWorkspace?.members.join("\n") || "").replace(
+        (newCurrentWorkspace?.members?.join("\n") || "").replace(
           new RegExp("eip155:1:", "g"),
           ""
-        )
+        ) || ""
       );
       setFormError("");
       setErrors(false);
@@ -323,9 +344,7 @@ const WorkspaceEditPage = (props: Props) => {
     }
   }, [id, workspaces]);
 
-  console.log("id", id);
-
-  return id ? (
+  return isLoaded && id ? (
     <Wrapper>
       <h1>{STRINGS.TITLE}</h1>
       <h3>{STRINGS.SECTION_TITLE_1}</h3>
@@ -333,26 +352,29 @@ const WorkspaceEditPage = (props: Props) => {
         <div style={{ marginBottom: "24px" }}>
           <label>{STRINGS.FIELDS.AVATAR.LABEL}</label>
           <Avatar>
-            <Jdenticon size="60" value={encodeURIComponent(name || "Avatar")} />
+            <Jdenticon
+              size="60"
+              value={encodeURIComponent(title || "Avatar")}
+            />
           </Avatar>
         </div>
         <div style={{ marginBottom: "24px" }}>
           <RichInput
-            key={key + "name"}
+            key={key + "title"}
             label={STRINGS.FIELDS.NAME.LABEL}
             onChange={(value: string) => {
-              setName(value);
-              updateErrors("name", errors);
+              setTitle(value);
+              updateErrors("title", errors);
             }}
-            value={name}
+            value={title}
             placeholder={STRINGS.FIELDS.NAME.PLACEHOLDER}
             options={[]}
-            error={fieldError("name", errors)}
+            error={fieldError("title", errors)}
             singleLine
-            readonly={isMember && !isAdmin}
+            readonly={isPersonal || (isMember && !isAdmin)}
           />
         </div>
-        <div>
+        {/*<div>
           <RichInput
             key={key + "about"}
             label={STRINGS.FIELDS.ABOUT.LABEL}
@@ -364,9 +386,9 @@ const WorkspaceEditPage = (props: Props) => {
             options={[]}
             readonly={isMember && !isAdmin}
           />
-        </div>
+          </div>*/}
       </Box>
-      {isAdmin && (
+      {isAdmin && !isPersonal && (
         <>
           <h3>{STRINGS.SECTION_TITLE_2}</h3>
           <p>{STRINGS.SECTION_DESCRIPTION_2}</p>
@@ -422,7 +444,7 @@ const WorkspaceEditPage = (props: Props) => {
           </Alert>
         </AlertWrapper>
       )}
-      {isAdmin && (
+      {isAdmin && !isPersonal && (
         <>
           <ButtonWrapper>
             <Button
@@ -431,7 +453,7 @@ const WorkspaceEditPage = (props: Props) => {
               fullWidth
             />
           </ButtonWrapper>
-          {id !== user + ":personal" && (
+          {!isPersonal && (
             <DeleteButtonWrapper>
               <Button
                 onClick={handleDelete}

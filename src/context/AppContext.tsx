@@ -19,6 +19,7 @@ import useWindowSize from "../hooks/useWindowSize";
 //import helloWorldConnector from "../samples/connectors/helloworld.json";
 import { validator } from "../helpers/validator";
 import { Operation } from "../types/Workflow";
+import useWorkspaceContext from "../hooks/useWorkspaceContext";
 
 type ContextProps = {
   user: any;
@@ -51,6 +52,7 @@ type ContextProps = {
   devMode: boolean;
   deleteWorkflow: (userAccountId: string, key: string) => void;
   client: NexusClient | null;
+  access_token: string | undefined;
 };
 
 type AppContextProps = {
@@ -80,11 +82,15 @@ export const AppContext = createContext<ContextProps>({
   devMode: false,
   deleteWorkflow: defaultFunc,
   client: null,
+  access_token: undefined,
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
   let navigate = useNavigate();
   const { width } = useWindowSize();
+
+  // current workspace
+  const { workspace } = useWorkspaceContext();
 
   // Dev mode state
   const cachedDevMode = localStorage.getItem("gr_dev_mode");
@@ -92,6 +98,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
   // Auth hook
   const { user, disconnect, token } = useGrinderyNexus();
+
+  const access_token = token?.access_token;
 
   // app panel opened
   const [appOpened, setAppOpened] = useState<boolean>(
@@ -374,6 +382,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         handleDevModeChange,
         deleteWorkflow,
         client,
+        access_token,
       }}
     >
       {children}

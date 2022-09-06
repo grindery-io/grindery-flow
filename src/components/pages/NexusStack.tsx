@@ -10,15 +10,15 @@ type Props = {};
 
 const NexusStack = (props: Props) => {
   return (
-    <AppContextProvider>
-      <WorkspaceContextProvider>
+    <WorkspaceContextProvider>
+      <AppContextProvider>
         <EarlyAccessModal />
         <Routes>
           <Route path="/auth" element={<AuthPage />}></Route>
           <Route path="*" element={<RootStack />}></Route>
         </Routes>
-      </WorkspaceContextProvider>
-    </AppContextProvider>
+      </AppContextProvider>
+    </WorkspaceContextProvider>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { RichInput, Alert } from "grindery-ui";
 import Jdenticon from "react-jdenticon";
-import CheckBox from "../shared/CheckBox";
+//import CheckBox from "../shared/CheckBox";
 import useAppContext from "../../hooks/useAppContext";
 import Button from "../shared/Button";
 import { getValidationScheme } from "../../helpers/utils";
@@ -139,7 +139,7 @@ const Avatar = styled.div`
   }
 `;
 
-const CheckboxWrapper = styled.div`
+/*const CheckboxWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -155,7 +155,7 @@ const CheckboxLabel = styled.label`
   line-height: 150%;
   color: #0b0d17;
   cursor: pointer;
-`;
+`;*/
 
 const AlertWrapper = styled.div`
   margin-top: 24px;
@@ -164,54 +164,45 @@ const AlertWrapper = styled.div`
 type Props = {};
 
 const WorkspaceCreatePage = (props: Props) => {
-  const { user, validator } = useAppContext();
-  const { workspaces, setWorkspaces, setWorkspace } = useWorkspaceContext();
-  const [name, setName] = useState("");
+  const { user, validator, access_token } = useAppContext();
+  const { setWorkspace, createWorkspace } = useWorkspaceContext();
+  const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
-  const userArr = user.split(":");
-  const userAddress = userArr[userArr.length - 1];
-  const [admin, setAdmin] = useState(userAddress);
-  const [admins, setAdmins] = useState("");
+  //const userArr = user.split(":");
+  //const userAddress = userArr[userArr.length - 1];
+  //const [admin, setAdmin] = useState(userAddress);
+  const [admins, setAdmins] = useState(user.replace("eip155:1:", ""));
   const [members, setMembers] = useState("");
-  const [adminFieldKey, setAdminFieldKey] = useState(1);
+  //const [adminFieldKey, setAdminFieldKey] = useState(1);
   const [formError, setFormError] = useState("");
   const [errors, setErrors] = useState<any>(false);
 
   let navigate = useNavigate();
 
   const validationSchema = getValidationScheme([
-    { key: "name", required: true, type: "string" },
-    { key: "admin", required: true, type: "evmAddress" },
+    { key: "title", required: true, type: "string" },
     { key: "admins", required: false, type: "evmAddress", list: true },
     { key: "members", required: false, type: "evmAddress", list: true },
   ]);
 
   const check = validator.compile(validationSchema);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validated = check({
-      name,
+      title,
       about,
-      admin,
       admins: admins.split("\n"),
       members: members.split("\n"),
     });
 
     if (typeof validated === "boolean") {
-      // all good
-      const newWorkspace = {
-        id: encodeURIComponent(name),
-        name,
-        about,
-        admin: "eip155:1:" + admin,
-        admins: admins.split("\n").map((address) => `eip155:1:${address}`),
-        members: members.split("\n").map((address) => `eip155:1:${address}`),
-      };
       setErrors(false);
       setFormError("");
-      const newWorkspaces = [newWorkspace, ...workspaces];
-      setWorkspaces(newWorkspaces);
-      setWorkspace(newWorkspace.id);
+      const newWorkspace = {
+        title,
+      };
+      const key = await createWorkspace(user, newWorkspace, access_token || "");
+      setWorkspace(key);
       navigate("/");
     } else {
       setErrors(validated);
@@ -270,24 +261,27 @@ const WorkspaceCreatePage = (props: Props) => {
         <div style={{ marginBottom: "24px" }}>
           <label>{STRINGS.FIELDS.AVATAR.LABEL}</label>
           <Avatar>
-            <Jdenticon size="60" value={encodeURIComponent(name || "Avatar")} />
+            <Jdenticon
+              size="60"
+              value={encodeURIComponent(title || "Avatar")}
+            />
           </Avatar>
         </div>
         <div style={{ marginBottom: "24px" }}>
           <RichInput
             label={STRINGS.FIELDS.NAME.LABEL}
             onChange={(value: string) => {
-              setName(value);
-              updateErrors("name", errors);
+              setTitle(value);
+              updateErrors("title", errors);
             }}
-            value={name}
+            value={title}
             placeholder={STRINGS.FIELDS.NAME.PLACEHOLDER}
             options={[]}
-            error={fieldError("name", errors)}
+            error={fieldError("title", errors)}
             singleLine
           />
         </div>
-        <div>
+        {/*<div>
           <RichInput
             label={STRINGS.FIELDS.ABOUT.LABEL}
             onChange={(value: string) => {
@@ -297,9 +291,9 @@ const WorkspaceCreatePage = (props: Props) => {
             placeholder={STRINGS.FIELDS.ABOUT.PLACEHOLDER}
             options={[]}
           />
-        </div>
+          </div>*/}
       </Box>
-      <h3>{STRINGS.SECTION_TITLE_2}</h3>
+      {/*<h3>{STRINGS.SECTION_TITLE_2}</h3>
       <p>{STRINGS.SECTION_DESCRIPTION_2}</p>
       <Box>
         <RichInput
@@ -345,7 +339,7 @@ const WorkspaceCreatePage = (props: Props) => {
             {STRINGS.FIELDS.ADMIN_CHECKBOX.LABEL}
           </CheckboxLabel>
         </CheckboxWrapper>
-      </Box>
+          </Box>*/}
       <h3>{STRINGS.SECTION_TITLE_3}</h3>
       <p>{STRINGS.SECTION_DESCRIPTION_3}</p>
       <Box>
