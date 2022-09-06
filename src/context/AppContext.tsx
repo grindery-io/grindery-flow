@@ -140,9 +140,13 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   };
 
   const getWorkflowsList = async () => {
-    const res = await client?.listWorkflows(user || "").catch((err) => {
-      console.error("listWorkflows error:", err.message);
-    });
+    const res = await client
+      ?.listWorkflows(
+        workspace && workspace !== "personal" ? workspace : undefined
+      )
+      .catch((err) => {
+        console.error("listWorkflows error:", err.message);
+      });
 
     if (res) {
       setWorkflows(
@@ -153,6 +157,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
           }))
           .filter((workflow: Workflow) => workflow)
       );
+    } else {
+      setWorkflows([]);
     }
   };
 
@@ -217,7 +223,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
   const editWorkflow = async (workflow: Workflow) => {
     const res = await client
-      ?.updateWorkflow(workflow.key, user || "", workflow)
+      ?.updateWorkflow(workflow.key, workflow)
       .catch((err) => {
         console.error("updateWorkflow error:", err.message);
       });
@@ -227,9 +233,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     }
   };
 
-  const verifyUser = async (userId: string) => {
+  const verifyUser = async () => {
     setVerifying(true);
-    const res = await client?.isAllowedUser(userId).catch((err) => {
+    const res = await client?.isAllowedUser().catch((err) => {
       console.error("isAllowedUser error:", err.message);
       setAccessAllowed(false);
     });
@@ -287,11 +293,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   };
 
   const deleteWorkflow = async (userAccountId: string, key: string) => {
-    const res = await client
-      ?.deleteWorkflow(userAccountId, key)
-      .catch((err) => {
-        console.error("deleteWorkflow error:", err.message);
-      });
+    const res = await client?.deleteWorkflow(key).catch((err) => {
+      console.error("deleteWorkflow error:", err.message);
+    });
     if (res) {
       getWorkflowsList();
     }
@@ -315,18 +319,18 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   }, [workflows, addExecutions, getWorkflowHistory]);
 
   useEffect(() => {
-    if (user && accessAllowed && client) {
+    if (user && accessAllowed && client && workspace) {
       getConnectors();
       getWorkflowsList();
     } else {
       clearWorkflows();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, accessAllowed, client]);
+  }, [user, accessAllowed, client, workspace]);
 
   useEffect(() => {
     if (user && client) {
-      verifyUser(user);
+      verifyUser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, client]);

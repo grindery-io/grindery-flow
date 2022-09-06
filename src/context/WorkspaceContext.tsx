@@ -2,7 +2,6 @@ import React, { useState, createContext, useEffect } from "react";
 import { useGrinderyNexus } from "use-grindery-nexus";
 import { defaultFunc, replaceTokens } from "../helpers/utils";
 import { workspacesRequest } from "../helpers/workspaces";
-import useAppContext from "../hooks/useAppContext";
 
 export type Workspace = {
   key: string;

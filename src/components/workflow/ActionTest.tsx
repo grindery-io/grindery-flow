@@ -174,7 +174,6 @@ const ActionTest = (props: Props) => {
         setLoading(true);
         const res = await client
           ?.testAction(
-            workflow.creator,
             workflow.actions[index],
             replaceTokens(workflow.actions[index].input || {}, {
               trigger: triggers.current?.operation?.sample || {},

@@ -13,6 +13,7 @@ import {
 import { defaultFunc } from "../helpers/utils";
 import useAppContext from "../hooks/useAppContext";
 import { isLocalOrStaging } from "../constants";
+import useWorkspaceContext from "../hooks/useWorkspaceContext";
 
 // empty workflow declaration
 const blankWorkflow: Workflow = {
@@ -125,6 +126,7 @@ export const WorkflowContextProvider = ({
   children,
 }: WorkflowContextProviderProps) => {
   let navigate = useNavigate();
+  const { workspace } = useWorkspaceContext();
   const {
     getWorkflowsList,
     connectors: availableConnectors,
@@ -433,9 +435,14 @@ export const WorkflowContextProvider = ({
       setError(null);
       setSuccess(null);
       setLoading(true);
-      const res = await client?.createWorkflow(readyWorkflow).catch((err) => {
-        console.error("createWorkflow error:", err.message);
-      });
+      const res = await client
+        ?.createWorkflow(
+          readyWorkflow,
+          workspace && workspace !== "personal" ? workspace : undefined
+        )
+        .catch((err) => {
+          console.error("createWorkflow error:", err.message);
+        });
       if (res) {
         getWorkflowsList();
         resetWorkflow();
