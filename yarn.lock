@@ -5397,10 +5397,10 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, 
   dependencies:
     axios "^0.27.2"
 
-grindery-ui@^0.6.4:
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.6.4.tgz#cdf2f20e57e298adeb35538f5a3631d670741965"
-  integrity sha512-y6K3qqiGIU8d3z+y2BI1We5nVXQ7W4pkDqLsFjSX0qgHarQ/4tKTBYDMx9w2n4G0bRee4a3ilRMLPGL6jHHrgA==
+grindery-ui@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.7.0.tgz#4e703119997eb8429126129f1bb2cd928d396817"
+  integrity sha512-EGzNsQqufy/caiO3HqS1+L6OiAMdix8RNcyDiOp2fGJENemNeGN89D5lL7sDGPh4jJl2+GKkeTMGRl3dU8XNfg==
   dependencies:
     "@emotion/react" "^11.9.0"
     "@emotion/styled" "^11.8.1"

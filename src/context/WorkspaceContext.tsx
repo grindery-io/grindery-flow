@@ -34,6 +34,8 @@ type ContextProps = {
     data: any,
     token: string
   ) => Promise<boolean>;
+  isCreated: string | null;
+  setIsCreated: (value: string | null) => void;
 };
 
 type WorkspaceContextProps = {
@@ -65,6 +67,8 @@ const defaultContext = {
     return true;
   },
   isLoaded: false,
+  isCreated: null,
+  setIsCreated: defaultFunc,
 };
 
 export const WorkspaceContext = createContext<ContextProps>(defaultContext);
@@ -85,6 +89,9 @@ export const WorkspaceContextProvider = ({
 
   // Is initial list of workspaces loaded
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // Is new workspace created
+  const [isCreated, setIsCreated] = useState<string | null>(null);
 
   // Get list of user's workspaces
   const listWorkspaces = async (userId: string, token: string) => {
@@ -109,6 +116,7 @@ export const WorkspaceContextProvider = ({
       console.log("or_createWorkspace res", res.data.result);
       listWorkspaces(userId, token);
       if (res.data.result.key) {
+        setIsCreated(`Workspace ${data.title} created successfuly.`);
         return res.data.result.key;
       }
     }
@@ -180,6 +188,8 @@ export const WorkspaceContextProvider = ({
         isLoaded,
         deleteWorkspace,
         updateWorkspace,
+        isCreated,
+        setIsCreated,
       }}
     >
       {children}

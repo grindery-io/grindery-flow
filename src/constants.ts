@@ -58,6 +58,8 @@ export const ICONS: { [key: string]: string } = {
   CARET_DOWN: "/images/icons/caret-down.svg",
   PLUS_BLACK: "/images/icons/plus-black.svg",
   EDIT: "/images/icons/edit.svg",
+  COPY: "/images/icons/copy.svg",
+  MANAGE: "/images/icons/manage.svg",
   // Socials
   SOCIAL_DISCORD: "/images/icons/social-discord.png",
   SOCIAL_TG: "/images/icons/social-tg.png",

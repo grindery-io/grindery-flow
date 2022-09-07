@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Drawer } from "grindery-ui";
+import { Drawer, Snackbar } from "grindery-ui";
 import { Route, Routes, Navigate, useMatch } from "react-router-dom";
 import { SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
@@ -20,6 +20,7 @@ import CreateWorkflowPage from "./CreateWorkflowPage";
 import Button from "../shared/Button";
 import WorkspaceCreatePage from "./WorkspaceCreatePage";
 import WorkspaceEditPage from "./WorkspaceEditPage";
+import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 
 const DrawerWrapper = styled.div`
   @media (min-width: ${SCREEN.TABLET}) {
@@ -92,6 +93,7 @@ type Props = {};
 
 const RootStack = (props: Props) => {
   const { workflows, user, appOpened, setAppOpened } = useAppContext();
+  const { isCreated, setIsCreated } = useWorkspaceContext();
   const { size, width } = useWindowSize();
   let matchNewWorfklow = useMatch("/workflows/new");
 
@@ -197,6 +199,16 @@ const RootStack = (props: Props) => {
           </div>
         </>
       )}
+      <Snackbar
+        open={Boolean(isCreated)}
+        handleClose={() => {
+          setIsCreated(null);
+        }}
+        message={isCreated || ""}
+        hideCloseButton
+        autoHideDuration={5000}
+        severity="success"
+      />
     </>
   );
 };
