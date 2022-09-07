@@ -168,12 +168,8 @@ const WorkspaceCreatePage = (props: Props) => {
   const { setWorkspace, createWorkspace } = useWorkspaceContext();
   const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
-  //const userArr = user.split(":");
-  //const userAddress = userArr[userArr.length - 1];
-  //const [admin, setAdmin] = useState(userAddress);
   const [admins, setAdmins] = useState(user.replace("eip155:1:", ""));
-  const [members, setMembers] = useState("");
-  //const [adminFieldKey, setAdminFieldKey] = useState(1);
+  const [users, setUsers] = useState("");
   const [formError, setFormError] = useState("");
   const [errors, setErrors] = useState<any>(false);
 
@@ -182,7 +178,7 @@ const WorkspaceCreatePage = (props: Props) => {
   const validationSchema = getValidationScheme([
     { key: "title", required: true, type: "string" },
     { key: "admins", required: false, type: "evmAddress", list: true },
-    { key: "members", required: false, type: "evmAddress", list: true },
+    { key: "users", required: false, type: "evmAddress", list: true },
   ]);
 
   const check = validator.compile(validationSchema);
@@ -192,7 +188,7 @@ const WorkspaceCreatePage = (props: Props) => {
       title,
       about,
       admins: admins.split("\n"),
-      members: members.split("\n"),
+      users: users.split("\n"),
     });
 
     if (typeof validated === "boolean") {
@@ -200,10 +196,37 @@ const WorkspaceCreatePage = (props: Props) => {
       setFormError("");
       const newWorkspace = {
         title,
+        about,
+        admins: admins
+          .split("\n")
+          .filter((address: string) => address)
+          .map((address: string) => `eip155:1:${address}`),
+        users: users
+          .split("\n")
+          .filter((address: string) => address)
+          .map((address: string) => `eip155:1:${address}`),
       };
-      const key = await createWorkspace(user, newWorkspace, access_token || "");
-      setWorkspace(key);
-      navigate("/");
+      const key = await createWorkspace(
+        user,
+        newWorkspace,
+        access_token || ""
+      ).catch((error) => {
+        if (
+          error &&
+          error.response &&
+          error.response.data &&
+          error.response.data.error &&
+          error.response.data.error.message
+        ) {
+          setFormError(error.response.data.error.message);
+        } else {
+          setFormError("Network error. Please try again later.");
+        }
+      });
+      if (key) {
+        setWorkspace(key);
+        navigate("/");
+      }
     } else {
       setErrors(validated);
       setFormError("Please complete all required fields.");
@@ -281,7 +304,7 @@ const WorkspaceCreatePage = (props: Props) => {
             singleLine
           />
         </div>
-        {/*<div>
+        <div>
           <RichInput
             label={STRINGS.FIELDS.ABOUT.LABEL}
             onChange={(value: string) => {
@@ -291,55 +314,8 @@ const WorkspaceCreatePage = (props: Props) => {
             placeholder={STRINGS.FIELDS.ABOUT.PLACEHOLDER}
             options={[]}
           />
-          </div>*/}
+        </div>
       </Box>
-      {/*<h3>{STRINGS.SECTION_TITLE_2}</h3>
-      <p>{STRINGS.SECTION_DESCRIPTION_2}</p>
-      <Box>
-        <RichInput
-          key={adminFieldKey}
-          label={STRINGS.FIELDS.ADMIN.LABEL}
-          onChange={(value: string) => {
-            setAdmin(value);
-            updateErrors("admin", errors);
-          }}
-          value={admin}
-          placeholder={STRINGS.FIELDS.ADMIN.PLACEHOLDER}
-          options={[]}
-          error={fieldError("admin", errors)}
-          singleLine
-          readonly={admin === userAddress}
-        />
-        <CheckboxWrapper>
-          <CheckBox
-            checked={admin === userAddress}
-            onChange={(val) => {
-              if (val) {
-                setAdmin(userAddress);
-                setAdminFieldKey(adminFieldKey + 1);
-              } else {
-                setAdmin("");
-                setAdminFieldKey(adminFieldKey + 1);
-              }
-              updateErrors("admin", errors);
-            }}
-          />
-          <CheckboxLabel
-            onClick={() => {
-              if (admin === userAddress) {
-                setAdmin("");
-                setAdminFieldKey(adminFieldKey + 1);
-              } else {
-                setAdmin(userAddress);
-                setAdminFieldKey(adminFieldKey + 1);
-              }
-              updateErrors("admin", errors);
-            }}
-          >
-            {STRINGS.FIELDS.ADMIN_CHECKBOX.LABEL}
-          </CheckboxLabel>
-        </CheckboxWrapper>
-          </Box>*/}
       <h3>{STRINGS.SECTION_TITLE_3}</h3>
       <p>{STRINGS.SECTION_DESCRIPTION_3}</p>
       <Box>
@@ -361,15 +337,15 @@ const WorkspaceCreatePage = (props: Props) => {
           <RichInput
             label={STRINGS.FIELDS.MEMBERS.LABEL}
             onChange={(value: string) => {
-              setMembers(value);
-              updateErrors("members[", errors, true);
+              setUsers(value);
+              updateErrors("users[", errors, true);
             }}
-            value={members}
+            value={users}
             placeholder={STRINGS.FIELDS.MEMBERS.PLACEHOLDER}
             options={[]}
             tooltip={STRINGS.FIELDS.MEMBERS.TOOLTIP}
             style={{ marginBottom: 0 }}
-            error={fieldError("members[", errors, true)}
+            error={fieldError("users[", errors, true)}
           />
         </div>
       </Box>
@@ -377,6 +353,7 @@ const WorkspaceCreatePage = (props: Props) => {
         <AlertWrapper>
           <Alert
             color="error"
+            elevation={0}
             icon={
               <img
                 src={ICONS.ERROR_ALERT}

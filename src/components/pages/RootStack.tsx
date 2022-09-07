@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Drawer, Snackbar } from "grindery-ui";
+import { Drawer, Snackbar, CircularProgress } from "grindery-ui";
 import { Route, Routes, Navigate, useMatch } from "react-router-dom";
 import { SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
@@ -93,7 +93,8 @@ type Props = {};
 
 const RootStack = (props: Props) => {
   const { workflows, user, appOpened, setAppOpened } = useAppContext();
-  const { isCreated, setIsCreated } = useWorkspaceContext();
+  const { isSuccess, setIsSuccess, isWorkspaceSwitching } =
+    useWorkspaceContext();
   const { size, width } = useWindowSize();
   let matchNewWorfklow = useMatch("/workflows/new");
 
@@ -102,7 +103,11 @@ const RootStack = (props: Props) => {
       return <WelcomePage />;
     }
 
-    return (
+    return isWorkspaceSwitching ? (
+      <div style={{ textAlign: "center", margin: "50px auto" }}>
+        <CircularProgress />
+      </div>
+    ) : (
       <Routes>
         <Route path="/" element={<Navigate to="/workflows" replace />}></Route>
         {/*<Route path="/dashboard" element={<DashboardPage />}></Route>*/}
@@ -200,11 +205,11 @@ const RootStack = (props: Props) => {
         </>
       )}
       <Snackbar
-        open={Boolean(isCreated)}
+        open={Boolean(isSuccess)}
         handleClose={() => {
-          setIsCreated(null);
+          setIsSuccess(null);
         }}
-        message={isCreated || ""}
+        message={isSuccess || ""}
         hideCloseButton
         autoHideDuration={5000}
         severity="success"

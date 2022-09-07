@@ -224,6 +224,7 @@ const ActionTest = (props: Props) => {
         <AlertWrapper>
           <Alert
             color="success"
+            elevation={0}
             icon={
               <img
                 src={ICONS.SUCCESS_ALERT}
@@ -241,6 +242,7 @@ const ActionTest = (props: Props) => {
         <AlertWrapper>
           <Alert
             color="error"
+            elevation={0}
             icon={
               <img
                 src={ICONS.ERROR_ALERT}

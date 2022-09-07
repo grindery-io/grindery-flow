@@ -617,6 +617,7 @@ const ActionConfiguration = (props: Props) => {
               <AlertWrapper>
                 <Alert
                   color="warning"
+                  elevation={0}
                   icon={
                     <img
                       src={ICONS.GAS_ALERT}
@@ -656,6 +657,7 @@ const ActionConfiguration = (props: Props) => {
             <AlertWrapper>
               <Alert
                 color="error"
+                elevation={0}
                 icon={
                   <img
                     src={ICONS.ERROR_ALERT}
@@ -673,6 +675,7 @@ const ActionConfiguration = (props: Props) => {
             <AlertWrapper>
               <Alert
                 color="error"
+                elevation={0}
                 icon={
                   <img
                     src={ICONS.ERROR_ALERT}

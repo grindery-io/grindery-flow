@@ -9,7 +9,7 @@ export type Workspace = {
   about?: string;
   creator: string;
   admins?: string[];
-  members?: string[];
+  users?: string[];
 };
 
 type ContextProps = {
@@ -20,7 +20,11 @@ type ContextProps = {
     data: any,
     token: string
   ) => Promise<string>;
-  leaveWorkspace: (workspaceId: string) => void;
+  leaveWorkspace: (
+    userId: string,
+    data: any,
+    token: string
+  ) => Promise<boolean>;
   setWorkspace: (workspaceId: string) => void;
   setWorkspaces: (workspaces: Workspace[]) => void;
   isLoaded: boolean;
@@ -34,8 +38,9 @@ type ContextProps = {
     data: any,
     token: string
   ) => Promise<boolean>;
-  isCreated: string | null;
-  setIsCreated: (value: string | null) => void;
+  isSuccess: string | null;
+  setIsSuccess: (value: string | null) => void;
+  isWorkspaceSwitching: boolean;
 };
 
 type WorkspaceContextProps = {
@@ -48,7 +53,7 @@ const defaultWorkspace = {
   about: "",
   creator: "{{user}}",
   admins: ["{{user}}"],
-  members: [],
+  users: [],
 };
 
 const defaultContext = {
@@ -57,7 +62,9 @@ const defaultContext = {
   createWorkspace: async () => {
     return "";
   },
-  leaveWorkspace: defaultFunc,
+  leaveWorkspace: async () => {
+    return true;
+  },
   setWorkspace: defaultFunc,
   setWorkspaces: defaultFunc,
   deleteWorkspace: async () => {
@@ -67,8 +74,9 @@ const defaultContext = {
     return true;
   },
   isLoaded: false,
-  isCreated: null,
-  setIsCreated: defaultFunc,
+  isSuccess: null,
+  setIsSuccess: defaultFunc,
+  isWorkspaceSwitching: false,
 };
 
 export const WorkspaceContext = createContext<ContextProps>(defaultContext);
@@ -90,15 +98,17 @@ export const WorkspaceContextProvider = ({
   // Is initial list of workspaces loaded
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Is new workspace created
-  const [isCreated, setIsCreated] = useState<string | null>(null);
+  // Is workspace operation success
+  const [isSuccess, setIsSuccess] = useState<string | null>(null);
+
+  // Is workspace switching
+  const [isWorkspaceSwitching, setIsWorkspaceSwitching] = useState(false);
 
   // Get list of user's workspaces
   const listWorkspaces = async (userId: string, token: string) => {
     const res = await workspacesRequest("or_listWorkspaces", {}, token);
     let spaces: Workspace[] = [];
     if (res && res.data && res.data.result) {
-      console.log("or_listWorkspaces res", res.data.result);
       spaces = [...res.data.result];
     }
 
@@ -113,10 +123,9 @@ export const WorkspaceContextProvider = ({
   const createWorkspace = async (userId: string, data: any, token: string) => {
     const res = await workspacesRequest("or_createWorkspace", data, token);
     if (res && res.data && res.data.result) {
-      console.log("or_createWorkspace res", res.data.result);
       listWorkspaces(userId, token);
       if (res.data.result.key) {
-        setIsCreated(`Workspace ${data.title} created successfuly.`);
+        setIsSuccess(`Workspace ${data.title} created successfully.`);
         return res.data.result.key;
       }
     }
@@ -127,29 +136,37 @@ export const WorkspaceContextProvider = ({
   const updateWorkspace = async (userId: string, data: any, token: string) => {
     const res = await workspacesRequest("or_updateWorkspace", data, token);
     if (res && res.data && res.data.result) {
-      console.log("or_updateWorkspace res", res.data.result);
       listWorkspaces(userId, token);
+      setIsSuccess(`Workspace ${data.title} updated successfully.`);
       return true;
     }
     return false;
   };
 
   // Leave current workspace
-  const leaveWorkspace = async (workspaceId: string) => {};
+  const leaveWorkspace = async (userId: string, data: any, token: string) => {
+    const res = await workspacesRequest(
+      "or_leaveWorkspace",
+      { key: data.workspaceKey || "" },
+      token
+    );
+    if (res && res.data && res.data.result && res.data.result.left) {
+      setIsSuccess(`You successfully left ${data.title} workspace.`);
+      listWorkspaces(userId, token);
+      return true;
+    }
+    return false;
+  };
 
   // Delete workspace
-  const deleteWorkspace = async (
-    userId: string,
-    workspaceKey: string,
-    token: string
-  ) => {
+  const deleteWorkspace = async (userId: string, data: any, token: string) => {
     const res = await workspacesRequest(
       "or_deleteWorkspace",
-      { key: workspaceKey },
+      { key: data.workspaceKey || "" },
       token
     );
     if (res && res.data && res.data.result) {
-      console.log("or_deleteWorkspace res", res.data.result);
+      setIsSuccess(`Workspace ${data.title} deleted successfully.`);
       listWorkspaces(userId, token);
       return true;
     }
@@ -176,6 +193,15 @@ export const WorkspaceContextProvider = ({
     }
   }, [user]);
 
+  useEffect(() => {
+    if (workspace) {
+      setIsWorkspaceSwitching(true);
+      setTimeout(() => {
+        setIsWorkspaceSwitching(false);
+      }, 750);
+    }
+  }, [workspace]);
+
   return (
     <WorkspaceContext.Provider
       value={{
@@ -188,8 +214,9 @@ export const WorkspaceContextProvider = ({
         isLoaded,
         deleteWorkspace,
         updateWorkspace,
-        isCreated,
-        setIsCreated,
+        isSuccess,
+        setIsSuccess,
+        isWorkspaceSwitching,
       }}
     >
       {children}

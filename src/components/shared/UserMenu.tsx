@@ -7,6 +7,7 @@ import { ICONS } from "../../constants";
 import { useGrinderyNexus } from "use-grindery-nexus";
 import { Snackbar } from "grindery-ui";
 import { useNavigate } from "react-router-dom";
+import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 
 const UserContainer = styled.div`
   position: relative;
@@ -113,6 +114,7 @@ type Props = {};
 const UserMenu = (props: Props) => {
   const { address, disconnect } = useGrinderyNexus();
   const [menuOpened, setMenuOpened] = useState(false);
+  const { workspace } = useWorkspaceContext();
   const [copied, setCopied] = useState(false);
   let navigate = useNavigate();
 
@@ -156,14 +158,16 @@ const UserMenu = (props: Props) => {
                 <span>{"Copy wallet addres"}</span>
               </button>
             </CopyToClipboard>
-            <button
-              onClick={() => {
-                navigate("/workspaces/manage");
-              }}
-            >
-              <img src={ICONS.MANAGE} alt="" />
-              <span>Manage Workspace</span>
-            </button>
+            {workspace && workspace !== "personal" && (
+              <button
+                onClick={() => {
+                  navigate("/workspaces/manage");
+                }}
+              >
+                <img src={ICONS.MANAGE} alt="" />
+                <span>Manage Workspace</span>
+              </button>
+            )}
             <button
               onClick={() => {
                 disconnect();

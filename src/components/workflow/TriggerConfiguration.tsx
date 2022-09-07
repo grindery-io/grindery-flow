@@ -564,6 +564,7 @@ const TriggerConfiguration = (props: Props) => {
             <AlertWrapper>
               <Alert
                 color="error"
+                elevation={0}
                 icon={
                   <img
                     src={ICONS.ERROR_ALERT}
@@ -581,6 +582,7 @@ const TriggerConfiguration = (props: Props) => {
             <AlertWrapper>
               <Alert
                 color="error"
+                elevation={0}
                 icon={
                   <img
                     src={ICONS.ERROR_ALERT}

@@ -44,7 +44,7 @@ const Name = styled.div`
   color: #0b0d17;
   margin: 0 0 2px;
   max-width: 160px;
-  overflow-x: hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
@@ -158,7 +158,7 @@ const getUserRole = (workspace: Workspace | null, user: string) => {
   if (workspace?.admins?.includes(user)) {
     return "admin";
   }
-  if (workspace?.members?.includes(user)) {
+  if (workspace?.users?.includes(user)) {
     return "member";
   }
   return "";
@@ -196,11 +196,6 @@ const WorkspaceSelector = (props: Props) => {
     setSelectorOpened(!selectorOpened);
   };
 
-  if (isLocalOrStaging) {
-    console.log("workspace", workspace);
-    console.log("workspaces", workspaces);
-  }
-
   return workspace ? (
     <Foco
       onClickOutside={() => {
@@ -228,7 +223,6 @@ const WorkspaceSelector = (props: Props) => {
                 onClick={() => {
                   setWorkspace(item.key);
                   setSelectorOpened(!selectorOpened);
-                  navigate("/");
                 }}
                 key={item.key}
               >

@@ -162,7 +162,7 @@ const WorkspaceEditPage = (props: Props) => {
   const { user, validator, access_token } = useAppContext();
   const {
     workspaces,
-    setWorkspaces,
+    leaveWorkspace,
     setWorkspace,
     workspace,
     isLoaded,
@@ -173,7 +173,7 @@ const WorkspaceEditPage = (props: Props) => {
   const [currentWorkspace, setCurrentWorkspace] = useState(
     workspaces.find((ws) => ws.key === id) || workspaces[0]
   );
-  const isMember = currentWorkspace?.members?.includes(user);
+  const isMember = currentWorkspace?.users?.includes(user);
   const isAdmin =
     currentWorkspace?.admins?.includes(user) ||
     currentWorkspace?.creator === user;
@@ -187,22 +187,20 @@ const WorkspaceEditPage = (props: Props) => {
       ""
     ) || ""
   );
-  const [members, setMembers] = useState(
-    (currentWorkspace?.members?.join("\n") || "").replace(
+  const [users, setUsers] = useState(
+    (currentWorkspace?.users?.join("\n") || "").replace(
       new RegExp("eip155:1:", "g"),
       ""
     ) || ""
   );
   const [formError, setFormError] = useState("");
   const [errors, setErrors] = useState<any>(false);
-  //const admin = currentWorkspace?.creator;
-  //const id = workspace?.id || encodeURIComponent(workspace?.name || "id");
   let navigate = useNavigate();
 
   const validationSchema = getValidationScheme([
     { key: "title", required: true, type: "string" },
     { key: "admins", required: false, type: "evmAddress", list: true },
-    { key: "members", required: false, type: "evmAddress", list: true },
+    { key: "users", required: false, type: "evmAddress", list: true },
   ]);
 
   const check = validator.compile(validationSchema);
@@ -212,7 +210,7 @@ const WorkspaceEditPage = (props: Props) => {
       title,
       about,
       admins: admins.split("\n"),
-      members: members.split("\n"),
+      users: users.split("\n"),
     });
 
     if (typeof validated === "boolean") {
@@ -225,13 +223,32 @@ const WorkspaceEditPage = (props: Props) => {
         {
           key: id,
           title,
+          about,
+          admins: admins
+            .split("\n")
+            .filter((address: string) => address)
+            .map((address: string) => `eip155:1:${address}`),
+          users: users
+            .split("\n")
+            .filter((address: string) => address)
+            .map((address: string) => `eip155:1:${address}`),
         },
         access_token || ""
-      ).catch((err) => {
-        setFormError("Network error. Please try again later.");
+      ).catch((error) => {
+        if (
+          error &&
+          error.response &&
+          error.response.data &&
+          error.response.data.error &&
+          error.response.data.error.message
+        ) {
+          setFormError(error.response.data.error.message);
+        } else {
+          setFormError("Network error. Please try again later.");
+        }
       });
-      if (!res) {
-        setFormError("Network error. Please try again later.");
+      if (res) {
+        navigate("/");
       }
     } else {
       setErrors(validated);
@@ -243,37 +260,60 @@ const WorkspaceEditPage = (props: Props) => {
     setFormError("");
     if (
       window.confirm(
-        "Are you sure you want to delete the workspace?\nAll workflows associated with this workspace will be disabled and you won't be able to restore them."
+        "Are you sure you want to delete the workspace?\nYou won't be able to restore it."
       )
     ) {
-      //const newWorkspaces = [...workspaces.filter((ws) => ws.key !== id)];
-      //setWorkspaces(newWorkspaces);
       const res = await deleteWorkspace(
         user,
-        currentWorkspace.key,
+        { workspaceKey: currentWorkspace.key, title },
         access_token || ""
-      ).catch((err) => {
-        setFormError(err.message);
+      ).catch((error) => {
+        if (
+          error &&
+          error.response &&
+          error.response.data &&
+          error.response.data.error &&
+          error.response.data.error.message
+        ) {
+          setFormError(error.response.data.error.message);
+        } else {
+          setFormError("Network error. Please try again later.");
+        }
       });
       if (res) {
         setWorkspace("personal");
         navigate("/");
-      } else {
-        setFormError("Network error. Please try again later.");
       }
     }
   };
 
-  const handleLeave = () => {
+  const handleLeave = async () => {
     if (
       window.confirm(
         "Are you sure you want to leave the workspace?\nYou will lose access to all workflows associated with this workspace."
       )
     ) {
-      const newWorkspaces = [...workspaces.filter((ws) => ws.key !== id)];
-      setWorkspaces(newWorkspaces);
-      setWorkspace(newWorkspaces[0].key);
-      navigate("/");
+      const res = await leaveWorkspace(
+        user,
+        { workspaceKey: currentWorkspace.key, title },
+        access_token || ""
+      ).catch((error) => {
+        if (
+          error &&
+          error.response &&
+          error.response.data &&
+          error.response.data.error &&
+          error.response.data.error.message
+        ) {
+          setFormError(error.response.data.error.message);
+        } else {
+          setFormError("Network error. Please try again later.");
+        }
+      });
+      if (res) {
+        setWorkspace("personal");
+        navigate("/");
+      }
     }
   };
 
@@ -332,8 +372,8 @@ const WorkspaceEditPage = (props: Props) => {
           ""
         ) || ""
       );
-      setMembers(
-        (newCurrentWorkspace?.members?.join("\n") || "").replace(
+      setUsers(
+        (newCurrentWorkspace?.users?.join("\n") || "").replace(
           new RegExp("eip155:1:", "g"),
           ""
         ) || ""
@@ -374,7 +414,7 @@ const WorkspaceEditPage = (props: Props) => {
             readonly={isPersonal || (isMember && !isAdmin)}
           />
         </div>
-        {/*<div>
+        <div>
           <RichInput
             key={key + "about"}
             label={STRINGS.FIELDS.ABOUT.LABEL}
@@ -384,9 +424,9 @@ const WorkspaceEditPage = (props: Props) => {
             value={about}
             placeholder={STRINGS.FIELDS.ABOUT.PLACEHOLDER}
             options={[]}
-            readonly={isMember && !isAdmin}
+            readonly={isPersonal || (isMember && !isAdmin)}
           />
-          </div>*/}
+        </div>
       </Box>
       {isAdmin && !isPersonal && (
         <>
@@ -410,18 +450,18 @@ const WorkspaceEditPage = (props: Props) => {
             </div>
             <div>
               <RichInput
-                key={key + "members"}
+                key={key + "users"}
                 label={STRINGS.FIELDS.MEMBERS.LABEL}
                 onChange={(value: string) => {
-                  setMembers(value);
-                  updateErrors("members[", errors, true);
+                  setUsers(value);
+                  updateErrors("users[", errors, true);
                 }}
-                value={members}
+                value={users}
                 placeholder={STRINGS.FIELDS.MEMBERS.PLACEHOLDER}
                 options={[]}
                 tooltip={STRINGS.FIELDS.MEMBERS.TOOLTIP}
                 style={{ marginBottom: 0 }}
-                error={fieldError("members[", errors, true)}
+                error={fieldError("users[", errors, true)}
               />
             </div>
           </Box>
@@ -431,6 +471,7 @@ const WorkspaceEditPage = (props: Props) => {
         <AlertWrapper>
           <Alert
             color="error"
+            elevation={0}
             icon={
               <img
                 src={ICONS.ERROR_ALERT}

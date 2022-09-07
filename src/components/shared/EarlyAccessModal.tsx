@@ -138,7 +138,7 @@ const SuccessMessage = styled.div`
 type Props = {};
 
 const EarlyAccessModal = (props: Props) => {
-  const { user, accessAllowed, verifying } = useAppContext();
+  const { user, accessAllowed, verifying, client } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
@@ -161,34 +161,27 @@ const EarlyAccessModal = (props: Props) => {
     setEmail(value || "");
   };
 
-  const requestEarlyAccess = () => {
+  const requestEarlyAccess = async () => {
     setLoading(true);
     setError("");
-    axios
-      .post(
-        WORKFLOW_ENGINE_URL,
-        jsonrpcObj("or_requestEarlyAccess", {
-          userAccountId: user,
-          email,
-        })
-      )
-      .then((res) => {
-        if (res && res.data && res.data.error) {
-          console.error("or_requestEarlyAccess error", res.data.error);
-          setError(res.data.error.message || "Server error, please, try again");
-        }
-        if (res && res.data && res.data.result) {
-          setSuccess(
-            "Your request will be manually reviewed. We'll notify you by email as soon as we have an available opening."
-          );
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("or_requestEarlyAccess error", err);
-        setError(err.message);
-        setLoading(false);
-      });
+    const res = await client?.requestEarlyAccess(email).catch((err) => {
+      console.error(
+        "or_requestEarlyAccess error",
+        err.response.data.error.message
+      );
+      setError(
+        err.response.data.error.message || "Server error, please, try again"
+      );
+
+      setLoading(false);
+    });
+    if (res) {
+      setSuccess(
+        "Your request will be manually reviewed. We'll notify you by email as soon as we have an available opening."
+      );
+    }
+
+    setLoading(false);
   };
 
   return user && !accessAllowed && !verifying ? (
