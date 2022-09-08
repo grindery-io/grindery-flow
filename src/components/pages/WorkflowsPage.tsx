@@ -5,6 +5,7 @@ import DataBox from "../shared/DataBox";
 import useAppContext from "../../hooks/useAppContext";
 import { ICONS, SCREEN } from "../../constants";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 
 const Wrapper = styled.div`
   display: flex;
@@ -255,7 +256,15 @@ type WorkflowRowProps = {
 };
 
 const WorkflowRow = ({ item }: WorkflowRowProps) => {
-  const { connectors, editWorkflow, deleteWorkflow, user } = useAppContext();
+  const { workspace, workspaces, setIsSuccess } = useWorkspaceContext();
+  const {
+    connectors,
+    editWorkflow,
+    deleteWorkflow,
+    user,
+    moveWorkflowToWorkspace,
+    access_token,
+  } = useAppContext();
   const [title, setTitle] = useState(item.title || "");
   const [editTitle, setEditTitle] = useState(false);
   const [enabled, setEnabled] = useState(item.state === "on");
@@ -324,6 +333,16 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
     ) {
       deleteWorkflow(user, item.key);
     }
+  };
+
+  const handleMoveClick = async (
+    workspaceKey: string,
+    workspaceTitle: string
+  ) => {
+    try {
+      await moveWorkflowToWorkspace(item.key, workspaceKey, access_token || "");
+    } catch (err) {}
+    setIsSuccess(`Workflow successfully moved to ${workspaceTitle} workspace.`);
   };
 
   useEffect(() => {
@@ -415,6 +434,28 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
                 label: "Rename",
                 onClick: handleTitleClick,
               },
+              ...(workspaces && workspaces.length > 1
+                ? [
+                    {
+                      key: "move",
+                      label: "Move to workspace",
+                      children: [
+                        ...workspaces
+                          .filter(
+                            (ws) =>
+                              ws.key !== workspace && ws.key !== "personal"
+                          )
+                          .map((ws) => ({
+                            key: ws.key,
+                            label: ws.title,
+                            onClick: () => {
+                              handleMoveClick(ws.key, ws.title);
+                            },
+                          })),
+                      ],
+                    },
+                  ]
+                : []),
               {
                 key: "2",
                 label: "Delete",

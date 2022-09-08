@@ -20,6 +20,7 @@ import useWindowSize from "../hooks/useWindowSize";
 import { validator } from "../helpers/validator";
 import { Operation } from "../types/Workflow";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";
+import { workspacesRequest } from "../helpers/workspaces";
 
 type ContextProps = {
   user: any;
@@ -53,6 +54,11 @@ type ContextProps = {
   deleteWorkflow: (userAccountId: string, key: string) => void;
   client: NexusClient | null;
   access_token: string | undefined;
+  moveWorkflowToWorkspace: (
+    workflowKey: string,
+    workspaceKey: string,
+    token: string
+  ) => void;
 };
 
 type AppContextProps = {
@@ -83,6 +89,7 @@ export const AppContext = createContext<ContextProps>({
   deleteWorkflow: defaultFunc,
   client: null,
   access_token: undefined,
+  moveWorkflowToWorkspace: defaultFunc,
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -307,6 +314,21 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     setClient(nexus);
   };
 
+  const moveWorkflowToWorkspace = async (
+    workflowKey: string,
+    workspaceKey: string,
+    token: string
+  ) => {
+    const res = await workspacesRequest(
+      "or_moveWorkflowToWorkspace",
+      { key: workflowKey, newWorkspaceKey: workspaceKey },
+      token
+    );
+    if (res && res.data && res.data.result) {
+      getWorkflowsList();
+    }
+  };
+
   useEffect(() => {
     setWorkflowExecutions([]);
     if (workflows && workflows.length > 0) {
@@ -387,6 +409,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         deleteWorkflow,
         client,
         access_token,
+        moveWorkflowToWorkspace,
       }}
     >
       {children}

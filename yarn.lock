@@ -5397,10 +5397,10 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, 
   dependencies:
     axios "^0.27.2"
 
-grindery-ui@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.7.0.tgz#4e703119997eb8429126129f1bb2cd928d396817"
-  integrity sha512-EGzNsQqufy/caiO3HqS1+L6OiAMdix8RNcyDiOp2fGJENemNeGN89D5lL7sDGPh4jJl2+GKkeTMGRl3dU8XNfg==
+grindery-ui@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.8.2.tgz#532da73cb503e06014c7bab8b918b3beb8e19bcb"
+  integrity sha512-dK7AWzWeIFHekzmGWBwqH0qMnLEL2cf5xbxEf5U4LSSMGqQNur3BjKYFDWmx8fuH1/zJwHdVwumE5dw0j2buLg==
   dependencies:
     "@emotion/react" "^11.9.0"
     "@emotion/styled" "^11.8.1"
@@ -5409,6 +5409,7 @@ grindery-ui@^0.7.0:
     "@testing-library/jest-dom" "^5.16.4"
     "@testing-library/react" "^13.3.0"
     "@testing-library/user-event" "^13.5.0"
+    mui-nested-menu "^2.1.3"
     react-copy-to-clipboard "^5.1.0"
     react-foco "^1.3.1"
     react-scripts "5.0.1"
@@ -6951,6 +6952,11 @@ ms@2.1.3, ms@^2.1.1:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
+
+mui-nested-menu@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/mui-nested-menu/-/mui-nested-menu-2.1.3.tgz#7e1766763741da6bb735e24350598c5d6017a826"
+  integrity sha512-+LtNmSnCljZyhlNd7KjP+XXIKBHAql5QlziT6pJGi+nOlaFc6S+nbd8yBtT6m+mFWWKnZhRpjdiQthFyddzuIg==
 
 multicast-dns@^7.2.4:
   version "7.2.5"
