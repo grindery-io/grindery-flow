@@ -41,6 +41,7 @@ type ContextProps = {
   isSuccess: string | null;
   setIsSuccess: (value: string | null) => void;
   isWorkspaceSwitching: boolean;
+  listWorkspaces: (userId: string, token: string) => void;
 };
 
 type WorkspaceContextProps = {
@@ -77,6 +78,7 @@ const defaultContext = {
   isSuccess: null,
   setIsSuccess: defaultFunc,
   isWorkspaceSwitching: false,
+  listWorkspaces: defaultFunc,
 };
 
 export const WorkspaceContext = createContext<ContextProps>(defaultContext);
@@ -184,6 +186,11 @@ export const WorkspaceContextProvider = ({
     if (!workspace && workspaces && workspaces.length > 0) {
       setWorkspace(workspaces[0].key);
     }
+    if (workspace && workspaces && workspaces.length > 0) {
+      if (!workspaces.find((ws) => ws.key === workspace)) {
+        setWorkspace(workspaces[0].key);
+      }
+    }
   }, [workspaces, workspace]);
 
   useEffect(() => {
@@ -217,6 +224,7 @@ export const WorkspaceContextProvider = ({
         isSuccess,
         setIsSuccess,
         isWorkspaceSwitching,
+        listWorkspaces,
       }}
     >
       {children}

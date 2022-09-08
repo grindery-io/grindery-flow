@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Jdenticon from "react-jdenticon";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
@@ -165,8 +165,9 @@ const getUserRole = (workspace: Workspace | null, user: string) => {
 };
 
 const WorkspaceSelector = (props: Props) => {
-  const { user } = useAppContext();
-  const { workspace, workspaces, setWorkspace } = useWorkspaceContext();
+  const { user, access_token } = useAppContext();
+  const { workspace, workspaces, setWorkspace, listWorkspaces } =
+    useWorkspaceContext();
   const [selectorOpened, setSelectorOpened] = useState(false);
   let navigate = useNavigate();
   const currentWorkspace =
@@ -195,6 +196,12 @@ const WorkspaceSelector = (props: Props) => {
     navigate("/workspaces/manage");
     setSelectorOpened(!selectorOpened);
   };
+
+  useEffect(() => {
+    if (selectorOpened && user && access_token) {
+      listWorkspaces(user, access_token);
+    }
+  }, [listWorkspaces, selectorOpened, user, access_token]);
 
   return workspace ? (
     <Foco

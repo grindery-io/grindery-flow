@@ -486,33 +486,38 @@ const WorkspaceEditPage = (props: Props) => {
         </AlertWrapper>
       )}
       {isAdmin && !isPersonal && (
-        <>
-          <ButtonWrapper>
-            <Button
-              onClick={handleSubmit}
-              value={STRINGS.SUBMIT_BUTTON}
-              fullWidth
-            />
-          </ButtonWrapper>
-          {!isPersonal && (
-            <DeleteButtonWrapper>
-              <Button
-                onClick={handleDelete}
-                value={STRINGS.DELETE_BUTTON}
-                fullWidth
-                color="error"
-              />
-            </DeleteButtonWrapper>
-          )}
-        </>
+        <ButtonWrapper>
+          <Button
+            onClick={handleSubmit}
+            value={STRINGS.SUBMIT_BUTTON}
+            fullWidth
+          />
+        </ButtonWrapper>
       )}
-      {isMember && (
-        <DeleteButtonWrapper style={{ marginTop: "14px" }}>
+      {(isMember ||
+        (isAdmin &&
+          currentWorkspace?.admins &&
+          currentWorkspace?.admins.length > 1)) && (
+        <DeleteButtonWrapper style={{ marginTop: isMember ? "14px" : 0 }}>
           <Button
             onClick={handleLeave}
             value={STRINGS.LEAVE_BUTTON}
             fullWidth
             color="error"
+            hideIconBorder
+            icon={ICONS.LEAVE}
+          />
+        </DeleteButtonWrapper>
+      )}
+      {isAdmin && !isPersonal && (
+        <DeleteButtonWrapper>
+          <Button
+            onClick={handleDelete}
+            value={STRINGS.DELETE_BUTTON}
+            fullWidth
+            color="error"
+            hideIconBorder
+            icon={ICONS.DELETE_WHITE}
           />
         </DeleteButtonWrapper>
       )}

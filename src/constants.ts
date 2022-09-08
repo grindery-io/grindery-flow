@@ -60,6 +60,8 @@ export const ICONS: { [key: string]: string } = {
   EDIT: "/images/icons/edit.svg",
   COPY: "/images/icons/copy.svg",
   MANAGE: "/images/icons/manage.svg",
+  LEAVE: "/images/icons/leave.svg",
+  DELETE_WHITE: "/images/icons/delete-white.svg",
   // Socials
   SOCIAL_DISCORD: "/images/icons/social-discord.png",
   SOCIAL_TG: "/images/icons/social-tg.png",
