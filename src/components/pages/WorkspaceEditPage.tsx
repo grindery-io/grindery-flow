@@ -152,6 +152,14 @@ const DeleteButtonWrapper = styled.div`
   }
 `;
 
+const LeaveButtonWrapper = styled.div`
+  & .MuiButton-root {
+    &:hover {
+      box-shadow: none;
+    }
+  }
+`;
+
 const AlertWrapper = styled.div`
   margin-top: 24px;
 `;
@@ -498,16 +506,16 @@ const WorkspaceEditPage = (props: Props) => {
         (isAdmin &&
           currentWorkspace?.admins &&
           currentWorkspace?.admins.length > 1)) && (
-        <DeleteButtonWrapper style={{ marginTop: isMember ? "14px" : 0 }}>
+        <LeaveButtonWrapper style={{ marginTop: isMember ? "14px" : 0 }}>
           <Button
             onClick={handleLeave}
             value={STRINGS.LEAVE_BUTTON}
             fullWidth
-            color="error"
+            variant="outlined"
             hideIconBorder
             icon={ICONS.LEAVE}
           />
-        </DeleteButtonWrapper>
+        </LeaveButtonWrapper>
       )}
       {isAdmin && !isPersonal && (
         <DeleteButtonWrapper>
