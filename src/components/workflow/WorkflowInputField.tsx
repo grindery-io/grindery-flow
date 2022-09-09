@@ -316,7 +316,13 @@ const WorkflowInputField = ({
     if (field.readonly) {
       return (
         <ReadOnlyWrapper>
-          <TextInput {...commonProps} readonly />
+          <RichInput
+            {...commonProps}
+            onChange={() => {}}
+            readonly
+            options={[]}
+            copy
+          />
         </ReadOnlyWrapper>
       );
     }
