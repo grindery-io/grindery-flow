@@ -342,7 +342,7 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
     try {
       await moveWorkflowToWorkspace(item.key, workspaceKey, client);
     } catch (err) {}
-    setIsSuccess(`Workflow successfully moved to ${workspaceTitle} workspace.`);
+    setIsSuccess(`Workflow successfully moved to ${workspaceTitle}.`);
   };
 
   useEffect(() => {
@@ -441,15 +441,15 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
                       label: "Move to workspace",
                       children: [
                         ...workspaces
-                          .filter(
-                            (ws) =>
-                              ws.key !== workspace && ws.key !== "personal"
-                          )
+                          .filter((ws) => ws.key !== workspace)
                           .map((ws) => ({
                             key: ws.key,
                             label: ws.title,
                             onClick: () => {
-                              handleMoveClick(ws.key, ws.title);
+                              handleMoveClick(
+                                ws.key === "personal" ? "" : ws.key,
+                                ws.title
+                              );
                             },
                           })),
                       ],
