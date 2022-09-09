@@ -58,6 +58,7 @@ type ContextProps = {
     workspaceKey: string,
     client: NexusClient | null
   ) => void;
+  getConnector: (key: string) => void;
 };
 
 type AppContextProps = {
@@ -89,6 +90,7 @@ export const AppContext = createContext<ContextProps>({
   client: null,
   access_token: undefined,
   moveWorkflowToWorkspace: defaultFunc,
+  getConnector: defaultFunc,
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -174,9 +176,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
   const getConnectors = async () => {
     let stagedCdss = [];
-    const cdss = await client?.getConnectors();
+    const cdss = await client?.listDrivers();
     if (isLocalOrStaging) {
-      stagedCdss = await getStagingConnectors();
+      stagedCdss = await client?.listDrivers("staging");
     }
 
     setConnectors(
@@ -186,6 +188,23 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         ["asc"]
       )
     );
+  };
+
+  const getConnector = async (key: string) => {
+    const connector = await client?.getDriver(
+      key,
+      isLocalOrStaging ? "staging" : undefined
+    );
+    console.log("connector", connector);
+    if (connector) {
+      setConnectors(
+        _.orderBy(
+          [...connectors.map((c) => (c.key === key ? connector : c))],
+          [(cds) => cds.name.toLowerCase()],
+          ["asc"]
+        )
+      );
+    }
   };
 
   const getWorkflowExecution = useCallback(
@@ -408,6 +427,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         client,
         access_token,
         moveWorkflowToWorkspace,
+        getConnector,
       }}
     >
       {children}

@@ -72,7 +72,7 @@ type Props = {
 
 const ConnectorsSelector = (props: Props) => {
   const { step, index } = props;
-  const { devMode } = useAppContext();
+  const { devMode, getConnector } = useAppContext();
   const {
     workflow,
     activeStep,
@@ -183,6 +183,7 @@ const ConnectorsSelector = (props: Props) => {
       "trigger.operation": "",
       "trigger.credentials": undefined,
     });
+    getConnector(value);
   };
 
   const handleActionConnectorChange = (value: string) => {
@@ -192,6 +193,7 @@ const ConnectorsSelector = (props: Props) => {
       ["actions[" + index + "].operation"]: "",
       ["actions[" + index + "].credentials"]: undefined,
     });
+    getConnector(value);
   };
 
   const handleTriggerChange = (value: string) => {

@@ -452,6 +452,12 @@ export const WorkflowContextProvider = ({
     }
   };
 
+  useEffect(() => {
+    if (availableConnectors) {
+      setConnectors(availableConnectors);
+    }
+  }, [availableConnectors]);
+
   // set user id on success authentication
   useEffect(() => {
     if (user) {
