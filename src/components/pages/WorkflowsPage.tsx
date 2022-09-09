@@ -263,7 +263,7 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
     deleteWorkflow,
     user,
     moveWorkflowToWorkspace,
-    access_token,
+    client,
   } = useAppContext();
   const [title, setTitle] = useState(item.title || "");
   const [editTitle, setEditTitle] = useState(false);
@@ -340,7 +340,7 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
     workspaceTitle: string
   ) => {
     try {
-      await moveWorkflowToWorkspace(item.key, workspaceKey, access_token || "");
+      await moveWorkflowToWorkspace(item.key, workspaceKey, client);
     } catch (err) {}
     setIsSuccess(`Workflow successfully moved to ${workspaceTitle} workspace.`);
   };

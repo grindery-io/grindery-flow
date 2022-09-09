@@ -167,7 +167,7 @@ const AlertWrapper = styled.div`
 type Props = {};
 
 const WorkspaceEditPage = (props: Props) => {
-  const { user, validator, access_token } = useAppContext();
+  const { user, validator, client } = useAppContext();
   const {
     workspaces,
     leaveWorkspace,
@@ -241,16 +241,10 @@ const WorkspaceEditPage = (props: Props) => {
             .filter((address: string) => address)
             .map((address: string) => `eip155:1:${address}`),
         },
-        access_token || ""
+        client
       ).catch((error) => {
-        if (
-          error &&
-          error.response &&
-          error.response.data &&
-          error.response.data.error &&
-          error.response.data.error.message
-        ) {
-          setFormError(error.response.data.error.message);
+        if (error) {
+          setFormError(error.toString());
         } else {
           setFormError("Network error. Please try again later.");
         }
@@ -274,16 +268,10 @@ const WorkspaceEditPage = (props: Props) => {
       const res = await deleteWorkspace(
         user,
         { workspaceKey: currentWorkspace.key, title },
-        access_token || ""
+        client
       ).catch((error) => {
-        if (
-          error &&
-          error.response &&
-          error.response.data &&
-          error.response.data.error &&
-          error.response.data.error.message
-        ) {
-          setFormError(error.response.data.error.message);
+        if (error) {
+          setFormError(error.toString());
         } else {
           setFormError("Network error. Please try again later.");
         }
@@ -304,16 +292,12 @@ const WorkspaceEditPage = (props: Props) => {
       const res = await leaveWorkspace(
         user,
         { workspaceKey: currentWorkspace.key, title },
-        access_token || ""
+        client
       ).catch((error) => {
-        if (
-          error &&
-          error.response &&
-          error.response.data &&
-          error.response.data.error &&
-          error.response.data.error.message
-        ) {
-          setFormError(error.response.data.error.message);
+        console.log("error", error.toString());
+
+        if (error) {
+          setFormError(error.toString());
         } else {
           setFormError("Network error. Please try again later.");
         }

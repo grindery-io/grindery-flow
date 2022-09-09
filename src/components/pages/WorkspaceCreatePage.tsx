@@ -164,7 +164,7 @@ const AlertWrapper = styled.div`
 type Props = {};
 
 const WorkspaceCreatePage = (props: Props) => {
-  const { user, validator, access_token } = useAppContext();
+  const { user, validator, client } = useAppContext();
   const { setWorkspace, createWorkspace } = useWorkspaceContext();
   const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
@@ -206,26 +206,20 @@ const WorkspaceCreatePage = (props: Props) => {
           .filter((address: string) => address)
           .map((address: string) => `eip155:1:${address}`),
       };
-      const key = await createWorkspace(
-        user,
-        newWorkspace,
-        access_token || ""
-      ).catch((error) => {
-        if (
-          error &&
-          error.response &&
-          error.response.data &&
-          error.response.data.error &&
-          error.response.data.error.message
-        ) {
-          setFormError(error.response.data.error.message);
-        } else {
-          setFormError("Network error. Please try again later.");
+      const key = await createWorkspace(user, newWorkspace, client).catch(
+        (error) => {
+          if (error) {
+            setFormError(error.toString());
+          } else {
+            setFormError("Network error. Please try again later.");
+          }
         }
-      });
+      );
       if (key) {
-        setWorkspace(key);
-        navigate("/");
+        setTimeout(() => {
+          setWorkspace(key);
+          navigate("/");
+        }, 500);
       }
     } else {
       setErrors(validated);

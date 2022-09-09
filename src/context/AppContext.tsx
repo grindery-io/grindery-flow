@@ -20,7 +20,6 @@ import useWindowSize from "../hooks/useWindowSize";
 import { validator } from "../helpers/validator";
 import { Operation } from "../types/Workflow";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";
-import { workspacesRequest } from "../helpers/workspaces";
 
 type ContextProps = {
   user: any;
@@ -57,7 +56,7 @@ type ContextProps = {
   moveWorkflowToWorkspace: (
     workflowKey: string,
     workspaceKey: string,
-    token: string
+    client: NexusClient | null
   ) => void;
 };
 
@@ -317,14 +316,13 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const moveWorkflowToWorkspace = async (
     workflowKey: string,
     workspaceKey: string,
-    token: string
+    client: NexusClient | null
   ) => {
-    const res = await workspacesRequest(
-      "or_moveWorkflowToWorkspace",
-      { key: workflowKey, newWorkspaceKey: workspaceKey },
-      token
+    const res = await client?.moveWorkflowToWorkspace(
+      workflowKey,
+      workspaceKey
     );
-    if (res && res.data && res.data.result) {
+    if (res) {
       getWorkflowsList();
     }
   };

@@ -1,7 +1,7 @@
+import NexusClient from "grindery-nexus-client";
 import React, { useState, createContext, useEffect } from "react";
 import { useGrinderyNexus } from "use-grindery-nexus";
 import { defaultFunc, replaceTokens } from "../helpers/utils";
-import { workspacesRequest } from "../helpers/workspaces";
 
 export type Workspace = {
   key: string;
@@ -18,12 +18,12 @@ type ContextProps = {
   createWorkspace: (
     userId: string,
     data: any,
-    token: string
+    client: NexusClient | null
   ) => Promise<string>;
   leaveWorkspace: (
     userId: string,
     data: any,
-    token: string
+    client: NexusClient | null
   ) => Promise<boolean>;
   setWorkspace: (workspaceId: string) => void;
   setWorkspaces: (workspaces: Workspace[]) => void;
@@ -31,17 +31,17 @@ type ContextProps = {
   deleteWorkspace: (
     userId: string,
     data: any,
-    token: string
+    client: NexusClient | null
   ) => Promise<boolean>;
   updateWorkspace: (
     userId: string,
     data: any,
-    token: string
+    client: NexusClient | null
   ) => Promise<boolean>;
   isSuccess: string | null;
   setIsSuccess: (value: string | null) => void;
   isWorkspaceSwitching: boolean;
-  listWorkspaces: (userId: string, token: string) => void;
+  listWorkspaces: (userId: string, client: NexusClient | null) => void;
 };
 
 type WorkspaceContextProps = {
@@ -89,7 +89,8 @@ export const WorkspaceContextProvider = ({
   // App main context
   const { user, token } = useGrinderyNexus();
 
-  const access_token = token?.access_token;
+  // Is workspace switching
+  const [client, setClient] = useState<NexusClient | null>(null);
 
   // Currently active workspace.
   const [workspace, setWorkspace] = useState<null | string>(null);
@@ -107,13 +108,8 @@ export const WorkspaceContextProvider = ({
   const [isWorkspaceSwitching, setIsWorkspaceSwitching] = useState(false);
 
   // Get list of user's workspaces
-  const listWorkspaces = async (userId: string, token: string) => {
-    const res = await workspacesRequest("or_listWorkspaces", {}, token);
-    let spaces: Workspace[] = [];
-    if (res && res.data && res.data.result) {
-      spaces = [...res.data.result];
-    }
-
+  const listWorkspaces = async (userId: string, client: NexusClient | null) => {
+    const spaces = await client?.listWorkspaces();
     setWorkspaces([
       replaceTokens(defaultWorkspace, { user: userId }),
       ...spaces,
@@ -122,23 +118,31 @@ export const WorkspaceContextProvider = ({
   };
 
   // Create new workspace
-  const createWorkspace = async (userId: string, data: any, token: string) => {
-    const res = await workspacesRequest("or_createWorkspace", data, token);
-    if (res && res.data && res.data.result) {
-      listWorkspaces(userId, token);
-      if (res.data.result.key) {
+  const createWorkspace = async (
+    userId: string,
+    data: any,
+    client: NexusClient | null
+  ) => {
+    const res = await client?.createWorkspace(data);
+    if (res) {
+      listWorkspaces(userId, client);
+      if (res.key) {
         setIsSuccess(`Workspace ${data.title} created successfully.`);
-        return res.data.result.key;
+        return res.key;
       }
     }
     return "";
   };
 
   // Update workspace
-  const updateWorkspace = async (userId: string, data: any, token: string) => {
-    const res = await workspacesRequest("or_updateWorkspace", data, token);
-    if (res && res.data && res.data.result) {
-      listWorkspaces(userId, token);
+  const updateWorkspace = async (
+    userId: string,
+    data: any,
+    client: NexusClient | null
+  ) => {
+    const ws = await client?.updateWorkspace(data);
+    if (ws) {
+      listWorkspaces(userId, client);
       setIsSuccess(`Workspace ${data.title} updated successfully.`);
       return true;
     }
@@ -146,41 +150,53 @@ export const WorkspaceContextProvider = ({
   };
 
   // Leave current workspace
-  const leaveWorkspace = async (userId: string, data: any, token: string) => {
-    const res = await workspacesRequest(
-      "or_leaveWorkspace",
-      { key: data.workspaceKey || "" },
-      token
-    );
-    if (res && res.data && res.data.result && res.data.result.left) {
+  const leaveWorkspace = async (
+    userId: string,
+    data: any,
+    client: NexusClient | null
+  ) => {
+    const res = await client?.leaveWorkspace(data.workspaceKey);
+    if (res && res.left) {
       setIsSuccess(`You successfully left ${data.title} workspace.`);
-      listWorkspaces(userId, token);
+      listWorkspaces(userId, client);
       return true;
     }
     return false;
   };
 
   // Delete workspace
-  const deleteWorkspace = async (userId: string, data: any, token: string) => {
-    const res = await workspacesRequest(
-      "or_deleteWorkspace",
-      { key: data.workspaceKey || "" },
-      token
-    );
-    if (res && res.data && res.data.result) {
+  const deleteWorkspace = async (
+    userId: string,
+    data: any,
+    client: NexusClient | null
+  ) => {
+    const res = await client?.deleteWorkspace(data.workspaceKey);
+    if (res) {
       setIsSuccess(`Workspace ${data.title} deleted successfully.`);
-      listWorkspaces(userId, token);
+      listWorkspaces(userId, client);
       return true;
     }
     return false;
   };
 
+  const initClient = (access_token: string) => {
+    const nexus = new NexusClient();
+    nexus.authenticate(access_token);
+    setClient(nexus);
+  };
+
+  useEffect(() => {
+    if (user && token?.access_token) {
+      initClient(token?.access_token);
+    }
+  }, [user, token?.access_token]);
+
   // Get list of user's workspaces when user and access token is known
   useEffect(() => {
-    if (user && access_token) {
-      listWorkspaces(user, access_token);
+    if (user && client) {
+      listWorkspaces(user, client);
     }
-  }, [user, access_token]);
+  }, [user, client]);
 
   useEffect(() => {
     if (!workspace && workspaces && workspaces.length > 0) {

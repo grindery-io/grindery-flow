@@ -4,7 +4,7 @@ import Jdenticon from "react-jdenticon";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 import useAppContext from "../../hooks/useAppContext";
 import { Workspace } from "../../context/WorkspaceContext";
-import { ICONS, isLocalOrStaging } from "../../constants";
+import { ICONS } from "../../constants";
 import Foco from "react-foco";
 import { useNavigate } from "react-router-dom";
 
@@ -165,7 +165,7 @@ const getUserRole = (workspace: Workspace | null, user: string) => {
 };
 
 const WorkspaceSelector = (props: Props) => {
-  const { user, access_token } = useAppContext();
+  const { user, client } = useAppContext();
   const { workspace, workspaces, setWorkspace, listWorkspaces } =
     useWorkspaceContext();
   const [selectorOpened, setSelectorOpened] = useState(false);
@@ -198,10 +198,10 @@ const WorkspaceSelector = (props: Props) => {
   };
 
   useEffect(() => {
-    if (selectorOpened && user && access_token) {
-      listWorkspaces(user, access_token);
+    if (selectorOpened && user && client) {
+      listWorkspaces(user, client);
     }
-  }, [listWorkspaces, selectorOpened, user, access_token]);
+  }, [listWorkspaces, selectorOpened, user, client]);
 
   return workspace ? (
     <Foco

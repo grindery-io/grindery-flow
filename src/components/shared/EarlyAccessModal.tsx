@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { TextInput } from "grindery-ui";
 import styled from "styled-components";
-import { ICONS, WORKFLOW_ENGINE_URL } from "../../constants";
+import { ICONS } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
-import { jsonrpcObj } from "../../helpers/utils";
 import Button from "./Button";
 import CheckBox from "./CheckBox";
 

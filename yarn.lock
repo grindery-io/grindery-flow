@@ -5391,9 +5391,9 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, 
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
 
-"grindery-nexus-client@https://github.com/grindery-io/grindery-nexus-client.git#0.5.0":
-  version "0.5.0"
-  resolved "https://github.com/grindery-io/grindery-nexus-client.git#05bdc5d0ddc0bbbd9325f4acc41864a8d8d1297e"
+"grindery-nexus-client@https://github.com/grindery-io/grindery-nexus-client.git#0.6.0":
+  version "0.6.0"
+  resolved "https://github.com/grindery-io/grindery-nexus-client.git#40934dc6ad7b3c4b2642f1ad306bc5665b28f38e"
   dependencies:
     axios "^0.27.2"
 
