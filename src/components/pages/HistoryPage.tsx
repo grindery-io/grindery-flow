@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import _ from "lodash";
-import { TextInput, Tabs } from "grindery-ui";
+import { TextInput, Tabs, Tooltip } from "grindery-ui";
 import { useSearchParams } from "react-router-dom";
 import DataBox from "../shared/DataBox";
 import { ICONS, SCREEN } from "../../constants";
@@ -90,6 +90,16 @@ const ItemsWrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 10px;
+
+  @media (min-width: ${SCREEN.TABLET}) {
+    & > div > div > div:nth-child(1) {
+      margin-right: 60px !important;
+    }
+
+    & > div > div > div:nth-child(2) {
+      margin-left: 0 !important;
+    }
+  }
 `;
 
 const ItemTitleWrapper = styled.div`
@@ -99,7 +109,7 @@ const ItemTitleWrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 4px;
-  min-width: 70px;
+  min-width: 106px;
 
   @media (min-width: ${SCREEN.TABLET}) {
     gap: 8px;
@@ -131,6 +141,15 @@ const ItemAppsWrapper = styled.div`
   justify-content: center;
   flex-wrap: nowrap;
   gap: 4px;
+  margin-left: 0;
+`;
+
+const ItemWorkflowName = styled.div`
+  margin-left: 4px;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 160%;
+  color: #000000;
 `;
 
 const ItemAppWrapper = styled.div`
@@ -331,26 +350,27 @@ const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
     return null;
   }
 
+  const renderIcon = () => (
+    <ItemTitleWrapper>
+      <ItemIcon src={statusIconMapping[status]} alt={status} />
+      <TitleWrapper>
+        <Title>{status}</Title>
+      </TitleWrapper>
+    </ItemTitleWrapper>
+  );
+
   return (
     <DataBox
       key={executionId}
       size="small"
       LeftComponent={
-        <ItemTitleWrapper>
-          <ItemIcon
-            src={statusIconMapping[status]}
-            alt={status}
-            //title={status === "Error" ? errorText : undefined}
-          />
-          <TitleWrapper>
-            <Title>
-              {status}: {workflow?.title}
-            </Title>
-            {status === "Error" ? (
-              <ErrorTextWrapper>{errorText}</ErrorTextWrapper>
-            ) : null}
-          </TitleWrapper>
-        </ItemTitleWrapper>
+        <>
+          {status === "Error" ? (
+            <Tooltip title={errorText || undefined}>{renderIcon()}</Tooltip>
+          ) : (
+            renderIcon()
+          )}
+        </>
       }
       CenterComponent={
         <ItemAppsWrapper>
@@ -362,6 +382,7 @@ const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
                   <ItemAppIcon src={app.icon} alt={app.name} />
                 </ItemAppWrapper>
               ))}
+          <ItemWorkflowName>{workflow?.title}</ItemWorkflowName>
         </ItemAppsWrapper>
       }
       RightComponent={
