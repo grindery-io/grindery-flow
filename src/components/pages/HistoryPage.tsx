@@ -151,6 +151,18 @@ const ItemDate = styled.div`
   font-size: var(--text-size-history-date);
   line-height: 150%;
   color: #758796;
+  margin-left: 10px;
+`;
+
+const TitleWrapper = styled.div`
+  margin-right: 8px;
+`;
+
+const ErrorTextWrapper = styled.div`
+  font-weight: 400;
+  font-size: var(--text-size-transactions-subtitle);
+  line-height: 150%;
+  color: #898989;
 `;
 
 type Props = {};
@@ -328,9 +340,16 @@ const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
           <ItemIcon
             src={statusIconMapping[status]}
             alt={status}
-            title={status === "Error" ? errorText : undefined}
+            //title={status === "Error" ? errorText : undefined}
           />
-          <Title>{status}</Title>
+          <TitleWrapper>
+            <Title>
+              {status}: {workflow?.title}
+            </Title>
+            {status === "Error" ? (
+              <ErrorTextWrapper>{errorText}</ErrorTextWrapper>
+            ) : null}
+          </TitleWrapper>
         </ItemTitleWrapper>
       }
       CenterComponent={
