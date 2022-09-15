@@ -120,8 +120,8 @@ const ItemTitleWrapper = styled.div`
 
   @media (min-width: ${SCREEN.TABLET}) {
     gap: 8px;
-    min-width: 245px;
-    max-width: 245px;
+    min-width: 230px;
+    max-width: 230px;
   }
 `;
 
@@ -189,56 +189,6 @@ const ItemDate = styled.div`
 
 const TitleWrapper = styled.div`
   margin-right: 8px;
-`;
-
-const ErrorTextWrapper = styled.div`
-  display: flex;
-  overflow: hidden;
-  flex-direction: row;
-  align-items: flex-start;
-  justfiy-content: flex-start;
-  flex-wrap: nowrap;
-  font-weight: 400;
-  font-size: 10px;
-  line-height: 160%;
-  color: #706e6e;
-
-  & .error-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    &.all {
-      overflow: initial;
-      text-overflow: initial;
-      white-space: initial;
-    }
-  }
-`;
-
-const MoreButton = styled.button`
-  border: none;
-  background: none;
-  box-shadow: none;
-  font-weight: bold;
-  font-size: 10px;
-  line-height: 160%;
-  color: #706e6e;
-  position: relative;
-  padding: 0;
-  margin: 0 0 0 2px;
-  cursor: pointer;
-
-  &:after {
-    position: absolute;
-    content: "";
-    height: 1px;
-    display: block;
-    left: 0;
-    bottom: 2px;
-    width: 100%;
-    background-color: #706e6e;
-  }
 `;
 
 type Props = {};
@@ -377,8 +327,6 @@ const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
   const { workflows, connectors } = useAppContext();
   const { item } = props;
   const [showError, setShowError] = useState(false);
-  const [showMore, setShowMore] = useState(false);
-  const ref = useRef<HTMLSpanElement>(null);
   const executionId = item[0].executionId;
   const workflowKey = item[0].workflowKey;
   const executedAt =
@@ -410,53 +358,29 @@ const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
     errorText = errorText.replace("Error: ", "");
   }
 
-  useLayoutEffect(() => {
-    if (
-      ref.current &&
-      ref.current.offsetWidth &&
-      ref.current.offsetWidth >= 213
-    ) {
-      setShowMore(true);
-    }
-  }, []);
-
   if (item.length < 1) {
     return null;
   }
 
   return (
     <DataBox
+      WrapperProps={{
+        onMouseEnter: () => setShowError(true),
+        onMouseLeave: () => setShowError(false),
+      }}
       key={executionId}
       size="small"
       LeftComponent={
         <ItemTitleWrapper>
-          <ItemIcon src={statusIconMapping[status]} alt={status} />
+          {status === "Error" && errorText ? (
+            <Tooltip title={errorText} open={showError}>
+              <ItemIcon src={statusIconMapping[status]} alt={status} />
+            </Tooltip>
+          ) : (
+            <ItemIcon src={statusIconMapping[status]} alt={status} />
+          )}
           <TitleWrapper>
             <Title>{status}</Title>
-            {status === "Error" && errorText ? (
-              <ErrorTextWrapper>
-                <span
-                  className={`error-text ${showError ? "all" : ""}`}
-                  ref={ref}
-                >
-                  {errorText.length > 38 && !showError
-                    ? errorText.substring(0, 38) + "..."
-                    : errorText}
-                </span>
-                {!showError && errorText.length > 38 && (
-                  <>
-                    <MoreButton
-                      onClick={() => {
-                        setShowError(true);
-                      }}
-                    >
-                      more
-                    </MoreButton>
-                    .
-                  </>
-                )}
-              </ErrorTextWrapper>
-            ) : null}
           </TitleWrapper>
         </ItemTitleWrapper>
       }

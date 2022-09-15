@@ -5398,10 +5398,10 @@ grindery-nexus-client@^0.6.1:
   dependencies:
     axios "^0.27.2"
 
-grindery-ui@^0.8.2:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.8.2.tgz#532da73cb503e06014c7bab8b918b3beb8e19bcb"
-  integrity sha512-dK7AWzWeIFHekzmGWBwqH0qMnLEL2cf5xbxEf5U4LSSMGqQNur3BjKYFDWmx8fuH1/zJwHdVwumE5dw0j2buLg==
+grindery-ui@^0.8.3:
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.8.3.tgz#bea19cc7d312c480afb4967ef5c29f09a81be07f"
+  integrity sha512-M3awG6pNya2wVWolYM4vKQMR1P6Pb5B+yuhYGDwDrt8goffVGXgOPoN6kUsxvjvL9QISVolEXRhgQcJhpFVpMA==
   dependencies:
     "@emotion/react" "^11.9.0"
     "@emotion/styled" "^11.8.1"

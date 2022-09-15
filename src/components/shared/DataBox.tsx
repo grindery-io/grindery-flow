@@ -26,6 +26,7 @@ type Props = {
   BottomLeftComponent?: React.ReactNode;
   BottomRightComponent?: React.ReactNode;
   CenterComponent?: React.ReactNode;
+  WrapperProps?: any;
 };
 
 const DataBox = (props: Props) => {
@@ -38,6 +39,7 @@ const DataBox = (props: Props) => {
     BottomRightComponent,
     style = {},
     onClick,
+    WrapperProps,
   } = props;
 
   return (
@@ -52,6 +54,7 @@ const DataBox = (props: Props) => {
       onClick={(event: React.MouseEvent<HTMLElement>) => {
         onClick?.(event);
       }}
+      {...WrapperProps}
     >
       {size === "small" && (
         <Row>
