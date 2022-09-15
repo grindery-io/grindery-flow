@@ -404,7 +404,8 @@ const WorkflowInputField = ({
     <React.Fragment key={inputField.key}>
       {inputField && (
         <>
-          {inputField.type === "info" ? (
+          {inputField.type === "info" &&
+          (inputField.label || inputField.helpText) ? (
             <AlertWrapper>
               <Alert
                 color="warning"
@@ -412,8 +413,12 @@ const WorkflowInputField = ({
                 icon={<img src={ICONS.WARNING} width={20} height={20} alt="" />}
               >
                 <div style={{ textAlign: "left" }}>
-                  <WarningTitle>{inputField.label}</WarningTitle>
-                  <WarningText>{inputField.helpText}</WarningText>
+                  {inputField.label && (
+                    <WarningTitle>{inputField.label}</WarningTitle>
+                  )}
+                  {inputField.helpText && (
+                    <WarningText>{inputField.helpText}</WarningText>
+                  )}
                 </div>
               </Alert>
             </AlertWrapper>
