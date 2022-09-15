@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import {
-  TextInput,
+  Alert,
   IconButton,
   RichInput,
   Select,
@@ -48,6 +48,30 @@ const ReadOnlyWrapper = styled.div`
   & .MuiOutlinedInput-root {
     margin-top: 0px;
   }
+`;
+
+const AlertWrapper = styled.div`
+  margin-top: 20px;
+`;
+
+const WarningTitle = styled.h4`
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 150%;
+  text-align: left;
+  color: #0b0d17;
+  padding: 0;
+  margin: 0;
+`;
+
+const WarningText = styled.p`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  text-align: left;
+  color: #0b0d17;
+  padding: 0;
+  margin: 0;
 `;
 
 type Props = {
@@ -378,56 +402,80 @@ const WorkflowInputField = ({
 
   return (
     <React.Fragment key={inputField.key}>
-      {!!inputField && (
+      {inputField && (
         <>
-          <InputWrapper>
-            {renderField(inputField, inputField.list ? 0 : undefined)}
-            {inputField.list && (
-              <IconButtonWrapper>
-                <IconButton
-                  icon={ICONS.PLUS}
-                  onClick={() => {
-                    setValuesNum((currentValuesNum) => [
-                      ...currentValuesNum,
-                      (currentValuesNum[currentValuesNum.length - 1] || 0) + 1,
-                    ]);
-                  }}
-                />
-              </IconButtonWrapper>
-            )}
-          </InputWrapper>
-          {valuesNum.length > 0 &&
-            inputField.list &&
-            valuesNum.map((idx, i) => (
-              <InputWrapper key={idx.toString()} style={{ marginTop: "0px" }}>
-                {renderField(
-                  { ...inputField, key: inputField.key + "_" + (i + 1) },
-                  inputField.list ? i + 1 : undefined
+          {inputField.type === "info" ? (
+            <AlertWrapper>
+              <Alert
+                color="warning"
+                elevation={0}
+                icon={<img src={ICONS.WARNING} width={20} height={20} alt="" />}
+              >
+                <div style={{ textAlign: "left" }}>
+                  <WarningTitle>{inputField.label}</WarningTitle>
+                  <WarningText>{inputField.helpText}</WarningText>
+                </div>
+              </Alert>
+            </AlertWrapper>
+          ) : (
+            <>
+              <InputWrapper>
+                {renderField(inputField, inputField.list ? 0 : undefined)}
+                {inputField.list && (
+                  <IconButtonWrapper>
+                    <IconButton
+                      icon={ICONS.PLUS}
+                      onClick={() => {
+                        setValuesNum((currentValuesNum) => [
+                          ...currentValuesNum,
+                          (currentValuesNum[currentValuesNum.length - 1] || 0) +
+                            1,
+                        ]);
+                      }}
+                    />
+                  </IconButtonWrapper>
                 )}
-                <IconButtonWrapper>
-                  <IconButton
-                    icon={ICONS.TRASH}
-                    onClick={() => {
-                      if (Array.isArray(workflowValue)) {
-                        const curVal = [...workflowValue];
-                        curVal.splice(i + 1, 1);
-                        const key =
-                          type === "trigger"
-                            ? "trigger.input." + inputField.key
-                            : "actions[" + index + "].input." + inputField.key;
-                        updateWorkflow({
-                          [key]: curVal,
-                        });
-                      }
-                      setValChanged(true);
-                      setValuesNum((currentValuesNum) => [
-                        ...currentValuesNum.filter((i2) => i2 !== idx),
-                      ]);
-                    }}
-                  />
-                </IconButtonWrapper>
               </InputWrapper>
-            ))}
+              {valuesNum.length > 0 &&
+                inputField.list &&
+                valuesNum.map((idx, i) => (
+                  <InputWrapper
+                    key={idx.toString()}
+                    style={{ marginTop: "0px" }}
+                  >
+                    {renderField(
+                      { ...inputField, key: inputField.key + "_" + (i + 1) },
+                      inputField.list ? i + 1 : undefined
+                    )}
+                    <IconButtonWrapper>
+                      <IconButton
+                        icon={ICONS.TRASH}
+                        onClick={() => {
+                          if (Array.isArray(workflowValue)) {
+                            const curVal = [...workflowValue];
+                            curVal.splice(i + 1, 1);
+                            const key =
+                              type === "trigger"
+                                ? "trigger.input." + inputField.key
+                                : "actions[" +
+                                  index +
+                                  "].input." +
+                                  inputField.key;
+                            updateWorkflow({
+                              [key]: curVal,
+                            });
+                          }
+                          setValChanged(true);
+                          setValuesNum((currentValuesNum) => [
+                            ...currentValuesNum.filter((i2) => i2 !== idx),
+                          ]);
+                        }}
+                      />
+                    </IconButtonWrapper>
+                  </InputWrapper>
+                ))}
+            </>
+          )}
         </>
       )}
     </React.Fragment>
