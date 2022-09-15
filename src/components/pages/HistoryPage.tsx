@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import moment from "moment";
 import _ from "lodash";
@@ -93,11 +99,12 @@ const ItemsWrapper = styled.div`
 
   @media (min-width: ${SCREEN.TABLET}) {
     & > div > div > div:nth-child(1) {
-      margin-right: 60px !important;
+      margin-right: 20px !important;
     }
 
     & > div > div > div:nth-child(2) {
       margin-left: 0 !important;
+      overflow: hidden;
     }
   }
 `;
@@ -109,10 +116,12 @@ const ItemTitleWrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 4px;
-  min-width: 106px;
+  min-width: 70px;
 
   @media (min-width: ${SCREEN.TABLET}) {
     gap: 8px;
+    min-width: 245px;
+    max-width: 245px;
   }
 `;
 
@@ -150,6 +159,10 @@ const ItemWorkflowName = styled.div`
   font-size: 12px;
   line-height: 160%;
   color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 64px);
 `;
 
 const ItemAppWrapper = styled.div`
@@ -171,6 +184,7 @@ const ItemDate = styled.div`
   line-height: 150%;
   color: #758796;
   margin-left: 10px;
+  min-width: 110px;
 `;
 
 const TitleWrapper = styled.div`
@@ -178,10 +192,53 @@ const TitleWrapper = styled.div`
 `;
 
 const ErrorTextWrapper = styled.div`
+  display: flex;
+  overflow: hidden;
+  flex-direction: row;
+  align-items: flex-start;
+  justfiy-content: flex-start;
+  flex-wrap: nowrap;
   font-weight: 400;
-  font-size: var(--text-size-transactions-subtitle);
-  line-height: 150%;
-  color: #898989;
+  font-size: 10px;
+  line-height: 160%;
+  color: #706e6e;
+
+  & .error-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &.all {
+      overflow: initial;
+      text-overflow: initial;
+      white-space: initial;
+    }
+  }
+`;
+
+const MoreButton = styled.button`
+  border: none;
+  background: none;
+  box-shadow: none;
+  font-weight: bold;
+  font-size: 10px;
+  line-height: 160%;
+  color: #706e6e;
+  position: relative;
+  padding: 0;
+  margin: 0 0 0 2px;
+  cursor: pointer;
+
+  &:after {
+    position: absolute;
+    content: "";
+    height: 1px;
+    display: block;
+    left: 0;
+    bottom: 2px;
+    width: 100%;
+    background-color: #706e6e;
+  }
 `;
 
 type Props = {};
@@ -319,6 +376,9 @@ type WorkflowExecutionRowProps = {
 const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
   const { workflows, connectors } = useAppContext();
   const { item } = props;
+  const [showError, setShowError] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
   const executionId = item[0].executionId;
   const workflowKey = item[0].workflowKey;
   const executedAt =
@@ -341,36 +401,64 @@ const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
     icon: connector?.icon || "",
   }));
 
-  const errorText = item
+  let errorText = item
     .filter((log: WorkflowExecutionLog) => log.error)
     .map((log: WorkflowExecutionLog) => log.error)
     .join("; ");
 
+  if (errorText.startsWith("Error: ")) {
+    errorText = errorText.replace("Error: ", "");
+  }
+
+  useLayoutEffect(() => {
+    if (
+      ref.current &&
+      ref.current.offsetWidth &&
+      ref.current.offsetWidth >= 213
+    ) {
+      setShowMore(true);
+    }
+  }, []);
+
   if (item.length < 1) {
     return null;
   }
-
-  const renderIcon = () => (
-    <ItemTitleWrapper>
-      <ItemIcon src={statusIconMapping[status]} alt={status} />
-      <TitleWrapper>
-        <Title>{status}</Title>
-      </TitleWrapper>
-    </ItemTitleWrapper>
-  );
 
   return (
     <DataBox
       key={executionId}
       size="small"
       LeftComponent={
-        <>
-          {status === "Error" ? (
-            <Tooltip title={errorText || undefined}>{renderIcon()}</Tooltip>
-          ) : (
-            renderIcon()
-          )}
-        </>
+        <ItemTitleWrapper>
+          <ItemIcon src={statusIconMapping[status]} alt={status} />
+          <TitleWrapper>
+            <Title>{status}</Title>
+            {status === "Error" && errorText ? (
+              <ErrorTextWrapper>
+                <span
+                  className={`error-text ${showError ? "all" : ""}`}
+                  ref={ref}
+                >
+                  {errorText.length > 38 && !showError
+                    ? errorText.substring(0, 38) + "..."
+                    : errorText}
+                </span>
+                {!showError && errorText.length > 38 && (
+                  <>
+                    <MoreButton
+                      onClick={() => {
+                        setShowError(true);
+                      }}
+                    >
+                      more
+                    </MoreButton>
+                    .
+                  </>
+                )}
+              </ErrorTextWrapper>
+            ) : null}
+          </TitleWrapper>
+        </ItemTitleWrapper>
       }
       CenterComponent={
         <ItemAppsWrapper>
@@ -382,7 +470,9 @@ const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
                   <ItemAppIcon src={app.icon} alt={app.name} />
                 </ItemAppWrapper>
               ))}
-          <ItemWorkflowName>{workflow?.title}</ItemWorkflowName>
+          <ItemWorkflowName title={workflow?.title}>
+            {workflow?.title}
+          </ItemWorkflowName>
         </ItemAppsWrapper>
       }
       RightComponent={
