@@ -63,6 +63,7 @@ export const ICONS: { [key: string]: string } = {
   LEAVE: "/images/icons/leave.svg",
   DELETE_WHITE: "/images/icons/delete-white.svg",
   WARNING: "/images/icons/warning.svg",
+  FLOW_LOGO: "/images/icons/flow-logo.png",
   // Socials
   SOCIAL_DISCORD: "/images/icons/social-discord.png",
   SOCIAL_TG: "/images/icons/social-tg.png",
