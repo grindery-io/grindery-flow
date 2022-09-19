@@ -21,8 +21,6 @@ type Props = {};
 const ConnectButton = (props: Props) => {
   const { connect, user, connectFlow, flowUser } = useGrinderyNexus();
 
-  console.log("flowUser", flowUser);
-
   return user ? null : (
     <>
       {"ethereum" in window ? (

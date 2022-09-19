@@ -195,7 +195,6 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       key,
       isLocalOrStaging ? "staging" : undefined
     );
-    console.log("connector", connector);
     if (connector) {
       setConnectors(
         _.orderBy(

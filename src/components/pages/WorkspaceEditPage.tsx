@@ -28,13 +28,13 @@ const STRINGS = {
       LABEL: "Admins",
       PLACEHOLDER: "0x0000000000000000000000000000",
       TOOLTIP:
-        "Admins can create, edit, delete, enable, disable workflows associated with this workspace; Edit, delete the workspace itself; Invite new members and admins to the workspace.\n\nInvite admins by EVM wallet address. Enter each address on the new line.",
+        "Admins can create, edit, delete, enable, disable workflows associated with this workspace; Edit, delete the workspace itself; Invite new members and admins to the workspace.\n\nInvite admins by blockchain wallet address. Enter each address on the new line.",
     },
     MEMBERS: {
       LABEL: "Members",
       PLACEHOLDER: "0x0000000000000000000000000000",
       TOOLTIP:
-        "Members can create, edit, delete, enable, disable workflows associated with this workspace.\n\nInvite members by EVM wallet address. Enter each address on the new line.",
+        "Members can create, edit, delete, enable, disable workflows associated with this workspace.\n\nInvite members by blockchain wallet address. Enter each address on the new line.",
     },
   },
   SECTION_TITLE_2: "Moderation",
@@ -190,16 +190,14 @@ const WorkspaceEditPage = (props: Props) => {
   const [key, setKey] = useState(id);
   const [about, setAbout] = useState(currentWorkspace?.about || "");
   const [admins, setAdmins] = useState(
-    (currentWorkspace?.admins?.join("\n") || "").replace(
-      new RegExp("eip155:1:", "g"),
-      ""
-    ) || ""
+    (currentWorkspace?.admins?.join("\n") || "")
+      .replace(new RegExp("eip155:1:", "g"), "")
+      .replace(new RegExp("flow:mainnet:", "g"), "") || ""
   );
   const [users, setUsers] = useState(
-    (currentWorkspace?.users?.join("\n") || "").replace(
-      new RegExp("eip155:1:", "g"),
-      ""
-    ) || ""
+    (currentWorkspace?.users?.join("\n") || "")
+      .replace(new RegExp("eip155:1:", "g"), "")
+      .replace(new RegExp("flow:mainnet:", "g"), "") || ""
   );
   const [formError, setFormError] = useState("");
   const [errors, setErrors] = useState<any>(false);
@@ -207,8 +205,8 @@ const WorkspaceEditPage = (props: Props) => {
 
   const validationSchema = getValidationScheme([
     { key: "title", required: true, type: "string" },
-    { key: "admins", required: false, type: "evmAddress", list: true },
-    { key: "users", required: false, type: "evmAddress", list: true },
+    { key: "admins", required: false, type: "address", list: true },
+    { key: "users", required: false, type: "address", list: true },
   ]);
 
   const check = validator.compile(validationSchema);
@@ -235,11 +233,19 @@ const WorkspaceEditPage = (props: Props) => {
           admins: admins
             .split("\n")
             .filter((address: string) => address)
-            .map((address: string) => `eip155:1:${address}`),
+            .map((address: string) =>
+              !/^0x[a-zA-Z0-9]{16}$/g.test(address)
+                ? `eip155:1:${address}`
+                : `flow:mainnet:${address}`
+            ),
           users: users
             .split("\n")
             .filter((address: string) => address)
-            .map((address: string) => `eip155:1:${address}`),
+            .map((address: string) =>
+              !/^0x[a-zA-Z0-9]{16}$/g.test(address)
+                ? `eip155:1:${address}`
+                : `flow:mainnet:${address}`
+            ),
         },
         client
       ).catch((error) => {
@@ -294,7 +300,7 @@ const WorkspaceEditPage = (props: Props) => {
         { workspaceKey: currentWorkspace.key, title },
         client
       ).catch((error) => {
-        console.log("error", error.toString());
+        console.error("error", error.toString());
 
         if (error) {
           setFormError(error.toString());
@@ -359,16 +365,14 @@ const WorkspaceEditPage = (props: Props) => {
       setTitle(newCurrentWorkspace?.title || "");
       setAbout(newCurrentWorkspace?.about || "");
       setAdmins(
-        (newCurrentWorkspace?.admins?.join("\n") || "").replace(
-          new RegExp("eip155:1:", "g"),
-          ""
-        ) || ""
+        (newCurrentWorkspace?.admins?.join("\n") || "")
+          .replace(new RegExp("eip155:1:", "g"), "")
+          .replace(new RegExp("flow:mainnet:", "g"), "") || ""
       );
       setUsers(
-        (newCurrentWorkspace?.users?.join("\n") || "").replace(
-          new RegExp("eip155:1:", "g"),
-          ""
-        ) || ""
+        (newCurrentWorkspace?.users?.join("\n") || "")
+          .replace(new RegExp("eip155:1:", "g"), "")
+          .replace(new RegExp("flow:mainnet:", "g"), "") || ""
       );
       setFormError("");
       setErrors(false);

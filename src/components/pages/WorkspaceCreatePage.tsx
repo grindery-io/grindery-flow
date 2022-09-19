@@ -38,13 +38,13 @@ const STRINGS = {
       LABEL: "Admins",
       PLACEHOLDER: "0x0000000000000000000000000000",
       TOOLTIP:
-        "Admins can create, edit, delete, enable, disable workflows associated with this workspace; Edit, delete the workspace itself; Invite new members and admins to the workspace.\n\nInvite admins by EVM wallet address. Enter each address on the new line.",
+        "Admins can create, edit, delete, enable, disable workflows associated with this workspace; Edit, delete the workspace itself; Invite new members and admins to the workspace.\n\nInvite admins by blockchain wallet address. Enter each address on the new line.",
     },
     MEMBERS: {
       LABEL: "Members",
       PLACEHOLDER: "0x0000000000000000000000000000",
       TOOLTIP:
-        "Members can create, edit, delete, enable, disable workflows associated with this workspace.\n\nInvite members by EVM wallet address. Enter each address on the new line.",
+        "Members can create, edit, delete, enable, disable workflows associated with this workspace.\n\nInvite members by blockchain wallet address. Enter each address on the new line.",
     },
   },
   SECTION_TITLE_2: "Admin",
@@ -168,7 +168,9 @@ const WorkspaceCreatePage = (props: Props) => {
   const { setWorkspace, createWorkspace } = useWorkspaceContext();
   const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
-  const [admins, setAdmins] = useState(user.replace("eip155:1:", ""));
+  const [admins, setAdmins] = useState(
+    user.replace("eip155:1:", "").replace(new RegExp("flow:mainnet:", "g"), "")
+  );
   const [users, setUsers] = useState("");
   const [formError, setFormError] = useState("");
   const [errors, setErrors] = useState<any>(false);
@@ -177,8 +179,8 @@ const WorkspaceCreatePage = (props: Props) => {
 
   const validationSchema = getValidationScheme([
     { key: "title", required: true, type: "string" },
-    { key: "admins", required: false, type: "evmAddress", list: true },
-    { key: "users", required: false, type: "evmAddress", list: true },
+    { key: "admins", required: false, type: "address", list: true },
+    { key: "users", required: false, type: "address", list: true },
   ]);
 
   const check = validator.compile(validationSchema);
@@ -200,11 +202,19 @@ const WorkspaceCreatePage = (props: Props) => {
         admins: admins
           .split("\n")
           .filter((address: string) => address)
-          .map((address: string) => `eip155:1:${address}`),
+          .map((address: string) =>
+            !/^0x[a-zA-Z0-9]{16}$/g.test(address)
+              ? `eip155:1:${address}`
+              : `flow:mainnet:${address}`
+          ),
         users: users
           .split("\n")
           .filter((address: string) => address)
-          .map((address: string) => `eip155:1:${address}`),
+          .map((address: string) =>
+            !/^0x[a-zA-Z0-9]{16}$/g.test(address)
+              ? `eip155:1:${address}`
+              : `flow:mainnet:${address}`
+          ),
       };
       const key = await createWorkspace(user, newWorkspace, client).catch(
         (error) => {
