@@ -63,6 +63,7 @@ const SignInPage = (props: Props) => {
   let navigate = useNavigate();
   const redirect_uri = searchParams.get("redirect_uri");
   const response_type = searchParams.get("response_type");
+  const state = searchParams.get("state");
 
   useEffect(() => {
     if (user && !code) {
@@ -86,7 +87,7 @@ const SignInPage = (props: Props) => {
 
           window.location.href = `${redirect_uri}${
             /\?/.test(redirect_uri) ? "&" : "?"
-          }code=${code}`;
+          }code=${code}${state ? "&state=" + state : ""}`;
         } else {
           navigate("/dashboard");
         }
