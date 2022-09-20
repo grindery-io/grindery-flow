@@ -58,11 +58,18 @@ const Disclaimer = styled.div`
 type Props = {};
 
 const SignInPage = (props: Props) => {
-  const { user, code } = useGrinderyNexus();
+  const { user, code, disconnect } = useGrinderyNexus();
   let [searchParams] = useSearchParams();
   let navigate = useNavigate();
   const redirect_uri = searchParams.get("redirect_uri");
   const response_type = searchParams.get("response_type");
+  const state = searchParams.get("state");
+
+  useEffect(() => {
+    if (user && !code) {
+      disconnect();
+    }
+  }, [user, code]);
 
   useEffect(() => {
     if (user && code) {
@@ -76,9 +83,11 @@ const SignInPage = (props: Props) => {
             redirect_uri
           )
         ) {
+          console.log("redirect to", redirect_uri);
+
           window.location.href = `${redirect_uri}${
             /\?/.test(redirect_uri) ? "&" : "?"
-          }code=${code}`;
+          }code=${code}${state ? "&state=" + state : ""}`;
         } else {
           navigate("/dashboard");
         }
@@ -105,6 +114,8 @@ const SignInPage = (props: Props) => {
               to authenticate users.
             </Disclaimer>
           </>
+        ) : user && !code ? (
+          <Desc>Loading...</Desc>
         ) : (
           <Desc>Redirecting...</Desc>
         )}
