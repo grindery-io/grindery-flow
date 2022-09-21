@@ -68,6 +68,10 @@ export const ICONS: { [key: string]: string } = {
   SOCIAL_DISCORD: "/images/icons/social-discord.png",
   SOCIAL_TG: "/images/icons/social-tg.png",
   SOCIAL_TWITTER: "/images/icons/social-twitter.png",
+  // Workflow builder
+  TRIGGER_ICON: "/images/icons/trigger-icon.svg",
+  ACTION_ICON: "/images/icons/action-icon.svg",
+  ADD_STEP: "/images/icons/add-step.svg",
 };
 
 export const RIGHTBAR_TABS: {

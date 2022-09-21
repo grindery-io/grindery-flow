@@ -1,7 +1,7 @@
 import React, { useState, createContext, useEffect } from "react";
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
-import { Workflow } from "../types/Workflow";
+import { Operation, Workflow } from "../types/Workflow";
 import {
   Action,
   Connector,
