@@ -72,6 +72,10 @@ export const ICONS: { [key: string]: string } = {
   TRIGGER_ICON: "/images/icons/trigger-icon.svg",
   ACTION_ICON: "/images/icons/action-icon.svg",
   ADD_STEP: "/images/icons/add-step.svg",
+  ANGLE_DOWN: "/images/icons/angle-down.svg",
+  ANGLE_UP: "/images/icons/angle-up.svg",
+  EXCLAMATION: "/images/icons/exclamation.svg",
+  CHECK_CIRCLE: "/images/icons/check-circle.svg"
 };
 
 export const RIGHTBAR_TABS: {

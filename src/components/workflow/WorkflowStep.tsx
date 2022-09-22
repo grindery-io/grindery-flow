@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import StepHeader from "./StepHeader";
 import StepsDivider from "./StepsDivider";
 import AddActionButton from "./AddActionButton";
 import StepApp from "./StepApp";
+import StepOperation from "./StepOperation";
 
 const Container = styled.div`
   border: 1px solid #dcdcdc;
@@ -21,6 +22,7 @@ type Props = {
 const WorkflowStep = (props: Props) => {
   const { type, step } = props;
   const { activeStep } = useWorkflowContext();
+  const [activeRow, setActiveRow] = useState(0);
 
   return (
     <>
@@ -37,6 +39,12 @@ const WorkflowStep = (props: Props) => {
         {activeStep === step && (
           <>
             <StepApp type={type} step={step} />
+            <StepOperation
+              type={type}
+              step={step}
+              activeRow={activeRow}
+              setActiveRow={setActiveRow}
+            />
           </>
         )}
       </Container>

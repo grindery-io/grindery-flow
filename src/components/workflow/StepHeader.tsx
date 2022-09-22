@@ -97,8 +97,14 @@ type Props = {
 const StepHeader = (props: Props) => {
   const { type, step } = props;
   const { connectors } = useAppContext();
-  const { activeStep, setActiveStep, workflow, updateWorkflow } =
-    useWorkflowContext();
+  const {
+    activeStep,
+    setActiveStep,
+    workflow,
+    updateWorkflow,
+    triggers,
+    actions,
+  } = useWorkflowContext();
 
   const index = step - 2;
 
@@ -107,9 +113,23 @@ const StepHeader = (props: Props) => {
       ? workflow.trigger.connector
       : workflow.actions[index]?.connector;
 
+  const selectedOperationKey =
+    type === "trigger"
+      ? workflow.trigger.operation
+      : workflow.actions[index]?.operation;
+
   const selectedApp = selectedAppKey
     ? connectors.find((connector) => connector.key === selectedAppKey)
     : null;
+
+  const selectedOperation =
+    type === "trigger"
+      ? selectedApp?.triggers?.find(
+          (operation) => operation.key === selectedOperationKey
+        )
+      : selectedApp?.actions?.find(
+          (operation) => operation.key === selectedOperationKey
+        );
 
   const handleHeaderClick = () => {
     if (activeStep !== step) {
@@ -161,8 +181,27 @@ const StepHeader = (props: Props) => {
             : type === "trigger"
             ? "When this occurs..."
             : "Then do this..."}
+          {selectedApp && selectedOperation && <> - {selectedOperation.name}</>}
         </Description>
       </div>
+      {activeStep !== step && selectedApp && (
+        <>
+          <img
+            style={{ marginLeft: "auto", display: "block" }}
+            src={
+              (type === "trigger" &&
+                selectedOperation &&
+                triggers.triggerIsConfigured) ||
+              (type === "action" &&
+                selectedOperation &&
+                actions.actionIsConfigured(index))
+                ? ICONS.CHECK_CIRCLE
+                : ICONS.EXCLAMATION
+            }
+            alt=""
+          />
+        </>
+      )}
       {selectedApp && activeStep === step && (
         <ChangeButton onClick={handleChangeClick}>Change</ChangeButton>
       )}
