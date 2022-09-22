@@ -98,7 +98,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const { width } = useWindowSize();
 
   // current workspace
-  const { workspace } = useWorkspaceContext();
+  const { workspace, workspaceToken } = useWorkspaceContext();
 
   // Dev mode state
   const cachedDevMode = localStorage.getItem("gr_dev_mode");
@@ -399,6 +399,16 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   useEffect(() => {
     getApps(workflows, connectors);
   }, [workflows, connectors]);
+
+  useEffect(() => {
+    if (workspaceToken) {
+      initClient(workspaceToken);
+    } else {
+      if (token?.access_token) {
+        initClient(token?.access_token);
+      }
+    }
+  }, [workspaceToken, token]);
 
   return (
     <AppContext.Provider

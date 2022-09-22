@@ -1,4 +1,5 @@
 import NexusClient from "grindery-nexus-client";
+import { find } from "lodash";
 import React, { useState, createContext, useEffect } from "react";
 import { useGrinderyNexus } from "use-grindery-nexus";
 import { defaultFunc, replaceTokens } from "../helpers/utils";
@@ -10,6 +11,7 @@ export type Workspace = {
   creator: string;
   admins?: string[];
   users?: string[];
+  token?: string;
 };
 
 type ContextProps = {
@@ -42,6 +44,7 @@ type ContextProps = {
   setIsSuccess: (value: string | null) => void;
   isWorkspaceSwitching: boolean;
   listWorkspaces: (userId: string, client: NexusClient | null) => void;
+  workspaceToken: string;
 };
 
 type WorkspaceContextProps = {
@@ -79,6 +82,7 @@ const defaultContext = {
   setIsSuccess: defaultFunc,
   isWorkspaceSwitching: false,
   listWorkspaces: defaultFunc,
+  workspaceToken: "",
 };
 
 export const WorkspaceContext = createContext<ContextProps>(defaultContext);
@@ -106,6 +110,9 @@ export const WorkspaceContextProvider = ({
 
   // Is workspace switching
   const [isWorkspaceSwitching, setIsWorkspaceSwitching] = useState(false);
+
+  // Workspace token
+  const [workspaceToken, setWorkspaceToken] = useState("");
 
   // Get list of user's workspaces
   const listWorkspaces = async (userId: string, client: NexusClient | null) => {
@@ -225,6 +232,18 @@ export const WorkspaceContextProvider = ({
     }
   }, [workspace]);
 
+  useEffect(() => {
+    if (workspace) {
+      if (workspace !== "personal") {
+        setWorkspaceToken(
+          workspaces.find((ws: Workspace) => ws.key === workspace)?.token || ""
+        );
+      } else {
+        setWorkspaceToken("");
+      }
+    }
+  }, [workspace, workspaces]);
+
   return (
     <WorkspaceContext.Provider
       value={{
@@ -241,6 +260,7 @@ export const WorkspaceContextProvider = ({
         setIsSuccess,
         isWorkspaceSwitching,
         listWorkspaces,
+        workspaceToken,
       }}
     >
       {children}
