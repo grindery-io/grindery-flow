@@ -9660,10 +9660,10 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
-use-grindery-nexus@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/use-grindery-nexus/-/use-grindery-nexus-0.4.0.tgz#32de44f1ceb929f5c709e2d50678ab2a25e5a444"
-  integrity sha512-8CU4bdlei7smEXqZNW+Gh724jllgXQaKlwbKLfD81PiCqpCyTBuNlCdEEyz8syN707E7S2myNTo5LCFbw69y3w==
+use-grindery-nexus@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/use-grindery-nexus/-/use-grindery-nexus-0.4.1.tgz#eeece5bfac08219a41e01d2a2f625b247dd1f8b8"
+  integrity sha512-wrOLLFGD0n7uVrfKt9rRwDP1fT2vyefas1uGs3ubpZDgsQ3C7XBmJiie9z//qO6VJTEpKR5mDFBXckBJ0jV0Gw==
   dependencies:
     "@onflow/fcl" "^1.2.1"
     bignumber.js "^9.0.2"
