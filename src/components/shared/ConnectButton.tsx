@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { ICONS } from "../../constants";
 import Button from "./Button";
 import { useGrinderyNexus } from "use-grindery-nexus";
@@ -9,28 +10,48 @@ declare global {
   }
 }
 
+const FlowConnectButtonWrapper = styled.div`
+  .MuiButton-root {
+    margin-top: 0 !important;
+  }
+`;
+
 type Props = {};
 
 const ConnectButton = (props: Props) => {
-  const { connect, user } = useGrinderyNexus();
+  const { connect, user, connectFlow, flowUser } = useGrinderyNexus();
 
-  return user ? null : "ethereum" in window ? (
-    <Button
-      onClick={() => {
-        connect();
-      }}
-      icon={ICONS.METAMASK_LOGO}
-      value="Connect"
-      hideIconBorder
-    />
-  ) : (
-    <p style={{ textAlign: "center" }}>
-      An injected Ethereum provider such as{" "}
-      <a href="https://metamask.io/" target="_blank" rel="noreferrer">
-        MetaMask
-      </a>{" "}
-      is needed to authenticate.
-    </p>
+  return user ? null : (
+    <>
+      {"ethereum" in window ? (
+        <Button
+          onClick={() => {
+            connect();
+          }}
+          icon={ICONS.METAMASK_LOGO}
+          value="Connect MetaMask"
+          hideIconBorder
+        />
+      ) : (
+        <p style={{ textAlign: "center" }}>
+          An injected Ethereum provider such as{" "}
+          <a href="https://metamask.io/" target="_blank" rel="noreferrer">
+            MetaMask
+          </a>{" "}
+          is needed to authenticate.
+        </p>
+      )}
+      <FlowConnectButtonWrapper>
+        <Button
+          onClick={() => {
+            connectFlow();
+          }}
+          icon={ICONS.FLOW_LOGO}
+          value="Connect Flow Wallet"
+          hideIconBorder
+        />
+      </FlowConnectButtonWrapper>
+    </>
   );
 };
 
