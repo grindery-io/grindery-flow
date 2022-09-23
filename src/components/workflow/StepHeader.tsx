@@ -92,10 +92,12 @@ const ChangeButton = styled.button`
 type Props = {
   type: "trigger" | "action";
   step: number;
+  activeRow: number;
+  setActiveRow: (row: number) => void;
 };
 
 const StepHeader = (props: Props) => {
-  const { type, step } = props;
+  const { type, step, activeRow, setActiveRow } = props;
   const { connectors } = useAppContext();
   const {
     activeStep,
@@ -153,6 +155,7 @@ const StepHeader = (props: Props) => {
         ["actions[" + index + "].credentials"]: undefined,
       });
     }
+    setActiveRow(0);
   };
 
   return (

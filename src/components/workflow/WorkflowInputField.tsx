@@ -393,12 +393,12 @@ const WorkflowInputField = ({
     inputField.updateFieldDefinition,
   ]);
 
-  /*useEffect(() => {
-    if (inputField && inputField.default) {
+  useEffect(() => {
+    if (inputField && inputField.default && !workflowInputValue) {
       handleFieldChange(inputField.default);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputField]);*/
+  }, []);
 
   return (
     <React.Fragment key={inputField.key}>

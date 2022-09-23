@@ -16,12 +16,20 @@ const Header = styled.div`
     justify-content: flex-start;
     flex-wrap: nowrap;
     gap: 16px;
+    cursor: pointer;
 
     & span {
         font-weight: 700;
         font-size: 16px;
         line-height: 120%;
         color: #0B0D17;
+    }
+
+    &.active {
+      cursor: default;
+    }
+    &:not(.active):hover {
+      background: #F4F5F7;
     }
 `;
 
@@ -147,6 +155,7 @@ const StepOperation = (props: Props) => {
       <Header
         style={{ cursor: activeRow <= 0 ? "default" : "pointer" }}
         onClick={handleHeaderClick}
+        className={activeRow <= 0 ? "active" : ""}
       >
         {activeRow <= 0 ? (
           <img src={ICONS.ANGLE_UP} alt="" />
