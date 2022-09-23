@@ -2,15 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { ICONS } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
-import { Operation } from "../../types/Workflow";
 import StepsDivider from "./StepsDivider";
-
-const defaultAction: Operation = {
-  type: "action",
-  connector: "",
-  operation: "",
-  input: {},
-};
 
 const Button = styled.button`
   background: none;

@@ -8,6 +8,7 @@ import StepApp from "./StepApp";
 import StepOperation from "./StepOperation";
 import StepAuthentication from "./StepAuthentication";
 import StepInput from "./StepInput";
+import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
 const Container = styled.div`
   border: 1px solid #dcdcdc;
@@ -16,42 +17,13 @@ const Container = styled.div`
 `;
 
 type Props = {
-  type: "trigger" | "action";
-  index: number;
-  step: number;
+  outputFields: any[];
 };
 
-const WorkflowStep = (props: Props) => {
-  const { type, step } = props;
-  const { activeStep, connectors, workflow, triggers, actions } =
-    useWorkflowContext();
-  const [activeRow, setActiveRow] = useState(0);
-  const [username, setUsername] = useState("");
-
-  const index = step - 2;
-
-  const currentConnector =
-    type === "trigger"
-      ? connectors.find(
-          (connector) => connector.key === workflow.trigger.connector
-        )
-      : connectors.find(
-          (connector) => connector.key === workflow.actions[index].connector
-        );
-
-  const currentOperation =
-    type === "trigger"
-      ? currentConnector?.triggers?.find(
-          (trigger) => trigger.key === workflow.trigger.operation
-        )
-      : currentConnector?.actions?.find(
-          (action) => action.key === workflow.actions[index].operation
-        );
-
-  const isAuthenticated =
-    type === "trigger"
-      ? triggers.triggerIsAuthenticated
-      : actions.actionIsAuthenticated(index);
+const WorkflowStep = ({ outputFields }: Props) => {
+  const { type, step, operation, operationIsAuthenticated } =
+    useWorkflowStepContext();
+  const { activeStep } = useWorkflowContext();
 
   return (
     <>
@@ -64,39 +36,15 @@ const WorkflowStep = (props: Props) => {
               : "none",
         }}
       >
-        <StepHeader
-          type={type}
-          step={step}
-          activeRow={activeRow}
-          setActiveRow={setActiveRow}
-        />
+        <StepHeader />
+        <StepApp />
         {activeStep === step && (
           <>
-            <StepApp type={type} step={step} />
-            <StepOperation
-              type={type}
-              step={step}
-              activeRow={activeRow}
-              setActiveRow={setActiveRow}
-            />
-            {currentOperation && (
-              <StepAuthentication
-                username={username}
-                setUsername={setUsername}
-                type={type}
-                step={step}
-                activeRow={activeRow}
-                setActiveRow={setActiveRow}
-              />
-            )}
+            <StepOperation />
+            {operation && <StepAuthentication />}
 
-            {currentOperation && isAuthenticated && (
-              <StepInput
-                type={type}
-                step={step}
-                activeRow={activeRow}
-                setActiveRow={setActiveRow}
-              />
+            {operation && operationIsAuthenticated && (
+              <StepInput outputFields={outputFields} />
             )}
           </>
         )}

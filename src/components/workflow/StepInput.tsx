@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+import _ from "lodash";
 import { CircularProgress } from "grindery-ui";
 import { ICONS, isLocalOrStaging } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
@@ -10,7 +11,12 @@ import { Field } from "../../types/Connector";
 import ChainSelector from "./ChainSelector";
 import ContractSelector from "./ContractSelector";
 import { validator } from "../../helpers/validator";
-import { getValidationScheme, jsonrpcObj } from "../../helpers/utils";
+import {
+  getOutputOptions,
+  getValidationScheme,
+  jsonrpcObj,
+} from "../../helpers/utils";
+import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
 const Container = styled.div`
   border-top: 1px solid #dcdcdc;
@@ -81,71 +87,40 @@ const ButtonWrapper = styled.div`
 `;
 
 type Props = {
-  type: "trigger" | "action";
-  step: number;
-  activeRow: number;
-  setActiveRow: (row: number) => void;
+  outputFields: any[];
 };
 
-const StepInput = (props: Props) => {
-  const { type, step, activeRow, setActiveRow } = props;
+const StepInput = ({ outputFields }: Props) => {
   const {
-    workflow,
-    activeStep,
-    updateWorkflow,
-    setActiveStep,
-    triggers,
-    actions,
-    connectors,
-    setConnectors,
-    loading,
-    setLoading,
-  } = useWorkflowContext();
+    type,
+    step,
+    activeRow,
+    setActiveRow,
+    connector,
+    operation,
+    operationIsConfigured,
+    operationIsAuthenticated,
+    setConnector,
+    inputError,
+    setInputError,
+    errors,
+    setErrors,
+  } = useWorkflowStepContext();
+  const { workflow, updateWorkflow, loading, setLoading } =
+    useWorkflowContext();
   const { user, client } = useAppContext();
-  const [inputError, setInputError] = useState("");
   const { addressBook, setAddressBook } = useAddressBook(user);
-  const [errors, setErrors] = useState<any>(false);
 
   const index = step - 2;
-
-  const currentConnector =
-    type === "trigger"
-      ? connectors.find(
-          (connector) => connector.key === workflow.trigger.connector
-        )
-      : connectors.find(
-          (connector) => connector.key === workflow.actions[index].connector
-        );
-
-  const currentOperation =
-    type === "trigger"
-      ? currentConnector?.triggers?.find(
-          (trigger) => trigger.key === workflow.trigger.operation
-        )
-      : currentConnector?.actions?.find(
-          (action) => action.key === workflow.actions[index].operation
-        );
 
   const currentInput =
     type === "trigger" ? workflow.trigger.input : workflow.actions[index].input;
 
-  const isConfigured =
-    type === "trigger"
-      ? triggers.triggerIsConfigured
-      : actions.actionIsConfigured(index);
-
-  console.log("isConfigured " + currentOperation?.key, isConfigured);
-
-  const isAuthenticated =
-    type === "trigger"
-      ? triggers.triggerIsAuthenticated
-      : actions.actionIsAuthenticated(index);
-
   const inputFields =
-    (currentOperation &&
-      currentOperation.operation &&
-      currentOperation.operation.inputFields &&
-      currentOperation.operation.inputFields.filter(
+    (operation &&
+      operation.operation &&
+      operation.operation.inputFields &&
+      operation.operation.inputFields.filter(
         (inputField: Field) => inputField && !inputField.computed
       )) ||
     [];
@@ -155,12 +130,16 @@ const StepInput = (props: Props) => {
       ? workflow.trigger.credentials
       : workflow.actions[index].credentials;
 
-  console.log("currentOperation", currentOperation);
-
   const chainValue =
     type === "trigger"
       ? (workflow.trigger.input._grinderyChain || "").toString()
       : (workflow.actions[index].input._grinderyChain || "").toString();
+
+  const options: any[] = _.flatten([
+    ...outputFields.map((out) =>
+      getOutputOptions(out.operation, out.connector)
+    ),
+  ]);
 
   const handleHeaderClick = () => {
     setActiveRow(2);
@@ -171,9 +150,9 @@ const StepInput = (props: Props) => {
     setErrors(true);
 
     const validationSchema = getValidationScheme([
-      ...(currentOperation?.operation?.inputFields || []),
-      ...(currentOperation?.operation?.type === "blockchain:event" &&
-      (currentOperation?.operation?.inputFields || []).filter(
+      ...(operation?.operation?.inputFields || []),
+      ...(operation?.operation?.type === "blockchain:event" &&
+      (operation?.operation?.inputFields || []).filter(
         (inputfield: Field) => inputfield.key === "_grinderyChain"
       ).length < 1
         ? [
@@ -184,8 +163,8 @@ const StepInput = (props: Props) => {
             },
           ]
         : []),
-      ...(currentOperation?.operation?.type === "blockchain:event" &&
-      (currentOperation?.operation?.inputFields || []).filter(
+      ...(operation?.operation?.type === "blockchain:event" &&
+      (operation?.operation?.inputFields || []).filter(
         (inputfield: Field) => inputfield.key === "_grinderyContractAddress"
       ).length < 1
         ? [
@@ -237,15 +216,15 @@ const StepInput = (props: Props) => {
   };
 
   const updateFieldsDefinition = () => {
-    if (currentOperation?.operation?.inputFieldProviderUrl) {
+    if (operation?.operation?.inputFieldProviderUrl) {
       if (workflow) {
         setLoading(true);
         client
           ?.callInputProvider(
-            currentConnector?.key || "",
-            currentOperation.key,
+            connector?.key || "",
+            operation.key,
             jsonrpcObj("grinderyNexusConnectorUpdateFields", {
-              key: currentOperation.key,
+              key: operation.key,
               fieldData: {},
               credentials: credentials,
             }),
@@ -259,70 +238,52 @@ const StepInput = (props: Props) => {
               );
             }
             if (res) {
-              if (res.inputFields && connectors) {
-                setConnectors([
-                  ...connectors.map((connector) => {
-                    if (connector && connector.key === currentConnector?.key) {
-                      return {
-                        ...connector,
-                        triggers: [
-                          ...(connector.triggers || []).map((trig) => {
-                            if (
-                              trig.key === currentOperation?.key &&
-                              trig.operation
-                            ) {
-                              return {
-                                ...trig,
-                                operation: {
-                                  ...trig.operation,
-                                  inputFields:
-                                    res.inputFields ||
-                                    trig.operation.inputFields,
-                                  outputFields:
-                                    res.outputFields ||
-                                    trig.operation.outputFields ||
-                                    [],
-                                  sample:
-                                    res.sample || trig.operation.sample || {},
-                                },
-                              };
-                            } else {
-                              return trig;
-                            }
-                          }),
-                        ],
-                        actions: [
-                          ...(connector.actions || []).map((act) => {
-                            if (
-                              act.key === currentOperation?.key &&
-                              act.operation
-                            ) {
-                              return {
-                                ...act,
-                                operation: {
-                                  ...act.operation,
-                                  inputFields:
-                                    res.inputFields ||
-                                    act.operation.inputFields,
-                                  outputFields:
-                                    res.outputFields ||
-                                    act.operation.outputFields ||
-                                    [],
-                                  sample:
-                                    res.sample || act.operation.sample || {},
-                                },
-                              };
-                            } else {
-                              return act;
-                            }
-                          }),
-                        ],
-                      };
-                    } else {
-                      return connector;
-                    }
-                  }),
-                ]);
+              if (res.inputFields && connector) {
+                setConnector({
+                  ...connector,
+                  triggers: [
+                    ...(connector.triggers || []).map((trig) => {
+                      if (trig.key === operation?.key && trig.operation) {
+                        return {
+                          ...trig,
+                          operation: {
+                            ...trig.operation,
+                            inputFields:
+                              res.inputFields || trig.operation.inputFields,
+                            outputFields:
+                              res.outputFields ||
+                              trig.operation.outputFields ||
+                              [],
+                            sample: res.sample || trig.operation.sample || {},
+                          },
+                        };
+                      } else {
+                        return trig;
+                      }
+                    }),
+                  ],
+                  actions: [
+                    ...(connector.actions || []).map((act) => {
+                      if (act.key === operation?.key && act.operation) {
+                        return {
+                          ...act,
+                          operation: {
+                            ...act.operation,
+                            inputFields:
+                              res.inputFields || act.operation.inputFields,
+                            outputFields:
+                              res.outputFields ||
+                              act.operation.outputFields ||
+                              [],
+                            sample: res.sample || act.operation.sample || {},
+                          },
+                        };
+                      } else {
+                        return act;
+                      }
+                    }),
+                  ],
+                });
               }
             }
             setLoading(false);
@@ -337,22 +298,20 @@ const StepInput = (props: Props) => {
 
   const setComputedDefaultValues = useCallback(() => {
     let input = {} as any;
-    (currentOperation?.operation?.inputFields || []).forEach(
-      (inputField: Field) => {
-        if (inputField.computed && inputField.default) {
-          if (type === "trigger") {
-            input["trigger.input." + inputField.key] = inputField.default;
-          } else {
-            input["actions[" + index + "].input." + inputField.key] =
-              inputField.default;
-          }
+    (operation?.operation?.inputFields || []).forEach((inputField: Field) => {
+      if (inputField.computed && inputField.default) {
+        if (type === "trigger") {
+          input["trigger.input." + inputField.key] = inputField.default;
+        } else {
+          input["actions[" + index + "].input." + inputField.key] =
+            inputField.default;
         }
       }
-    );
+    });
     updateWorkflow(input);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentOperation]);
+  }, [operation]);
 
   useEffect(() => {
     setComputedDefaultValues();
@@ -360,14 +319,11 @@ const StepInput = (props: Props) => {
 
   useEffect(() => {
     updateFieldsDefinition();
-    console.log("updateFieldsDefinition fired");
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log("errors", errors);
-
-  return currentOperation && isAuthenticated ? (
+  return operation && operationIsAuthenticated ? (
     <Container>
       <Header
         onClick={handleHeaderClick}
@@ -381,19 +337,15 @@ const StepInput = (props: Props) => {
         <span>{type === "trigger" ? "Set up trigger" : "Set up action"}</span>
 
         <OperationStateIcon
-          src={
-            isConfigured && !inputError && typeof errors === "boolean"
-              ? ICONS.CHECK_CIRCLE
-              : ICONS.EXCLAMATION
-          }
+          src={operationIsConfigured ? ICONS.CHECK_CIRCLE : ICONS.EXCLAMATION}
           alt=""
         />
       </Header>
       {activeRow === 2 && (
         <Content>
           <div style={{ marginTop: 40 }}>
-            {currentOperation?.operation?.type === "blockchain:event" &&
-              (currentOperation?.operation?.inputFields || []).filter(
+            {operation?.operation?.type === "blockchain:event" &&
+              (operation?.operation?.inputFields || []).filter(
                 (inputfield: Field) => inputfield.key === "_grinderyChain"
               ).length < 1 && (
                 <ChainSelector
@@ -403,8 +355,8 @@ const StepInput = (props: Props) => {
                   setErrors={setErrors}
                 />
               )}
-            {currentOperation?.operation?.type === "blockchain:event" &&
-              (currentOperation?.operation?.inputFields || []).filter(
+            {operation?.operation?.type === "blockchain:event" &&
+              (operation?.operation?.inputFields || []).filter(
                 (inputfield: Field) =>
                   inputfield.key === "_grinderyContractAddress"
               ).length < 1 && (
@@ -425,6 +377,7 @@ const StepInput = (props: Props) => {
                 type={type}
                 inputField={inputField}
                 key={inputField.key}
+                options={options}
                 setError={setInputError}
                 addressBook={addressBook}
                 setAddressBook={setAddressBook}

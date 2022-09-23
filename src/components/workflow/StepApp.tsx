@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { TextInput } from "grindery-ui";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
@@ -9,6 +9,7 @@ import {
   NOT_READY_ACTIONS,
   NOT_READY_TRIGGERS,
 } from "../../constants";
+import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
 const Container = styled.div`
   border-top: 1px solid #dcdcdc;
@@ -93,15 +94,12 @@ const Showing = styled.p`
   padding: 0;
 `;
 
-type Props = {
-  type: "trigger" | "action";
-  step: number;
-};
+type Props = {};
 
 const StepApp = (props: Props) => {
-  const { type, step } = props;
-  const { workflow, updateWorkflow, triggers, actions } = useWorkflowContext();
-  const { devMode, getConnector } = useAppContext();
+  const { type, step, getConnector } = useWorkflowStepContext();
+  const { workflow, updateWorkflow, triggers, actions, activeStep } =
+    useWorkflowContext();
   const [search, setSearch] = useState("");
   const index = step - 2;
   const opened =
@@ -206,17 +204,22 @@ const StepApp = (props: Props) => {
         ["actions[" + index + "].credentials"]: undefined,
       });
     }
-    getConnector(value);
   };
 
   const handleSearchChange = (value: string) => {
     setSearch(value);
   };
 
+  useEffect(() => {
+    if (value) {
+      getConnector(value);
+    }
+  }, [value]);
+
   if (!opened) {
     return null;
   }
-  return (
+  return activeStep === step ? (
     <Container>
       <TextInput
         value={search}
@@ -247,7 +250,7 @@ const StepApp = (props: Props) => {
         Showing {visibleOptions.length} out of {options.length} results
       </Showing>
     </Container>
-  );
+  ) : null;
 };
 
 export default StepApp;

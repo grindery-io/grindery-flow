@@ -5,6 +5,7 @@ import RootStack from "./RootStack";
 import AuthPage from "./AuthPage";
 import EarlyAccessModal from "../shared/EarlyAccessModal";
 import WorkspaceContextProvider from "../../context/WorkspaceContext";
+import WorkflowContextProvider from "../../context/WorkflowContext";
 
 type Props = {};
 

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Select } from "grindery-ui";
 import { ICONS } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
+import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
 const Container = styled.div`
   border-top: 1px solid #dcdcdc;
@@ -72,39 +73,22 @@ const ButtonWrapper = styled.div`
   padding-bottom: 12px;
 `;
 
-type Props = {
-  type: "trigger" | "action";
-  step: number;
-  activeRow: number;
-  setActiveRow: (row: number) => void;
-};
+type Props = {};
 
 const StepOperation = (props: Props) => {
-  const { type, step, activeRow, setActiveRow } = props;
-  const {
-    workflow,
-    activeStep,
-    updateWorkflow,
-    setActiveStep,
-    triggers,
-    actions,
-  } = useWorkflowContext();
+  const { type, step, activeRow, setActiveRow, operation, connector } =
+    useWorkflowStepContext();
+  const { updateWorkflow, triggers, actions } = useWorkflowContext();
 
   const index = step - 2;
 
-  const selectedOperationKey =
-    type === "trigger"
-      ? workflow.trigger.operation
-      : workflow.actions[index].operation;
+  const selectedOperationKey = operation?.key;
 
-  const isAppSelected =
-    type === "trigger"
-      ? Boolean(workflow.trigger.connector)
-      : Boolean(workflow.actions[index]?.connector);
+  const isAppSelected = Boolean(connector);
 
   const options =
     type === "trigger"
-      ? triggers.availableTriggers.map((availableTrigger) => ({
+      ? connector?.triggers?.map((availableTrigger) => ({
           value: availableTrigger.key,
           label: availableTrigger.display?.label,
           icon:
@@ -113,7 +97,7 @@ const StepOperation = (props: Props) => {
             "",
           description: availableTrigger.display?.description,
         }))
-      : actions.availableActions(index)?.map((availableAction) => ({
+      : connector?.actions?.map((availableAction) => ({
           value: availableAction.key,
           label: availableAction.display?.label,
           icon:
@@ -123,10 +107,7 @@ const StepOperation = (props: Props) => {
           description: availableAction.display?.description,
         }));
 
-  const value =
-    type === "trigger"
-      ? workflow.trigger.operation || ""
-      : workflow.actions[index].operation || "";
+  const value = operation?.key;
 
   const handleOperationChange = (value: string) => {
     if (type === "trigger") {

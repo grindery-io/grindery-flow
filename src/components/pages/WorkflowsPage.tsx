@@ -237,7 +237,7 @@ const WorkflowsPage = (props: Props) => {
         <IconButton
           color=""
           onClick={() => {
-            navigate("/workflows/new");
+            navigate("/workflows/new", { replace: true });
           }}
           icon={ICONS.PLUS}
         />
@@ -272,6 +272,7 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const inputEl = useRef<HTMLInputElement>(null);
   const titleEl = useRef<HTMLSpanElement>(null);
+  let navigate = useNavigate();
 
   const triggerIcon =
     connectors.find((t) => t.key === item.trigger.connector)?.icon || null;
@@ -343,6 +344,10 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
       await moveWorkflowToWorkspace(item.key, workspaceKey, client);
     } catch (err) {}
     setIsSuccess(`Workflow successfully moved to ${workspaceTitle}.`);
+  };
+
+  const handleEditClick = async () => {
+    navigate("/workflows/edit/" + item.key, { replace: true });
   };
 
   useEffect(() => {
@@ -433,6 +438,11 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
                 key: "1",
                 label: "Rename",
                 onClick: handleTitleClick,
+              },
+              {
+                key: "edit",
+                label: "Edit",
+                onClick: handleEditClick,
               },
               ...(workspaces && workspaces.length > 1
                 ? [

@@ -1,7 +1,7 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, createContext, useEffect, useRef } from "react";
 import _ from "lodash";
-import { useNavigate } from "react-router-dom";
-import { Operation, Workflow } from "../types/Workflow";
+import { useMatch, useNavigate, useParams } from "react-router-dom";
+import { Workflow } from "../types/Workflow";
 import {
   Action,
   Connector,
@@ -81,12 +81,11 @@ type WorkflowContextProps = {
 
 type WorkflowContextProviderProps = {
   children: React.ReactNode;
-  user: string | null;
 };
 
 export const WorkflowContext = createContext<WorkflowContextProps>({
   connectors: [],
-  workflow: blankWorkflow,
+  workflow: { ...blankWorkflow },
   activeStep: 1,
   loading: false,
   success: null,
@@ -122,16 +121,21 @@ export const WorkflowContext = createContext<WorkflowContextProps>({
 });
 
 export const WorkflowContextProvider = ({
-  user,
   children,
 }: WorkflowContextProviderProps) => {
   let navigate = useNavigate();
+  let { key } = useParams();
   const { workspace } = useWorkspaceContext();
   const {
     getWorkflowsList,
     connectors: availableConnectors,
     client,
+    workflows,
+    user,
   } = useAppContext();
+  const isMatchingWorkflowNew = useMatch("/workflows/new");
+  const isMatchingWorkflowEdit = useMatch("/workflows/edit/:key");
+  const matchNewWorfklow = isMatchingWorkflowNew || isMatchingWorkflowEdit;
 
   // loaded nexus connectors CDS
   const [connectors, setConnectors] = useState<Connector[]>(
@@ -139,7 +143,7 @@ export const WorkflowContextProvider = ({
   );
 
   // workflow state
-  const [workflow, setWorkflow] = useState<Workflow>(blankWorkflow);
+  const [workflow, setWorkflow] = useState<Workflow>({ ...blankWorkflow });
 
   // is data loading
   const [loading, setLoading] = useState(false);
@@ -214,11 +218,11 @@ export const WorkflowContextProvider = ({
 
   // current workflow's action connector key
   const workflowActionConnector = (index: number) =>
-    workflow.actions[index].connector;
+    workflow.actions[index]?.connector;
 
   // current workflow's action operation key
   const workflowActionOperation = (index: number) =>
-    workflow.actions[index].operation;
+    workflow.actions[index]?.operation;
 
   // current trigger's connector object
   const triggerConnector = connectors.find(
@@ -419,7 +423,31 @@ export const WorkflowContextProvider = ({
 
   // reset current workflow
   const resetWorkflow = () => {
-    setWorkflow({ ...blankWorkflow, creator: user || "" });
+    setWorkflow({
+      ...{
+        title: "New workflow",
+        trigger: {
+          type: "trigger",
+          connector: "",
+          operation: "",
+          input: {},
+        },
+        actions: [
+          {
+            type: "action",
+            connector: "",
+            operation: "",
+            input: {},
+          },
+        ],
+        creator: "",
+        state: "on",
+        source: isLocalOrStaging
+          ? "urn:grindery-staging:nexus"
+          : "urn:grindery:nexus",
+      },
+      creator: user || "",
+    });
     setActiveStep(1);
   };
 
@@ -471,6 +499,17 @@ export const WorkflowContextProvider = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  useEffect(() => {
+    if (key) {
+      const selectedWorkflow = workflows.find((wf) => wf.key === key);
+      if (selectedWorkflow) {
+        setWorkflow(selectedWorkflow);
+      }
+    } else {
+      resetWorkflow();
+    }
+  }, [key]);
 
   if (isLocalOrStaging) {
     console.log("connectors", connectors);

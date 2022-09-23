@@ -13,6 +13,7 @@ import {
 } from "../../helpers/utils";
 import useAppContext from "../../hooks/useAppContext";
 import Check from "./../icons/Check";
+import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
 const Container = styled.div`
   border-top: 1px solid #dcdcdc;
@@ -101,60 +102,27 @@ const AccountNameWrapper = styled.div`
   flex-wrap: nowrap;
 `;
 
-type Props = {
-  type: "trigger" | "action";
-  step: number;
-  activeRow: number;
-  setActiveRow: (row: number) => void;
-  username: string;
-  setUsername: (name: string) => void;
-};
+type Props = {};
 
 const StepAuthentication = (props: Props) => {
-  const { type, step, activeRow, setActiveRow, username, setUsername } = props;
   const {
-    workflow,
-    activeStep,
-    updateWorkflow,
-    setActiveStep,
-    triggers,
-    actions,
-    connectors,
-    setConnectors,
-    loading,
-    setLoading,
-  } = useWorkflowContext();
+    type,
+    step,
+    activeRow,
+    setActiveRow,
+    username,
+    setUsername,
+    connector,
+    operation,
+    operationAuthenticationIsRequired,
+    operationIsAuthenticated,
+    setConnector,
+  } = useWorkflowStepContext();
+  const { workflow, updateWorkflow, loading, setLoading } =
+    useWorkflowContext();
   const { client } = useAppContext();
 
   const index = step - 2;
-
-  const isAuthenticationRequired =
-    type === "trigger"
-      ? triggers.triggerAuthenticationIsRequired
-      : actions.actionAuthenticationIsRequired(index);
-
-  const isAuthenticated =
-    type === "trigger"
-      ? triggers.triggerIsAuthenticated
-      : actions.actionIsAuthenticated(index);
-
-  const currentConnector =
-    type === "trigger"
-      ? connectors.find(
-          (connector) => connector.key === workflow.trigger.connector
-        )
-      : connectors.find(
-          (connector) => connector.key === workflow.actions[index].connector
-        );
-
-  const currentOperation =
-    type === "trigger"
-      ? currentConnector?.triggers?.find(
-          (trigger) => trigger.key === workflow.trigger.operation
-        )
-      : currentConnector?.actions?.find(
-          (action) => action.key === workflow.actions[index].operation
-        );
 
   const credentials =
     type === "trigger"
@@ -177,16 +145,16 @@ const StepAuthentication = (props: Props) => {
         const codeParam = getParameterByName("code", data.gr_url);
 
         if (
-          currentConnector &&
-          currentConnector.authentication &&
-          currentConnector.authentication.type &&
-          currentConnector.authentication.type === "oauth2" &&
+          connector &&
+          connector.authentication &&
+          connector.authentication.type &&
+          connector.authentication.type === "oauth2" &&
           codeParam &&
-          currentConnector.authentication.oauth2Config &&
-          currentConnector.authentication.oauth2Config.getAccessToken
+          connector.authentication.oauth2Config &&
+          connector.authentication.oauth2Config.getAccessToken
         ) {
           const getAccessTokenRequest =
-            currentConnector.authentication.oauth2Config.getAccessToken;
+            connector.authentication.oauth2Config.getAccessToken;
           const body =
             typeof getAccessTokenRequest.body === "object"
               ? getAccessTokenRequest.body
@@ -226,14 +194,14 @@ const StepAuthentication = (props: Props) => {
   };
 
   const handleAuthClick = () => {
-    if (currentConnector?.authentication?.type === "oauth2") {
+    if (connector?.authentication?.type === "oauth2") {
       window.removeEventListener("message", receiveMessage, false);
       const width = 375,
         height = 500,
         left = window.screen.width / 2 - width / 2,
         top = window.screen.height / 2 - height / 2;
       let windowObjectReference = window.open(
-        currentConnector.authentication?.oauth2Config?.authorizeUrl.url +
+        connector.authentication?.oauth2Config?.authorizeUrl.url +
           "&redirect_uri=" +
           window.location.origin +
           "/auth",
@@ -253,15 +221,15 @@ const StepAuthentication = (props: Props) => {
   };
 
   const updateFieldsDefinition = () => {
-    if (currentOperation?.operation?.inputFieldProviderUrl) {
+    if (operation?.operation?.inputFieldProviderUrl) {
       if (workflow) {
         setLoading(true);
         client
           ?.callInputProvider(
-            currentConnector?.key || "",
-            currentOperation.key,
+            connector?.key || "",
+            operation.key,
             jsonrpcObj("grinderyNexusConnectorUpdateFields", {
-              key: currentOperation.key,
+              key: operation.key,
               fieldData: {},
               credentials: credentials,
             }),
@@ -275,70 +243,52 @@ const StepAuthentication = (props: Props) => {
               );
             }
             if (res) {
-              if (res.inputFields && connectors) {
-                setConnectors([
-                  ...connectors.map((connector) => {
-                    if (connector && connector.key === currentConnector?.key) {
-                      return {
-                        ...connector,
-                        triggers: [
-                          ...(connector.triggers || []).map((trig) => {
-                            if (
-                              trig.key === currentOperation?.key &&
-                              trig.operation
-                            ) {
-                              return {
-                                ...trig,
-                                operation: {
-                                  ...trig.operation,
-                                  inputFields:
-                                    res.inputFields ||
-                                    trig.operation.inputFields,
-                                  outputFields:
-                                    res.outputFields ||
-                                    trig.operation.outputFields ||
-                                    [],
-                                  sample:
-                                    res.sample || trig.operation.sample || {},
-                                },
-                              };
-                            } else {
-                              return trig;
-                            }
-                          }),
-                        ],
-                        actions: [
-                          ...(connector.actions || []).map((act) => {
-                            if (
-                              act.key === currentOperation?.key &&
-                              act.operation
-                            ) {
-                              return {
-                                ...act,
-                                operation: {
-                                  ...act.operation,
-                                  inputFields:
-                                    res.inputFields ||
-                                    act.operation.inputFields,
-                                  outputFields:
-                                    res.outputFields ||
-                                    act.operation.outputFields ||
-                                    [],
-                                  sample:
-                                    res.sample || act.operation.sample || {},
-                                },
-                              };
-                            } else {
-                              return act;
-                            }
-                          }),
-                        ],
-                      };
-                    } else {
-                      return connector;
-                    }
-                  }),
-                ]);
+              if (res.inputFields && connector) {
+                setConnector({
+                  ...connector,
+                  triggers: [
+                    ...(connector.triggers || []).map((trig) => {
+                      if (trig.key === operation?.key && trig.operation) {
+                        return {
+                          ...trig,
+                          operation: {
+                            ...trig.operation,
+                            inputFields:
+                              res.inputFields || trig.operation.inputFields,
+                            outputFields:
+                              res.outputFields ||
+                              trig.operation.outputFields ||
+                              [],
+                            sample: res.sample || trig.operation.sample || {},
+                          },
+                        };
+                      } else {
+                        return trig;
+                      }
+                    }),
+                  ],
+                  actions: [
+                    ...(connector.actions || []).map((act) => {
+                      if (act.key === operation?.key && act.operation) {
+                        return {
+                          ...act,
+                          operation: {
+                            ...act.operation,
+                            inputFields:
+                              res.inputFields || act.operation.inputFields,
+                            outputFields:
+                              res.outputFields ||
+                              act.operation.outputFields ||
+                              [],
+                            sample: res.sample || act.operation.sample || {},
+                          },
+                        };
+                      } else {
+                        return act;
+                      }
+                    }),
+                  ],
+                });
               }
             }
             setLoading(false);
@@ -365,18 +315,18 @@ const StepAuthentication = (props: Props) => {
 
   const testAuth = (credentials: any) => {
     if (
-      currentConnector &&
-      currentConnector.authentication &&
-      currentConnector.authentication.test
+      connector &&
+      connector.authentication &&
+      connector.authentication.test
     ) {
-      const url = currentConnector.authentication.test.url;
-      const method = currentConnector.authentication.test.method;
+      const url = connector.authentication.test.url;
+      const method = connector.authentication.test.method;
       const data = replaceTokens(
-        currentConnector.authentication?.test.body || {},
+        connector.authentication?.test.body || {},
         credentials
       );
       const headers = replaceTokens(
-        currentConnector.authentication.test.headers || {},
+        connector.authentication.test.headers || {},
         credentials
       );
       if (url) {
@@ -434,10 +384,10 @@ const StepAuthentication = (props: Props) => {
   };
 
   useEffect(() => {
-    if (!isAuthenticationRequired && activeRow === 1) {
+    if (!operationAuthenticationIsRequired && activeRow === 1) {
       setActiveRow(activeRow + 1);
     }
-  }, [activeRow, isAuthenticationRequired]);
+  }, [activeRow, operationAuthenticationIsRequired]);
 
   useEffect(() => {
     if (credentials) {
@@ -446,7 +396,7 @@ const StepAuthentication = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return currentOperation && isAuthenticationRequired ? (
+  return operation && operationAuthenticationIsRequired ? (
     <Container>
       <Header
         className={activeRow === 1 ? "active" : ""}
@@ -460,31 +410,30 @@ const StepAuthentication = (props: Props) => {
         <span>Choose account</span>
 
         <OperationStateIcon
-          src={isAuthenticated ? ICONS.CHECK_CIRCLE : ICONS.EXCLAMATION}
+          src={
+            operationIsAuthenticated ? ICONS.CHECK_CIRCLE : ICONS.EXCLAMATION
+          }
           alt=""
         />
       </Header>
       {activeRow === 1 && (
         <Content>
-          {!isAuthenticated && (
+          {!operationIsAuthenticated && (
             <NexusButton
               fullWidth
-              icon={currentConnector?.icon || ""}
+              icon={connector?.icon || ""}
               onClick={handleAuthClick}
-              value={`Sign in to ${currentConnector?.name}`}
+              value={`Sign in to ${connector?.name}`}
             />
           )}
-          {isAuthenticated && (
+          {operationIsAuthenticated && (
             <>
               <AccountWrapper>
-                <Text
-                  value={`${currentConnector?.name} account`}
-                  variant="body2"
-                />
+                <Text value={`${connector?.name} account`} variant="body2" />
                 <AccountNameWrapper>
-                  {currentConnector?.icon && (
+                  {connector?.icon && (
                     <img
-                      src={currentConnector.icon}
+                      src={connector.icon}
                       alt=""
                       style={{ marginRight: 8 }}
                     />
@@ -518,7 +467,7 @@ const StepAuthentication = (props: Props) => {
               )}
               <ButtonWrapper>
                 <Button
-                  disabled={!isAuthenticated}
+                  disabled={!operationIsAuthenticated}
                   onClick={handleContinueClick}
                 >
                   Continue

@@ -83,8 +83,6 @@ const SignInPage = (props: Props) => {
             redirect_uri
           )
         ) {
-          console.log("redirect to", redirect_uri);
-
           window.location.href = `${redirect_uri}${
             /\?/.test(redirect_uri) ? "&" : "?"
           }code=${code}${state ? "&state=" + state : ""}`;

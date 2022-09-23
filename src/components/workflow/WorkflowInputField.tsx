@@ -13,6 +13,7 @@ import useAppContext from "../../hooks/useAppContext";
 import { BLOCKCHAINS, ICONS, isLocalOrStaging } from "../../constants";
 import { debounce } from "throttle-debounce";
 import { jsonrpcObj } from "../../helpers/utils";
+import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
 const InputWrapper = styled.div`
   display: flex;
@@ -98,26 +99,13 @@ const WorkflowInputField = ({
   setErrors,
 }: Props) => {
   const { user, client } = useAppContext();
-  const {
-    updateWorkflow,
-    workflow,
-    actions,
-    triggers,
-    setConnectors,
-    connectors,
-    setLoading,
-  } = useWorkflowContext();
-
-  const operation =
-    type === "trigger" ? triggers.current : actions.current(index);
+  const { updateWorkflow, workflow, setLoading } = useWorkflowContext();
+  const { connector, setConnector, operation } = useWorkflowStepContext();
 
   const workflowStep =
     type === "trigger" ? workflow.trigger : workflow.actions[index];
 
-  const currentConnector =
-    type === "trigger"
-      ? triggers.triggerConnector
-      : actions.actionConnector(index);
+  const currentConnector = connector;
 
   const [valChanged, setValChanged] = useState(false);
 
@@ -238,72 +226,60 @@ const WorkflowInputField = ({
                   res.data.error
                 );
               }
-              if (res) {
-                setConnectors([
-                  ...(connectors || []).map((connector) => {
-                    if (connector && connector.key === currentConnector?.key) {
-                      return {
-                        ...connector,
-                        actions: [
-                          ...(connector.actions || []).map((act) => {
-                            if (
-                              act.key === operation?.key &&
-                              act.operation &&
-                              type === "action"
-                            ) {
-                              return {
-                                ...act,
-                                operation: {
-                                  ...act.operation,
-                                  inputFields:
-                                    res.inputFields ||
-                                    act.operation.inputFields,
-                                  outputFields:
-                                    res.outputFields ||
-                                    act.operation.outputFields ||
-                                    [],
-                                  sample:
-                                    res.sample || act.operation.sample || {},
-                                },
-                              };
-                            } else {
-                              return act;
-                            }
-                          }),
-                        ],
-                        triggers: [
-                          ...(connector.triggers || []).map((trig) => {
-                            if (
-                              trig.key === operation?.key &&
-                              trig.operation &&
-                              type === "trigger"
-                            ) {
-                              return {
-                                ...trig,
-                                operation: {
-                                  ...trig.operation,
-                                  inputFields:
-                                    res.inputFields ||
-                                    trig.operation.inputFields,
-                                  outputFields:
-                                    res.outputFields ||
-                                    trig.operation.outputFields ||
-                                    [],
-                                  sample:
-                                    res.sample || trig.operation.sample || {},
-                                },
-                              };
-                            } else {
-                              return trig;
-                            }
-                          }),
-                        ],
-                      };
-                    } else {
-                      return connector;
-                    }
-                  }),
-                ]);
+              if (res && connector) {
+                setConnector({
+                  ...connector,
+                  actions: [
+                    ...(connector.actions || []).map((act) => {
+                      if (
+                        act.key === operation?.key &&
+                        act.operation &&
+                        type === "action"
+                      ) {
+                        return {
+                          ...act,
+                          operation: {
+                            ...act.operation,
+                            inputFields:
+                              res.inputFields || act.operation.inputFields,
+                            outputFields:
+                              res.outputFields ||
+                              act.operation.outputFields ||
+                              [],
+                            sample: res.sample || act.operation.sample || {},
+                          },
+                        };
+                      } else {
+                        return act;
+                      }
+                    }),
+                  ],
+                  triggers: [
+                    ...(connector.triggers || []).map((trig) => {
+                      if (
+                        trig.key === operation?.key &&
+                        trig.operation &&
+                        type === "trigger"
+                      ) {
+                        return {
+                          ...trig,
+                          operation: {
+                            ...trig.operation,
+                            inputFields:
+                              res.inputFields || trig.operation.inputFields,
+                            outputFields:
+                              res.outputFields ||
+                              trig.operation.outputFields ||
+                              [],
+                            sample: res.sample || trig.operation.sample || {},
+                          },
+                        };
+                      } else {
+                        return trig;
+                      }
+                    }),
+                  ],
+                });
               }
               setLoading(false);
             })
@@ -332,7 +308,7 @@ const WorkflowInputField = ({
       },
       label: field.label || field.key || "",
       required: !!field.required,
-      tooltip: field.helpText || false,
+      tooltip: field.helpText || "",
       error: !field.list ? error : !v ? error : false,
       value: v,
     };

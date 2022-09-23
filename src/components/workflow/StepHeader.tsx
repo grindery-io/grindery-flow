@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ICONS } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
+import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
 const Container = styled.div`
   padding: 20px 32px;
@@ -89,49 +90,23 @@ const ChangeButton = styled.button`
   }
 `;
 
-type Props = {
-  type: "trigger" | "action";
-  step: number;
-  activeRow: number;
-  setActiveRow: (row: number) => void;
-};
+type Props = {};
 
 const StepHeader = (props: Props) => {
-  const { type, step, activeRow, setActiveRow } = props;
-  const { connectors } = useAppContext();
   const {
-    activeStep,
-    setActiveStep,
-    workflow,
-    updateWorkflow,
-    triggers,
-    actions,
-  } = useWorkflowContext();
+    type,
+    step,
+    setActiveRow,
+    connector,
+    operation,
+    operationIsConfigured,
+    operationIsAuthenticated,
+    setConnector,
+  } = useWorkflowStepContext();
+  const { activeStep, setActiveStep, updateWorkflow, triggers, actions } =
+    useWorkflowContext();
 
   const index = step - 2;
-
-  const selectedAppKey =
-    type === "trigger"
-      ? workflow.trigger.connector
-      : workflow.actions[index]?.connector;
-
-  const selectedOperationKey =
-    type === "trigger"
-      ? workflow.trigger.operation
-      : workflow.actions[index]?.operation;
-
-  const selectedApp = selectedAppKey
-    ? connectors.find((connector) => connector.key === selectedAppKey)
-    : null;
-
-  const selectedOperation =
-    type === "trigger"
-      ? selectedApp?.triggers?.find(
-          (operation) => operation.key === selectedOperationKey
-        )
-      : selectedApp?.actions?.find(
-          (operation) => operation.key === selectedOperationKey
-        );
 
   const handleHeaderClick = () => {
     if (activeStep !== step) {
@@ -156,6 +131,7 @@ const StepHeader = (props: Props) => {
       });
     }
     setActiveRow(0);
+    setConnector(null);
   };
 
   return (
@@ -163,9 +139,9 @@ const StepHeader = (props: Props) => {
       style={{ cursor: activeStep === step ? "default" : "pointer" }}
       onClick={handleHeaderClick}
     >
-      {selectedApp && selectedApp.icon ? (
+      {connector && connector.icon ? (
         <AppIcon>
-          <img src={selectedApp.icon} alt="" />
+          <img src={connector.icon} alt="" />
         </AppIcon>
       ) : (
         <Icon>
@@ -178,26 +154,21 @@ const StepHeader = (props: Props) => {
 
       <div>
         <Title>{type === "trigger" ? "Trigger" : "Action"}</Title>
-        <Description style={{ fontSize: selectedApp ? "20px" : "16px" }}>
-          {selectedApp
-            ? selectedApp.name
+        <Description style={{ fontSize: connector ? "20px" : "16px" }}>
+          {connector
+            ? connector.name
             : type === "trigger"
             ? "When this occurs..."
             : "Then do this..."}
-          {selectedApp && selectedOperation && <> - {selectedOperation.name}</>}
+          {connector && operation && <> - {operation.name}</>}
         </Description>
       </div>
-      {activeStep !== step && selectedApp && (
+      {activeStep !== step && connector && (
         <>
           <img
             style={{ marginLeft: "auto", display: "block" }}
             src={
-              (type === "trigger" &&
-                selectedOperation &&
-                triggers.triggerIsConfigured) ||
-              (type === "action" &&
-                selectedOperation &&
-                actions.actionIsConfigured(index))
+              operation && operationIsAuthenticated && operationIsConfigured
                 ? ICONS.CHECK_CIRCLE
                 : ICONS.EXCLAMATION
             }
@@ -205,7 +176,7 @@ const StepHeader = (props: Props) => {
           />
         </>
       )}
-      {selectedApp && activeStep === step && (
+      {connector && activeStep === step && (
         <ChangeButton onClick={handleChangeClick}>Change</ChangeButton>
       )}
     </Container>

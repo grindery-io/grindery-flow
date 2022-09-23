@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Drawer, Snackbar, CircularProgress } from "grindery-ui";
 import { Route, Routes, Navigate, useMatch } from "react-router-dom";
@@ -96,7 +96,9 @@ const RootStack = (props: Props) => {
   const { isSuccess, setIsSuccess, isWorkspaceSwitching } =
     useWorkspaceContext();
   const { size, width } = useWindowSize();
-  let matchNewWorfklow = useMatch("/workflows/new");
+  const isMatchingWorkflowNew = useMatch("/workflows/new");
+  const isMatchingWorkflowEdit = useMatch("/workflows/edit/:key");
+  const matchNewWorfklow = isMatchingWorkflowNew || isMatchingWorkflowEdit;
 
   const renderContent = () => {
     if (!user) {
@@ -125,7 +127,16 @@ const RootStack = (props: Props) => {
           path="/workflows/create"
           element={<CreateWorkflowPage />}
         ></Route>
-        <Route path="/workflows/new" element={<WorkflowBuilderPage />}></Route>
+        <Route
+          path="/workflows/new"
+          element={<WorkflowBuilderPage />}
+          key={1}
+        ></Route>
+        <Route
+          path="/workflows/edit/:key"
+          element={<WorkflowBuilderPage />}
+          key={2}
+        ></Route>
         <Route path="/d-apps" element={<AppsPage />}></Route>
         <Route path="/history" element={<HistoryPage />}></Route>
         {/*<Route path="/transactions" element={<TransactionsPage />}></Route>

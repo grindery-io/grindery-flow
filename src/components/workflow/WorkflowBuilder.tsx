@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import { SCREEN } from "../../constants";
 import WorkflowStep from "./WorkflowStep";
+import WorkflowStepContextProvider from "../../context/WorkflowStepContext";
 
 const Wrapper = styled.div`
   max-width: 816px;
@@ -30,19 +31,30 @@ const Wrapper = styled.div`
 type Props = {};
 
 const WorkflowBuilder = (props: Props) => {
-  const { actions, activeStep, workflow } = useWorkflowContext();
-  const { actionIsSet } = actions;
+  const { workflow } = useWorkflowContext();
+  // workflow steps output
+  const [outputFields, setOutputFields] = useState<any[]>([]);
 
   return (
     <Wrapper>
-      <WorkflowStep type="trigger" index={0} step={1} />
+      <WorkflowStepContextProvider
+        type="trigger"
+        index={0}
+        step={1}
+        setOutputFields={setOutputFields}
+      >
+        <WorkflowStep outputFields={outputFields} />
+      </WorkflowStepContextProvider>
       {workflow.actions.map((action, index) => (
-        <WorkflowStep
-          key={index}
+        <WorkflowStepContextProvider
+          key={`${action.connector}_${index}`}
           type="action"
           index={index}
           step={index + 2}
-        />
+          setOutputFields={setOutputFields}
+        >
+          <WorkflowStep outputFields={outputFields} />
+        </WorkflowStepContextProvider>
       ))}
     </Wrapper>
   );
