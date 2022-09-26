@@ -295,7 +295,6 @@ export const WEB3_CONNECTORS_PATH =
 
 export const NOT_READY_TRIGGERS = [
   "hubspot",
-  "zapier",
   "juicebox",
   "multis",
   "parcel",
@@ -308,7 +307,6 @@ export const NOT_READY_TRIGGERS = [
 export const NOT_READY_ACTIONS = [
   "sendGrid",
   "hubspot",
-  "zapier",
   "doraFactory",
   "multis",
   "superfluid",
