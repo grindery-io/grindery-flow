@@ -1,6 +1,6 @@
-import React, { useState, createContext, useEffect, useRef } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import _ from "lodash";
-import { useMatch, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Workflow } from "../types/Workflow";
 import {
   Action,
@@ -77,6 +77,7 @@ type WorkflowContextProps = {
     availableActions: (i: number) => Action[];
     connectorsWithActions: Connector[];
   };
+  workflowReadyToSave: boolean;
 };
 
 type WorkflowContextProviderProps = {
@@ -118,6 +119,7 @@ export const WorkflowContext = createContext<WorkflowContextProps>({
     availableActions: () => [],
     connectorsWithActions: [],
   },
+  workflowReadyToSave: false,
 });
 
 export const WorkflowContextProvider = ({
@@ -133,9 +135,6 @@ export const WorkflowContextProvider = ({
     workflows,
     user,
   } = useAppContext();
-  const isMatchingWorkflowNew = useMatch("/workflows/new");
-  const isMatchingWorkflowEdit = useMatch("/workflows/edit/:key");
-  const matchNewWorfklow = isMatchingWorkflowNew || isMatchingWorkflowEdit;
 
   // loaded nexus connectors CDS
   const [connectors, setConnectors] = useState<Connector[]>(
@@ -412,6 +411,18 @@ export const WorkflowContextProvider = ({
     connectorsWithActions,
   };
 
+  const workflowReadyToSave =
+    workflow?.system?.trigger?.selected &&
+    workflow?.system?.trigger?.authenticated &&
+    workflow?.system?.trigger?.configured &&
+    workflow?.actions.filter(
+      (action, i) =>
+        workflow.system?.actions[i]?.selected &&
+        workflow.system?.actions[i]?.authenticated &&
+        workflow.system?.actions[i]?.configured &&
+        workflow.system?.actions[i]?.tested
+    ).length === workflow.actions.length;
+
   // update current workflow
   const updateWorkflow = (data: any) => {
     let newWorkflow = { ...workflow };
@@ -536,6 +547,7 @@ export const WorkflowContextProvider = ({
         setSuccess,
         triggers,
         actions,
+        workflowReadyToSave,
       }}
     >
       {children}

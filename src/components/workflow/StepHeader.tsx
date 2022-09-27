@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { ICONS } from "../../constants";
-import useAppContext from "../../hooks/useAppContext";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
@@ -101,7 +100,9 @@ const StepHeader = (props: Props) => {
     operation,
     operationIsConfigured,
     operationIsAuthenticated,
+    operationIsTested,
     setConnector,
+    setOperationIsTested,
   } = useWorkflowStepContext();
   const { activeStep, setActiveStep, updateWorkflow, triggers, actions } =
     useWorkflowContext();
@@ -132,6 +133,7 @@ const StepHeader = (props: Props) => {
     }
     setActiveRow(0);
     setConnector(null);
+    setOperationIsTested(false);
   };
 
   return (
@@ -168,7 +170,10 @@ const StepHeader = (props: Props) => {
           <img
             style={{ marginLeft: "auto", display: "block" }}
             src={
-              operation && operationIsAuthenticated && operationIsConfigured
+              operation &&
+              operationIsAuthenticated &&
+              operationIsConfigured &&
+              (type === "trigger" || operationIsTested)
                 ? ICONS.CHECK_CIRCLE
                 : ICONS.EXCLAMATION
             }

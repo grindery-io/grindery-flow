@@ -117,6 +117,7 @@ const StepAuthentication = (props: Props) => {
     operationAuthenticationIsRequired,
     operationIsAuthenticated,
     setConnector,
+    setOperationIsTested,
   } = useWorkflowStepContext();
   const { workflow, updateWorkflow, loading, setLoading } =
     useWorkflowContext();
@@ -380,6 +381,7 @@ const StepAuthentication = (props: Props) => {
         ["actions[" + index + "].input"]: {},
       });
     }
+    setOperationIsTested(false);
     handleAuthClick();
   };
 

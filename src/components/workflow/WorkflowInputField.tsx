@@ -100,7 +100,8 @@ const WorkflowInputField = ({
 }: Props) => {
   const { user, client } = useAppContext();
   const { updateWorkflow, workflow, setLoading } = useWorkflowContext();
-  const { connector, setConnector, operation } = useWorkflowStepContext();
+  const { connector, setConnector, operation, setOperationIsTested } =
+    useWorkflowStepContext();
 
   const workflowStep =
     type === "trigger" ? workflow.trigger : workflow.actions[index];
@@ -196,6 +197,7 @@ const WorkflowInputField = ({
     updateWorkflow({
       [key]: newVal || (typeof idx !== "undefined" ? undefined : ""),
     });
+    setOperationIsTested(false);
     setValChanged(true);
   };
 

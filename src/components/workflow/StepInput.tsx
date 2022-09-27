@@ -105,6 +105,7 @@ const StepInput = ({ outputFields }: Props) => {
     setInputError,
     errors,
     setErrors,
+    setOperationIsTested,
   } = useWorkflowStepContext();
   const { workflow, updateWorkflow, loading, setLoading } =
     useWorkflowContext();
@@ -112,6 +113,9 @@ const StepInput = ({ outputFields }: Props) => {
   const { addressBook, setAddressBook } = useAddressBook(user);
 
   const index = step - 2;
+
+  const workflowStep =
+    type === "trigger" ? workflow.trigger : workflow.actions[index];
 
   const currentInput =
     type === "trigger" ? workflow.trigger.input : workflow.actions[index].input;
@@ -135,11 +139,14 @@ const StepInput = ({ outputFields }: Props) => {
       ? (workflow.trigger.input._grinderyChain || "").toString()
       : (workflow.actions[index].input._grinderyChain || "").toString();
 
-  const options: any[] = _.flatten([
-    ...outputFields.map((out) =>
-      getOutputOptions(out.operation, out.connector)
-    ),
-  ]);
+  const options: any[] =
+    type === "trigger"
+      ? []
+      : _.flatten([
+          ...outputFields.map((out) =>
+            getOutputOptions(out.operation, out.connector)
+          ),
+        ]);
 
   const handleHeaderClick = () => {
     setActiveRow(2);
@@ -200,6 +207,7 @@ const StepInput = ({ outputFields }: Props) => {
         ["actions[" + index + "].input._grinderyChain"]: value || "",
       });
     }
+    setOperationIsTested(false);
   };
 
   const handleContractChange = (value: string) => {
@@ -213,6 +221,7 @@ const StepInput = ({ outputFields }: Props) => {
         ["actions[" + index + "].input._grinderyContractAddress"]: value || "",
       });
     }
+    setOperationIsTested(false);
   };
 
   const updateFieldsDefinition = () => {
@@ -225,7 +234,7 @@ const StepInput = ({ outputFields }: Props) => {
             operation.key,
             jsonrpcObj("grinderyNexusConnectorUpdateFields", {
               key: operation.key,
-              fieldData: {},
+              fieldData: workflowStep.input || {},
               credentials: credentials,
             }),
             isLocalOrStaging ? "staging" : undefined

@@ -9,6 +9,7 @@ import StepOperation from "./StepOperation";
 import StepAuthentication from "./StepAuthentication";
 import StepInput from "./StepInput";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
+import StepTest from "./StepTest";
 
 const Container = styled.div`
   border: 1px solid #dcdcdc;
@@ -46,6 +47,7 @@ const WorkflowStep = ({ outputFields }: Props) => {
             {operation && operationIsAuthenticated && (
               <StepInput outputFields={outputFields} />
             )}
+            {type === "action" && <StepTest outputFields={outputFields} />}
           </>
         )}
       </Container>

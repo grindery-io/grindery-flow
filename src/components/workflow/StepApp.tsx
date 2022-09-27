@@ -97,7 +97,8 @@ const Showing = styled.p`
 type Props = {};
 
 const StepApp = (props: Props) => {
-  const { type, step, getConnector } = useWorkflowStepContext();
+  const { type, step, getConnector, setOperationIsTested } =
+    useWorkflowStepContext();
   const { workflow, updateWorkflow, triggers, actions, activeStep } =
     useWorkflowContext();
   const [search, setSearch] = useState("");
@@ -204,6 +205,7 @@ const StepApp = (props: Props) => {
         ["actions[" + index + "].credentials"]: undefined,
       });
     }
+    setOperationIsTested(false);
   };
 
   const handleSearchChange = (value: string) => {

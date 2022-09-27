@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useParams } from "react-router";
 import { isLocalOrStaging } from "../constants";
 import { defaultFunc } from "../helpers/utils";
 import useAppContext from "../hooks/useAppContext";
@@ -25,12 +26,14 @@ type WorkflowStepContextProps = {
   operationAuthenticationIsRequired: boolean;
   inputError: string;
   errors: any;
+  operationIsTested: boolean;
   setConnector: (connector: Connector | null) => void;
   setActiveRow: (row: number) => void;
   setUsername: (name: string) => void;
   getConnector: (key: string) => void;
   setInputError: (a: string) => void;
   setErrors: (a: any) => void;
+  setOperationIsTested: (a: boolean) => void;
 };
 
 type WorkflowStepContextProviderProps = {
@@ -54,12 +57,14 @@ export const WorkflowStepContext = createContext<WorkflowStepContextProps>({
   operationAuthenticationIsRequired: false,
   inputError: "",
   errors: false,
+  operationIsTested: false,
   setConnector: defaultFunc,
   setActiveRow: defaultFunc,
   setUsername: defaultFunc,
   getConnector: defaultFunc,
   setInputError: defaultFunc,
   setErrors: defaultFunc,
+  setOperationIsTested: defaultFunc,
 });
 
 export const WorkflowStepContextProvider = ({
@@ -69,8 +74,9 @@ export const WorkflowStepContextProvider = ({
   step,
   setOutputFields,
 }: WorkflowStepContextProviderProps) => {
+  let { key } = useParams();
   const { client } = useAppContext();
-  const { workflow } = useWorkflowContext();
+  const { workflow, updateWorkflow } = useWorkflowContext();
   const [activeRow, setActiveRow] = useState(0);
   const [username, setUsername] = useState("");
   const [connector, setConnector] = useState<null | Connector>(null);
@@ -79,6 +85,7 @@ export const WorkflowStepContextProvider = ({
   const [operation, setOperation] = useState<
     null | undefined | Trigger | Action
   >(null);
+  const [operationIsTested, setOperationIsTested] = useState(false);
 
   //const operation =
 
@@ -165,6 +172,37 @@ export const WorkflowStepContextProvider = ({
     passOutputFields();
   }, [passOutputFields]);
 
+  useEffect(() => {
+    if (type === "trigger") {
+      updateWorkflow({
+        "system.trigger.selected": operation ? true : false,
+        "system.trigger.authenticated": operationIsAuthenticated ? true : false,
+        "system.trigger.configured": operationIsConfigured ? true : false,
+        "system.trigger.tested": true,
+      });
+    } else {
+      updateWorkflow({
+        ["system.actions[" + index + "].selected"]: operation ? true : false,
+        ["system.actions[" + index + "].authenticated"]:
+          operationIsAuthenticated ? true : false,
+        ["system.actions[" + index + "].configured"]: operationIsConfigured
+          ? true
+          : false,
+        ["system.actions[" + index + "].tested"]: key
+          ? true
+          : operationIsTested
+          ? true
+          : false,
+      });
+    }
+  }, [
+    operation,
+    operationIsAuthenticated,
+    operationIsConfigured,
+    operationIsTested,
+    key,
+  ]);
+
   return (
     <WorkflowStepContext.Provider
       value={{
@@ -180,12 +218,14 @@ export const WorkflowStepContextProvider = ({
         operationAuthenticationIsRequired,
         inputError,
         errors,
+        operationIsTested,
         setConnector,
         setActiveRow,
         setUsername,
         getConnector,
         setInputError,
         setErrors,
+        setOperationIsTested,
       }}
     >
       {children}
