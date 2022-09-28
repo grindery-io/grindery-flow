@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import _ from "lodash";
+import { IconButton, Menu } from "grindery-ui";
 import { ICONS } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
+import { Workflow } from "../../types/Workflow";
 
 const Container = styled.div`
   padding: 20px 32px;
@@ -93,6 +96,14 @@ const ChangeButton = styled.button`
   }
 `;
 
+const MenuButtonWrapper = styled.div`
+  & img {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+`;
+
 type Props = {};
 
 const StepHeader = (props: Props) => {
@@ -107,10 +118,13 @@ const StepHeader = (props: Props) => {
     setConnector,
     setOperationIsTested,
   } = useWorkflowStepContext();
-  const { activeStep, setActiveStep, updateWorkflow, workflow } =
+  const { activeStep, setActiveStep, updateWorkflow, workflow, setWorkflow } =
     useWorkflowContext();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const index = step - 2;
+
+  const menuItems: any[] = [];
 
   const operationIsTested =
     type === "trigger"
@@ -143,6 +157,72 @@ const StepHeader = (props: Props) => {
     setConnector(null);
     setOperationIsTested(false);
   };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleRemove = () => {
+    setWorkflow((_workflow: Workflow) => {
+      const newWf = _.cloneDeep(_workflow);
+      newWf.actions.splice(index, 1);
+      newWf.system.actions.splice(index, 1);
+      return newWf;
+    });
+  };
+
+  const arraymove = (arr: any[], fromIndex: number, toIndex: number) => {
+    var element = arr[fromIndex];
+    arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, element);
+  };
+
+  const handleMoveDown = () => {
+    setWorkflow((_workflow: Workflow) => {
+      const newWf = _.cloneDeep(_workflow);
+      arraymove(newWf.actions, index, index + 1);
+      arraymove(newWf.system.actions, index, index + 1);
+      return newWf;
+    });
+  };
+
+  const handleMoveUp = () => {
+    setWorkflow((_workflow: Workflow) => {
+      const newWf = _.cloneDeep(_workflow);
+      arraymove(newWf.actions, index, index - 1);
+      arraymove(newWf.system.actions, index, index - 1);
+      return newWf;
+    });
+  };
+
+  if (workflow.actions.length > 1 && index > 0) {
+    menuItems.push({
+      key: "moveUp",
+      label: "Move up",
+      onClick: handleMoveUp,
+    });
+  }
+
+  if (workflow.actions.length > 1 && index < workflow.actions.length - 1) {
+    menuItems.push({
+      key: "moveDown",
+      label: "Move down",
+      onClick: handleMoveDown,
+    });
+  }
+
+  if (index > 0 || workflow.actions.length > 1) {
+    menuItems.push({
+      key: "remove",
+      label: "Remove",
+      onClick: handleRemove,
+    });
+  }
 
   return (
     <Container
@@ -191,6 +271,27 @@ const StepHeader = (props: Props) => {
       )}
       {connector && activeStep === step && (
         <ChangeButton onClick={handleChangeClick}>Change</ChangeButton>
+      )}
+      {type !== "trigger" && menuItems.length > 0 && (
+        <div style={{ marginLeft: connector ? "0" : "auto" }}>
+          <MenuButtonWrapper>
+            <IconButton onClick={handleMenuOpen} icon={ICONS.DOTS_HORIZONTAL} />
+          </MenuButtonWrapper>
+          <Menu
+            anchorEl={anchorEl}
+            onClose={handleMenuClose}
+            closeOnClick
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            items={menuItems}
+          />
+        </div>
       )}
     </Container>
   );

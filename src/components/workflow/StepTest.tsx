@@ -242,8 +242,9 @@ const StepTest = ({ outputFields }: Props) => {
   /*const options = _.flatten([
     ...(outputFields.map((out) => out?.operation?.sample) || []),
   ]);
-
-  console.log("test options", operation);*/
+  if (isLocalOrStaging) {
+  console.log("test options", operation);
+  }*/
 
   const values = replaceTokens(workflow.actions[index]?.input || {}, {
     trigger: {},
@@ -299,8 +300,10 @@ const StepTest = ({ outputFields }: Props) => {
 
   const renderValue = (value: any) => (
     <>
-      {value.split("\n").map((v: any) => (
-        <p style={{ padding: "5px 0", margin: "0px" }}>{v}</p>
+      {value.split("\n").map((v: any, i: number) => (
+        <p key={v + i} style={{ padding: "5px 0", margin: "0px" }}>
+          {v}
+        </p>
       ))}
     </>
   );

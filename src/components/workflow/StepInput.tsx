@@ -173,7 +173,8 @@ const StepInput = ({ outputFields }: Props) => {
 
     const validationSchema = getValidationScheme([
       ...(operation?.operation?.inputFields || []),
-      ...(operation?.operation?.type === "blockchain:event" &&
+      ...((operation?.operation?.type === "blockchain:event" ||
+        operation?.operation?.type === "blockchain:call") &&
       (operation?.operation?.inputFields || []).filter(
         (inputfield: Field) => inputfield.key === "_grinderyChain"
       ).length < 1
@@ -185,7 +186,8 @@ const StepInput = ({ outputFields }: Props) => {
             },
           ]
         : []),
-      ...(operation?.operation?.type === "blockchain:event" &&
+      ...((operation?.operation?.type === "blockchain:event" ||
+        operation?.operation?.type === "blockchain:call") &&
       (operation?.operation?.inputFields || []).filter(
         (inputfield: Field) => inputfield.key === "_grinderyContractAddress"
       ).length < 1

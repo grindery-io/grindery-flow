@@ -15,6 +15,10 @@ import useAppContext from "../../hooks/useAppContext";
 import Check from "./../icons/Check";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
+const AUTH_ENDPOINT = "https://orchestrator.grindery.org/credentials/staging";
+const GET_OAUTH_TOKEN_ENDPOINT =
+  "https://orchestrator.grindery.org/credentials/auth/complete";
+
 const Container = styled.div`
   border-top: 1px solid #dcdcdc;
 `;
@@ -122,7 +126,7 @@ const StepAuthentication = (props: Props) => {
   } = useWorkflowStepContext();
   const { workflow, updateWorkflow, loading, setLoading } =
     useWorkflowContext();
-  const { client } = useAppContext();
+  const { client, access_token } = useAppContext();
 
   const index = step - 2;
 
@@ -151,36 +155,27 @@ const StepAuthentication = (props: Props) => {
           connector.authentication &&
           connector.authentication.type &&
           connector.authentication.type === "oauth2" &&
-          codeParam &&
-          connector.authentication.oauth2Config &&
-          connector.authentication.oauth2Config.getAccessToken
+          codeParam
         ) {
-          const getAccessTokenRequest =
-            connector.authentication.oauth2Config.getAccessToken;
-          const body =
-            typeof getAccessTokenRequest.body === "object"
-              ? getAccessTokenRequest.body
-              : {};
           const data = {
-            ...body,
             code: codeParam,
-            redirect_uri: window.location.origin + "/auth",
+            //redirect_uri: window.location.origin + "/auth",
           };
           axios({
-            method: getAccessTokenRequest.method,
-            url: getAccessTokenRequest.url,
-            headers: getAccessTokenRequest.headers || {},
-            data:
-              getAccessTokenRequest.headers &&
-              getAccessTokenRequest.headers["Content-Type"] &&
-              getAccessTokenRequest.headers["Content-Type"] ===
-                "application/x-www-form-urlencoded"
-                ? qs.stringify(data)
-                : data,
+            method: "POST",
+            url: GET_OAUTH_TOKEN_ENDPOINT,
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+            data,
           })
             .then((res) => {
               if (res && res.data) {
                 const credentials = res.data;
+                if (isLocalOrStaging) {
+                  console.log("credentials", credentials);
+                }
+
                 testAuth(credentials);
               }
             })
@@ -202,11 +197,9 @@ const StepAuthentication = (props: Props) => {
         height = 500,
         left = window.screen.width / 2 - width / 2,
         top = window.screen.height / 2 - height / 2;
+
       let windowObjectReference = window.open(
-        connector.authentication?.oauth2Config?.authorizeUrl.url +
-          "&redirect_uri=" +
-          window.location.origin +
-          "/auth",
+        `${AUTH_ENDPOINT}/${connector.key}/auth?access_token=${access_token}&redirect_uri=${window.location.origin}/auth`,
         "_blank",
         "status=no, toolbar=no, menubar=no, width=" +
           width +

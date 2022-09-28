@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { ICONS } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
+import AddStep from "../icons/AddStep";
 import StepsDivider from "./StepsDivider";
 
 const Button = styled.button`
@@ -11,12 +12,25 @@ const Button = styled.button`
   padding: 0;
   margin: 0;
   cursor: pointer;
-`;
 
-const Icon = styled.img`
-  display: block;
-  width: 32px;
-  height: 32px;
+  & svg {
+    width: 32px;
+    height: 32px;
+    display: block;
+
+    & path,
+    & rect {
+      transition: all 0.1s ease-in-out;
+    }
+  }
+
+  &:hover svg path {
+    fill: #8c30f5 !important;
+  }
+
+  &:hover svg rect {
+    stroke: #8c30f5 !important;
+  }
 `;
 
 type Props = {
@@ -50,7 +64,7 @@ const AddActionButton = (props: Props) => {
     <>
       <StepsDivider height={16} />
       <Button onClick={handleClick}>
-        <Icon src={ICONS.ADD_STEP} alt="" />
+        <AddStep />
       </Button>
     </>
   );

@@ -153,12 +153,14 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
     if (res) {
       setWorkflows(
-        res
-          .map((result: any) => ({
-            ...result.workflow,
-            key: result.key,
-          }))
-          .filter((workflow: Workflow) => workflow)
+        _.reverse(
+          res
+            .map((result: any) => ({
+              ...result.workflow,
+              key: result.key,
+            }))
+            .filter((workflow: Workflow) => workflow)
+        )
       );
     } else {
       setWorkflows([]);

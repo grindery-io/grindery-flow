@@ -534,7 +534,8 @@ export const WorkflowContextProvider = ({
     if (key) {
       const selectedWorkflow = workflows.find((wf) => wf.key === key);
       if (selectedWorkflow) {
-        setWorkflow(selectedWorkflow);
+        const wf = _.cloneDeep(selectedWorkflow);
+        setWorkflow(wf);
       }
     } else {
       resetWorkflow();

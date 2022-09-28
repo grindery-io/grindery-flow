@@ -144,7 +144,7 @@ const Showing = styled.p`
 type Props = {};
 
 const StepApp = (props: Props) => {
-  const { type, step, getConnector, setOperationIsTested } =
+  const { type, step, getConnector, setOperationIsTested, connector } =
     useWorkflowStepContext();
   const { workflow, updateWorkflow, triggers, actions, activeStep } =
     useWorkflowContext();

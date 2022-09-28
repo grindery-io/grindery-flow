@@ -84,7 +84,9 @@ export const WorkflowStepContextProvider = ({
   const [operation, setOperation] = useState<
     null | undefined | Trigger | Action
   >(null);
-  const [operationIsTested, setOperationIsTested] = useState(false);
+  const [operationIsTested, setOperationIsTested] = useState(
+    key ? true : false
+  );
 
   //const operation =
 
@@ -187,9 +189,7 @@ export const WorkflowStepContextProvider = ({
         ["system.actions[" + index + "].configured"]: operationIsConfigured
           ? true
           : false,
-        ["system.actions[" + index + "].tested"]: key
-          ? true
-          : operationIsTested
+        ["system.actions[" + index + "].tested"]: operationIsTested
           ? true
           : false,
       });
