@@ -350,7 +350,7 @@ const ActionConfiguration = (props: Props) => {
             actions.current(index)?.key || "",
             jsonrpcObj("grinderyNexusConnectorUpdateFields", {
               key: actions.current(index)?.key,
-              fieldData: {},
+              fieldData: workflow.actions[index].input || {},
               credentials: workflow.actions[index].credentials,
             }),
             isLocalOrStaging ? "staging" : undefined

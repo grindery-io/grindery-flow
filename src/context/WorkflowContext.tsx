@@ -419,7 +419,31 @@ export const WorkflowContextProvider = ({
 
   // reset current workflow
   const resetWorkflow = () => {
-    setWorkflow({ ...blankWorkflow, creator: user || "" });
+    setWorkflow({
+      ...{
+        title: "New workflow",
+        trigger: {
+          type: "trigger",
+          connector: "",
+          operation: "",
+          input: {},
+        },
+        actions: [
+          {
+            type: "action",
+            connector: "",
+            operation: "",
+            input: {},
+          },
+        ],
+        creator: "",
+        state: "on",
+        source: isLocalOrStaging
+          ? "urn:grindery-staging:nexus"
+          : "urn:grindery:nexus",
+      },
+      creator: user || "",
+    });
     setActiveStep(1);
   };
 
