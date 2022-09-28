@@ -7,6 +7,7 @@ export type Workflow = {
   state?: any;
   source?: string;
   system?: any;
+  signature?: string;
 };
 
 export type Operation = {

@@ -17,7 +17,7 @@ import useWorkspaceContext from "../hooks/useWorkspaceContext";
 
 // empty workflow declaration
 const blankWorkflow: Workflow = {
-  title: "New workflow",
+  title: "Name your workflow",
   trigger: {
     type: "trigger",
     connector: "",
@@ -436,7 +436,7 @@ export const WorkflowContextProvider = ({
   const resetWorkflow = () => {
     setWorkflow({
       ...{
-        title: "New workflow",
+        title: "Name your workflow",
         trigger: {
           type: "trigger",
           connector: "",
@@ -468,6 +468,7 @@ export const WorkflowContextProvider = ({
         ...workflow,
         signature: JSON.stringify(workflow),
       };
+      delete readyWorkflow.system;
       if (isLocalOrStaging) {
         console.log("readyWorkflow", readyWorkflow);
       }

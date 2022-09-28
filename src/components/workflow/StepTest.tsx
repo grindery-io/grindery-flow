@@ -45,6 +45,7 @@ const OperationStateIcon = styled.img`
 
 const Content = styled.div`
   padding: 0 32px 20px;
+  position: relative;
 `;
 
 const Button = styled.button`
@@ -171,7 +172,6 @@ const StepTest = ({ outputFields }: Props) => {
     operation,
     operationIsConfigured,
     operationIsAuthenticated,
-    operationIsTested,
     setOperationIsTested,
   } = useWorkflowStepContext();
   const { workflow, updateWorkflow, loading, setLoading } =
@@ -180,6 +180,11 @@ const StepTest = ({ outputFields }: Props) => {
   const index = step - 2;
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  const operationIsTested =
+    type === "trigger"
+      ? workflow.system?.trigger?.tested
+      : workflow.system?.actions?.[index]?.tested;
 
   /*const options = _.flatten([
     ...(outputFields.map((out) => out?.operation?.sample) || []),
@@ -323,9 +328,12 @@ const StepTest = ({ outputFields }: Props) => {
               {loading && (
                 <div
                   style={{
-                    marginTop: 40,
+                    position: "absolute",
+                    bottom: "32px",
+                    left: 0,
                     textAlign: "center",
                     color: "#8C30F5",
+                    width: "100%",
                   }}
                 >
                   <CircularProgress color="inherit" />

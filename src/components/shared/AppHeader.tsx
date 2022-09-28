@@ -124,16 +124,24 @@ const AppHeader = (props: Props) => {
           <IconButton icon={ICONS.BACK} onClick={handleBack} color="" />
         </BackWrapper>
       )}
-      <LogoWrapper>
-        <Logo variant="square" />
-      </LogoWrapper>
-      <CompanyNameWrapper
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        Grindery Nexus
-      </CompanyNameWrapper>
+
+      {!matchNewWorfklow ? (
+        <>
+          <LogoWrapper>
+            <Logo variant="square" />
+          </LogoWrapper>
+          <CompanyNameWrapper
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Grindery Nexus
+          </CompanyNameWrapper>
+        </>
+      ) : (
+        <></>
+      )}
+
       {user && !matchNewWorfklow && (
         <WorkspaceSelectorWrapper>
           <WorkspaceSelector />

@@ -4,10 +4,12 @@ import useWorkflowContext from "../../hooks/useWorkflowContext";
 import { SCREEN } from "../../constants";
 import WorkflowStep from "./WorkflowStep";
 import WorkflowStepContextProvider from "../../context/WorkflowStepContext";
+import WorkflowName from "./WorkflowName";
+import WorkflowSave from "./WorkflowSave";
 
 const Wrapper = styled.div`
   max-width: 816px;
-  padding: 0;
+  padding: 32px 20px 42px;
   border: none;
   display: flex;
   flex-direction: column;
@@ -16,14 +18,14 @@ const Wrapper = styled.div`
   flex-wrap: nowrap;
 
   @media (min-width: ${SCREEN.TABLET}) {
-    padding: 0;
+    padding: 0 0 16px;
     margin: 40px auto 0;
   }
   @media (min-width: ${SCREEN.DESKTOP}) {
     margin: 40px auto 0;
   }
   @media (min-width: ${SCREEN.DESKTOP_XL}) {
-    padding: 0;
+    padding: 0 0 16px;
     margin: 40px auto 0;
   }
 `;
@@ -36,28 +38,31 @@ const WorkflowBuilder = (props: Props) => {
   const [outputFields, setOutputFields] = useState<any[]>([]);
 
   return (
-    <Wrapper>
-      <WorkflowStepContextProvider
-        type="trigger"
-        index={0}
-        step={1}
-        setOutputFields={setOutputFields}
-      >
-        <WorkflowStep outputFields={outputFields} />
-      </WorkflowStepContextProvider>
-      {workflow.actions.map((action, index) => (
+    <>
+      <WorkflowName />
+      <Wrapper>
         <WorkflowStepContextProvider
-          key={`${action.connector}_${index}`}
-          type="action"
-          index={index}
-          step={index + 2}
+          type="trigger"
+          index={0}
+          step={1}
           setOutputFields={setOutputFields}
         >
           <WorkflowStep outputFields={outputFields} />
         </WorkflowStepContextProvider>
-      ))}
-      {workflowReadyToSave && <button>save</button>}
-    </Wrapper>
+        {workflow.actions.map((action, index) => (
+          <WorkflowStepContextProvider
+            key={`${action.connector}_${index}`}
+            type="action"
+            index={index}
+            step={index + 2}
+            setOutputFields={setOutputFields}
+          >
+            <WorkflowStep outputFields={outputFields} />
+          </WorkflowStepContextProvider>
+        ))}
+        <WorkflowSave />
+      </Wrapper>
+    </>
   );
 };
 

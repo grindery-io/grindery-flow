@@ -8,6 +8,7 @@ import {
   COMING_SOON_TRIGGERS,
   NOT_READY_ACTIONS,
   NOT_READY_TRIGGERS,
+  SCREEN,
 } from "../../constants";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
@@ -16,13 +17,28 @@ const Container = styled.div`
   padding: 32px;
 `;
 
+const SearchWrapper = styled.div`
+  & > .MuiBox-root {
+    margin-bottom: 8px;
+  }
+`;
+
+const OptionsWrapper = styled.div`
+  max-height: 182px;
+  overflow: auto;
+  margin: 0 0 8px;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 16px;
+`;
+
 const Options = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 8px;
 `;
 
 const Option = styled.button`
@@ -38,7 +54,27 @@ const Option = styled.button`
   box-shadow: none;
   cursor: pointer;
   width: 100%;
-  max-width: calc(100% / 3 - 10.7px);
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 5px;
+
+  @media (min-width: ${SCREEN.TABLET}) {
+    max-width: calc(100% / 2 - 4px);
+  }
+  @media (min-width: ${SCREEN.DESKTOP}) {
+    max-width: calc(100% / 3 - 5.4px);
+  }
+
+  &:hover {
+    background: #f4f5f7;
+  }
+
+  &.coming-soon {
+    cursor: not-allowed;
+    &:hover {
+      background: none;
+    }
+  }
 `;
 
 const OptionIcon = styled.div`
@@ -60,6 +96,11 @@ const OptionIcon = styled.div`
     display: block;
   }
 `;
+
+const OptionTitleWrapper = styled.div`
+  max-width: calc(100% - 32px);
+`;
+
 const OptionTitle = styled.p`
   font-weight: 700;
   font-size: 14px;
@@ -70,19 +111,25 @@ const OptionTitle = styled.p`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
+  max-width: 100%;
 `;
 
-/*const OptionDescription = styled.p`
+const GroupHeader = styled.div`
+  text-align: left;
   font-weight: 400;
-  font-size: 10px;
-  line-height: 160%;
+  font-size: 14px;
+  line-height: 150%;
   color: #898989;
+  padding: 8px 0;
   margin: 0;
-  padding: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;*/
+  background: #ffffff;
+  position: sticky;
+  top: -16px;
+  width: 100%;
+  max-width: 100%;
+  border-top: 1px solid #f4f5f7;
+`;
 
 const Showing = styled.p`
   font-weight: 400;
@@ -90,7 +137,7 @@ const Showing = styled.p`
   line-height: 160%;
   text-align: center;
   color: #706e6e;
-  margin: 16px 0 0;
+  margin: 0 0 -16px;
   padding: 0;
 `;
 
@@ -116,6 +163,7 @@ const StepApp = (props: Props) => {
               label: connector.name,
               icon: connector.icon,
               paid: connector.pricing,
+              group: undefined,
             }))
             .filter(
               (connector: any) =>
@@ -124,7 +172,7 @@ const StepApp = (props: Props) => {
                     notReadyKey && notReadyKey === connector.value
                 )
             ),
-          /*...[
+          ...[
             ...triggers.connectorsWithTriggers
               .map((connector) => ({
                 value: connector.key,
@@ -141,7 +189,7 @@ const StepApp = (props: Props) => {
                 )
               ),
             ...COMING_SOON_TRIGGERS,
-          ],*/
+          ],
         ]
       : [
           ...actions.connectorsWithActions
@@ -150,6 +198,7 @@ const StepApp = (props: Props) => {
               label: connector.name,
               icon: connector.icon,
               paid: connector.pricing,
+              group: undefined,
             }))
             .filter(
               (connector: any) =>
@@ -158,7 +207,7 @@ const StepApp = (props: Props) => {
                     notReadyKey && notReadyKey === connector.value
                 )
             ),
-          /*...[
+          ...[
             ...actions.connectorsWithActions
               .map((connector) => ({
                 value: connector.key,
@@ -174,15 +223,13 @@ const StepApp = (props: Props) => {
                     notReadyKey && notReadyKey === connector.value
                 )
               ),
-            //...COMING_SOON_ACTIONS,
-          ],*/
+            ...COMING_SOON_ACTIONS,
+          ],
         ];
 
-  const visibleOptions = options
-    .filter((option) =>
-      option.label.toLowerCase().includes(search.toLowerCase())
-    )
-    .slice(0, 12);
+  const visibleOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(search.toLowerCase())
+  );
 
   const value =
     type === "trigger"
@@ -223,31 +270,58 @@ const StepApp = (props: Props) => {
   }
   return activeStep === step ? (
     <Container>
-      <TextInput
-        value={search}
-        onChange={handleSearchChange}
-        label={type === "trigger" ? "Select a trigger" : "Select an action"}
-        placeholder="Search use case or protocol"
-        icon="search"
-        type="input-icon"
-      />
-      <Options>
-        {visibleOptions.map((option) => (
-          <Option
-            key={option.value}
-            onClick={() => {
-              handleOptionClick(option.value);
-            }}
-          >
-            <OptionIcon>
-              <img src={option.icon} alt="" />
-            </OptionIcon>
-            <div>
-              <OptionTitle>{option.label}</OptionTitle>
-            </div>
-          </Option>
-        ))}
-      </Options>
+      <SearchWrapper>
+        <TextInput
+          value={search}
+          onChange={handleSearchChange}
+          label={type === "trigger" ? "Select a trigger" : "Select an action"}
+          placeholder="Search use case or protocol"
+          icon="search"
+          type="input-icon"
+        />
+      </SearchWrapper>
+      <OptionsWrapper>
+        <Options>
+          {visibleOptions
+            .filter((option) => !option.group)
+            .map((option) => (
+              <Option
+                key={option.value}
+                onClick={() => {
+                  handleOptionClick(option.value);
+                }}
+              >
+                <OptionIcon>
+                  <img src={option.icon} alt="" />
+                </OptionIcon>
+                <OptionTitleWrapper>
+                  <OptionTitle>{option.label}</OptionTitle>
+                </OptionTitleWrapper>
+              </Option>
+            ))}
+          {visibleOptions.filter(
+            (option) => option.group && option.group === "Coming soon"
+          ).length > 0 && (
+            <>
+              <GroupHeader>Coming soon</GroupHeader>
+              {visibleOptions
+                .filter(
+                  (option) => option.group && option.group === "Coming soon"
+                )
+                .map((option) => (
+                  <Option key={option.value} className="coming-soon">
+                    <OptionIcon>
+                      <img src={option.icon} alt="" />
+                    </OptionIcon>
+                    <OptionTitleWrapper>
+                      <OptionTitle>{option.label}</OptionTitle>
+                    </OptionTitleWrapper>
+                  </Option>
+                ))}
+            </>
+          )}
+        </Options>
+      </OptionsWrapper>
       <Showing>
         Showing {visibleOptions.length} out of {options.length} results
       </Showing>

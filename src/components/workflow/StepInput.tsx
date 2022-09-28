@@ -54,6 +54,7 @@ const OperationStateIcon = styled.img`
 
 const Content = styled.div`
   padding: 20px 32px;
+  position: relative;
 `;
 
 const Button = styled.button`
@@ -352,7 +353,7 @@ const StepInput = ({ outputFields }: Props) => {
       </Header>
       {activeRow === 2 && (
         <Content>
-          <div style={{ marginTop: 40 }}>
+          <div>
             {operation?.operation?.type === "blockchain:event" &&
               (operation?.operation?.inputFields || []).filter(
                 (inputfield: Field) => inputfield.key === "_grinderyChain"
@@ -398,7 +399,14 @@ const StepInput = ({ outputFields }: Props) => {
 
             {loading && (
               <div
-                style={{ marginTop: 40, textAlign: "center", color: "#8C30F5" }}
+                style={{
+                  position: "absolute",
+                  bottom: "32px",
+                  left: 0,
+                  textAlign: "center",
+                  color: "#8C30F5",
+                  width: "100%",
+                }}
               >
                 <CircularProgress color="inherit" />
               </div>

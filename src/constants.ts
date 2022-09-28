@@ -303,7 +303,6 @@ export const WEB3_CONNECTORS_PATH =
 
 export const NOT_READY_TRIGGERS = [
   "hubspot",
-  "zapier",
   "juicebox",
   "multis",
   "parcel",
@@ -316,7 +315,6 @@ export const NOT_READY_TRIGGERS = [
 export const NOT_READY_ACTIONS = [
   "sendGrid",
   "hubspot",
-  "zapier",
   "doraFactory",
   "multis",
   "superfluid",
@@ -325,28 +323,21 @@ export const NOT_READY_ACTIONS = [
 export const COMING_SOON_TRIGGERS = [
   {
     value: "Email",
-    label: "Email",
+    label: "Email by Nexus",
     group: "Coming soon",
     disabled: true,
     icon: "/images/coming-soon/email.png",
   },
   {
-    value: "WebHook",
-    label: "WebHook",
-    group: "Coming soon",
-    disabled: true,
-    icon: "/images/coming-soon/webhook.png",
-  },
-  {
     value: "Storage",
-    label: "Storage",
+    label: "Storage by Nexus",
     group: "Coming soon",
     disabled: true,
     icon: "/favicon.ico",
   },
   {
     value: "MassMail",
-    label: "MassMail",
+    label: "MassMail by Nexus",
     group: "Coming soon",
     disabled: true,
     icon: "/images/coming-soon/email.png",

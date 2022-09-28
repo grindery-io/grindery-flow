@@ -51,6 +51,7 @@ const OperationStateIcon = styled.img`
 
 const Content = styled.div`
   padding: 20px 32px;
+  position: relative;
 `;
 
 const Button = styled.button`
@@ -84,9 +85,9 @@ const ButtonWrapper = styled.div`
 `;
 
 const AccountWrapper = styled.div`
-  margin-top: 40px;
+  margin-top: 0px;
   text-align: left;
-  margin-bottom: 40px;
+  margin-bottom: 6px;
 
   & .MuiButton-root {
     width: 100%;
@@ -459,9 +460,12 @@ const StepAuthentication = (props: Props) => {
               {loading && (
                 <div
                   style={{
-                    marginTop: 30,
+                    position: "absolute",
+                    bottom: "32px",
+                    left: 0,
                     textAlign: "center",
                     color: "#8C30F5",
+                    width: "100%",
                   }}
                 >
                   <CircularProgress color="inherit" />

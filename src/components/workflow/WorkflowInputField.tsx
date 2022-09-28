@@ -22,7 +22,7 @@ const InputWrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 0px;
   gap: 10px;
   max-width: 100%;
   & > *:first-child {
@@ -52,7 +52,7 @@ const ReadOnlyWrapper = styled.div`
 `;
 
 const AlertWrapper = styled.div`
-  margin-top: 20px;
+  margin-bottom: 16px;
 `;
 
 const WarningTitle = styled.h4`

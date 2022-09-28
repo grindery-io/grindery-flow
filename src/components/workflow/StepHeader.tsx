@@ -24,10 +24,12 @@ const Icon = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: nowrap;
+  min-width: 56px;
 
   & img {
     display: block;
     width: 24px;
+    min-width: 24px;
     height: 24px;
   }
 `;
@@ -43,10 +45,12 @@ const AppIcon = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: nowrap;
+  min-width: 56px;
 
   & img {
     display: block;
     width: 32px;
+    min-width: 32px;
     height: 32px;
   }
 `;
@@ -100,14 +104,18 @@ const StepHeader = (props: Props) => {
     operation,
     operationIsConfigured,
     operationIsAuthenticated,
-    operationIsTested,
     setConnector,
     setOperationIsTested,
   } = useWorkflowStepContext();
-  const { activeStep, setActiveStep, updateWorkflow, triggers, actions } =
+  const { activeStep, setActiveStep, updateWorkflow, workflow } =
     useWorkflowContext();
 
   const index = step - 2;
+
+  const operationIsTested =
+    type === "trigger"
+      ? workflow.system?.trigger?.tested
+      : workflow.system?.actions?.[index]?.tested;
 
   const handleHeaderClick = () => {
     if (activeStep !== step) {
