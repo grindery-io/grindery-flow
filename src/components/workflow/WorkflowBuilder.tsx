@@ -33,7 +33,8 @@ const Wrapper = styled.div`
 type Props = {};
 
 const WorkflowBuilder = (props: Props) => {
-  const { workflow, workflowReadyToSave } = useWorkflowContext();
+  const { workflow } = useWorkflowContext();
+
   // workflow steps output
   const [outputFields, setOutputFields] = useState<any[]>([]);
 

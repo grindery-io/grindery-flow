@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import _ from "lodash";
-import { CircularProgress } from "grindery-ui";
+import { CircularProgress, Alert } from "grindery-ui";
 import { ICONS, isLocalOrStaging } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
 import { Field } from "../../types/Connector";
 import { replaceTokens } from "../../helpers/utils";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
+import logoSquare from "../../assets/images/nexus-square.svg";
 
 const Container = styled.div`
   border-top: 1px solid #dcdcdc;
@@ -146,17 +147,69 @@ const RowIconWrapper = styled.div`
   }
 `;
 
-const SuccessWrapper = styled.div``;
+const SuccessWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  jsutify-content: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  padding: 20px 0 12px;
+`;
 
-const SuccessIcons = styled.div``;
+const SuccessIcons = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  jsutify-content: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+`;
 
-const SuccessTitle = styled.h3``;
+const SuccessTitle = styled.h3`
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 120%;
+  text-align: center;
+  color: #0b0d17;
+  margin: 8px 0 0;
+  padding: 0;
+`;
 
-const SuccessDescription = styled.p``;
+const SuccessDescription = styled.p`
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  text-align: center;
+  color: #0b0d17;
+  padding: 0;
+  margin: 0;
+`;
 
-const IconWrapper = styled.div``;
+const IconWrapper = styled.div`
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  padding: 8px;
+  box-sizing: border-box;
 
-const ArrowIcon = styled.img``;
+  & img {
+    width: 40px;
+    height: 40px;
+    display: block;
+  }
+`;
+
+const ArrowIcon = styled.img`
+  width: 12px;
+  height: 12px;
+`;
+
+const AlertWrapper = styled.div`
+  margin: 0 0 20px;
+`;
 
 type Props = {
   outputFields: any[];
@@ -284,11 +337,11 @@ const StepTest = ({ outputFields }: Props) => {
             <SuccessWrapper>
               <SuccessIcons>
                 <IconWrapper>
-                  <img src="" alt="" />
+                  <img src={logoSquare} alt="" />
                 </IconWrapper>
-                <ArrowIcon />
+                <ArrowIcon src={ICONS.ARROW_RIGHT_BLACK} alt="" />
                 <IconWrapper>
-                  <img src="" alt="" />
+                  <img src={connector?.icon} alt="" />
                 </IconWrapper>
               </SuccessIcons>
               <SuccessTitle>
@@ -325,6 +378,24 @@ const StepTest = ({ outputFields }: Props) => {
                   </tbody>
                 </table>
               </TableWrapper>
+              {error && (
+                <AlertWrapper>
+                  <Alert
+                    color="error"
+                    elevation={0}
+                    icon={
+                      <img
+                        src={ICONS.ERROR_ALERT}
+                        width={20}
+                        height={20}
+                        alt="error icon"
+                      />
+                    }
+                  >
+                    <div style={{ textAlign: "left" }}>{error}</div>
+                  </Alert>
+                </AlertWrapper>
+              )}
               {loading && (
                 <div
                   style={{

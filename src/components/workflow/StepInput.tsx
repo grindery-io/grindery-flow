@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import _ from "lodash";
-import { CircularProgress } from "grindery-ui";
-import { ICONS, isLocalOrStaging } from "../../constants";
+import { CircularProgress, Alert } from "grindery-ui";
+import { BLOCKCHAINS, ICONS, isLocalOrStaging } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import WorkflowInputField from "./WorkflowInputField";
 import useAddressBook from "../../hooks/useAddressBook";
@@ -17,6 +17,7 @@ import {
   jsonrpcObj,
 } from "../../helpers/utils";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
+import GasInput from "./GasInput";
 
 const Container = styled.div`
   border-top: 1px solid #dcdcdc;
@@ -87,6 +88,10 @@ const ButtonWrapper = styled.div`
   padding-bottom: 12px;
 `;
 
+const AlertWrapper = styled.div`
+  margin-bottom: 20px;
+`;
+
 type Props = {
   outputFields: any[];
 };
@@ -108,10 +113,11 @@ const StepInput = ({ outputFields }: Props) => {
     setErrors,
     setOperationIsTested,
   } = useWorkflowStepContext();
-  const { workflow, updateWorkflow, loading, setLoading } =
+  const { workflow, updateWorkflow, loading, setLoading, setActiveStep } =
     useWorkflowContext();
   const { user, client } = useAppContext();
   const { addressBook, setAddressBook } = useAddressBook(user);
+  const [gas, setGas] = useState("0.001");
 
   const index = step - 2;
 
@@ -148,6 +154,14 @@ const StepInput = ({ outputFields }: Props) => {
             getOutputOptions(out.operation, out.connector)
           ),
         ]);
+
+  const gasToken = workflow.actions[index]?.input._grinderyChain
+    ? BLOCKCHAINS.find(
+        (chain) => chain.value === workflow.actions[index]?.input._grinderyChain
+      ) || ""
+    : "";
+
+  const operationType = operation?.operation?.type;
 
   const handleHeaderClick = () => {
     setActiveRow(2);
@@ -191,6 +205,9 @@ const StepInput = ({ outputFields }: Props) => {
 
     if (typeof validated === "boolean") {
       setActiveRow(activeRow + 1);
+      if (type === "trigger") {
+        setActiveStep((activeStep: number) => activeStep + 1);
+      }
     } else {
       setErrors(validated);
       setInputError("Please complete all required fields.");
@@ -323,6 +340,12 @@ const StepInput = ({ outputFields }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operation]);
 
+  const handleGasChange = (value: string) => {
+    updateWorkflow({
+      ["actions[" + index + "].input._grinderyGasLimit"]: value,
+    });
+  };
+
   useEffect(() => {
     setComputedDefaultValues();
   }, [setComputedDefaultValues]);
@@ -332,6 +355,13 @@ const StepInput = ({ outputFields }: Props) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (operationType === "blockchain:call") {
+      handleGasChange(gas);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [operationType, gas]);
 
   return operation && operationIsAuthenticated ? (
     <Container>
@@ -354,7 +384,8 @@ const StepInput = ({ outputFields }: Props) => {
       {activeRow === 2 && (
         <Content>
           <div>
-            {operation?.operation?.type === "blockchain:event" &&
+            {(operation?.operation?.type === "blockchain:event" ||
+              operation?.operation?.type === "blockchain:call") &&
               (operation?.operation?.inputFields || []).filter(
                 (inputfield: Field) => inputfield.key === "_grinderyChain"
               ).length < 1 && (
@@ -365,7 +396,8 @@ const StepInput = ({ outputFields }: Props) => {
                   setErrors={setErrors}
                 />
               )}
-            {operation?.operation?.type === "blockchain:event" &&
+            {(operation?.operation?.type === "blockchain:event" ||
+              operation?.operation?.type === "blockchain:call") &&
               (operation?.operation?.inputFields || []).filter(
                 (inputfield: Field) =>
                   inputfield.key === "_grinderyContractAddress"
@@ -387,7 +419,7 @@ const StepInput = ({ outputFields }: Props) => {
                 type={type}
                 inputField={inputField}
                 key={inputField.key}
-                options={options}
+                options={type === "action" ? options : []}
                 setError={setInputError}
                 addressBook={addressBook}
                 setAddressBook={setAddressBook}
@@ -396,7 +428,51 @@ const StepInput = ({ outputFields }: Props) => {
                 index={index}
               />
             ))}
-
+            {operation?.operation?.type === "blockchain:call" &&
+              workflow.actions[index]?.input?._grinderyChain &&
+              /eip155:/i.test(
+                workflow.actions[index]?.input?._grinderyChain.toString()
+              ) &&
+              gasToken && (
+                <AlertWrapper>
+                  <Alert
+                    color="warning"
+                    elevation={0}
+                    icon={
+                      <img
+                        src={ICONS.GAS_ALERT}
+                        width={20}
+                        height={20}
+                        alt="gas icon"
+                      />
+                    }
+                  >
+                    <>
+                      <div style={{ textAlign: "left", marginBottom: "4px" }}>
+                        This action will require you to pay gas. Make sure your
+                        account has funds. Current balance:{" "}
+                        <a
+                          href="#balance"
+                          style={{
+                            fontWeight: "bold",
+                            color: "inherit",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          0.003 {gasToken.token}
+                        </a>
+                      </div>
+                      <GasInput
+                        value={gas}
+                        onChange={(e) => {
+                          setGas(e.target.value);
+                        }}
+                        suffix={gasToken.token}
+                      />
+                    </>
+                  </Alert>
+                </AlertWrapper>
+              )}
             {loading && (
               <div
                 style={{

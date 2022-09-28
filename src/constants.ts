@@ -31,6 +31,7 @@ export const ICONS: { [key: string]: string } = {
   CREATE_DEPOSIT: "/images/icons/create-deposit.svg",
   CREATE_ALERT: "/images/icons/create-alert.svg",
   ARROW_RIGHT: "/images/icons/arrow-right.svg",
+  ARROW_RIGHT_BLACK: "/images/icons/arrow-right-black.svg",
   CLOSE: "/images/icons/close.svg",
   PLUS_WHITE: "/images/icons/plus-white.svg",
   GAS_ALERT: "/images/icons/gas-alert.svg",

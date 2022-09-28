@@ -11,7 +11,6 @@ import { defaultFunc } from "../helpers/utils";
 import useAppContext from "../hooks/useAppContext";
 import useWorkflowContext from "../hooks/useWorkflowContext";
 import { Action, Connector, Field, Trigger } from "../types/Connector";
-import { Operation } from "../types/Workflow";
 
 type WorkflowStepContextProps = {
   type: "trigger" | "action";
