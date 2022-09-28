@@ -254,7 +254,7 @@ const TriggerConfiguration = (props: Props) => {
             triggers.current.key,
             jsonrpcObj("grinderyNexusConnectorUpdateFields", {
               key: triggers.current.key,
-              fieldData: {},
+              fieldData: workflow.trigger.input || {},
               credentials: workflow.trigger.credentials,
             }),
             isLocalOrStaging ? "staging" : undefined
