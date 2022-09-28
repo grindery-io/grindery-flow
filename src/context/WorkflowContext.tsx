@@ -139,7 +139,28 @@ export const WorkflowContextProvider = ({
   );
 
   // workflow state
-  const [workflow, setWorkflow] = useState<Workflow>(blankWorkflow);
+  const [workflow, setWorkflow] = useState<Workflow>({
+    title: "New workflow",
+    trigger: {
+      type: "trigger",
+      connector: "",
+      operation: "",
+      input: {},
+    },
+    actions: [
+      {
+        type: "action",
+        connector: "",
+        operation: "",
+        input: {},
+      },
+    ],
+    creator: user || "",
+    state: "on",
+    source: isLocalOrStaging
+      ? "urn:grindery-staging:nexus"
+      : "urn:grindery:nexus",
+  });
 
   // is data loading
   const [loading, setLoading] = useState(false);
@@ -420,29 +441,26 @@ export const WorkflowContextProvider = ({
   // reset current workflow
   const resetWorkflow = () => {
     setWorkflow({
-      ...{
-        title: "New workflow",
-        trigger: {
-          type: "trigger",
+      title: "New workflow",
+      trigger: {
+        type: "trigger",
+        connector: "",
+        operation: "",
+        input: {},
+      },
+      actions: [
+        {
+          type: "action",
           connector: "",
           operation: "",
           input: {},
         },
-        actions: [
-          {
-            type: "action",
-            connector: "",
-            operation: "",
-            input: {},
-          },
-        ],
-        creator: "",
-        state: "on",
-        source: isLocalOrStaging
-          ? "urn:grindery-staging:nexus"
-          : "urn:grindery:nexus",
-      },
+      ],
       creator: user || "",
+      state: "on",
+      source: isLocalOrStaging
+        ? "urn:grindery-staging:nexus"
+        : "urn:grindery:nexus",
     });
     setActiveStep(1);
   };
