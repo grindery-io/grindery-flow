@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import qs from "qs";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { Text, CircularProgress, Autocomplete } from "grindery-ui";
-import { ICONS, isLocalOrStaging, WORKFLOW_ENGINE_URL } from "../../constants";
+import axios from "axios";
+import { CircularProgress, Autocomplete } from "grindery-ui";
+import { ICONS, isLocalOrStaging } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import { default as NexusButton } from "../shared/Button";
 import {
@@ -12,7 +11,6 @@ import {
   replaceTokens,
 } from "../../helpers/utils";
 import useAppContext from "../../hooks/useAppContext";
-import Check from "./../icons/Check";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
 const AUTH_ENDPOINT = "https://orchestrator.grindery.org/credentials/staging";
@@ -114,20 +112,21 @@ const StepAuthentication = (props: Props) => {
     type,
     step,
     activeRow,
-    setActiveRow,
     username,
-    setUsername,
     connector,
     operation,
     operationAuthenticationIsRequired,
     operationIsAuthenticated,
+    savedCredentials,
+    setActiveRow,
+    setUsername,
     setConnector,
     setOperationIsTested,
+    setSavedCredentials,
   } = useWorkflowStepContext();
   const { workflow, updateWorkflow, loading, setLoading } =
     useWorkflowContext();
   const { client, access_token } = useAppContext();
-  const [savedCredentials, setSavedCredentials] = useState<any[]>([]);
 
   const index = step - 2;
 
@@ -177,7 +176,7 @@ const StepAuthentication = (props: Props) => {
                   console.log("credentials", credentials);
                 }
 
-                testAuth(credentials);
+                testAuth(credentials, true);
               }
             })
             .catch((err) => {
@@ -321,7 +320,7 @@ const StepAuthentication = (props: Props) => {
     }
   };
 
-  const testAuth = (credentials: any) => {
+  const testAuth = (credentials: any, add?: boolean) => {
     if (
       connector &&
       connector.authentication &&
@@ -367,14 +366,23 @@ const StepAuthentication = (props: Props) => {
                   (res.data.profile && res.data.profile.real_name) ||
                   "Unknown username"
               );
-              setSavedCredentials((_savedCredentials) => [
-                {
-                  key: "new",
-                  name: account,
-                  token: credentials._grinderyCredentialToken,
-                },
-                ..._savedCredentials,
-              ]);
+              if (
+                add &&
+                !savedCredentials.find(
+                  (cred: any) =>
+                    cred.token === credentials._grinderyCredentialToken
+                )
+              ) {
+                setSavedCredentials((_savedCredentials) => [
+                  {
+                    key: "new",
+                    name: account,
+                    token: credentials._grinderyCredentialToken,
+                  },
+                  ..._savedCredentials,
+                ]);
+              }
+
               if (type === "trigger") {
                 updateWorkflow({
                   "trigger.credentials": credentials,
@@ -387,31 +395,11 @@ const StepAuthentication = (props: Props) => {
               updateFieldsDefinition();
             }
           })
-          .catch((err) => {
+          .catch((err: any) => {
             clearCredentials();
             setUsername("");
           });
       }
-    }
-  };
-
-  const listCredentials = async () => {
-    const res = await axios.post(
-      WORKFLOW_ENGINE_URL,
-      jsonrpcObj("or_listAuthCredentials", {
-        connectorId: connector?.key,
-        environment: isLocalOrStaging ? "staging" : "production",
-      }),
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-    if (res && res.data && res.data.result) {
-      setSavedCredentials(res.data.result);
-    } else {
-      setSavedCredentials([]);
     }
   };
 
@@ -452,9 +440,10 @@ const StepAuthentication = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    listCredentials();
-  }, []);
+  console.log(
+    "savedCredentials",
+    savedCredentials.map((cred) => cred.token)
+  );
 
   return operation && operationAuthenticationIsRequired ? (
     <Container>
@@ -494,13 +483,14 @@ const StepAuthentication = (props: Props) => {
                   placeholder="Select account"
                   onChange={handleCredentialsChange}
                   options={savedCredentials.map((cred: any) => ({
-                    key: cred.key,
                     label: cred.name,
                     value: cred.token,
                     icon: connector?.icon,
                   }))}
                   value={credentials?._grinderyCredentialToken || ""}
-                  buttonSuggestion
+                  button
+                  buttonText="Add account"
+                  onButtonClick={handleAuthClick}
                 />
               </>
             )}

@@ -5,9 +5,10 @@ import React, {
   useRef,
   useState,
 } from "react";
+import axios from "axios";
 import { useParams } from "react-router";
-import { isLocalOrStaging } from "../constants";
-import { defaultFunc } from "../helpers/utils";
+import { isLocalOrStaging, WORKFLOW_ENGINE_URL } from "../constants";
+import { defaultFunc, jsonrpcObj } from "../helpers/utils";
 import useAppContext from "../hooks/useAppContext";
 import useWorkflowContext from "../hooks/useWorkflowContext";
 import { Action, Connector, Field, Trigger } from "../types/Connector";
@@ -26,6 +27,7 @@ type WorkflowStepContextProps = {
   inputError: string;
   errors: any;
   operationIsTested: boolean;
+  savedCredentials: any[];
   setConnector: (connector: Connector | null) => void;
   setActiveRow: (row: number) => void;
   setUsername: (name: string) => void;
@@ -33,6 +35,7 @@ type WorkflowStepContextProps = {
   setInputError: (a: string) => void;
   setErrors: (a: any) => void;
   setOperationIsTested: (a: boolean) => void;
+  setSavedCredentials: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
 type WorkflowStepContextProviderProps = {
@@ -57,6 +60,7 @@ export const WorkflowStepContext = createContext<WorkflowStepContextProps>({
   inputError: "",
   errors: false,
   operationIsTested: false,
+  savedCredentials: [],
   setConnector: defaultFunc,
   setActiveRow: defaultFunc,
   setUsername: defaultFunc,
@@ -64,6 +68,7 @@ export const WorkflowStepContext = createContext<WorkflowStepContextProps>({
   setInputError: defaultFunc,
   setErrors: defaultFunc,
   setOperationIsTested: defaultFunc,
+  setSavedCredentials: defaultFunc,
 });
 
 export const WorkflowStepContextProvider = ({
@@ -74,7 +79,7 @@ export const WorkflowStepContextProvider = ({
   setOutputFields,
 }: WorkflowStepContextProviderProps) => {
   let { key } = useParams();
-  const { client } = useAppContext();
+  const { client, access_token } = useAppContext();
   const { workflow, updateWorkflow } = useWorkflowContext();
   const [activeRow, setActiveRow] = useState(0);
   const [username, setUsername] = useState("");
@@ -87,6 +92,7 @@ export const WorkflowStepContextProvider = ({
   const [operationIsTested, setOperationIsTested] = useState(
     key ? true : false
   );
+  const [savedCredentials, setSavedCredentials] = useState<any[]>([]);
 
   //const operation =
 
@@ -154,6 +160,27 @@ export const WorkflowStepContextProvider = ({
       setConnector(res);
     } else {
       setConnector(null);
+      setSavedCredentials([]);
+    }
+  };
+
+  const listCredentials = async () => {
+    const res = await axios.post(
+      WORKFLOW_ENGINE_URL,
+      jsonrpcObj("or_listAuthCredentials", {
+        connectorId: connector?.key,
+        environment: isLocalOrStaging ? "staging" : "production",
+      }),
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    if (res && res.data && res.data.result) {
+      setSavedCredentials(res.data.result);
+    } else {
+      setSavedCredentials([]);
     }
   };
 
@@ -202,6 +229,12 @@ export const WorkflowStepContextProvider = ({
     key,
   ]);
 
+  useEffect(() => {
+    if (operationAuthenticationIsRequired) {
+      listCredentials();
+    }
+  }, [connector?.key, operationAuthenticationIsRequired]);
+
   return (
     <WorkflowStepContext.Provider
       value={{
@@ -218,6 +251,7 @@ export const WorkflowStepContextProvider = ({
         inputError,
         errors,
         operationIsTested,
+        savedCredentials,
         setConnector,
         setActiveRow,
         setUsername,
@@ -225,6 +259,7 @@ export const WorkflowStepContextProvider = ({
         setInputError,
         setErrors,
         setOperationIsTested,
+        setSavedCredentials,
       }}
     >
       {children}
