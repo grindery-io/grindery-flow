@@ -131,6 +131,8 @@ export type RecipeOperationInput = {
 export type Authentication = {
   type: string; //"basic" | "custom" | "digest" | "oauth1" | "oauth2" | "session";
   test: Request;
+  defaultDisplayName?: any;
+  authenticatedRequestTemplate?: any;
   fields?: Field[];
   label?: string | Request;
   oauth1Config?: AuthenticationOAuth1Config;

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import qs from "qs";
 import styled from "styled-components";
-import { Text, CircularProgress } from "grindery-ui";
-import { ICONS, isLocalOrStaging } from "../../constants";
+import { Text, CircularProgress, Autocomplete } from "grindery-ui";
+import { ICONS, isLocalOrStaging, WORKFLOW_ENGINE_URL } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import { default as NexusButton } from "../shared/Button";
 import {
@@ -127,6 +127,7 @@ const StepAuthentication = (props: Props) => {
   const { workflow, updateWorkflow, loading, setLoading } =
     useWorkflowContext();
   const { client, access_token } = useAppContext();
+  const [savedCredentials, setSavedCredentials] = useState<any[]>([]);
 
   const index = step - 2;
 
@@ -191,6 +192,18 @@ const StepAuthentication = (props: Props) => {
   };
 
   const handleAuthClick = () => {
+    if (type === "trigger") {
+      updateWorkflow({
+        "trigger.credentials": undefined,
+        "trigger.input": {},
+      });
+    } else {
+      updateWorkflow({
+        ["actions[" + index + "].credentials"]: undefined,
+        ["actions[" + index + "].input"]: {},
+      });
+    }
+    setOperationIsTested(false);
     if (connector?.authentication?.type === "oauth2") {
       window.removeEventListener("message", receiveMessage, false);
       const width = 375,
@@ -314,15 +327,22 @@ const StepAuthentication = (props: Props) => {
       connector.authentication &&
       connector.authentication.test
     ) {
-      const url = connector.authentication.test.url;
+      const url = `https://orchestrator.grindery.org/credentials/${
+        connector.key
+      }/request/${(connector.authentication.test.url || "").replace(
+        /^https?:\/\//,
+        ""
+      )}`;
       const method = connector.authentication.test.method;
-      const data = replaceTokens(
-        connector.authentication?.test.body || {},
-        credentials
-      );
+      const data = {};
       const headers = replaceTokens(
-        connector.authentication.test.headers || {},
-        credentials
+        connector.authentication.authenticatedRequestTemplate?.headers || {},
+        {
+          auth: {
+            ...credentials,
+            access_token: credentials._grinderyCredentialToken,
+          },
+        }
       );
       if (url) {
         axios({
@@ -333,8 +353,13 @@ const StepAuthentication = (props: Props) => {
         })
           .then((res) => {
             if (res && res.data) {
+              const account = replaceTokens(
+                connector.authentication?.defaultDisplayName || "",
+                { data: res.data }
+              );
               setUsername(
-                res.data.email ||
+                account ||
+                  res.data.email ||
                   res.data.sub ||
                   res.data.name ||
                   res.data.username ||
@@ -342,6 +367,14 @@ const StepAuthentication = (props: Props) => {
                   (res.data.profile && res.data.profile.real_name) ||
                   "Unknown username"
               );
+              setSavedCredentials((_savedCredentials) => [
+                {
+                  key: "new",
+                  name: account,
+                  token: credentials._grinderyCredentialToken,
+                },
+                ..._savedCredentials,
+              ]);
               if (type === "trigger") {
                 updateWorkflow({
                   "trigger.credentials": credentials,
@@ -362,21 +395,48 @@ const StepAuthentication = (props: Props) => {
     }
   };
 
-  const handleChangeAuth = () => {
-    setUsername("");
+  const listCredentials = async () => {
+    const res = await axios.post(
+      WORKFLOW_ENGINE_URL,
+      jsonrpcObj("or_listAuthCredentials", {
+        connectorId: connector?.key,
+        environment: isLocalOrStaging ? "staging" : "production",
+      }),
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    if (res && res.data && res.data.result) {
+      setSavedCredentials(res.data.result);
+    } else {
+      setSavedCredentials([]);
+    }
+  };
+
+  const handleCredentialsChange = (value: string) => {
     if (type === "trigger") {
       updateWorkflow({
-        "trigger.credentials": undefined,
+        "trigger.credentials": value
+          ? {
+              _grinderyCredentialToken: value,
+            }
+          : undefined,
         "trigger.input": {},
       });
     } else {
       updateWorkflow({
-        ["actions[" + index + "].credentials"]: undefined,
+        ["actions[" + index + "].credentials"]: value
+          ? {
+              _grinderyCredentialToken: value,
+            }
+          : undefined,
         ["actions[" + index + "].input"]: {},
       });
     }
     setOperationIsTested(false);
-    handleAuthClick();
+    updateFieldsDefinition();
   };
 
   useEffect(() => {
@@ -390,6 +450,10 @@ const StepAuthentication = (props: Props) => {
       testAuth(credentials);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    listCredentials();
   }, []);
 
   return operation && operationAuthenticationIsRequired ? (
@@ -414,42 +478,36 @@ const StepAuthentication = (props: Props) => {
       </Header>
       {activeRow === 1 && (
         <Content>
-          {!operationIsAuthenticated && (
-            <NexusButton
-              fullWidth
-              icon={connector?.icon || ""}
-              onClick={handleAuthClick}
-              value={`Sign in to ${connector?.name}`}
-            />
-          )}
+          <>
+            {savedCredentials.length < 1 ? (
+              <NexusButton
+                fullWidth
+                icon={connector?.icon || ""}
+                onClick={handleAuthClick}
+                value={`Sign in to ${connector?.name}`}
+              />
+            ) : (
+              <>
+                <Autocomplete
+                  label={`${connector?.name} account`}
+                  size="full"
+                  placeholder="Select account"
+                  onChange={handleCredentialsChange}
+                  options={savedCredentials.map((cred: any) => ({
+                    key: cred.key,
+                    label: cred.name,
+                    value: cred.token,
+                    icon: connector?.icon,
+                  }))}
+                  value={credentials?._grinderyCredentialToken || ""}
+                  buttonSuggestion
+                />
+              </>
+            )}
+          </>
+
           {operationIsAuthenticated && (
             <>
-              <AccountWrapper>
-                <Text value={`${connector?.name} account`} variant="body2" />
-                <AccountNameWrapper>
-                  {connector?.icon && (
-                    <img
-                      src={connector.icon}
-                      alt=""
-                      style={{ marginRight: 8 }}
-                    />
-                  )}
-
-                  <Text variant="body1" value={username || ""} />
-
-                  <div style={{ marginLeft: "auto" }}>
-                    <Check />
-                  </div>
-                </AccountNameWrapper>
-                <div style={{ marginTop: 10 }}>
-                  <NexusButton
-                    onClick={handleChangeAuth}
-                    value="Change account"
-                    variant="outlined"
-                    fullWidth
-                  />
-                </div>
-              </AccountWrapper>
               {loading && (
                 <div
                   style={{
