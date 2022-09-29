@@ -127,7 +127,9 @@ const SidebarTabs = (props: Props) => {
   const { user, appOpened, setAppOpened } = useAppContext();
   const { size, width } = useWindowSize();
   let navigate = useNavigate();
-  let matchNewWorfklow = useMatch("/workflows/new");
+  const isMatchingWorkflowNew = useMatch("/workflows/new");
+  const isMatchingWorkflowEdit = useMatch("/workflows/edit/:key");
+  const matchNewWorfklow = isMatchingWorkflowNew || isMatchingWorkflowEdit;
   let path =
     RIGHTBAR_TABS.findIndex((tab) => {
       return tab.path === window.location.pathname;
@@ -154,7 +156,7 @@ const SidebarTabs = (props: Props) => {
           <Button
             value="Create workflow"
             onClick={() => {
-              navigate("/workflows/new");
+              navigate("/workflows/new", { replace: true });
             }}
             icon={ICONS.PLUS_WHITE}
             color="primary"
@@ -167,7 +169,7 @@ const SidebarTabs = (props: Props) => {
             color=""
             icon={ICONS.PLUS_WHITE}
             onClick={() => {
-              navigate("/workflows/new");
+              navigate("/workflows/new", { replace: true });
             }}
           />
         </IconButtonWrapper>

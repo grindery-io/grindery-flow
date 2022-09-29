@@ -6,6 +6,8 @@ export type Workflow = {
   creator: string;
   state?: any;
   source?: string;
+  system?: any;
+  signature?: string;
 };
 
 export type Operation = {

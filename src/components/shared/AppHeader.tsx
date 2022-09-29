@@ -105,7 +105,9 @@ const AppHeader = (props: Props) => {
   const { user, setAppOpened, appOpened, devMode } = useAppContext();
   const { size, width } = useWindowSize();
   let navigate = useNavigate();
-  let matchNewWorfklow = useMatch("/workflows/new");
+  const isMatchingWorkflowNew = useMatch("/workflows/new");
+  const isMatchingWorkflowEdit = useMatch("/workflows/edit/:key");
+  const matchNewWorfklow = isMatchingWorkflowNew || isMatchingWorkflowEdit;
 
   const handleClose = () => {
     setAppOpened(!appOpened);
@@ -122,16 +124,24 @@ const AppHeader = (props: Props) => {
           <IconButton icon={ICONS.BACK} onClick={handleBack} color="" />
         </BackWrapper>
       )}
-      <LogoWrapper>
-        <Logo variant="square" />
-      </LogoWrapper>
-      <CompanyNameWrapper
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        Grindery Nexus
-      </CompanyNameWrapper>
+
+      {!matchNewWorfklow ? (
+        <>
+          <LogoWrapper>
+            <Logo variant="square" />
+          </LogoWrapper>
+          <CompanyNameWrapper
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Grindery Nexus
+          </CompanyNameWrapper>
+        </>
+      ) : (
+        <></>
+      )}
+
       {user && !matchNewWorfklow && (
         <WorkspaceSelectorWrapper>
           <WorkspaceSelector />

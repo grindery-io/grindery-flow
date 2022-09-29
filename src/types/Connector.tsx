@@ -19,6 +19,7 @@ export type Trigger = {
   name: string;
   display: Display;
   operation?: TriggerOperation; // TODO: make required
+  inputFields?: Field[];
 };
 
 export type TriggerOperation =
@@ -70,6 +71,7 @@ export type Action = {
   name: string;
   display: Display;
   operation?: ActionOperation; // TODO: make required
+  inputFields?: Field[];
 };
 
 export type ActionOperation = ChainCallOperation | APICallOperation;
@@ -129,6 +131,8 @@ export type RecipeOperationInput = {
 export type Authentication = {
   type: string; //"basic" | "custom" | "digest" | "oauth1" | "oauth2" | "session";
   test: Request;
+  defaultDisplayName?: any;
+  authenticatedRequestTemplate?: any;
   fields?: Field[];
   label?: string | Request;
   oauth1Config?: AuthenticationOAuth1Config;

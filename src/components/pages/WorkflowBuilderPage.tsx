@@ -1,13 +1,17 @@
 import React from "react";
 import { CircularProgress } from "grindery-ui";
 import useAppContext from "../../hooks/useAppContext";
-import WorkflowContextProvider from "../../context/WorkflowContext";
-import WorkflowSteps from "../workflow/WorkflowSteps";
+import { useMatch } from "react-router";
+import WorkflowContainer from "../workflow/WorkflowContainer";
 
 type Props = {};
 
 const WorkflowBuilderPage = (props: Props) => {
-  const { user, connectors } = useAppContext();
+  const { connectors } = useAppContext();
+
+  const isMatchingWorkflowNew = useMatch("/workflows/new");
+  const isMatchingWorkflowEdit = useMatch("/workflows/edit/:key");
+  const matchNewWorfklow = isMatchingWorkflowNew || isMatchingWorkflowEdit;
 
   if (!connectors || !connectors.length) {
     return (
@@ -17,11 +21,11 @@ const WorkflowBuilderPage = (props: Props) => {
     );
   }
 
-  return (
-    <WorkflowContextProvider user={user}>
-      <WorkflowSteps />
-    </WorkflowContextProvider>
-  );
+  if (!matchNewWorfklow) {
+    return null;
+  }
+
+  return <WorkflowContainer />;
 };
 
 export default WorkflowBuilderPage;

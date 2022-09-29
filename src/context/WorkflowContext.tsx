@@ -1,6 +1,6 @@
 import React, { useState, createContext, useEffect } from "react";
 import _ from "lodash";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Workflow } from "../types/Workflow";
 import {
   Action,
@@ -17,7 +17,7 @@ import useWorkspaceContext from "../hooks/useWorkspaceContext";
 
 // empty workflow declaration
 const blankWorkflow: Workflow = {
-  title: "New workflow",
+  title: "Name your workflow",
   trigger: {
     type: "trigger",
     connector: "",
@@ -77,16 +77,16 @@ type WorkflowContextProps = {
     availableActions: (i: number) => Action[];
     connectorsWithActions: Connector[];
   };
+  workflowReadyToSave: boolean;
 };
 
 type WorkflowContextProviderProps = {
   children: React.ReactNode;
-  user: string | null;
 };
 
 export const WorkflowContext = createContext<WorkflowContextProps>({
   connectors: [],
-  workflow: blankWorkflow,
+  workflow: { ...blankWorkflow },
   activeStep: 1,
   loading: false,
   success: null,
@@ -119,18 +119,21 @@ export const WorkflowContext = createContext<WorkflowContextProps>({
     availableActions: () => [],
     connectorsWithActions: [],
   },
+  workflowReadyToSave: false,
 });
 
 export const WorkflowContextProvider = ({
-  user,
   children,
 }: WorkflowContextProviderProps) => {
   let navigate = useNavigate();
+  let { key } = useParams();
   const { workspace } = useWorkspaceContext();
   const {
     getWorkflowsList,
     connectors: availableConnectors,
     client,
+    workflows,
+    user,
   } = useAppContext();
 
   // loaded nexus connectors CDS
@@ -140,7 +143,7 @@ export const WorkflowContextProvider = ({
 
   // workflow state
   const [workflow, setWorkflow] = useState<Workflow>({
-    title: "New workflow",
+    title: "Name your workflow",
     trigger: {
       type: "trigger",
       connector: "",
@@ -235,11 +238,11 @@ export const WorkflowContextProvider = ({
 
   // current workflow's action connector key
   const workflowActionConnector = (index: number) =>
-    workflow.actions[index].connector;
+    workflow.actions[index]?.connector;
 
   // current workflow's action operation key
   const workflowActionOperation = (index: number) =>
-    workflow.actions[index].operation;
+    workflow.actions[index]?.operation;
 
   // current trigger's connector object
   const triggerConnector = connectors.find(
@@ -429,6 +432,18 @@ export const WorkflowContextProvider = ({
     connectorsWithActions,
   };
 
+  const workflowReadyToSave =
+    workflow?.system?.trigger?.selected &&
+    workflow?.system?.trigger?.authenticated &&
+    workflow?.system?.trigger?.configured &&
+    workflow?.actions.filter(
+      (action, i) =>
+        workflow.system?.actions[i]?.selected &&
+        workflow.system?.actions[i]?.authenticated &&
+        workflow.system?.actions[i]?.configured &&
+        workflow.system?.actions[i]?.tested
+    ).length === workflow.actions.length;
+
   // update current workflow
   const updateWorkflow = (data: any) => {
     let newWorkflow = { ...workflow };
@@ -441,7 +456,7 @@ export const WorkflowContextProvider = ({
   // reset current workflow
   const resetWorkflow = () => {
     setWorkflow({
-      title: "New workflow",
+      title: "Name your workflow",
       trigger: {
         type: "trigger",
         connector: "",
@@ -471,6 +486,7 @@ export const WorkflowContextProvider = ({
         ...workflow,
         signature: JSON.stringify(workflow),
       };
+      delete readyWorkflow.system;
       if (isLocalOrStaging) {
         console.log("readyWorkflow", readyWorkflow);
       }
@@ -514,6 +530,18 @@ export const WorkflowContextProvider = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
+  useEffect(() => {
+    if (key) {
+      const selectedWorkflow = workflows.find((wf) => wf.key === key);
+      if (selectedWorkflow) {
+        const wf = _.cloneDeep(selectedWorkflow);
+        setWorkflow(wf);
+      }
+    } else {
+      resetWorkflow();
+    }
+  }, [key]);
+
   if (isLocalOrStaging) {
     console.log("connectors", connectors);
     console.log("workflow", workflow);
@@ -539,6 +567,7 @@ export const WorkflowContextProvider = ({
         setSuccess,
         triggers,
         actions,
+        workflowReadyToSave,
       }}
     >
       {children}

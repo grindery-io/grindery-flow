@@ -174,7 +174,7 @@ const DashboardPage = (props: Props) => {
               color=""
               icon={ICONS.PLUS_SMALL}
               onClick={() => {
-                navigate("/workflows/new");
+                navigate("/workflows/new", { replace: true });
               }}
             />
           </IconButtonWrapper>

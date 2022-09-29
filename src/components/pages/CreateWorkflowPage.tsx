@@ -85,7 +85,7 @@ const CreateWorkflowPage = (props: Props) => {
         <Button
           value="Create workflow"
           onClick={() => {
-            navigate("/workflows/new");
+            navigate("/workflows/new", { replace: true });
           }}
           icon={ICONS.PLUS_WHITE}
           hideIconBorder

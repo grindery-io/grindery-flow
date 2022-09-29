@@ -31,6 +31,7 @@ export const ICONS: { [key: string]: string } = {
   CREATE_DEPOSIT: "/images/icons/create-deposit.svg",
   CREATE_ALERT: "/images/icons/create-alert.svg",
   ARROW_RIGHT: "/images/icons/arrow-right.svg",
+  ARROW_RIGHT_BLACK: "/images/icons/arrow-right-black.svg",
   CLOSE: "/images/icons/close.svg",
   PLUS_WHITE: "/images/icons/plus-white.svg",
   GAS_ALERT: "/images/icons/gas-alert.svg",
@@ -48,7 +49,7 @@ export const ICONS: { [key: string]: string } = {
   CHECKBOX_CHECKED: "/images/icons/checkbox-checked.svg",
   CHECKBOX_EMPTY: "/images/icons/checkbox-empty.svg",
   TRASH: "/images/icons/trash.svg",
-  DOTS_HORIZONTAL: "images/icons/dots-horizontal.svg",
+  DOTS_HORIZONTAL: "/images/icons/dots-horizontal.svg",
   // CHAINS
   CHAIN_ETHEREUM: "/images/icons/ethereum.svg",
   CHAIN_ARBITRUM: "/images/icons/arbitrum.svg",
@@ -68,6 +69,14 @@ export const ICONS: { [key: string]: string } = {
   SOCIAL_DISCORD: "/images/icons/social-discord.png",
   SOCIAL_TG: "/images/icons/social-tg.png",
   SOCIAL_TWITTER: "/images/icons/social-twitter.png",
+  // Workflow builder
+  TRIGGER_ICON: "/images/icons/trigger-icon.svg",
+  ACTION_ICON: "/images/icons/action-icon.svg",
+  ADD_STEP: "/images/icons/add-step.svg",
+  ANGLE_DOWN: "/images/icons/angle-down.svg",
+  ANGLE_UP: "/images/icons/angle-up.svg",
+  EXCLAMATION: "/images/icons/exclamation.svg",
+  CHECK_CIRCLE: "/images/icons/check-circle.svg"
 };
 
 export const RIGHTBAR_TABS: {
@@ -315,28 +324,21 @@ export const NOT_READY_ACTIONS = [
 export const COMING_SOON_TRIGGERS = [
   {
     value: "Email",
-    label: "Email",
+    label: "Email by Nexus",
     group: "Coming soon",
     disabled: true,
     icon: "/images/coming-soon/email.png",
   },
   {
-    value: "WebHook",
-    label: "WebHook",
-    group: "Coming soon",
-    disabled: true,
-    icon: "/images/coming-soon/webhook.png",
-  },
-  {
     value: "Storage",
-    label: "Storage",
+    label: "Storage by Nexus",
     group: "Coming soon",
     disabled: true,
     icon: "/favicon.ico",
   },
   {
     value: "MassMail",
-    label: "MassMail",
+    label: "MassMail by Nexus",
     group: "Coming soon",
     disabled: true,
     icon: "/images/coming-soon/email.png",

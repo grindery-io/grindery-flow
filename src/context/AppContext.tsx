@@ -2,15 +2,10 @@ import React, { useState, createContext, useEffect, useCallback } from "react";
 import _ from "lodash";
 import { useGrinderyNexus } from "use-grindery-nexus";
 import NexusClient, {
-  Workflow,
   WorkflowExecution,
   WorkflowExecutionLog,
 } from "grindery-nexus-client";
-/*import {
-  Workflow,
-  WorkflowExecution,
-  WorkflowExecutionLog,
-} from "../types/Workflow";*/
+import { Workflow } from "../types/Workflow";
 import { isLocalOrStaging, RIGHTBAR_TABS, SCREEN } from "../constants";
 import { Connector } from "../types/Connector";
 import { defaultFunc, getStagingConnectors } from "../helpers/utils";
@@ -39,7 +34,7 @@ type ContextProps = {
     a: string,
     b: (c: WorkflowExecutionLog[]) => void
   ) => void;
-  editWorkflow: (a: Workflow) => void;
+  editWorkflow: (a: Workflow, b?: boolean) => void;
   accessAllowed: boolean;
   validator: any;
   verifying: boolean;
@@ -158,12 +153,14 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
     if (res) {
       setWorkflows(
-        res
-          .map((result: any) => ({
-            ...result.workflow,
-            key: result.key,
-          }))
-          .filter((workflow: Workflow) => workflow)
+        _.reverse(
+          res
+            .map((result: any) => ({
+              ...result.workflow,
+              key: result.key,
+            }))
+            .filter((workflow: Workflow) => workflow)
+        )
       );
     } else {
       setWorkflows([]);
@@ -245,7 +242,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     [getWorkflowExecution, client]
   );
 
-  const editWorkflow = async (workflow: Workflow) => {
+  const editWorkflow = async (workflow: Workflow, redirect?: boolean) => {
     const res = await client
       ?.updateWorkflow(workflow.key, workflow)
       .catch((err) => {
@@ -253,7 +250,10 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       });
 
     if (res) {
-      getWorkflowsList();
+      await getWorkflowsList();
+    }
+    if (redirect) {
+      navigate("/workflows");
     }
   };
 
