@@ -351,13 +351,6 @@ export const COMING_SOON_TRIGGERS = [
     icon: "/images/coming-soon/twitter.png",
   },
   {
-    value: "Airtable",
-    label: "Airtable",
-    group: "Coming soon",
-    disabled: true,
-    icon: "/images/coming-soon/airtable.png",
-  },
-  {
     value: "Tyepform",
     label: "Tyepform",
     group: "Coming soon",
