@@ -136,11 +136,6 @@ const StepInput = ({ outputFields }: Props) => {
       )) ||
     [];
 
-  const credentials =
-    type === "trigger"
-      ? workflow.trigger.credentials
-      : workflow.actions[index].credentials;
-
   const chainValue =
     type === "trigger"
       ? (workflow.trigger.input._grinderyChain || "").toString()
@@ -255,7 +250,7 @@ const StepInput = ({ outputFields }: Props) => {
             jsonrpcObj("grinderyNexusConnectorUpdateFields", {
               key: operation.key,
               fieldData: workflowStep.input || {},
-              credentials: credentials,
+              authentication: workflowStep.authentication,
             }),
             isLocalOrStaging ? "staging" : undefined
           )

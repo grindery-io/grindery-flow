@@ -135,6 +135,11 @@ const StepAuthentication = (props: Props) => {
       ? workflow.trigger.credentials
       : workflow.actions[index].credentials;
 
+  const token =
+    type === "trigger"
+      ? workflow.trigger.authentication
+      : workflow.actions[index].authentication;
+
   const handleContinueClick = () => {
     setActiveRow(activeRow + 1);
   };
@@ -193,12 +198,12 @@ const StepAuthentication = (props: Props) => {
   const handleAuthClick = () => {
     if (type === "trigger") {
       updateWorkflow({
-        "trigger.credentials": undefined,
+        "trigger.authentication": undefined,
         "trigger.input": {},
       });
     } else {
       updateWorkflow({
-        ["actions[" + index + "].credentials"]: undefined,
+        ["actions[" + index + "].authentication"]: undefined,
         ["actions[" + index + "].input"]: {},
       });
     }
@@ -237,8 +242,11 @@ const StepAuthentication = (props: Props) => {
             operation.key,
             jsonrpcObj("grinderyNexusConnectorUpdateFields", {
               key: operation.key,
-              fieldData: {},
-              credentials: credentials,
+              fieldData:
+                (type === "trigger"
+                  ? workflow.trigger.input
+                  : workflow.actions[index].input) || {},
+              authentication: token,
             }),
             isLocalOrStaging ? "staging" : undefined
           )
@@ -339,7 +347,7 @@ const StepAuthentication = (props: Props) => {
         {
           auth: {
             ...credentials,
-            access_token: credentials._grinderyCredentialToken,
+            access_token: credentials.token,
           },
         }
       );
@@ -352,32 +360,18 @@ const StepAuthentication = (props: Props) => {
         })
           .then((res) => {
             if (res && res.data) {
-              const account = replaceTokens(
-                connector.authentication?.defaultDisplayName || "",
-                { data: res.data }
-              );
-              setUsername(
-                account ||
-                  res.data.email ||
-                  res.data.sub ||
-                  res.data.name ||
-                  res.data.username ||
-                  (res.data.team && res.data.team.name) ||
-                  (res.data.profile && res.data.profile.real_name) ||
-                  "Unknown username"
-              );
+              setUsername(credentials.name || "Unknown username");
               if (
                 add &&
                 !savedCredentials.find(
-                  (cred: any) =>
-                    cred.token === credentials._grinderyCredentialToken
+                  (cred: any) => cred.token === credentials.token
                 )
               ) {
                 setSavedCredentials((_savedCredentials) => [
                   {
-                    key: "new",
-                    name: account,
-                    token: credentials._grinderyCredentialToken,
+                    key: credentials.key,
+                    name: credentials.name,
+                    token: credentials.token,
                   },
                   ..._savedCredentials,
                 ]);
@@ -385,11 +379,11 @@ const StepAuthentication = (props: Props) => {
 
               if (type === "trigger") {
                 updateWorkflow({
-                  "trigger.credentials": credentials,
+                  "trigger.authentication": credentials.token,
                 });
               } else {
                 updateWorkflow({
-                  ["actions[" + index + "].credentials"]: credentials,
+                  ["actions[" + index + "].authentication"]: credentials.token,
                 });
               }
               updateFieldsDefinition();
@@ -406,20 +400,12 @@ const StepAuthentication = (props: Props) => {
   const handleCredentialsChange = (value: string) => {
     if (type === "trigger") {
       updateWorkflow({
-        "trigger.credentials": value
-          ? {
-              _grinderyCredentialToken: value,
-            }
-          : undefined,
+        "trigger.authentication": value,
         "trigger.input": {},
       });
     } else {
       updateWorkflow({
-        ["actions[" + index + "].credentials"]: value
-          ? {
-              _grinderyCredentialToken: value,
-            }
-          : undefined,
+        ["actions[" + index + "].authentication"]: value,
         ["actions[" + index + "].input"]: {},
       });
     }
@@ -440,10 +426,7 @@ const StepAuthentication = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(
-    "savedCredentials",
-    savedCredentials.map((cred) => cred.token)
-  );
+  console.log("savedCredentials", savedCredentials);
 
   return operation && operationAuthenticationIsRequired ? (
     <Container>
@@ -487,7 +470,7 @@ const StepAuthentication = (props: Props) => {
                     value: cred.token,
                     icon: connector?.icon,
                   }))}
-                  value={credentials?._grinderyCredentialToken || ""}
+                  value={token || ""}
                   button
                   buttonText="Add account"
                   onButtonClick={handleAuthClick}

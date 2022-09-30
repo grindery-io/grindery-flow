@@ -216,8 +216,8 @@ const WorkflowInputField = ({
               operation.key,
               jsonrpcObj("grinderyNexusConnectorUpdateFields", {
                 key: operation.key,
-                fieldData: workflowStep.input,
-                credentials: workflowStep.credentials,
+                fieldData: workflowStep.input || {},
+                authentication: workflowStep.authentication,
               }),
               isLocalOrStaging ? "staging" : undefined
             )

@@ -135,8 +135,8 @@ export const WorkflowStepContextProvider = ({
   const operationIsAuthenticated = Boolean(
     (connector && !connector.authentication) ||
       (type === "trigger"
-        ? workflow.trigger?.credentials && connector?.authentication
-        : workflow.actions[index]?.credentials && connector?.authentication)
+        ? workflow.trigger?.authentication && connector?.authentication
+        : workflow.actions[index]?.authentication && connector?.authentication)
   );
 
   const operationAuthenticationIsRequired = Boolean(
@@ -146,7 +146,13 @@ export const WorkflowStepContextProvider = ({
   const passOutputFields = useCallback(() => {
     setOutputFields((outputFields: any[]) => {
       const workflowOutput = [...outputFields];
-      workflowOutput[step - 1] = { connector, operation: operation?.operation };
+      workflowOutput[step - 1] = {
+        connector,
+        operation: {
+          ...operation?.operation,
+          type: type,
+        },
+      };
       return workflowOutput;
     });
   }, [operation]);
