@@ -86,25 +86,6 @@ const ButtonWrapper = styled.div`
   padding-bottom: 12px;
 `;
 
-const AccountWrapper = styled.div`
-  margin-top: 0px;
-  text-align: left;
-  margin-bottom: 6px;
-
-  & .MuiButton-root {
-    width: 100%;
-  }
-`;
-
-const AccountNameWrapper = styled.div`
-  padding: 15px 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-`;
-
 type Props = {};
 
 const StepAuthentication = (props: Props) => {
@@ -112,7 +93,6 @@ const StepAuthentication = (props: Props) => {
     type,
     step,
     activeRow,
-    username,
     connector,
     operation,
     operationAuthenticationIsRequired,
@@ -420,13 +400,16 @@ const StepAuthentication = (props: Props) => {
   }, [activeRow, operationAuthenticationIsRequired]);
 
   useEffect(() => {
-    if (credentials) {
-      testAuth(credentials);
+    if (token) {
+      if (savedCredentials && savedCredentials.length > 0) {
+        const cred = savedCredentials.find((c) => c.token === token);
+        testAuth(cred || { token: token });
+      } else {
+        testAuth({ token: token });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log("savedCredentials", savedCredentials);
 
   return operation && operationAuthenticationIsRequired ? (
     <Container>
