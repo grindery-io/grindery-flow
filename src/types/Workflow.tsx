@@ -19,6 +19,7 @@ export type Operation = {
   };
   display?: { [key: string]: string };
   authentication?: string;
+  authenticationKey?: string;
   credentials?: { [key: string]: string | number | boolean };
 };
 

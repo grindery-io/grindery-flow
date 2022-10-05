@@ -110,10 +110,10 @@ const StepAuthentication = (props: Props) => {
 
   const index = step - 2;
 
-  const credentials =
+  const credentialsKey =
     type === "trigger"
-      ? workflow.trigger.credentials
-      : workflow.actions[index].credentials;
+      ? workflow.trigger.authenticationKey
+      : workflow.actions[index].authenticationKey;
 
   const token =
     type === "trigger"
@@ -179,11 +179,13 @@ const StepAuthentication = (props: Props) => {
     if (type === "trigger") {
       updateWorkflow({
         "trigger.authentication": undefined,
+        "trigger.authenticationKey": undefined,
         "trigger.input": {},
       });
     } else {
       updateWorkflow({
         ["actions[" + index + "].authentication"]: undefined,
+        ["actions[" + index + "].authenticationKey"]: undefined,
         ["actions[" + index + "].input"]: {},
       });
     }
@@ -299,11 +301,13 @@ const StepAuthentication = (props: Props) => {
   const clearCredentials = () => {
     if (type === "trigger") {
       updateWorkflow({
-        "trigger.credentials": undefined,
+        "trigger.authentication": undefined,
+        "trigger.authenticationKey": undefined,
       });
     } else {
       updateWorkflow({
-        ["actions[" + index + "].credentials"]: undefined,
+        ["actions[" + index + "].authentication"]: undefined,
+        ["actions[" + index + "].authenticationKey"]: undefined,
       });
     }
   };
@@ -344,7 +348,7 @@ const StepAuthentication = (props: Props) => {
               if (
                 add &&
                 !savedCredentials.find(
-                  (cred: any) => cred.token === credentials.token
+                  (cred: any) => cred.key === credentials.key
                 )
               ) {
                 setSavedCredentials((_savedCredentials) => [
@@ -360,10 +364,12 @@ const StepAuthentication = (props: Props) => {
               if (type === "trigger") {
                 updateWorkflow({
                   "trigger.authentication": credentials.token,
+                  "trigger.authenticationKey": credentials.key,
                 });
               } else {
                 updateWorkflow({
                   ["actions[" + index + "].authentication"]: credentials.token,
+                  ["actions[" + index + "].authenticationKey"]: credentials.key,
                 });
               }
               updateFieldsDefinition();
@@ -380,12 +386,16 @@ const StepAuthentication = (props: Props) => {
   const handleCredentialsChange = (value: string) => {
     if (type === "trigger") {
       updateWorkflow({
-        "trigger.authentication": value,
+        "trigger.authentication":
+          savedCredentials.find((c) => c.key === value)?.token || value,
+        "trigger.authenticationKey": value,
         "trigger.input": {},
       });
     } else {
       updateWorkflow({
-        ["actions[" + index + "].authentication"]: value,
+        ["actions[" + index + "].authentication"]:
+          savedCredentials.find((c) => c.key === value)?.token || value,
+        ["actions[" + index + "].authenticationKey"]: value,
         ["actions[" + index + "].input"]: {},
       });
     }
@@ -400,12 +410,12 @@ const StepAuthentication = (props: Props) => {
   }, [activeRow, operationAuthenticationIsRequired]);
 
   useEffect(() => {
-    if (token) {
+    if (credentialsKey) {
       if (savedCredentials && savedCredentials.length > 0) {
-        const cred = savedCredentials.find((c) => c.token === token);
-        testAuth(cred || { token: token });
+        const cred = savedCredentials.find((c) => c.key === credentialsKey);
+        testAuth(cred || { token: token, key: credentialsKey });
       } else {
-        testAuth({ token: token });
+        testAuth({ token: token, key: credentialsKey });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -450,10 +460,10 @@ const StepAuthentication = (props: Props) => {
                   onChange={handleCredentialsChange}
                   options={savedCredentials.map((cred: any) => ({
                     label: cred.name,
-                    value: cred.token,
+                    value: cred.key,
                     icon: connector?.icon,
                   }))}
-                  value={token || ""}
+                  value={credentialsKey || ""}
                   button
                   buttonText="Add account"
                   onButtonClick={handleAuthClick}
