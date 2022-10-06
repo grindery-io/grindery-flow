@@ -1,14 +1,8 @@
-import React, {
-  createContext,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import axios from "axios";
+import React, { createContext, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { isLocalOrStaging, WORKFLOW_ENGINE_URL } from "../constants";
-import { defaultFunc, jsonrpcObj } from "../helpers/utils";
+import NexusClient from "grindery-nexus-client";
+import { isLocalOrStaging } from "../constants";
+import { defaultFunc } from "../helpers/utils";
 import useAppContext from "../hooks/useAppContext";
 import useWorkflowContext from "../hooks/useWorkflowContext";
 import { Action, Connector, Field, Trigger } from "../types/Connector";
@@ -94,7 +88,8 @@ export const WorkflowStepContextProvider = ({
   );
   const [savedCredentials, setSavedCredentials] = useState<any[]>([]);
 
-  //const operation =
+  const nexus = new NexusClient();
+  nexus.authenticate(access_token || "");
 
   const workflowInput =
     type === "trigger" ? workflow.trigger.input : workflow.actions[index].input;
@@ -171,20 +166,12 @@ export const WorkflowStepContextProvider = ({
   };
 
   const listCredentials = async () => {
-    const res = await axios.post(
-      WORKFLOW_ENGINE_URL,
-      jsonrpcObj("or_listAuthCredentials", {
-        connectorId: connector?.key,
-        environment: isLocalOrStaging ? "staging" : "production",
-      }),
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
+    const res = await nexus.listAuthCredentials(
+      connector?.key || "",
+      isLocalOrStaging ? "staging" : "production"
     );
-    if (res && res.data && res.data.result) {
-      setSavedCredentials(res.data.result);
+    if (res) {
+      setSavedCredentials(res);
     } else {
       setSavedCredentials([]);
     }
