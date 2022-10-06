@@ -5558,9 +5558,10 @@ grindery-nexus-client@^0.6.1:
   dependencies:
     axios "^0.27.2"
 
-"grindery-ui@https://github.com/grindery-io/grindery-ui.git#workflow-builder":
-  version "0.8.4"
-  resolved "https://github.com/grindery-io/grindery-ui.git#fb0094faa76d07a1d2313ea0b5a37f1c88f4f1dd"
+grindery-ui@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.9.0.tgz#6e77605a0be7a36363ffc9182f6be05e363094d5"
+  integrity sha512-eusElGxOfUi9hROCRcwHmE9VSteIhFo+w1f2jOJaEOjOHHj50CResDbvi8o28cMVCPOop8clz6T/F5yFdTuHWw==
   dependencies:
     "@emotion/react" "^11.9.0"
     "@emotion/styled" "^11.8.1"
