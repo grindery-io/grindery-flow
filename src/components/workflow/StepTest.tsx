@@ -246,8 +246,6 @@ const StepTest = ({ outputFields }: Props) => {
   console.log("test options", operation);
   }*/
 
-  console.log("outputFields", outputFields);
-
   const values = replaceTokens(workflow.actions[index]?.input || {}, {
     trigger: outputFields.find((output) => output.operation.type === "trigger")
       .operation.sample,
