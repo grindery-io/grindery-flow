@@ -6,6 +6,9 @@ import { ICONS } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 import { Workflow } from "../../types/Workflow";
+import Trash from "../icons/Trash";
+import ArrowDown from "../icons/ArrowDown";
+import ArrowUp from "../icons/ArrowUp";
 
 const Container = styled.div`
   padding: 20px 32px;
@@ -102,6 +105,15 @@ const MenuButtonWrapper = styled.div`
     height: 20px;
     display: block;
   }
+`;
+
+const MenuItem = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 8px;
 `;
 
 type Props = {};
@@ -203,24 +215,40 @@ const StepHeader = (props: Props) => {
   if (workflow.actions.length > 1 && index > 0) {
     menuItems.push({
       key: "moveUp",
-      label: "Move up",
       onClick: handleMoveUp,
+      Component: (
+        <MenuItem>
+          <ArrowUp />
+          <span>Move step up</span>
+        </MenuItem>
+      ),
     });
   }
 
   if (workflow.actions.length > 1 && index < workflow.actions.length - 1) {
     menuItems.push({
       key: "moveDown",
-      label: "Move down",
+      label: "",
       onClick: handleMoveDown,
+      Component: (
+        <MenuItem>
+          <ArrowDown />
+          <span>Move step down</span>
+        </MenuItem>
+      ),
     });
   }
 
   if (index > 0 || workflow.actions.length > 1) {
     menuItems.push({
       key: "remove",
-      label: "Remove",
       onClick: handleRemove,
+      Component: (
+        <MenuItem>
+          <Trash />
+          <span>Remove step</span>
+        </MenuItem>
+      ),
     });
   }
 

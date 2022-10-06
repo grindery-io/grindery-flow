@@ -37,7 +37,7 @@ const InputWrapper = styled.div`
 `;
 
 const IconButtonWrapper = styled.div`
-  margin-top: 42px;
+  margin-top: 35px;
 
   & .MuiIconButton-root img {
     width: 16px !important;

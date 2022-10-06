@@ -228,7 +228,7 @@ export const WorkspaceContextProvider = ({
       setIsWorkspaceSwitching(true);
       setTimeout(() => {
         setIsWorkspaceSwitching(false);
-      }, 750);
+      }, 1000);
     }
   }, [workspace]);
 

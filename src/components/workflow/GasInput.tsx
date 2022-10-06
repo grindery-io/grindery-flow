@@ -26,8 +26,19 @@ const InputWrapper = styled.div`
     background: #fff !important;
   }
 
+  & .MuiTypography-root {
+    font-size: 14px !important;
+  }
+
   & .MuiOutlinedInput-root {
     background: #fff !important;
+    height: 29px !important;
+    margin-top: 0px !important;
+  }
+
+  & .MuiInputBase-root {
+    font-size: 14px;
+    padding: 0 8px !important;
   }
 `;
 
