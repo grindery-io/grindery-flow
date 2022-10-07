@@ -166,7 +166,7 @@ export const WorkflowStepContextProvider = ({
   };
 
   const listCredentials = async () => {
-    const res = await nexus.listAuthCredentials(
+    const res = await client?.listAuthCredentials(
       connector?.key || "",
       isLocalOrStaging ? "staging" : "production"
     );

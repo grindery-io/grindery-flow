@@ -13,7 +13,9 @@ import {
 import useAppContext from "../../hooks/useAppContext";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 
-const AUTH_ENDPOINT = "https://orchestrator.grindery.org/credentials/staging";
+const AUTH_ENDPOINT = `https://orchestrator.grindery.org/credentials/${
+  isLocalOrStaging ? "staging" : "production"
+}`;
 const GET_OAUTH_TOKEN_ENDPOINT =
   "https://orchestrator.grindery.org/credentials/auth/complete";
 
