@@ -178,6 +178,9 @@ const WorkspaceSelector = (props: Props) => {
   const items = workspaces;
 
   const handleSelectorClick = () => {
+    if (!selectorOpened && user && client) {
+      listWorkspaces(user, client);
+    }
     setSelectorOpened(!selectorOpened);
   };
 
@@ -197,11 +200,11 @@ const WorkspaceSelector = (props: Props) => {
     setSelectorOpened(!selectorOpened);
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (selectorOpened && user && client) {
       listWorkspaces(user, client);
     }
-  }, [listWorkspaces, selectorOpened, user, client]);
+  }, [listWorkspaces, selectorOpened, user, client]);*/
 
   return workspace ? (
     <Foco
