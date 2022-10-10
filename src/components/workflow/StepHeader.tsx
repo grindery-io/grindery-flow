@@ -156,6 +156,8 @@ const StepHeader = (props: Props) => {
         "trigger.input": {},
         "trigger.operation": "",
         "trigger.credentials": undefined,
+        "trigger.authentication": undefined,
+        "trigger.authenticationKey": undefined,
       });
     } else {
       updateWorkflow({
@@ -163,6 +165,8 @@ const StepHeader = (props: Props) => {
         ["actions[" + index + "].input"]: {},
         ["actions[" + index + "].operation"]: "",
         ["actions[" + index + "].credentials"]: undefined,
+        ["actions[" + index + "].authentication"]: undefined,
+        ["actions[" + index + "].authenticationKey"]: undefined,
       });
     }
     setActiveRow(0);

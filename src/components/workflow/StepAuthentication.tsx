@@ -12,6 +12,7 @@ import {
 } from "../../helpers/utils";
 import useAppContext from "../../hooks/useAppContext";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
+import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 
 const AUTH_ENDPOINT = `https://orchestrator.grindery.org/credentials/${
   isLocalOrStaging ? "staging" : "production"
@@ -108,6 +109,7 @@ const StepAuthentication = (props: Props) => {
   } = useWorkflowStepContext();
   const { workflow, updateWorkflow, loading, setLoading } =
     useWorkflowContext();
+  const { workspaceToken } = useWorkspaceContext();
   const { client, access_token } = useAppContext();
 
   const index = step - 2;
@@ -152,7 +154,7 @@ const StepAuthentication = (props: Props) => {
             method: "POST",
             url: GET_OAUTH_TOKEN_ENDPOINT,
             headers: {
-              Authorization: `Bearer ${access_token}`,
+              Authorization: `Bearer ${workspaceToken || access_token}`,
             },
             data,
           })
@@ -163,7 +165,7 @@ const StepAuthentication = (props: Props) => {
                   console.log("credentials", credentials);
                 }
 
-                testAuth(credentials, true);
+                setAuth(credentials, true);
               }
             })
             .catch((err) => {
@@ -200,7 +202,9 @@ const StepAuthentication = (props: Props) => {
         top = window.screen.height / 2 - height / 2;
 
       let windowObjectReference = window.open(
-        `${AUTH_ENDPOINT}/${connector.key}/auth?access_token=${access_token}&redirect_uri=${window.location.origin}/auth`,
+        `${AUTH_ENDPOINT}/${connector.key}/auth?access_token=${
+          workspaceToken || access_token
+        }&redirect_uri=${window.location.origin}/auth`,
         "_blank",
         "status=no, toolbar=no, menubar=no, width=" +
           width +
@@ -300,7 +304,7 @@ const StepAuthentication = (props: Props) => {
     }
   };
 
-  const clearCredentials = () => {
+  /*const clearCredentials = () => {
     if (type === "trigger") {
       updateWorkflow({
         "trigger.authentication": undefined,
@@ -312,77 +316,36 @@ const StepAuthentication = (props: Props) => {
         ["actions[" + index + "].authenticationKey"]: undefined,
       });
     }
-  };
+  };*/
 
-  const testAuth = (credentials: any, add?: boolean) => {
+  const setAuth = (credentials: any, add?: boolean) => {
+    setUsername(credentials.name || "Unknown username");
     if (
-      connector &&
-      connector.authentication &&
-      connector.authentication.test
+      add &&
+      !savedCredentials.find((cred: any) => cred.key === credentials.key)
     ) {
-      const url = `https://orchestrator.grindery.org/credentials/${
-        connector.key
-      }/request/${(connector.authentication.test.url || "").replace(
-        /^https?:\/\//,
-        ""
-      )}`;
-      const method = connector.authentication.test.method;
-      const data = {};
-      const headers = replaceTokens(
-        connector.authentication.authenticatedRequestTemplate?.headers || {},
+      setSavedCredentials((_savedCredentials) => [
         {
-          auth: {
-            ...credentials,
-            access_token: credentials.token,
-          },
-        }
-      );
-      if (url) {
-        axios({
-          method: method,
-          url: url,
-          headers,
-          data,
-        })
-          .then((res) => {
-            if (res && res.data) {
-              setUsername(credentials.name || "Unknown username");
-              if (
-                add &&
-                !savedCredentials.find(
-                  (cred: any) => cred.key === credentials.key
-                )
-              ) {
-                setSavedCredentials((_savedCredentials) => [
-                  {
-                    key: credentials.key,
-                    name: credentials.name,
-                    token: credentials.token,
-                  },
-                  ..._savedCredentials,
-                ]);
-              }
-
-              if (type === "trigger") {
-                updateWorkflow({
-                  "trigger.authentication": credentials.token,
-                  "trigger.authenticationKey": credentials.key,
-                });
-              } else {
-                updateWorkflow({
-                  ["actions[" + index + "].authentication"]: credentials.token,
-                  ["actions[" + index + "].authenticationKey"]: credentials.key,
-                });
-              }
-              updateFieldsDefinition();
-            }
-          })
-          .catch((err: any) => {
-            clearCredentials();
-            setUsername("");
-          });
-      }
+          key: credentials.key,
+          name: credentials.name,
+          token: credentials.token,
+        },
+        ..._savedCredentials,
+      ]);
     }
+
+    if (type === "trigger") {
+      updateWorkflow({
+        "trigger.authentication": credentials.token,
+        "trigger.authenticationKey": credentials.key,
+      });
+    } else {
+      updateWorkflow({
+        ["actions[" + index + "].authentication"]: credentials.token,
+        ["actions[" + index + "].authenticationKey"]: credentials.key,
+      });
+    }
+    updateFieldsDefinition();
   };
 
   const handleCredentialsChange = (value: string) => {
@@ -415,9 +378,9 @@ const StepAuthentication = (props: Props) => {
     if (credentialsKey) {
       if (savedCredentials && savedCredentials.length > 0) {
         const cred = savedCredentials.find((c) => c.key === credentialsKey);
-        testAuth(cred || { token: token, key: credentialsKey });
+        setAuth(cred || { token: token, key: credentialsKey });
       } else {
-        testAuth({ token: token, key: credentialsKey });
+        setAuth({ token: token, key: credentialsKey });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
