@@ -1,7 +1,6 @@
 import {
   getOutputOptions,
   getParameterByName,
-  getSelfIdCookie,
   jsonrpcObj,
   replaceTokens,
 } from "../../helpers/utils";
@@ -163,28 +162,5 @@ describe("jsonrpcObj function", () => {
     };
 
     expect(jsonrpcObj(method, params)).toEqual(output);
-  });
-});
-
-describe("getSelfIdCookie function", () => {
-  test("returns SelfId cookie", () => {
-    Object.defineProperty(document, "cookie", {
-      writable: true,
-      value: "self.id-local-id=test_cookie",
-    });
-
-    const output = "test_cookie";
-
-    expect(getSelfIdCookie()).toEqual(output);
-  });
-
-  test("returns empty string if cookie doesn't exist", () => {
-    Object.defineProperty(document, "cookie", {
-      writable: true,
-      value: "",
-    });
-    const output = "";
-
-    expect(getSelfIdCookie()).toEqual(output);
   });
 });

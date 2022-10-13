@@ -54,11 +54,9 @@ type WorkflowContextProps = {
   saveWorkflow: () => void;
   resetWorkflow: () => void;
   updateWorkflow: (a: any) => void;
-  setConnectors: (a: Connector[]) => void;
   triggers: {
     current?: SelectedTrigger;
     triggerConnector?: Connector;
-    triggerIsSet: boolean;
     triggerConnectorIsSet: boolean;
     triggerAuthenticationIsRequired: boolean;
     triggerIsAuthenticated: boolean;
@@ -91,7 +89,6 @@ export const WorkflowContext = createContext<WorkflowContextProps>({
   loading: false,
   success: null,
   setActiveStep: defaultFunc,
-  setConnectors: defaultFunc,
   setWorkflow: defaultFunc,
   saveWorkflow: defaultFunc,
   resetWorkflow: defaultFunc,
@@ -100,7 +97,6 @@ export const WorkflowContext = createContext<WorkflowContextProps>({
   setError: defaultFunc,
   setSuccess: defaultFunc,
   triggers: {
-    triggerIsSet: false,
     triggerConnectorIsSet: false,
     triggerAuthenticationIsRequired: false,
     triggerIsAuthenticated: false,
@@ -215,11 +211,6 @@ export const WorkflowContextProvider = ({
         workflow.actions[index] &&
         workflow.actions[index].connector
     );
-
-  // check if trigger operation is selected
-  const triggerIsSet = Boolean(
-    workflow && workflow.trigger && workflow.trigger.operation
-  );
 
   // check if action operation is selected
   const actionIsSet = (index: number) =>
@@ -411,7 +402,6 @@ export const WorkflowContextProvider = ({
   const triggers = {
     current: trigger,
     triggerConnector,
-    triggerIsSet,
     triggerConnectorIsSet,
     triggerAuthenticationIsRequired,
     triggerIsAuthenticated,
@@ -540,6 +530,7 @@ export const WorkflowContextProvider = ({
     } else {
       resetWorkflow();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
   if (isLocalOrStaging) {
@@ -557,7 +548,6 @@ export const WorkflowContextProvider = ({
         error,
         success,
         setActiveStep,
-        setConnectors,
         setWorkflow,
         saveWorkflow,
         resetWorkflow,

@@ -101,13 +101,6 @@ export const jsonrpcObj = (method: string, params: object) => {
 
 export const defaultFunc = () => {};
 
-export const getSelfIdCookie = () => {
-  const cookieName = "self.id-local-id";
-  const b = document.cookie.match(
-    "(^|;)\\s*" + cookieName + "\\s*=\\s*([^;]+)"
-  );
-  return b ? b.pop() : "";
-};
 
 export const getValidationScheme = (inputFields: Field[]) => {
   const sanitizeType = (type: string) => {
@@ -152,47 +145,3 @@ export const getValidationScheme = (inputFields: Field[]) => {
   return schema;
 };
 
-export const getStagingConnectors = async () => {
-  const WEB2_CONNECTORS_PATH =
-    "https://api.github.com/repos/grindery-io/grindery-nexus-schema-v2/contents/cds/web2?ref=staging";
-
-  const WEB3_CONNECTORS_PATH =
-    "https://api.github.com/repos/grindery-io/grindery-nexus-schema-v2/contents/cds/web3?ref=staging";
-  const responses = [];
-  const web2Connectors = await axios.get(WEB2_CONNECTORS_PATH);
-  for (let i = 0; i < web2Connectors.data.length; i++) {
-    const url = web2Connectors.data[i].download_url;
-    if (url) {
-      responses.push(await axios.get(url));
-    }
-  }
-  const web3Connectors = await axios.get(WEB3_CONNECTORS_PATH);
-  for (let i = 0; i < web3Connectors.data.length; i++) {
-    const url = web3Connectors.data[i].download_url;
-    if (url) {
-      responses.push(await axios.get(url));
-    }
-  }
-
-  return responses
-    .filter((res) => res && res.data)
-    .map((res) => ({
-      ...res.data,
-      html_url:
-        (Array.isArray(web3Connectors.data) &&
-          web3Connectors.data.find(
-            (c) => c.name && c.name.includes(res.data.key)
-          ) &&
-          web3Connectors.data.find(
-            (c) => c.name && c.name.includes(res.data.key)
-          ).html_url) ||
-        (Array.isArray(web2Connectors.data) &&
-          web2Connectors.data.find(
-            (c) => c.name && c.name.includes(res.data.key)
-          ) &&
-          web2Connectors.data.find(
-            (c) => c.name && c.name.includes(res.data.key)
-          ).html_url) ||
-        "",
-    }));
-};

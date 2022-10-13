@@ -8,10 +8,9 @@ import NexusClient, {
 import { Workflow } from "../types/Workflow";
 import { isLocalOrStaging, RIGHTBAR_TABS, SCREEN } from "../constants";
 import { Connector } from "../types/Connector";
-import { defaultFunc, getStagingConnectors } from "../helpers/utils";
+import { defaultFunc } from "../helpers/utils";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../hooks/useWindowSize";
-//import helloWorldConnector from "../samples/connectors/helloworld.json";
 import { validator } from "../helpers/validator";
 import { Operation } from "../types/Workflow";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";

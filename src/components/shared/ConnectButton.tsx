@@ -19,7 +19,7 @@ const FlowConnectButtonWrapper = styled.div`
 type Props = {};
 
 const ConnectButton = (props: Props) => {
-  const { connect, user, connectFlow, flowUser } = useGrinderyNexus();
+  const { connect, user, connectFlow } = useGrinderyNexus();
 
   return user ? null : (
     <>

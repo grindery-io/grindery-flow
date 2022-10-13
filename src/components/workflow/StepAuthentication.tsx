@@ -5,11 +5,7 @@ import { CircularProgress, Autocomplete } from "grindery-ui";
 import { ICONS, isLocalOrStaging } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import { default as NexusButton } from "../shared/Button";
-import {
-  getParameterByName,
-  jsonrpcObj,
-  replaceTokens,
-} from "../../helpers/utils";
+import { getParameterByName, jsonrpcObj } from "../../helpers/utils";
 import useAppContext from "../../hooks/useAppContext";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
