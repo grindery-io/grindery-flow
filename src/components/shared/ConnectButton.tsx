@@ -38,7 +38,7 @@ const ConnectButton = (props: Props) => {
           <a href="https://metamask.io/" target="_blank" rel="noreferrer">
             MetaMask
           </a>{" "}
-          is needed to authenticate.
+          is needed to authenticate with EVM wallet.
         </p>
       )}
       <FlowConnectButtonWrapper>
