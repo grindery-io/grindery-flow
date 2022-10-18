@@ -33,7 +33,7 @@ const InputWrapper = styled.div`
   & .MuiOutlinedInput-root {
     background: #fff !important;
     height: 29px !important;
-    margin-top: 0px !important;
+    margin-top: 2px !important;
   }
 
   & .MuiInputBase-root {

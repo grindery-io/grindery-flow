@@ -19,7 +19,7 @@ const FlowConnectButtonWrapper = styled.div`
 type Props = {};
 
 const ConnectButton = (props: Props) => {
-  const { connect, user, connectFlow, flowUser } = useGrinderyNexus();
+  const { connect, user, connectFlow } = useGrinderyNexus();
 
   return user ? null : (
     <>
@@ -38,7 +38,7 @@ const ConnectButton = (props: Props) => {
           <a href="https://metamask.io/" target="_blank" rel="noreferrer">
             MetaMask
           </a>{" "}
-          is needed to authenticate.
+          is needed to authenticate with EVM wallet.
         </p>
       )}
       <FlowConnectButtonWrapper>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { TextInput } from "grindery-ui";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
-import useAppContext from "../../hooks/useAppContext";
 import {
   COMING_SOON_ACTIONS,
   COMING_SOON_TRIGGERS,
@@ -144,7 +143,7 @@ const Showing = styled.p`
 type Props = {};
 
 const StepApp = (props: Props) => {
-  const { type, step, getConnector, setOperationIsTested, connector } =
+  const { type, step, getConnector, setOperationIsTested } =
     useWorkflowStepContext();
   const { workflow, updateWorkflow, triggers, actions, activeStep } =
     useWorkflowContext();
@@ -263,6 +262,8 @@ const StepApp = (props: Props) => {
     if (value) {
       getConnector(value);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   if (!opened) {

@@ -1,6 +1,6 @@
 # Grindery Nexus Frontend
 
-Demo URL: [https://nexus.grindery.org/](https://nexus.grindery.org/)
+Live URL: [https://nexus.grindery.org/](https://nexus.grindery.org/)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -24,7 +24,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Deployment
 
-Heroku will deploy any changes in the `master` branch automatically:
+The `master` branch is deployed automatically:
 
 1. Merge your changes into the `master` branch
 2. Push branch to GitHub

@@ -78,7 +78,7 @@ type Props = {};
 const StepOperation = (props: Props) => {
   const { type, step, activeRow, setActiveRow, operation, connector } =
     useWorkflowStepContext();
-  const { updateWorkflow, triggers, actions } = useWorkflowContext();
+  const { updateWorkflow } = useWorkflowContext();
 
   const index = step - 2;
 
@@ -91,19 +91,13 @@ const StepOperation = (props: Props) => {
       ? connector?.triggers?.map((availableTrigger) => ({
           value: availableTrigger.key,
           label: availableTrigger.display?.label,
-          icon:
-            availableTrigger.display?.icon ||
-            triggers.triggerConnector?.icon ||
-            "",
+          icon: availableTrigger.display?.icon || connector?.icon || "",
           description: availableTrigger.display?.description,
         }))
       : connector?.actions?.map((availableAction) => ({
           value: availableAction.key,
           label: availableAction.display?.label,
-          icon:
-            availableAction.display?.icon ||
-            actions.actionConnector(index)?.icon ||
-            "",
+          icon: availableAction.display?.icon || connector?.icon || "",
           description: availableAction.display?.description,
         }));
 

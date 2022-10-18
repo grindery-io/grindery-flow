@@ -93,7 +93,7 @@ const WelcomePage = (props: Props) => {
         </Desc>
         <ConnectButton />
         <Disclaimer>
-          Grindery Ping uses{" "}
+          Grindery Nexus uses{" "}
           <a href="https://metamask.io/" target="_blank" rel="noreferrer">
             MetaMask
           </a>{" "}

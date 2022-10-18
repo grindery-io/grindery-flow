@@ -79,18 +79,6 @@ const BackWrapper = styled.div`
   }
 `;
 
-const DevModeIndicator = styled.div`
-  display: none;
-  @media (min-width: ${SCREEN.TABLET}) {
-    display: block;
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 150%;
-    color: #ff5858;
-    order: 3;
-  }
-`;
-
 const WorkspaceSelectorWrapper = styled.div`
   margin-left: 14px;
   order: 2;
@@ -102,7 +90,7 @@ const WorkspaceSelectorWrapper = styled.div`
 type Props = {};
 
 const AppHeader = (props: Props) => {
-  const { user, setAppOpened, appOpened, devMode } = useAppContext();
+  const { user, setAppOpened, appOpened } = useAppContext();
   const { size, width } = useWindowSize();
   let navigate = useNavigate();
   const isMatchingWorkflowNew = useMatch("/workflows/new");
@@ -147,7 +135,6 @@ const AppHeader = (props: Props) => {
           <WorkspaceSelector />
         </WorkspaceSelectorWrapper>
       )}
-      {devMode && <DevModeIndicator>Developer mode</DevModeIndicator>}
       {user && (
         <UserWrapper>
           <UserMenu />
