@@ -56,6 +56,7 @@ export const ICONS: { [key: string]: string } = {
   CHAIN_GNOSIS: "/images/icons/gnosis.svg",
   CHAIN_POLYGON: "/images/icons/polygon.svg",
   CHAIN_CELO: "/images/icons/celo.svg",
+  CHAIN_CRONOS: "/images/icons/cronos.svg",
   CARET_DOWN: "/images/icons/caret-down.svg",
   PLUS_BLACK: "/images/icons/plus-black.svg",
   EDIT: "/images/icons/edit.svg",
@@ -193,6 +194,12 @@ export const BLOCKCHAINS = [
     label: "Harmony",
     icon: "/images/coming-soon/harmony.png",
     token: "ONE",
+  },
+  {
+    value: "eip155:25",
+    label: "Cronos",
+    icon: ICONS.CHAIN_CRONOS,
+    token: "CRO",
   },
 
   // Coming soon
