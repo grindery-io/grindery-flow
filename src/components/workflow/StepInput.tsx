@@ -157,8 +157,6 @@ const StepInput = ({ outputFields }: Props) => {
             ),
         ]);
 
-  console.log("options", options);
-
   const gasToken = workflow.actions[index]?.input._grinderyChain
     ? BLOCKCHAINS.find(
         (chain) => chain.value === workflow.actions[index]?.input._grinderyChain
