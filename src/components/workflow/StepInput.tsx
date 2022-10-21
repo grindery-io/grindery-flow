@@ -145,9 +145,9 @@ const StepInput = ({ outputFields }: Props) => {
     type === "trigger"
       ? []
       : _.flatten([
-          ...outputFields.map((out) =>
-            getOutputOptions(out.operation, out.connector)
-          ),
+          ...outputFields
+            .filter((out) => out.step < step)
+            .map((out) => getOutputOptions(out.operation, out.connector)),
         ]);
 
   const gasToken = workflow.actions[index]?.input._grinderyChain
