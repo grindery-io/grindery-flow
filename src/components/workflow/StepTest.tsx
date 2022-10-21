@@ -246,10 +246,20 @@ const StepTest = ({ outputFields }: Props) => {
   console.log("test options", operation);
   }*/
 
-  const values = replaceTokens(workflow.actions[index]?.input || {}, {
+  const context: any = {
     trigger: outputFields.find((output) => output.operation.type === "trigger")
       .operation.sample,
-  });
+  };
+
+  if (index >= 0) {
+    for (let i = 0; i <= index; i++) {
+      context["step" + i] = outputFields.find(
+        (output) => output.operation.type === "action" && output.index === i
+      ).operation.sample;
+    }
+  }
+
+  const values = replaceTokens(workflow.actions[index]?.input || {}, context);
 
   const rows =
     operation?.operation?.inputFields?.map((field: Field) => {

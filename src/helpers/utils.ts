@@ -31,13 +31,21 @@ const TOKEN_TRANSFORMERS = {
   "": (s) => String(s),
 };
 
-export function replaceTokens<T>(obj: T, context: { [key: string]: unknown }): T {
+export function replaceTokens<T>(
+  obj: T,
+  context: { [key: string]: unknown }
+): T {
   if (typeof obj === "string") {
     return obj.replace(/\{\{\s*([^}]+?)\s*\}\}/g, (_original, key) => {
-      const parts = key.split("|");
       //@ts-ignore
-      const transform = TOKEN_TRANSFORMERS[parts[1] ? parts[1].trim() : ""] || TOKEN_TRANSFORMERS[""];
-      const ret = transform((_.get(context, parts[0].trim(), "") as string) ?? "");
+      const parts = key.split("|");
+      const transform =
+        //@ts-ignore
+        TOKEN_TRANSFORMERS[parts[1] ? parts[1].trim() : ""] ||
+        TOKEN_TRANSFORMERS[""];
+      const ret = transform(
+        (_.get(context, parts[0].trim(), "") as string) ?? ""
+      );
       return ret;
     }) as unknown as T;
   }
@@ -57,7 +65,9 @@ export function replaceTokens<T>(obj: T, context: { [key: string]: unknown }): T
 
 export const getOutputOptions = (
   operation: TriggerOperation | ActionOperation,
-  connector: Connector
+  connector: Connector,
+  type: string,
+  index: number
 ) => {
   if (!operation) {
     return [];
@@ -69,7 +79,9 @@ export const getOutputOptions = (
             const sampleInput = operation.sample?.[outputField.key];
             return Array.isArray(sampleInput)
               ? sampleInput.map((sample: any, i: any) => ({
-                  value: `{{trigger.${outputField.key}[${i}]}}`,
+                  value: `{{${
+                    type === "trigger" ? "trigger" : "step" + index
+                  }.${outputField.key}[${i}]}}`,
                   label: `${outputField.label || outputField.key}[${i}]`,
                   reference: sample,
                   icon: connector.icon || "",
@@ -78,7 +90,9 @@ export const getOutputOptions = (
               : [];
           } else {
             return {
-              value: `{{trigger.${outputField.key}}}`,
+              value: `{{${type === "trigger" ? "trigger" : "step" + index}.${
+                outputField.key
+              }}}`,
               label: outputField.label || outputField.key,
               reference: operation.sample?.[outputField.key],
               icon: connector.icon || "",
@@ -100,7 +114,6 @@ export const jsonrpcObj = (method: string, params: object) => {
 };
 
 export const defaultFunc = () => {};
-
 
 export const getValidationScheme = (inputFields: Field[]) => {
   const sanitizeType = (type: string) => {
@@ -144,4 +157,3 @@ export const getValidationScheme = (inputFields: Field[]) => {
 
   return schema;
 };
-

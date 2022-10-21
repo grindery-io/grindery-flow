@@ -147,8 +147,17 @@ const StepInput = ({ outputFields }: Props) => {
       : _.flatten([
           ...outputFields
             .filter((out) => out.step < step)
-            .map((out) => getOutputOptions(out.operation, out.connector)),
+            .map((out) =>
+              getOutputOptions(
+                out.operation,
+                out.connector,
+                out.type,
+                out.index
+              )
+            ),
         ]);
+
+  console.log("options", options);
 
   const gasToken = workflow.actions[index]?.input._grinderyChain
     ? BLOCKCHAINS.find(
