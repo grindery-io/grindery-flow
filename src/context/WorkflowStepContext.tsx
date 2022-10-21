@@ -147,6 +147,7 @@ export const WorkflowStepContextProvider = ({
           ...operation?.operation,
           type: type,
         },
+        step: step,
       };
       return workflowOutput;
     });
