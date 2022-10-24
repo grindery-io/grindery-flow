@@ -247,15 +247,27 @@ const StepTest = ({ outputFields }: Props) => {
   }*/
 
   const context: any = {
-    trigger: outputFields.find((output) => output.operation.type === "trigger")
-      .operation.sample,
+    trigger:
+      outputFields.find(
+        (output) =>
+          output &&
+          output.operation &&
+          output.operation.type &&
+          output.operation.type === "trigger"
+      )?.operation?.sample || {},
   };
 
   if (index >= 0) {
     for (let i = 0; i <= index; i++) {
-      context["step" + i] = outputFields.find(
-        (output) => output.operation.type === "action" && output.index === i
-      ).operation.sample;
+      context["step" + i] =
+        outputFields.find(
+          (output) =>
+            output &&
+            output.operation &&
+            output.operation.type &&
+            output.operation.type === "action" &&
+            output.index === i
+        )?.operation?.sample || {};
     }
   }
 
