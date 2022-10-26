@@ -376,7 +376,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   useEffect(() => {
     if (user && token?.access_token) {
       initClient(token?.access_token);
-      navigate("/workflows");
+      //navigate("/workflows");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, token?.access_token]);
