@@ -5,7 +5,7 @@ import RootStack from "./RootStack";
 import AuthPage from "./AuthPage";
 import EarlyAccessModal from "../shared/EarlyAccessModal";
 import WorkspaceContextProvider from "../../context/WorkspaceContext";
-import WorkflowContextProvider from "../../context/WorkflowContext";
+import NetworkStack from "./network/NetworkStack";
 
 type Props = {};
 
@@ -16,6 +16,7 @@ const NexusStack = (props: Props) => {
         <EarlyAccessModal />
         <Routes>
           <Route path="/auth" element={<AuthPage />}></Route>
+          <Route path="/network/*" element={<NetworkStack />} />
           <Route path="*" element={<RootStack />}></Route>
         </Routes>
       </AppContextProvider>

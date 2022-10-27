@@ -144,6 +144,7 @@ const RootStack = (props: Props) => {
         <Route path="/settings" element={<SettingsPage />}></Route>
         <Route path="/workspaces/new" element={<WorkspaceCreatePage />} />
         <Route path="/workspaces/manage" element={<WorkspaceEditPage />} />
+        <Route path="*" element={<Navigate to="/workflows" replace />}></Route>
       </Routes>
     );
     /**/

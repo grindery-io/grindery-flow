@@ -58,6 +58,7 @@ export const ICONS: { [key: string]: string } = {
   CHAIN_CELO: "/images/icons/celo.svg",
   CHAIN_CRONOS: "/images/icons/cronos.svg",
   CARET_DOWN: "/images/icons/caret-down.svg",
+  CARET_DOWN_LIGHT: "/images/icons/caret-down-light.svg",
   PLUS_BLACK: "/images/icons/plus-black.svg",
   EDIT: "/images/icons/edit.svg",
   COPY: "/images/icons/copy.svg",
@@ -77,7 +78,9 @@ export const ICONS: { [key: string]: string } = {
   ANGLE_DOWN: "/images/icons/angle-down.svg",
   ANGLE_UP: "/images/icons/angle-up.svg",
   EXCLAMATION: "/images/icons/exclamation.svg",
-  CHECK_CIRCLE: "/images/icons/check-circle.svg"
+  CHECK_CIRCLE: "/images/icons/check-circle.svg",
+  // Dev network
+  GRINDERY_DEV_LOGO: "/images/icons/grindery-iso.svg",
 };
 
 export const RIGHTBAR_TABS: {

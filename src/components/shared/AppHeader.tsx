@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 `;
 
 const UserWrapper = styled.div`
-  margin-left: auto;
+  margin-left: 10px;
   order: 4;
   @media (min-width: ${SCREEN.TABLET}) {
     order: 4;
@@ -80,7 +80,7 @@ const BackWrapper = styled.div`
 `;
 
 const WorkspaceSelectorWrapper = styled.div`
-  margin-left: 14px;
+  margin-left: auto;
   order: 2;
   @media (min-width: ${SCREEN.TABLET}) {
     order: 3;

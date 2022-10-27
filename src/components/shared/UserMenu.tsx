@@ -31,6 +31,11 @@ const UserWrapper = styled.div`
   &.opened {
     border-color: #0b0d17 !important;
   }
+
+  &.dark:hover,
+  &.dark.opened {
+    border-color: #ffffff !important;
+  }
 `;
 
 const UserStatus = styled.div`
@@ -48,6 +53,10 @@ const UserId = styled.p`
   line-height: 150%;
   margin: 0;
   padding: 0;
+
+  &.dark {
+    color: #ffffff;
+  }
 `;
 
 const UserDropdown = styled.div`
@@ -59,6 +68,7 @@ const UserDropdown = styled.div`
   visibility: hidden;
   transition: all 0.3s ease-in-out;
   transform: translateY(-10px);
+  z-index: 99;
 
   &.opened {
     opacity: 1;
@@ -109,9 +119,12 @@ const UserDropdownContent = styled.div`
   }
 `;
 
-type Props = {};
+type Props = {
+  mode?: "dark" | "light";
+};
 
 const UserMenu = (props: Props) => {
+  const mode = props.mode || "light";
   const { address, disconnect } = useGrinderyNexus();
   const [menuOpened, setMenuOpened] = useState(false);
   const { workspace } = useWorkspaceContext();
@@ -132,12 +145,12 @@ const UserMenu = (props: Props) => {
           onClick={() => {
             setMenuOpened(!menuOpened);
           }}
-          className={menuOpened ? "opened" : ""}
+          className={`${menuOpened ? "opened" : ""} ${mode}`}
         >
           <UserStatus>
             <Jdenticon size="20" value={encodeURIComponent(address)} />
           </UserStatus>
-          <UserId>
+          <UserId className={mode}>
             {address.substring(0, 6) +
               "..." +
               address.substring(address.length - 4)}

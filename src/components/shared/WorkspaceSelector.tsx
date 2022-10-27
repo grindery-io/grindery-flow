@@ -32,6 +32,11 @@ const Selector = styled.button`
   &.opened {
     border-color: #0b0d17 !important;
   }
+
+  &.dark:hover,
+  &.dark.opened {
+    border-color: #ffffff !important;
+  }
 `;
 const Text = styled.div`
   text-align: left;
@@ -47,6 +52,10 @@ const Name = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  &.dark {
+    color: #ffffff;
+  }
 `;
 
 const Role = styled.div`
@@ -65,13 +74,14 @@ const Icon = styled.img`
 const Dropdown = styled.div`
   font-family: Roboto;
   position: absolute;
-  left: 0;
+  right: 0;
   top: 100%;
   padding-top: 4px;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease-in-out;
   transform: translateY(-10px);
+  z-index: 99;
 
   &.opened {
     opacity: 1;
@@ -149,7 +159,9 @@ const DropdownItem = styled.div`
   }
 `;
 
-type Props = {};
+type Props = {
+  mode?: "dark" | "light";
+};
 
 const getUserRole = (workspace: Workspace | null, user: string) => {
   if (workspace?.creator === user) {
@@ -165,6 +177,7 @@ const getUserRole = (workspace: Workspace | null, user: string) => {
 };
 
 const WorkspaceSelector = (props: Props) => {
+  const mode = props.mode || "light";
   const { user, client } = useAppContext();
   const { workspace, workspaces, setWorkspace, listWorkspaces } =
     useWorkspaceContext();
@@ -218,13 +231,16 @@ const WorkspaceSelector = (props: Props) => {
       <Container>
         <Selector
           onClick={handleSelectorClick}
-          className={selectorOpened ? "opened" : ""}
+          className={`${selectorOpened ? "opened" : ""} ${mode}`}
         >
           <Text>
-            <Name>{name}</Name>
+            <Name className={mode}>{name}</Name>
             <Role>{role}</Role>
           </Text>
-          <Icon src={ICONS.CARET_DOWN} alt="" />
+          <Icon
+            src={mode !== "dark" ? ICONS.CARET_DOWN : ICONS.CARET_DOWN_LIGHT}
+            alt=""
+          />
         </Selector>
         <Dropdown className={selectorOpened ? "opened" : ""}>
           <DropdownContent>
