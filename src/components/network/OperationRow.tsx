@@ -80,7 +80,7 @@ const OperationRow = (props: Props) => {
               key: "2",
               label: "Delete",
               onClick: () => {
-                alert("Operation not implemented yet");
+                alert("Work in progress");
               },
             },
           ]}

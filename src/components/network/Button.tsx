@@ -26,13 +26,16 @@ const Wrapper = styled.div`
 type Props = {
   children: React.ReactNode;
   onClick: () => void;
+  style?: any;
 };
 
 const Button = (props: Props) => {
-  const { children, onClick } = props;
+  const { children, onClick, style } = props;
   return (
     <Wrapper>
-      <button onClick={onClick}>{children}</button>
+      <button style={style || {}} onClick={onClick}>
+        {children}
+      </button>
     </Wrapper>
   );
 };

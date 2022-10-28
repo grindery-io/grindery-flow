@@ -2,12 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import { CircularProgress } from "grindery-ui";
 import useNetworkContext from "../../../hooks/useNetworkContext";
-import Button from "../../shared/Button";
+import Button from "../../network/Button";
 import { useNavigate } from "react-router";
 import ConnectorRow from "../../network/ConnectorRow";
 
 const Container = styled.div`
-  padding: 92px 20px 0;
+  padding: 75px 20px 0;
 `;
 
 const Content = styled.div`
@@ -73,11 +73,12 @@ const DashboardPage = (props: Props) => {
         <PageHeader>
           <h1>Connectors</h1>
           <Button
-            value="Create connector"
             onClick={() => {
               navigate("/network/connector/new");
             }}
-          />
+          >
+            Create Connector
+          </Button>
         </PageHeader>
 
         {state.connectorsLoading ? (

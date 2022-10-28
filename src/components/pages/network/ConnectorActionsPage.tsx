@@ -33,14 +33,14 @@ type Props = {
   setData: any;
 };
 
-const CDSTriggersPage = (props: Props) => {
-  const { data, setData } = props;
+const ConnectorActionsPage = (props: Props) => {
+  const { data } = props;
 
   return (
     <div>
-      <Title>Triggers</Title>
+      <Title>Actions</Title>
       <div>
-        {data?.cds?.triggers && data?.cds?.triggers.length > 0 && (
+        {data?.cds?.actions && data?.cds?.actions.length > 0 && (
           <Table>
             <TableHeader>
               <tr>
@@ -50,11 +50,11 @@ const CDSTriggersPage = (props: Props) => {
               </tr>
             </TableHeader>
             <tbody>
-              {data?.cds?.triggers.map((trigger: any) => (
+              {data?.cds?.actions.map((action: any) => (
                 <OperationRow
-                  operation={trigger}
-                  key={trigger.key}
-                  type="triggers"
+                  operation={action}
+                  key={action.key}
+                  type="actions"
                 />
               ))}
             </tbody>
@@ -65,4 +65,4 @@ const CDSTriggersPage = (props: Props) => {
   );
 };
 
-export default CDSTriggersPage;
+export default ConnectorActionsPage;

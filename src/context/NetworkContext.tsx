@@ -1,10 +1,8 @@
 //import NexusClient from "grindery-nexus-client";
 import axios from "axios";
-import React, { createContext, useEffect, useReducer, useState } from "react";
+import React, { createContext, useEffect, useReducer } from "react";
 import { useGrinderyNexus } from "use-grindery-nexus";
-import useAppContext from "../hooks/useAppContext";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";
-//import { useGrinderyNexus } from "use-grindery-nexus";
 
 const CDS_EDITOR_API_ENDPOINT =
   "https://nexus-cds-editor-api.herokuapp.com/api";
@@ -12,10 +10,12 @@ const CDS_EDITOR_API_ENDPOINT =
 type StateProps = {
   connectors: any[];
   connectorsLoading: boolean;
+  blockchains: any[];
 };
 
 type ContextProps = {
   state: StateProps;
+  refreshConnectors: () => Promise<{ success: boolean }>;
 };
 
 type NetworkContextProps = {
@@ -26,13 +26,17 @@ const defaultContext = {
   state: {
     connectors: [],
     connectorsLoading: true,
+    blockchains: [],
+  },
+  refreshConnectors: async () => {
+    return { success: false };
   },
 };
 
 export const NetworkContext = createContext<ContextProps>(defaultContext);
 
 export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
-  const { workspaceToken, isWorkspaceSwitching } = useWorkspaceContext();
+  const { workspaceToken } = useWorkspaceContext();
   const { token } = useGrinderyNexus();
 
   const [state, setState] = useReducer(
@@ -43,6 +47,7 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
     {
       connectors: [],
       connectorsLoading: true,
+      blockchains: [],
     }
   );
 
@@ -71,12 +76,58 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
     }
   };
 
+  const refreshConnectors = async () => {
+    if (!token?.access_token && !workspaceToken) {
+      return { success: false };
+    } else {
+      let res;
+      try {
+        res = await axios.get(`${CDS_EDITOR_API_ENDPOINT}/cds`, {
+          headers: {
+            Authorization: `Bearer ${workspaceToken || token?.access_token}`,
+          },
+        });
+      } catch (err) {
+        console.error("getConnectors error", err);
+        return { success: false };
+      }
+      setState({
+        connectors: res?.data?.result || [],
+      });
+      return { success: true };
+    }
+  };
+
+  const getChains = async (userToken: string | undefined) => {
+    if (!userToken) {
+      setState({ blockchains: [] });
+    } else {
+      let res;
+      try {
+        res = await axios.get(`${CDS_EDITOR_API_ENDPOINT}/blockchains`, {
+          headers: {
+            Authorization: `Bearer ${workspaceToken || userToken}`,
+          },
+        });
+      } catch (err) {
+        console.error("getConnectors error", err);
+      }
+      setState({
+        blockchains: res?.data?.result || [],
+      });
+    }
+  };
+
   useEffect(() => {
     getConnectors(token?.access_token, workspaceToken);
   }, [token?.access_token, workspaceToken]);
 
+  useEffect(() => {
+    getChains(token?.access_token);
+  }, [token?.access_token]);
+
   return (
-    <NetworkContext.Provider value={{ state }}>
+    <NetworkContext.Provider value={{ state, refreshConnectors }}>
       {children}
     </NetworkContext.Provider>
   );

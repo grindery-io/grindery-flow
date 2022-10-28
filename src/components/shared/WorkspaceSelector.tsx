@@ -192,13 +192,13 @@ const WorkspaceSelector = (props: Props) => {
 
   const handleSelectorClick = () => {
     if (!selectorOpened && user && client) {
-      listWorkspaces(user, client);
+      //listWorkspaces(user, client);
     }
     setSelectorOpened(!selectorOpened);
   };
 
   const handleCreateClick = () => {
-    navigate("workspaces/new");
+    navigate("/workspaces/new");
     setSelectorOpened(false);
   };
 

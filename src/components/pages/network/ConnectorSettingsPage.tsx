@@ -41,7 +41,7 @@ type Props = {
   setData: any;
 };
 
-const CDSSettingsPage = (props: Props) => {
+const ConnectorSettingsPage = (props: Props) => {
   const { data, setData } = props;
 
   return data && data.cds ? (
@@ -80,7 +80,13 @@ const CDSSettingsPage = (props: Props) => {
         </MaxHeightInput>
         <ButtonsWrapper>
           <ButtonsRight>
-            <Button onClick={() => {}}>Save</Button>
+            <Button
+              onClick={() => {
+                alert("Work in progress");
+              }}
+            >
+              Save
+            </Button>
           </ButtonsRight>
         </ButtonsWrapper>
       </div>
@@ -99,4 +105,4 @@ const CDSSettingsPage = (props: Props) => {
   );
 };
 
-export default CDSSettingsPage;
+export default ConnectorSettingsPage;

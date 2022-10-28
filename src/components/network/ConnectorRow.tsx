@@ -14,10 +14,20 @@ const Row = styled.tr`
     padding-right: 20px;
     text-align: right;
   }
+
+  &:hover {
+    background: #f7f7f7;
+  }
 `;
 
 const Column = styled.td`
   padding: 20px 10px;
+
+  cursor: pointer;
+
+  &:last-child {
+    cursor: default;
+  }
 `;
 
 const Icon = styled.div`
@@ -26,7 +36,6 @@ const Icon = styled.div`
   padding: 8px;
   width: 40px;
   box-sizing: border-box;
-  cursor: pointer;
 
   & img {
     width: 24px;
@@ -42,7 +51,6 @@ const ConnectorName = styled.span`
   color: #141416;
   padding: 0;
   margin: 0;
-  cursor: pointer;
 `;
 
 const MenuButtonWrapper = styled.div`
@@ -66,32 +74,42 @@ const ConnectorRow = (props: Props) => {
   };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
   return (
     <Row key={connector.id}>
-      <Column style={{ width: "40px" }}>
-        <Icon
-          onClick={() => {
-            navigate("/network/connector/" + connector.id);
-          }}
-        >
-          <img src={connector.values?.icon || ""} alt="" />
+      <Column
+        style={{ width: "40px" }}
+        onClick={() => {
+          navigate("/network/connector/" + connector.id);
+        }}
+      >
+        <Icon>
+          <img src={connector.values?.icon || ICONS.NEXUS_SQUARE} alt="" />
         </Icon>
       </Column>
-      <Column>
-        <ConnectorName
-          onClick={() => {
-            navigate("/network/connector/" + connector.id);
-          }}
-        >
-          {connector.values?.name || connector.id}
-        </ConnectorName>
+      <Column
+        onClick={() => {
+          navigate("/network/connector/" + connector.id);
+        }}
+      >
+        <ConnectorName>{connector.values?.name || connector.id}</ConnectorName>
       </Column>
-      <Column style={{ textAlign: "right" }}>
+      <Column
+        style={{ textAlign: "right" }}
+        onClick={() => {
+          navigate("/network/connector/" + connector.id);
+        }}
+      >
         {connector.values?.type || ""}
       </Column>
-      <Column style={{ textAlign: "right" }}>
+      <Column
+        style={{ textAlign: "right" }}
+        onClick={() => {
+          navigate("/network/connector/" + connector.id);
+        }}
+      >
         {connector.values?.status?.name || ""}
       </Column>
       <Column style={{ textAlign: "right", width: "30px" }}>
@@ -122,14 +140,14 @@ const ConnectorRow = (props: Props) => {
               key: "clone",
               label: "Clone",
               onClick: () => {
-                alert("Operation not implemented yet");
+                alert("Work in progress");
               },
             },
             {
               key: "delete",
               label: "Delete",
               onClick: () => {
-                alert("Operation not implemented yet");
+                alert("Work in progress");
               },
             },
           ]}

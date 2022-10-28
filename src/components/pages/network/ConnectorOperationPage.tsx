@@ -33,7 +33,6 @@ const TabsWrapper = styled.div`
 
   & .MuiTabs-root {
     background: none;
-    border-bottom: 1px solid #dcdcdc;
   }
   & .MuiTab-root {
     text-transform: initial;
@@ -46,6 +45,10 @@ const TabsWrapper = styled.div`
       min-width: 150px;
     }
   }
+
+  & .MuiTabs-flexContainer {
+    border-bottom: 1px solid #dcdcdc;
+  }
 `;
 
 type Props = {
@@ -54,11 +57,11 @@ type Props = {
   setData: any;
 };
 
-const CDSOperationPage = (props: Props) => {
+const ConnectorOperationPage = (props: Props) => {
   let { id, key } = useParams();
   const { data, type } = props;
   const [tab, setTab] = useState(0);
-  const operation = data?.cds?.[type].find((op: any) => op.key == key) || null;
+  const operation = data?.cds?.[type].find((op: any) => op.key === key) || null;
 
   useEffect(() => {
     setTab(0);
@@ -84,7 +87,7 @@ const CDSOperationPage = (props: Props) => {
           variant={""}
         />
       </TabsWrapper>
-      {tab == 0 && (
+      {tab === 0 && (
         <>
           <div>
             <RichInput
@@ -119,11 +122,18 @@ const CDSOperationPage = (props: Props) => {
           </div>
           <ButtonsWrapper>
             <ButtonsRight>
-              <Button onClick={() => {}}>Save</Button>
+              <Button
+                onClick={() => {
+                  alert("Work in progress");
+                }}
+              >
+                Save
+              </Button>
             </ButtonsRight>
           </ButtonsWrapper>
         </>
       )}
+      {tab === 1 && <p>Work in progress</p>}
     </div>
   ) : (
     <>
@@ -145,4 +155,4 @@ const CDSOperationPage = (props: Props) => {
   );
 };
 
-export default CDSOperationPage;
+export default ConnectorOperationPage;

@@ -7,6 +7,9 @@ export const SCREEN = {
 
 export const WORKFLOW_ENGINE_URL = "https://orchestrator.grindery.org";
 
+export const CDS_EDITOR_API_ENDPOINT =
+  "https://nexus-cds-editor-api.herokuapp.com/api";
+
 export const ICONS: { [key: string]: string } = {
   WALLET: "/images/icons/wallet.svg",
   WORKFLOWS: "/images/icons/workflow.svg",
@@ -81,6 +84,7 @@ export const ICONS: { [key: string]: string } = {
   CHECK_CIRCLE: "/images/icons/check-circle.svg",
   // Dev network
   GRINDERY_DEV_LOGO: "/images/icons/grindery-iso.svg",
+  NEXUS_SQUARE: "/images/icons/nexus-square.svg",
 };
 
 export const RIGHTBAR_TABS: {
