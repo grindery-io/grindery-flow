@@ -1,13 +1,17 @@
 //import NexusClient from "grindery-nexus-client";
 import axios from "axios";
 import React, { createContext, useEffect, useReducer, useState } from "react";
+import { useGrinderyNexus } from "use-grindery-nexus";
 import useAppContext from "../hooks/useAppContext";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";
 //import { useGrinderyNexus } from "use-grindery-nexus";
 
+const CDS_EDITOR_API_ENDPOINT =
+  "https://nexus-cds-editor-api.herokuapp.com/api";
+
 type StateProps = {
-  cdss: any[];
-  cdssLoading: boolean;
+  connectors: any[];
+  connectorsLoading: boolean;
 };
 
 type ContextProps = {
@@ -20,16 +24,16 @@ type NetworkContextProps = {
 
 const defaultContext = {
   state: {
-    cdss: [],
-    cdssLoading: true,
+    connectors: [],
+    connectorsLoading: true,
   },
 };
 
 export const NetworkContext = createContext<ContextProps>(defaultContext);
 
 export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
-  const { workspace } = useWorkspaceContext();
-  const { user } = useAppContext();
+  const { workspaceToken, isWorkspaceSwitching } = useWorkspaceContext();
+  const { token } = useGrinderyNexus();
 
   const [state, setState] = useReducer(
     (state: StateProps, newState: Partial<StateProps>) => ({
@@ -37,40 +41,39 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
       ...newState,
     }),
     {
-      cdss: [],
-      cdssLoading: true,
+      connectors: [],
+      connectorsLoading: true,
     }
   );
 
   const getConnectors = async (
-    userId: string | null,
-    workspace: string | null
+    userToken: string | undefined,
+    workspaceToken: string | null
   ) => {
-    setState({ cdssLoading: true });
-    if (!userId && !workspace) {
-      setState({ cdss: [], cdssLoading: true });
+    setState({ connectorsLoading: true });
+    if (!userToken && !workspaceToken) {
+      setState({ connectors: [], connectorsLoading: true });
     } else {
       let res;
-      const query =
-        workspace && workspace !== "personal"
-          ? `&workspace=${workspace}`
-          : userId
-          ? `&user=${userId}`
-          : "";
       try {
-        res = await axios.get(
-          `https://api.hubapi.com/hubdb/api/v2/tables/5526902/rows?portalId=22257229${query}`
-        );
+        res = await axios.get(`${CDS_EDITOR_API_ENDPOINT}/cds`, {
+          headers: {
+            Authorization: `Bearer ${workspaceToken || userToken}`,
+          },
+        });
       } catch (err) {
         console.error("getConnectors error", err);
       }
-      setState({ cdss: res?.data?.objects || [], cdssLoading: false });
+      setState({
+        connectors: res?.data?.result || [],
+        connectorsLoading: false,
+      });
     }
   };
 
   useEffect(() => {
-    getConnectors(user, workspace);
-  }, [user, workspace]);
+    getConnectors(token?.access_token, workspaceToken);
+  }, [token?.access_token, workspaceToken]);
 
   return (
     <NetworkContext.Provider value={{ state }}>

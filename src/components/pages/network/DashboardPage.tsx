@@ -3,9 +3,11 @@ import styled from "styled-components";
 import { CircularProgress } from "grindery-ui";
 import useNetworkContext from "../../../hooks/useNetworkContext";
 import Button from "../../shared/Button";
+import { useNavigate } from "react-router";
+import ConnectorRow from "../../network/ConnectorRow";
 
 const Container = styled.div`
-  padding: 0 20px;
+  padding: 92px 20px 0;
 `;
 
 const Content = styled.div`
@@ -46,59 +48,23 @@ const Table = styled.table`
 `;
 
 const TableHeader = styled.thead`
-  & > tr > th:last-child {
+  & > tr > th {
     text-align: right;
+  }
+  & > tr > th:first-child {
+    text-align: left;
   }
 `;
 
 const TableHeaderColumn = styled.th`
-  text-align: left;
   padding: 20px 20px;
   font-weight: 400;
-`;
-
-const Row = styled.tr`
-  border: 1px solid #dcdcdc;
-
-  & > td:first-child {
-    padding-left: 20px;
-  }
-  & > td:last-child {
-    padding-right: 20px;
-    text-align: right;
-  }
-`;
-
-const Column = styled.td`
-  padding: 20px 10px;
-`;
-
-const Icon = styled.div`
-  border: 1px solid #dcdcdc;
-  border-radius: 5px;
-  padding: 8px;
-  width: 40px;
-  box-sizing: border-box;
-
-  & img {
-    width: 24px;
-    height: 24px;
-    display: block;
-  }
-`;
-
-const ConnectorName = styled.p`
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 110%;
-  color: #141416;
-  padding: 0;
-  margin: 0;
 `;
 
 type Props = {};
 
 const DashboardPage = (props: Props) => {
+  let navigate = useNavigate();
   const { state } = useNetworkContext();
 
   return (
@@ -106,10 +72,15 @@ const DashboardPage = (props: Props) => {
       <Content>
         <PageHeader>
           <h1>Connectors</h1>
-          <Button value="Create connector" />
+          <Button
+            value="Create connector"
+            onClick={() => {
+              navigate("/network/connector/new");
+            }}
+          />
         </PageHeader>
 
-        {state.cdssLoading ? (
+        {state.connectorsLoading ? (
           <div
             style={{
               textAlign: "center",
@@ -121,30 +92,20 @@ const DashboardPage = (props: Props) => {
           </div>
         ) : (
           <>
-            {state.cdss && state.cdss.length > 0 ? (
+            {state.connectors && state.connectors.length > 0 ? (
               <>
                 <Table>
                   <TableHeader>
                     <tr>
                       <TableHeaderColumn colSpan={2}>NAME</TableHeaderColumn>
+                      <TableHeaderColumn>TYPE</TableHeaderColumn>
                       <TableHeaderColumn>STATUS</TableHeaderColumn>
+                      <TableHeaderColumn></TableHeaderColumn>
                     </tr>
                   </TableHeader>
                   <tbody>
-                    {state.cdss.map((cds) => (
-                      <Row key={cds.id}>
-                        <Column style={{ width: "40px" }}>
-                          <Icon>
-                            <img src={cds.values?.["11"] || ""} alt="" />
-                          </Icon>
-                        </Column>
-                        <Column>
-                          <ConnectorName>
-                            {cds.values?.["1"] || cds.id}
-                          </ConnectorName>
-                        </Column>
-                        <Column>{cds.values?.["6"]?.name || ""}</Column>
-                      </Row>
+                    {state.connectors.map((connector) => (
+                      <ConnectorRow connector={connector} key={connector.id} />
                     ))}
                   </tbody>
                 </Table>

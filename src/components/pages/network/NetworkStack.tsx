@@ -24,11 +24,12 @@ const DevStack = (props: Props) => {
           <Routes>
             <Route path="/" element={<DashboardPage />}></Route>
             <Route
-              path="/cds"
+              path="/connector"
               element={<Navigate to="/network" replace />}
             ></Route>
-            <Route path="/cds/new" element={<CreateCDSPage />}></Route>
-            <Route path="/cds/:id" element={<EditCDSPage />}></Route>
+            <Route path="/connector/new" element={<CreateCDSPage />}></Route>
+            <Route path="/connector/:id" element={<EditCDSPage />}></Route>
+            <Route path="/connector/:id/*" element={<EditCDSPage />}></Route>
             <Route
               path="*"
               element={<Navigate to="/network" replace />}

@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { ICONS } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
@@ -14,6 +15,11 @@ const Container = styled.div`
   flex-wrap: nowrap;
   gap: 16px;
   background: #0b0d17;
+  position: fixed;
+  z-index: 1210;
+  top: 0;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const LeftWrapper = styled.div`
@@ -45,6 +51,7 @@ const Logo = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 10px;
+  cursor: pointer;
 `;
 
 const Title = styled.div`
@@ -65,11 +72,16 @@ const Subtitle = styled.div`
 type Props = {};
 
 const Header = (props: Props) => {
+  let navigate = useNavigate();
   const { user } = useAppContext();
   return (
     <Container>
       <LeftWrapper>
-        <Logo>
+        <Logo
+          onClick={() => {
+            navigate("/network");
+          }}
+        >
           <img
             src={ICONS.GRINDERY_DEV_LOGO}
             alt="Grindery developer network logo"
