@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Tooltip, IconButton } from "grindery-ui";
-import { Navigate, Route, Routes, useNavigate, useParams } from "react-router";
+import { Navigate, Route, Routes, useParams } from "react-router";
 import OperationInputFields from "./OperationInputFields";
 import OperationInputFieldForm from "./OperationInputFieldForm";
-import useConnectorContext from "../../hooks/useConnectorContext";
 import OperationFormPreview from "./OperationFormPreview";
 
 const Container = styled.div`
@@ -51,97 +50,15 @@ type Props = {};
 
 const OperationFieldsEditor = (props: Props) => {
   let { id, type, key } = useParams();
-  let navigate = useNavigate();
   const [showPreview, setShowPreview] = useState(true);
-  const { state, setState } = useConnectorContext();
-
-  const handleInputFieldSubmit = (inputKey: string, inputData: any) => {
-    navigate(`/network/connector/${id}/${type}/${key}/inputFields`);
-    if (type) {
-      setState({
-        ...state,
-        cds: {
-          ...state.cds,
-          [type]: [
-            ...state.cds[type].map((op: any) => {
-              if (op.key === key) {
-                return {
-                  ...op,
-                  operation: {
-                    ...op.operation,
-                    inputFields: [
-                      ...op.operation.inputFields.map((field: any) => {
-                        if (field.key === inputKey) {
-                          return {
-                            ...field,
-                            ...inputData,
-                          };
-                        } else {
-                          return field;
-                        }
-                      }),
-                      ...(inputKey === "__new__" ? [{ ...inputData }] : []),
-                    ],
-                  },
-                };
-              } else {
-                return op;
-              }
-            }),
-          ],
-        },
-      });
-    }
-  };
-
-  const handleInputFieldDelete = (inputKey: string) => {
-    if (
-      window.confirm("Are you sure you want to delete the input field?") &&
-      type
-    ) {
-      setState({
-        ...state,
-        cds: {
-          ...state.cds,
-          [type]: [
-            ...state.cds[type].map((op: any) => {
-              if (op.key === key) {
-                return {
-                  ...op,
-                  operation: {
-                    ...op.operation,
-                    inputFields: [
-                      ...op.operation.inputFields.filter(
-                        (field: any) => field.key !== inputKey
-                      ),
-                    ],
-                  },
-                };
-              } else {
-                return op;
-              }
-            }),
-          ],
-        },
-      });
-    }
-  };
 
   return (
     <Container>
       <Editor className={!showPreview ? "full" : ""}>
         <h3>Form Editor</h3>
         <Routes>
-          <Route
-            path="/"
-            element={<OperationInputFields onDelete={handleInputFieldDelete} />}
-          ></Route>
-          <Route
-            path=":inputKey"
-            element={
-              <OperationInputFieldForm onSubmit={handleInputFieldSubmit} />
-            }
-          />
+          <Route path="/" element={<OperationInputFields />}></Route>
+          <Route path=":inputKey" element={<OperationInputFieldForm />} />
           <Route
             path="*"
             element={

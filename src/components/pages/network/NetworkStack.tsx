@@ -5,7 +5,7 @@ import CreateConnectorPage from "./CreateConnectorPage";
 import WelcomePage from "../WelcomePage";
 import useAppContext from "../../../hooks/useAppContext";
 import { NetworkContextProvider } from "../../../context/NetworkContext";
-import EditConnectorPage from "./EditConnectorPage";
+import ConnectorEditPage from "./ConnectorEditPage";
 import NetworkHeader from "../../network/NetworkHeader";
 
 type Props = {};
@@ -33,11 +33,11 @@ const DevStack = (props: Props) => {
             ></Route>
             <Route
               path="/connector/:id"
-              element={<EditConnectorPage />}
+              element={<ConnectorEditPage />}
             ></Route>
             <Route
               path="/connector/:id/*"
-              element={<EditConnectorPage />}
+              element={<ConnectorEditPage />}
             ></Route>
             <Route
               path="*"

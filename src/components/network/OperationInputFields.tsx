@@ -32,12 +32,9 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-type Props = {
-  onDelete: (a: string) => void;
-};
+type Props = {};
 
 const OperationInputFields = (props: Props) => {
-  const { onDelete } = props;
   let { id, type, key } = useParams();
   let navigate = useNavigate();
   const { state } = useConnectorContext();
@@ -62,8 +59,6 @@ const OperationInputFields = (props: Props) => {
               <OperationInputFieldRow
                 inputKey={inputField.key}
                 key={inputField.key}
-                type={type}
-                onDelete={onDelete}
               />
             ))}
           </tbody>

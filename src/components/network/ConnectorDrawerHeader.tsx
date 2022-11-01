@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { ICONS } from "../../constants";
+import useConnectorContext from "../../hooks/useConnectorContext";
 import Button from "./Button";
 
 const Container = styled.div`
@@ -78,8 +79,8 @@ type Props = {
 
 const ConnectorDrawerHeader = (props: Props) => {
   let navigate = useNavigate();
-  const { connector } = props;
-  const cds = JSON.parse(connector?.values?.cds || "");
+  const { state } = useConnectorContext();
+  const { connector, cds } = state;
   return (
     <Container>
       <ConnectorHeader>

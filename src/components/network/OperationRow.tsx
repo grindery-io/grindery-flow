@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { IconButton, Menu } from "grindery-ui";
 import { ICONS } from "../../constants";
 import { useNavigate, useParams } from "react-router";
+import useConnectorContext from "../../hooks/useConnectorContext";
 
 const Row = styled.tr`
   border-bottom: 1px solid #dcdcdc;
@@ -44,6 +45,7 @@ type Props = {
 const OperationRow = (props: Props) => {
   const { operation } = props;
   let { id, type } = useParams();
+  const { onOperationDelete } = useConnectorContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   let navigate = useNavigate();
 
@@ -105,7 +107,7 @@ const OperationRow = (props: Props) => {
               key: "2",
               label: "Delete",
               onClick: () => {
-                alert("Not implemented yet");
+                onOperationDelete(type, operation.key);
               },
             },
           ]}

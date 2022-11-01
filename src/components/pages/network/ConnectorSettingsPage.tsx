@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { RichInput, CircularProgress } from "grindery-ui";
 import Button from "../../network/Button";
@@ -40,8 +40,14 @@ const ButtonsRight = styled.div`
 type Props = {};
 
 const ConnectorSettingsPage = (props: Props) => {
-  const { state, setState } = useConnectorContext();
+  const { state, onConnectorSettingsSave } = useConnectorContext();
   const { cds } = state;
+  const [data, setData] = useState({
+    name: cds.name || "",
+    description: cds.description || "",
+    icon: cds.icon || "",
+  });
+  const [error, setError] = useState({ type: "", text: "" });
 
   return cds ? (
     <div>
@@ -49,37 +55,72 @@ const ConnectorSettingsPage = (props: Props) => {
       <div>
         <RichInput
           options={[]}
-          value={cds.name}
+          value={data.name}
           onChange={(value: string) => {
-            setState({
-              cds: { ...cds, name: value },
+            setData({
+              ...data,
+              name: value,
             });
           }}
           required
-          label="Connector name"
+          label="Connector Name"
           placeholder="Connector name"
           singleLine
+          error={error.type === "name" ? error.text : ""}
         />
         <MaxHeightInput>
           <RichInput
             options={[]}
-            value={cds.icon}
+            value={data.description}
             onChange={(value: string) => {
-              setState({
-                cds: { ...cds, icon: value },
+              setData({
+                ...data,
+                description: value,
+              });
+            }}
+            label="Connector Description"
+            tooltip="A sentence describing your connector in 140 characters or less"
+            placeholder=""
+            error={error.type === "description" ? error.text : ""}
+          />
+        </MaxHeightInput>
+        <MaxHeightInput>
+          <RichInput
+            options={[]}
+            value={data.icon}
+            onChange={(value: string) => {
+              setData({
+                ...data,
+                icon: value,
               });
             }}
             required
-            label="Connector icon"
+            label="Connector Icon"
             tooltip="Image URL or base64 encoded string. Recommended icon size 40x40px. Allowed formats: PNG or SVG. Must be on transparent background."
             placeholder="Image URL or base64 encoded string"
+            error={error.type === "icon" ? error.text : ""}
           />
         </MaxHeightInput>
         <ButtonsWrapper>
           <ButtonsRight>
             <Button
               onClick={() => {
-                alert("Not implemented yet");
+                setError({ type: "", text: "" });
+                if (!data.name) {
+                  setError({
+                    type: "name",
+                    text: "Connector Name field is required",
+                  });
+                  return;
+                }
+                if (!data.icon) {
+                  setError({
+                    type: "icon",
+                    text: "Connector Icon field is required",
+                  });
+                  return;
+                }
+                onConnectorSettingsSave(data);
               }}
             >
               Save

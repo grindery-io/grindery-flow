@@ -122,7 +122,7 @@ const ConnectorDrawer = (props: Props) => {
                   naigate(`/network/connector/${id}`);
                 }}
               >
-                Connector Home
+                Connector Overview
               </span>
             </li>
             <li>
@@ -159,7 +159,7 @@ const ConnectorDrawer = (props: Props) => {
                       <span
                         className={
                           location.pathname.includes(
-                            `/network/connector/${id}/triggers/${trigger.key}`
+                            `/network/connector/${id}/triggers/${trigger.key}/`
                           )
                             ? "active"
                             : ""
@@ -200,7 +200,7 @@ const ConnectorDrawer = (props: Props) => {
                       <span
                         className={
                           location.pathname.includes(
-                            `/network/connector/${id}/actions/${action.key}`
+                            `/network/connector/${id}/actions/${action.key}/`
                           )
                             ? "active"
                             : ""
@@ -232,7 +232,7 @@ const ConnectorDrawer = (props: Props) => {
                   naigate(`/network/connector/${id}/advanced`);
                 }}
               >
-                Advanced
+                Source Code
               </span>
             </li>
           </ConnectorMenu>

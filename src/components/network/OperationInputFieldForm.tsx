@@ -46,15 +46,12 @@ const CheckboxLabel = styled.label`
   cursor: pointer;
 `;
 
-type Props = {
-  onSubmit: (a: string, b: any) => void;
-};
+type Props = {};
 
 const OperationInputFieldForm = (props: Props) => {
-  const { onSubmit } = props;
   let { id, type, key, inputKey } = useParams();
   let navigate = useNavigate();
-  const { state } = useConnectorContext();
+  const { state, onInputFieldSave } = useConnectorContext();
   const inputField: any = (
     (type &&
       state.cds?.[type]?.find((op: any) => op.key === key)?.operation
@@ -154,7 +151,7 @@ const OperationInputFieldForm = (props: Props) => {
         </Button>
         <Button
           onClick={() => {
-            onSubmit(inputKey || "__new__", data);
+            onInputFieldSave(key || "", type, inputKey || "", data);
           }}
         >
           Save

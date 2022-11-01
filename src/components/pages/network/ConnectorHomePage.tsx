@@ -62,7 +62,7 @@ const ConnectorHomePage = (props: Props) => {
 
   return cds ? (
     <div>
-      <Title>Connector Home</Title>
+      <Title>Connector Overview</Title>
       <div>
         <Card>
           <CardContent>

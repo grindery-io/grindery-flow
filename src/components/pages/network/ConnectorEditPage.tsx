@@ -10,6 +10,8 @@ import ConnectorDrawer from "../../network/ConnectorDrawer";
 import ConnectorContextProvider from "../../../context/ConnectorContext";
 import ConnectorOperationsPage from "./ConnectorOperationsPage";
 import ConnectorAdvancedPage from "./ConnectorAdvancedPage";
+import ConfirmModal from "../../network/ConfirmModal";
+import SnackbarContainer from "../../network/SnackbarContainer";
 
 const Container = styled.div`
   margin-left: 305px;
@@ -22,9 +24,10 @@ const Content = styled.div`
 
 type Props = {};
 
-const EditConnectorPage = (props: Props) => {
+const ConnectorEditPage = (props: Props) => {
   let { id } = useParams();
   const { state } = useNetworkContext();
+
   const { connectors, connectorsLoading } = state;
   const connector = connectors.find(
     (c) => id && c.id.toString() === id.toString()
@@ -47,31 +50,41 @@ const EditConnectorPage = (props: Props) => {
 
   return connector ? (
     <ConnectorContextProvider connector={connector}>
-      <Container>
-        <ConnectorDrawer />
-        <Content>
-          <Routes>
-            <Route path="/" element={<ConnectorHomePage />}></Route>
-            <Route path="settings" element={<ConnectorSettingsPage />} />
-            <Route path="publish" element={<div>Not implemented yet</div>} />
-            <Route path="advanced" element={<ConnectorAdvancedPage />} />
-            <Route path=":type" element={<ConnectorOperationsPage />}></Route>
-            <Route path=":type/:key" element={<ConnectorOperationPage />} />
-            <Route
-              path=":type/:key/:tab/*"
-              element={<ConnectorOperationPage />}
-            />
-            <Route
-              path="*"
-              element={<Navigate to={`/network/connector/${id}`} replace />}
-            ></Route>
-          </Routes>
-        </Content>
-      </Container>
+      <ConfirmModal>
+        <SnackbarContainer>
+          <Container>
+            <ConnectorDrawer />
+            <Content>
+              <Routes>
+                <Route path="/" element={<ConnectorHomePage />}></Route>
+                <Route path="settings" element={<ConnectorSettingsPage />} />
+                <Route
+                  path="publish"
+                  element={<div>Not implemented yet</div>}
+                />
+                <Route path="advanced" element={<ConnectorAdvancedPage />} />
+                <Route
+                  path=":type"
+                  element={<ConnectorOperationsPage />}
+                ></Route>
+                <Route path=":type/:key" element={<ConnectorOperationPage />} />
+                <Route
+                  path=":type/:key/:tab/*"
+                  element={<ConnectorOperationPage />}
+                />
+                <Route
+                  path="*"
+                  element={<Navigate to={`/network/connector/${id}`} replace />}
+                ></Route>
+              </Routes>
+            </Content>
+          </Container>
+        </SnackbarContainer>
+      </ConfirmModal>
     </ConnectorContextProvider>
   ) : (
     <Navigate to="/network" replace />
   );
 };
 
-export default EditConnectorPage;
+export default ConnectorEditPage;

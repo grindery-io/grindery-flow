@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import _ from "lodash";
 import styled from "styled-components";
 import { IconButton, Menu } from "grindery-ui";
 import { ICONS } from "../../constants";
 import useConnectorContext from "../../hooks/useConnectorContext";
-import { Navigate, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 const Row = styled.tr`
   border-bottom: 1px solid #dcdcdc;
@@ -41,14 +40,12 @@ const MenuButtonWrapper = styled.div`
 
 type Props = {
   inputKey: string;
-  type: string | undefined;
-  onDelete: (a: string) => void;
 };
 
 const OperationInputFieldRow = (props: Props) => {
-  const { inputKey, onDelete } = props;
+  const { inputKey } = props;
   const { id, type, key } = useParams();
-  const { state } = useConnectorContext();
+  const { state, onInputFieldDelete } = useConnectorContext();
   let navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const inputField: any =
@@ -59,8 +56,6 @@ const OperationInputFieldRow = (props: Props) => {
           (field: any) => field?.key === inputKey
         )) ||
     null;
-
-  console.log("inputField", inputField);
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -120,7 +115,7 @@ const OperationInputFieldRow = (props: Props) => {
               key: "delete",
               label: "Delete",
               onClick: () => {
-                onDelete(inputField.key);
+                onInputFieldDelete(key || "", type, inputKey);
               },
             },
           ]}

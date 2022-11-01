@@ -24,6 +24,11 @@ const Title = styled.h3`
 const TabsWrapper = styled.div`
   margin-bottom: 0px;
 
+  &.isNewOperation button:nth-child(2) {
+      cursor: not-allowed !important;
+    }
+  }
+
   & .MuiTabs-root {
     background: none;
   }
@@ -51,29 +56,45 @@ const ConnectorOperationPage = (props: Props) => {
   let { id, key, type, tab } = useParams();
   const { state } = useConnectorContext();
   const { cds } = state;
-
+  const newOperation = {
+    key: "",
+    name: "",
+    display: {
+      label: "",
+      description: "",
+    },
+    operation: {
+      inputFields: [],
+    },
+  };
+  const isNewOperation = key === "__new__";
   const currentTab = TABS.find((t: any) => t.key === tab)?.value || 0;
-  const operation =
-    (type && cds?.[type].find((op: any) => op.key === key)) || null;
+  const operation = isNewOperation
+    ? newOperation
+    : (type && cds?.[type].find((op: any) => op.key === key)) || null;
 
   useEffect(() => {
     if (!tab || !TABS.map((t: any) => t.key).includes(tab)) {
       navigate(`/network/connector/${id}/${type}/${key}/settings`);
     }
-  }, [tab]);
+  }, [tab, id, key, navigate, type]);
 
   return operation ? (
     <div>
       <Title>
-        {operation.display?.label || operation.name || operation.key || ""}
+        {key === "__new__"
+          ? `New ${type === "triggers" ? "Trigger" : "Action"}`
+          : operation.display?.label || operation.name || operation.key || ""}
       </Title>
-      <TabsWrapper>
+      <TabsWrapper className={isNewOperation ? "isNewOperation" : ""}>
         <Tabs
           value={currentTab}
           onChange={(index: number) => {
-            const tabKey =
-              TABS.find((t: any) => t.value === index)?.key || "settings";
-            navigate(`/network/connector/${id}/${type}/${key}/${tabKey}`);
+            if (key !== "__new__") {
+              const tabKey =
+                TABS.find((t: any) => t.value === index)?.key || "settings";
+              navigate(`/network/connector/${id}/${type}/${key}/${tabKey}`);
+            }
           }}
           options={TABS.map((t: any) => t.title)}
           orientation="horizontal"

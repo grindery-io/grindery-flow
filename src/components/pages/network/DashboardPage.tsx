@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { CircularProgress } from "grindery-ui";
 import useNetworkContext from "../../../hooks/useNetworkContext";
@@ -65,7 +65,11 @@ type Props = {};
 
 const DashboardPage = (props: Props) => {
   let navigate = useNavigate();
-  const { state } = useNetworkContext();
+  const { state, refreshConnectors } = useNetworkContext();
+
+  useEffect(() => {
+    refreshConnectors();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container>

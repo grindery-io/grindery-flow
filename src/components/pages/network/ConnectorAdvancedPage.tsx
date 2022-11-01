@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { CircularProgress } from "grindery-ui";
-import { useNavigate } from "react-router";
 import useConnectorContext from "../../../hooks/useConnectorContext";
 import ReactJson from "@silizia/react-json-view";
 
@@ -23,9 +22,8 @@ const Title = styled.h3`
 type Props = {};
 
 const ConnectorAdvancedPage = (props: Props) => {
-  let navigate = useNavigate();
   const { state, setState } = useConnectorContext();
-  const { cds, id } = state;
+  const { cds } = state;
 
   const addValue = (value: any) => {
     setState({
