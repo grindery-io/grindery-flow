@@ -68,6 +68,7 @@ const ConnectorRow = (props: Props) => {
   const { connector } = props;
   let navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const cds = JSON.parse(connector?.values?.cds || "");
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -86,7 +87,7 @@ const ConnectorRow = (props: Props) => {
         }}
       >
         <Icon>
-          <img src={connector.values?.icon || ICONS.NEXUS_SQUARE} alt="" />
+          <img src={cds?.icon || ICONS.NEXUS_SQUARE} alt="" />
         </Icon>
       </Column>
       <Column
@@ -94,7 +95,7 @@ const ConnectorRow = (props: Props) => {
           navigate("/network/connector/" + connector.id);
         }}
       >
-        <ConnectorName>{connector.values?.name || connector.id}</ConnectorName>
+        <ConnectorName>{cds?.name || connector.id}</ConnectorName>
       </Column>
       <Column
         style={{ textAlign: "right" }}
@@ -140,14 +141,14 @@ const ConnectorRow = (props: Props) => {
               key: "clone",
               label: "Clone",
               onClick: () => {
-                alert("Work in progress");
+                alert("Not implemented yet");
               },
             },
             {
               key: "delete",
               label: "Delete",
               onClick: () => {
-                alert("Work in progress");
+                alert("Not implemented yet");
               },
             },
           ]}

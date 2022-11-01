@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router";
+import React, { useEffect } from "react";
+import { Navigate, useNavigate, useParams } from "react-router";
 import styled from "styled-components";
-import { RichInput, CircularProgress, Tabs } from "grindery-ui";
-import Button from "../../network/Button";
+import { CircularProgress, Tabs } from "grindery-ui";
 import { SCREEN } from "../../../constants";
+import OperationFieldsEditor from "../../network/OperationFieldsEditor";
+import useConnectorContext from "../../../hooks/useConnectorContext";
+import OperationSettings from "../../network/OperationSettings";
+
+const TABS = [
+  { key: "settings", value: 0, title: "Settings" },
+  { key: "inputFields", value: 1, title: "Input Fields" },
+];
 
 const Title = styled.h3`
   font-weight: 700;
@@ -14,22 +21,8 @@ const Title = styled.h3`
   margin: 0 0 20px;
 `;
 
-const ButtonsWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  gap: 20px;
-  margin-top: 32px;
-`;
-
-const ButtonsRight = styled.div`
-  margin-left: auto;
-`;
-
 const TabsWrapper = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 
   & .MuiTabs-root {
     background: none;
@@ -51,21 +44,23 @@ const TabsWrapper = styled.div`
   }
 `;
 
-type Props = {
-  type: string;
-  data: any;
-  setData: any;
-};
+type Props = {};
 
 const ConnectorOperationPage = (props: Props) => {
-  let { id, key } = useParams();
-  const { data, type } = props;
-  const [tab, setTab] = useState(0);
-  const operation = data?.cds?.[type].find((op: any) => op.key === key) || null;
+  let navigate = useNavigate();
+  let { id, key, type, tab } = useParams();
+  const { state } = useConnectorContext();
+  const { cds } = state;
+
+  const currentTab = TABS.find((t: any) => t.key === tab)?.value || 0;
+  const operation =
+    (type && cds?.[type].find((op: any) => op.key === key)) || null;
 
   useEffect(() => {
-    setTab(0);
-  }, [key]);
+    if (!tab || !TABS.map((t: any) => t.key).includes(tab)) {
+      navigate(`/network/connector/${id}/${type}/${key}/settings`);
+    }
+  }, [tab]);
 
   return operation ? (
     <div>
@@ -74,70 +69,28 @@ const ConnectorOperationPage = (props: Props) => {
       </Title>
       <TabsWrapper>
         <Tabs
-          value={tab}
+          value={currentTab}
           onChange={(index: number) => {
-            setTab(index);
+            const tabKey =
+              TABS.find((t: any) => t.value === index)?.key || "settings";
+            navigate(`/network/connector/${id}/${type}/${key}/${tabKey}`);
           }}
-          options={["Settings", "Input Fields"]}
+          options={TABS.map((t: any) => t.title)}
           orientation="horizontal"
           activeIndicatorColor="#FFB930"
           activeColor="#E48B05"
           type="text"
           tabColor=""
-          variant={""}
+          variant={"standard"}
         />
       </TabsWrapper>
-      {tab === 0 && (
-        <>
-          <div>
-            <RichInput
-              key={`${key}_key`}
-              label="Key"
-              value={operation.key}
-              onChange={() => {}}
-              singleLine
-              required
-              tooltip="Enter a unique word or phrase without spaces to reference this operation inside Nexus. Not seen by users. Example: new_ticket."
-              options={[]}
-            />
-            <RichInput
-              key={`${key}_name`}
-              label="Name"
-              value={operation.name}
-              onChange={() => {}}
-              singleLine
-              required
-              tooltip="Enter a user friendly name for this operation that describes what makes it run. Shown to users inside Nexus. Example: New Ticket."
-              options={[]}
-            />
-            <RichInput
-              key={`${key}_description`}
-              label="Description"
-              value={operation.display?.description || ""}
-              onChange={() => {}}
-              required
-              tooltip="Describe clearly the purpose of this operation in a complete sentence. Example: Triggers when a new support ticket is created."
-              options={[]}
-            />
-          </div>
-          <ButtonsWrapper>
-            <ButtonsRight>
-              <Button
-                onClick={() => {
-                  alert("Work in progress");
-                }}
-              >
-                Save
-              </Button>
-            </ButtonsRight>
-          </ButtonsWrapper>
-        </>
-      )}
-      {tab === 1 && <p>Work in progress</p>}
+
+      {tab === "settings" && <OperationSettings />}
+      {tab === "inputFields" && <OperationFieldsEditor />}
     </div>
   ) : (
     <>
-      {data?.cds ? (
+      {cds ? (
         <Navigate to={`/network/connector/${id}/${type}`} replace />
       ) : (
         <div

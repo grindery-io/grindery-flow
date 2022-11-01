@@ -79,17 +79,15 @@ type Props = {
 const ConnectorDrawerHeader = (props: Props) => {
   let navigate = useNavigate();
   const { connector } = props;
+  const cds = JSON.parse(connector?.values?.cds || "");
   return (
     <Container>
       <ConnectorHeader>
         <ConnectorIcon>
-          <img
-            src={connector.values.icon || ICONS.NEXUS_SQUARE}
-            alt={connector.values.name}
-          />
+          <img src={cds?.icon || ICONS.NEXUS_SQUARE} alt={cds?.name} />
         </ConnectorIcon>
         <ConnectorName>
-          <h2>{connector.values.name}</h2>
+          <h2>{cds?.name}</h2>
           <p>
             <span>{connector.values.type} </span>
           </p>

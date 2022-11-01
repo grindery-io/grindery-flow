@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { CircularProgress } from "grindery-ui";
 import Button from "../../network/Button";
 import { useNavigate } from "react-router";
+import useConnectorContext from "../../../hooks/useConnectorContext";
 
 const Title = styled.h3`
   font-weight: 700;
@@ -52,16 +53,14 @@ const CardDescription = styled.p`
   color: #898989;
 `;
 
-type Props = {
-  data: any;
-  setData: any;
-};
+type Props = {};
 
 const ConnectorHomePage = (props: Props) => {
   let navigate = useNavigate();
-  const { data } = props;
+  const { state } = useConnectorContext();
+  const { cds, id } = state;
 
-  return data && data.cds ? (
+  return cds ? (
     <div>
       <Title>Connector Home</Title>
       <div>
@@ -75,7 +74,7 @@ const ConnectorHomePage = (props: Props) => {
           <CardCTA>
             <Button
               onClick={() => {
-                navigate(`/network/connector/${data.id}/settings`);
+                navigate(`/network/connector/${id}/settings`);
               }}
             >
               Set Up Settings
@@ -93,7 +92,7 @@ const ConnectorHomePage = (props: Props) => {
           <CardCTA>
             <Button
               onClick={() => {
-                navigate(`/network/connector/${data.id}/triggers`);
+                navigate(`/network/connector/${id}/triggers`);
               }}
             >
               Manage Triggers
@@ -111,7 +110,7 @@ const ConnectorHomePage = (props: Props) => {
           <CardCTA>
             <Button
               onClick={() => {
-                navigate(`/network/connector/${data.id}/actions`);
+                navigate(`/network/connector/${id}/actions`);
               }}
             >
               Manage Actions
@@ -130,7 +129,7 @@ const ConnectorHomePage = (props: Props) => {
           <CardCTA>
             <Button
               onClick={() => {
-                navigate(`/network/connector/${data.id}/publish`);
+                navigate(`/network/connector/${id}/publish`);
               }}
             >
               Publish Connector

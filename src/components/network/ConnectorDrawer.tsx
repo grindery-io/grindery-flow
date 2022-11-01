@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router";
 import { Drawer } from "grindery-ui";
 import styled from "styled-components";
 import ConnectorDrawerHeader from "./ConnectorDrawerHeader";
+import useConnectorContext from "../../hooks/useConnectorContext";
+import { ICONS } from "../../constants";
 
 const DrawerWrapper = styled.div`
   .MuiPaper-root {
@@ -59,8 +61,13 @@ const ConnectorMenu = styled.ul`
         margin: 0;
         padding: 0;
         & > span {
-          display: block;
-          padding: 15px 15px 15px 60px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          flex-wrap: nowrap;
+          justify-content: flex-start;
+          gap: 10px;
+          padding: 15px 15px 15px 55px;
           font-weight: 400;
           font-size: 16px;
           line-height: 150%;
@@ -81,13 +88,19 @@ const ConnectorMenu = styled.ul`
   }
 `;
 
-type Props = {
-  data: any;
-  connector: any;
-};
+const Icon = styled.div`
+  & > img {
+    max-width: 16px;
+    height: 16px;
+    display: block;
+  }
+`;
+
+type Props = {};
 
 const ConnectorDrawer = (props: Props) => {
-  const { data, connector } = props;
+  const { state } = useConnectorContext();
+  const { connector, id, cds } = state;
   let naigate = useNavigate();
   let location = useLocation();
   return (
@@ -101,12 +114,12 @@ const ConnectorDrawer = (props: Props) => {
             <li>
               <span
                 className={
-                  location.pathname === `/network/connector/${connector.id}`
+                  location.pathname === `/network/connector/${id}`
                     ? "active"
                     : ""
                 }
                 onClick={() => {
-                  naigate(`/network/connector/${connector.id}`);
+                  naigate(`/network/connector/${id}`);
                 }}
               >
                 Connector Home
@@ -115,13 +128,12 @@ const ConnectorDrawer = (props: Props) => {
             <li>
               <span
                 className={
-                  location.pathname ===
-                  `/network/connector/${connector.id}/settings`
+                  location.pathname === `/network/connector/${id}/settings`
                     ? "active"
                     : ""
                 }
                 onClick={() => {
-                  naigate(`/network/connector/${connector.id}/settings`);
+                  naigate(`/network/connector/${id}/settings`);
                 }}
               >
                 Settings
@@ -130,34 +142,37 @@ const ConnectorDrawer = (props: Props) => {
             <li>
               <span
                 className={
-                  location.pathname ===
-                  `/network/connector/${connector.id}/triggers`
+                  location.pathname === `/network/connector/${id}/triggers`
                     ? "active"
                     : ""
                 }
                 onClick={() => {
-                  naigate(`/network/connector/${connector.id}/triggers`);
+                  naigate(`/network/connector/${id}/triggers`);
                 }}
               >
                 Triggers
               </span>
-              {data?.cds?.triggers && data?.cds?.triggers.length > 0 && (
+              {cds?.triggers && cds?.triggers.length > 0 && (
                 <ul>
-                  {data?.cds?.triggers.map((trigger: any) => (
+                  {cds?.triggers.map((trigger: any) => (
                     <li key={trigger.key}>
                       <span
                         className={
-                          location.pathname ===
-                          `/network/connector/${connector.id}/triggers/${trigger.key}`
+                          location.pathname.includes(
+                            `/network/connector/${id}/triggers/${trigger.key}`
+                          )
                             ? "active"
                             : ""
                         }
                         onClick={() => {
                           naigate(
-                            `/network/connector/${connector.id}/triggers/${trigger.key}`
+                            `/network/connector/${id}/triggers/${trigger.key}/settings`
                           );
                         }}
                       >
+                        <Icon>
+                          <img src={ICONS.TRIGGER_ICON} alt="" />
+                        </Icon>
                         {trigger.display?.label}
                       </span>
                     </li>
@@ -168,40 +183,57 @@ const ConnectorDrawer = (props: Props) => {
             <li>
               <span
                 className={
-                  location.pathname ===
-                  `/network/connector/${connector.id}/actions`
+                  location.pathname === `/network/connector/${id}/actions`
                     ? "active"
                     : ""
                 }
                 onClick={() => {
-                  naigate(`/network/connector/${connector.id}/actions`);
+                  naigate(`/network/connector/${id}/actions`);
                 }}
               >
                 Actions
               </span>
-              {data?.cds?.actions && data?.cds?.actions.length > 0 && (
+              {cds?.actions && cds?.actions.length > 0 && (
                 <ul>
-                  {data?.cds?.actions.map((action: any) => (
+                  {cds?.actions.map((action: any) => (
                     <li key={action.key}>
                       <span
                         className={
-                          location.pathname ===
-                          `/network/connector/${connector.id}/actions/${action.key}`
+                          location.pathname.includes(
+                            `/network/connector/${id}/actions/${action.key}`
+                          )
                             ? "active"
                             : ""
                         }
                         onClick={() => {
                           naigate(
-                            `/network/connector/${connector.id}/actions/${action.key}`
+                            `/network/connector/${id}/actions/${action.key}/settings`
                           );
                         }}
                       >
+                        <Icon>
+                          <img src={ICONS.ACTION_ICON} alt="" />
+                        </Icon>
                         {action.display?.label}
                       </span>
                     </li>
                   ))}
                 </ul>
               )}
+            </li>
+            <li>
+              <span
+                className={
+                  location.pathname === `/network/connector/${id}/advanced`
+                    ? "active"
+                    : ""
+                }
+                onClick={() => {
+                  naigate(`/network/connector/${id}/advanced`);
+                }}
+              >
+                Advanced
+              </span>
             </li>
           </ConnectorMenu>
         </div>

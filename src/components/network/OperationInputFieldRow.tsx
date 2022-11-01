@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import _ from "lodash";
 import styled from "styled-components";
 import { IconButton, Menu } from "grindery-ui";
 import { ICONS } from "../../constants";
-import { useNavigate, useParams } from "react-router";
+import useConnectorContext from "../../hooks/useConnectorContext";
+import { Navigate, useNavigate, useParams } from "react-router";
 
 const Row = styled.tr`
   border-bottom: 1px solid #dcdcdc;
@@ -38,14 +40,27 @@ const MenuButtonWrapper = styled.div`
 `;
 
 type Props = {
-  operation: any;
+  inputKey: string;
+  type: string | undefined;
+  onDelete: (a: string) => void;
 };
 
-const OperationRow = (props: Props) => {
-  const { operation } = props;
-  let { id, type } = useParams();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+const OperationInputFieldRow = (props: Props) => {
+  const { inputKey, onDelete } = props;
+  const { id, type, key } = useParams();
+  const { state } = useConnectorContext();
   let navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const inputField: any =
+    (type &&
+      state.cds?.[type]
+        ?.find((op: any) => op.key === key)
+        ?.operation?.inputFields?.find(
+          (field: any) => field?.key === inputKey
+        )) ||
+    null;
+
+  console.log("inputField", inputField);
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -55,25 +70,25 @@ const OperationRow = (props: Props) => {
     setAnchorEl(event.currentTarget);
   };
 
-  return (
+  return inputField ? (
     <Row>
       <Column
         onClick={() => {
           navigate(
-            `/network/connector/${id}/${type}/${operation.key}/settings`
+            `/network/connector/${id}/${type}/${key}/inputFields/${inputField.key}`
           );
         }}
       >
-        {operation.display?.label || operation.name || operation.key || ""}
+        {inputField.label || inputField.key || ""}
       </Column>
       <Column
         onClick={() => {
           navigate(
-            `/network/connector/${id}/${type}/${operation.key}/settings`
+            `/network/connector/${id}/${type}/${key}/inputFields/${inputField.key}`
           );
         }}
       >
-        {operation.key || ""}
+        {inputField.key || ""}
       </Column>
       <Column style={{ textAlign: "right", width: "30px" }}>
         <MenuButtonWrapper>
@@ -93,26 +108,26 @@ const OperationRow = (props: Props) => {
           }}
           items={[
             {
-              key: "1",
+              key: "edit",
               label: "Edit",
               onClick: () => {
                 navigate(
-                  `/network/connector/${id}/${type}/${operation.key}/settings`
+                  `/network/connector/${id}/${type}/${key}/inputFields/${inputField.key}`
                 );
               },
             },
             {
-              key: "2",
+              key: "delete",
               label: "Delete",
               onClick: () => {
-                alert("Not implemented yet");
+                onDelete(inputField.key);
               },
             },
           ]}
         />
       </Column>
     </Row>
-  );
+  ) : null;
 };
 
-export default OperationRow;
+export default OperationInputFieldRow;

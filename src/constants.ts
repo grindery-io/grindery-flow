@@ -85,6 +85,8 @@ export const ICONS: { [key: string]: string } = {
   // Dev network
   GRINDERY_DEV_LOGO: "/images/icons/grindery-iso.svg",
   NEXUS_SQUARE: "/images/icons/nexus-square.svg",
+  NETWORK_CHECKBOX_CHECKED: "/images/icons/network-checkbox-checked.svg",
+  NETWORK_CHECKBOX_EMPTY: "/images/icons/network-checkbox-empty.svg",
 };
 
 export const RIGHTBAR_TABS: {

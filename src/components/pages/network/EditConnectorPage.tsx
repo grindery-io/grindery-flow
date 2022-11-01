@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Navigate, Route, Routes, useParams } from "react-router";
 import { CircularProgress } from "grindery-ui";
 import styled from "styled-components";
 import useNetworkContext from "../../../hooks/useNetworkContext";
 import ConnectorHomePage from "./ConnectorHomePage";
 import ConnectorSettingsPage from "./ConnectorSettingsPage";
-import ConnectorTriggersPage from "./ConnectorTriggersPage";
-import ConnectorActionsPage from "./ConnectorActionsPage";
 import ConnectorOperationPage from "./ConnectorOperationPage";
 import ConnectorDrawer from "../../network/ConnectorDrawer";
+import ConnectorContextProvider from "../../../context/ConnectorContext";
+import ConnectorOperationsPage from "./ConnectorOperationsPage";
+import ConnectorAdvancedPage from "./ConnectorAdvancedPage";
 
 const Container = styled.div`
   margin-left: 305px;
@@ -24,20 +25,10 @@ type Props = {};
 const EditConnectorPage = (props: Props) => {
   let { id } = useParams();
   const { state } = useNetworkContext();
-  const [data, setData] = useState<any>({});
   const { connectors, connectorsLoading } = state;
   const connector = connectors.find(
     (c) => id && c.id.toString() === id.toString()
   );
-
-  useEffect(() => {
-    if (connector) {
-      setData({
-        id: connector.id,
-        cds: JSON.parse(connector.values?.cds || {}),
-      });
-    }
-  }, [connector]);
 
   if (connectorsLoading) {
     return (
@@ -55,56 +46,29 @@ const EditConnectorPage = (props: Props) => {
   }
 
   return connector ? (
-    <Container>
-      <ConnectorDrawer connector={connector} data={data} />
-      <Content>
-        <Routes>
-          <Route
-            path="/"
-            element={<ConnectorHomePage data={data} setData={setData} />}
-          ></Route>
-          <Route
-            path="settings"
-            element={<ConnectorSettingsPage data={data} setData={setData} />}
-          />
-          <Route
-            path="triggers"
-            element={<ConnectorTriggersPage data={data} setData={setData} />}
-          />
-          <Route
-            path="triggers/:key"
-            element={
-              <ConnectorOperationPage
-                type="triggers"
-                data={data}
-                setData={setData}
-              />
-            }
-          />
-          <Route
-            path="actions"
-            element={<ConnectorActionsPage data={data} setData={setData} />}
-          />
-          <Route
-            path="actions/:key"
-            element={
-              <ConnectorOperationPage
-                type="actions"
-                data={data}
-                setData={setData}
-              />
-            }
-          />
-          <Route path="publish" element={<div>Work in progress</div>} />
-          <Route
-            path="*"
-            element={
-              <Navigate to={`/network/connector/${connector.id}`} replace />
-            }
-          ></Route>
-        </Routes>
-      </Content>
-    </Container>
+    <ConnectorContextProvider connector={connector}>
+      <Container>
+        <ConnectorDrawer />
+        <Content>
+          <Routes>
+            <Route path="/" element={<ConnectorHomePage />}></Route>
+            <Route path="settings" element={<ConnectorSettingsPage />} />
+            <Route path="publish" element={<div>Not implemented yet</div>} />
+            <Route path="advanced" element={<ConnectorAdvancedPage />} />
+            <Route path=":type" element={<ConnectorOperationsPage />}></Route>
+            <Route path=":type/:key" element={<ConnectorOperationPage />} />
+            <Route
+              path=":type/:key/:tab/*"
+              element={<ConnectorOperationPage />}
+            />
+            <Route
+              path="*"
+              element={<Navigate to={`/network/connector/${id}`} replace />}
+            ></Route>
+          </Routes>
+        </Content>
+      </Container>
+    </ConnectorContextProvider>
   ) : (
     <Navigate to="/network" replace />
   );

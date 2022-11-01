@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { RichInput, CircularProgress } from "grindery-ui";
 import Button from "../../network/Button";
+import useConnectorContext from "../../../hooks/useConnectorContext";
 
 const Title = styled.h3`
   font-weight: 700;
@@ -36,26 +37,23 @@ const ButtonsRight = styled.div`
   margin-left: auto;
 `;
 
-type Props = {
-  data: any;
-  setData: any;
-};
+type Props = {};
 
 const ConnectorSettingsPage = (props: Props) => {
-  const { data, setData } = props;
+  const { state, setState } = useConnectorContext();
+  const { cds } = state;
 
-  return data && data.cds ? (
+  return cds ? (
     <div>
       <Title>Settings</Title>
       <div>
         <RichInput
           options={[]}
-          value={data.cds.name}
+          value={cds.name}
           onChange={(value: string) => {
-            setData((_data: any) => ({
-              ..._data,
-              cds: { ..._data.cds, name: value },
-            }));
+            setState({
+              cds: { ...cds, name: value },
+            });
           }}
           required
           label="Connector name"
@@ -65,12 +63,11 @@ const ConnectorSettingsPage = (props: Props) => {
         <MaxHeightInput>
           <RichInput
             options={[]}
-            value={data.cds.icon}
+            value={cds.icon}
             onChange={(value: string) => {
-              setData((_data: any) => ({
-                ..._data,
-                cds: { ..._data.cds, icon: value },
-              }));
+              setState({
+                cds: { ...cds, icon: value },
+              });
             }}
             required
             label="Connector icon"
@@ -82,7 +79,7 @@ const ConnectorSettingsPage = (props: Props) => {
           <ButtonsRight>
             <Button
               onClick={() => {
-                alert("Work in progress");
+                alert("Not implemented yet");
               }}
             >
               Save
