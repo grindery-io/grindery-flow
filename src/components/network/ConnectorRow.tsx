@@ -80,14 +80,12 @@ const ConnectorRow = (props: Props) => {
     setAnchorEl(event.currentTarget);
   };
 
-  console.log("connector", connector);
-
   return (
-    <Row key={connector.id}>
+    <Row key={cds.key}>
       <Column
         style={{ width: "40px" }}
         onClick={() => {
-          navigate("/network/connector/" + connector.id);
+          navigate("/network/connector/" + cds.key);
         }}
       >
         <Icon>
@@ -97,10 +95,10 @@ const ConnectorRow = (props: Props) => {
       <Column
         style={{ width: "30%" }}
         onClick={() => {
-          navigate("/network/connector/" + connector.id);
+          navigate("/network/connector/" + cds.key);
         }}
       >
-        <ConnectorName>{cds?.name || connector.id}</ConnectorName>
+        <ConnectorName>{cds?.name || cds.key}</ConnectorName>
       </Column>
       <Column style={{ textAlign: "right" }}>
         <ConnectorContributor contributor={connector.values?.contributor} />
@@ -108,7 +106,7 @@ const ConnectorRow = (props: Props) => {
       <Column
         style={{ textAlign: "right" }}
         onClick={() => {
-          navigate("/network/connector/" + connector.id);
+          navigate("/network/connector/" + cds.key);
         }}
       >
         {connector.values?.type || ""}
@@ -116,7 +114,7 @@ const ConnectorRow = (props: Props) => {
       <Column
         style={{ textAlign: "right" }}
         onClick={() => {
-          navigate("/network/connector/" + connector.id);
+          navigate("/network/connector/" + cds.key);
         }}
       >
         {connector.values?.status?.name === "Approved"
@@ -144,7 +142,7 @@ const ConnectorRow = (props: Props) => {
               key: "edit",
               label: "Edit",
               onClick: () => {
-                navigate("/network/connector/" + connector.id);
+                navigate("/network/connector/" + cds.key);
               },
             },
             {

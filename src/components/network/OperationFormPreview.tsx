@@ -127,17 +127,19 @@ const OperationFormPreview = (props: Props) => {
           )}
         {inputFields &&
           inputFields.length > 0 &&
-          inputFields.map((field: any) => (
-            <RichInput
-              label={field.label || field.key || ""}
-              key={field.key}
-              value={field.default || ""}
-              onChange={() => {}}
-              options={[]}
-              required={field.required}
-              tooltip={field.helpText || ""}
-            />
-          ))}
+          inputFields
+            .filter((field: any) => !field.computed)
+            .map((field: any) => (
+              <RichInput
+                label={field.label || field.key || ""}
+                key={field.key}
+                value={field.default || ""}
+                onChange={() => {}}
+                options={[]}
+                required={field.required}
+                tooltip={field.helpText || ""}
+              />
+            ))}
       </div>
     </Container>
   );

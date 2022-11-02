@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import styled from "styled-components";
 import { ICONS } from "../../constants";
 import useConnectorContext from "../../hooks/useConnectorContext";
@@ -79,6 +79,7 @@ type Props = {
 
 const ConnectorDrawerHeader = (props: Props) => {
   let navigate = useNavigate();
+  const { id } = useParams();
   const { state } = useConnectorContext();
   const { connector, cds } = state;
   return (
@@ -97,7 +98,7 @@ const ConnectorDrawerHeader = (props: Props) => {
       <PublishButton>
         <Button
           onClick={() => {
-            navigate(`/network/connector/${connector.id}/publish`);
+            navigate(`/network/connector/${id}/publish`);
           }}
         >
           Publish

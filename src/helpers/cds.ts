@@ -1,4 +1,8 @@
 // @ts-nocheck
+
+import axios from "axios";
+import { CDS_EDITOR_API_ENDPOINT } from "../constants";
+
 // eslint-disable-next-line camelcase
 export const abiToCDS = (data) => {
   const result = data // "__ToGetYourGEDInTimeASongAboutThe26ABCsIsOfTheEssenceButAPersonalIDCardForUser_456InRoom26AContainingABC26TimesIsNotAsEasyAs123ForC3POOrR2D2Or2R2D"
@@ -125,9 +129,32 @@ export const getCDS = async (ABI, name, icon) => {
   if (!Array.isArray(parsedInput)) {
     throw Error("Invalid ABI");
   }
+
+  const key = name
+    ? slugify(name)
+    : slugify("connector_" + new Date().toISOString());
+
+  let isKeyExists;
+
+  try {
+    isKeyExists = await axios.get(
+      `${CDS_EDITOR_API_ENDPOINT}/cds/check/${key}`
+    );
+  } catch (err) {
+    throw Error(
+      "We couldn't check if connector name is available. Please, try again later."
+    );
+  }
+
+  if (isKeyExists?.data?.result) {
+    throw Error(
+      "Connector name has already been used. Please, try another name."
+    );
+  }
+
   const cds = {
-    key: name ? slugify(name) : "auto" + Date.now(),
-    name: name || "Contract CDS " + new Date().toISOString(),
+    key: key,
+    name: name || "Connector " + new Date().toISOString(),
     version: "1.0.0",
     platformVersion: "1.0.0",
     triggers: parsedInput
