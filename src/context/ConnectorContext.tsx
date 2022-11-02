@@ -89,14 +89,15 @@ export const ConnectorContextProvider = ({
   const { refreshConnectors } = useNetworkContext();
   let navigate = useNavigate();
   const [count, setCount] = useState(0);
+  const cds = JSON.parse(connector?.values?.cds || {});
   const [state, setState] = useReducer(
     (state: StateProps, newState: Partial<StateProps>) => ({
       ...state,
       ...newState,
     }),
     {
-      id: connector?.id || "",
-      cds: JSON.parse(connector?.values?.cds || {}),
+      id: cds.key || connector?.id || "",
+      cds: cds,
       connector: connector || null,
       isSaving: false,
       confirm: {
@@ -124,7 +125,7 @@ export const ConnectorContextProvider = ({
         res = await axios.patch(
           `${CDS_EDITOR_API_ENDPOINT}/cds`,
           {
-            id: state.id,
+            id: state.connector.id,
             cds: JSON.stringify(state.cds),
           },
           {

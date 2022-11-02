@@ -64,6 +64,7 @@ const OperationInputFieldForm = (props: Props) => {
     helpText: inputField?.helpText || "",
     default: inputField?.default || "",
     required: !!inputField?.required,
+    computed: !!inputField?.computed,
   });
 
   return (
@@ -134,6 +135,28 @@ const OperationInputFieldForm = (props: Props) => {
           }}
         >
           Required
+        </CheckboxLabel>
+      </CheckboxWrapper>
+      <CheckboxWrapper>
+        <CheckBox
+          isNetwork
+          checked={data.computed}
+          onChange={() => {
+            setData({
+              ...data,
+              computed: !data.computed,
+            });
+          }}
+        />
+        <CheckboxLabel
+          onClick={() => {
+            setData({
+              ...data,
+              computed: !data.computed,
+            });
+          }}
+        >
+          Hidden
         </CheckboxLabel>
       </CheckboxWrapper>
       <ButtonsWrapper>

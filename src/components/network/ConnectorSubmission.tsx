@@ -220,12 +220,15 @@ const ConnectorSubmission = (props: Props) => {
         state.form.entry.name,
         state.form.entry.icon
       );
-    } catch (err) {
+    } catch (err: any) {
       setState({
         loading: false,
         error: {
           type: "cds",
-          text: "ABI is incorrect, Connector JSON wasn't generated. Please, return to the previous step and edit the ABI.",
+          text:
+            err?.response?.data?.message ||
+            err?.message ||
+            "ABI is incorrect, Connector JSON wasn't generated. Please, return to the previous step and edit the ABI.",
         },
         form: {
           ...state.form,

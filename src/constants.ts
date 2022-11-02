@@ -87,6 +87,8 @@ export const ICONS: { [key: string]: string } = {
   NEXUS_SQUARE: "/images/icons/nexus-square.svg",
   NETWORK_CHECKBOX_CHECKED: "/images/icons/network-checkbox-checked.svg",
   NETWORK_CHECKBOX_EMPTY: "/images/icons/network-checkbox-empty.svg",
+  NETWORK_RADIO_SELECTED: "/images/icons/network-radio-selected.svg",
+  NETWORK_RADIO_EMPTY: "/images/icons/network-radio-empty.svg",
 };
 
 export const RIGHTBAR_TABS: {

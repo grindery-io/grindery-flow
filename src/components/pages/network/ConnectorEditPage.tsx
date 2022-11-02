@@ -12,6 +12,7 @@ import ConnectorOperationsPage from "./ConnectorOperationsPage";
 import ConnectorAdvancedPage from "./ConnectorAdvancedPage";
 import ConfirmModal from "../../network/ConfirmModal";
 import SnackbarContainer from "../../network/SnackbarContainer";
+import ConnectorPublishingPage from "./ConnectorPublishingPage";
 
 const Container = styled.div`
   margin-left: 305px;
@@ -30,7 +31,7 @@ const ConnectorEditPage = (props: Props) => {
 
   const { connectors, connectorsLoading } = state;
   const connector = connectors.find(
-    (c) => id && c.id.toString() === id.toString()
+    (c) => id && JSON.parse(c?.values?.cds)?.key === id
   );
 
   if (connectorsLoading) {
@@ -58,10 +59,7 @@ const ConnectorEditPage = (props: Props) => {
               <Routes>
                 <Route path="/" element={<ConnectorHomePage />}></Route>
                 <Route path="settings" element={<ConnectorSettingsPage />} />
-                <Route
-                  path="publish"
-                  element={<div>Not implemented yet</div>}
-                />
+                <Route path="publish" element={<ConnectorPublishingPage />} />
                 <Route path="advanced" element={<ConnectorAdvancedPage />} />
                 <Route
                   path=":type"
