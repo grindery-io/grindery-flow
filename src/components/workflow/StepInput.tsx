@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import _ from "lodash";
-import { CircularProgress, Alert } from "grindery-ui";
+import { CircularProgress } from "grindery-ui";
 import { BLOCKCHAINS, ICONS, isLocalOrStaging } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import WorkflowInputField from "./WorkflowInputField";
@@ -17,7 +17,7 @@ import {
   jsonrpcObj,
 } from "../../helpers/utils";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
-import GasInput from "./GasInput";
+import GasAlert from "./GasAlert";
 
 const Container = styled.div`
   border-top: 1px solid #dcdcdc;
@@ -86,10 +86,6 @@ const Button = styled.button`
 const ButtonWrapper = styled.div`
   text-align: right;
   padding-bottom: 12px;
-`;
-
-const AlertWrapper = styled.div`
-  margin-bottom: 20px;
 `;
 
 type Props = {
@@ -438,44 +434,14 @@ const StepInput = ({ outputFields }: Props) => {
                 workflow.actions[index]?.input?._grinderyChain.toString()
               ) &&
               gasToken && (
-                <AlertWrapper>
-                  <Alert
-                    color="warning"
-                    elevation={0}
-                    icon={
-                      <img
-                        src={ICONS.GAS_ALERT}
-                        width={20}
-                        height={20}
-                        alt="gas icon"
-                      />
-                    }
-                  >
-                    <>
-                      <div style={{ textAlign: "left", marginBottom: "4px" }}>
-                        This action will require you to pay gas. Make sure your
-                        account has funds. Current balance:{" "}
-                        <a
-                          href="#balance"
-                          style={{
-                            fontWeight: "bold",
-                            color: "inherit",
-                            textDecoration: "underline",
-                          }}
-                        >
-                          0.003 {gasToken.token}
-                        </a>
-                      </div>
-                      <GasInput
-                        value={gas}
-                        onChange={(e) => {
-                          setGas(e.target.value);
-                        }}
-                        suffix={gasToken.token}
-                      />
-                    </>
-                  </Alert>
-                </AlertWrapper>
+                <GasAlert
+                  gas={gas}
+                  gasToken={gasToken.token}
+                  onChange={(e) => {
+                    setGas(e.target.value);
+                  }}
+                  chain={chainValue}
+                />
               )}
             {loading && (
               <div
