@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { Menu, IconButton } from "grindery-ui";
 import styled from "styled-components";
 import { ICONS } from "../../constants";
+import ConnectorContributor from "./ConnectorContributor";
 
 const Row = styled.tr`
   border: 1px solid #dcdcdc;
@@ -78,6 +79,9 @@ const ConnectorRow = (props: Props) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
+
+  console.log("connector", connector);
+
   return (
     <Row key={connector.id}>
       <Column
@@ -91,11 +95,15 @@ const ConnectorRow = (props: Props) => {
         </Icon>
       </Column>
       <Column
+        style={{ width: "30%" }}
         onClick={() => {
           navigate("/network/connector/" + connector.id);
         }}
       >
         <ConnectorName>{cds?.name || connector.id}</ConnectorName>
+      </Column>
+      <Column style={{ textAlign: "right" }}>
+        <ConnectorContributor contributor={connector.values?.contributor} />
       </Column>
       <Column
         style={{ textAlign: "right" }}
@@ -111,7 +119,9 @@ const ConnectorRow = (props: Props) => {
           navigate("/network/connector/" + connector.id);
         }}
       >
-        {connector.values?.status?.name || ""}
+        {connector.values?.status?.name === "Approved"
+          ? "Published"
+          : connector.values?.status?.name || ""}
       </Column>
       <Column style={{ textAlign: "right", width: "30px" }}>
         <MenuButtonWrapper>

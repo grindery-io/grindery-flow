@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { RichInput, CircularProgress } from "grindery-ui";
 import Button from "../../network/Button";
 import useConnectorContext from "../../../hooks/useConnectorContext";
+import IconField from "../../network/IconField";
 
 const Title = styled.h3`
   font-weight: 700;
@@ -57,6 +58,7 @@ const ConnectorSettingsPage = (props: Props) => {
           options={[]}
           value={data.name}
           onChange={(value: string) => {
+            setError({ type: "", text: "" });
             setData({
               ...data,
               name: value,
@@ -73,6 +75,7 @@ const ConnectorSettingsPage = (props: Props) => {
             options={[]}
             value={data.description}
             onChange={(value: string) => {
+              setError({ type: "", text: "" });
               setData({
                 ...data,
                 description: value,
@@ -84,23 +87,21 @@ const ConnectorSettingsPage = (props: Props) => {
             error={error.type === "description" ? error.text : ""}
           />
         </MaxHeightInput>
-        <MaxHeightInput>
-          <RichInput
-            options={[]}
-            value={data.icon}
-            onChange={(value: string) => {
-              setData({
-                ...data,
-                icon: value,
-              });
-            }}
-            required
-            label="Connector Icon"
-            tooltip="Image URL or base64 encoded string. Recommended icon size 40x40px. Allowed formats: PNG or SVG. Must be on transparent background."
-            placeholder="Image URL or base64 encoded string"
-            error={error.type === "icon" ? error.text : ""}
-          />
-        </MaxHeightInput>
+        <IconField
+          label="Connector Icon"
+          onChange={(value: string) => {
+            setError({ type: "", text: "" });
+            setData({
+              ...data,
+              icon: value,
+            });
+          }}
+          value={data.icon}
+          error={error.type === "icon" ? error.text : ""}
+          tooltip="Recommended icon size 40x40px. Allowed formats: PNG or SVG. Must be on transparent background."
+          required
+        />
+
         <ButtonsWrapper>
           <ButtonsRight>
             <Button
@@ -109,14 +110,14 @@ const ConnectorSettingsPage = (props: Props) => {
                 if (!data.name) {
                   setError({
                     type: "name",
-                    text: "Connector Name field is required",
+                    text: "Connector Name is required",
                   });
                   return;
                 }
                 if (!data.icon) {
                   setError({
                     type: "icon",
-                    text: "Connector Icon field is required",
+                    text: "Connector Icon is required",
                   });
                   return;
                 }

@@ -11,7 +11,7 @@ import { CDS_EDITOR_API_ENDPOINT, isLocalOrStaging } from "../../constants";
 import useNetworkContext from "../../hooks/useNetworkContext";
 import { useGrinderyNexus } from "use-grindery-nexus";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
-import { Navigate, useFetcher, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div``;
 
@@ -285,6 +285,7 @@ const ConnectorSubmission = (props: Props) => {
         }
       );
     } catch (err: any) {
+      console.log("err", err);
       setState({
         loading: false,
         error: {

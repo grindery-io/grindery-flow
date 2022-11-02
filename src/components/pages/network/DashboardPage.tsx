@@ -89,7 +89,7 @@ const DashboardPage = (props: Props) => {
           <div
             style={{
               textAlign: "center",
-              color: "#8C30F5",
+              color: "#ffb930",
               width: "100%",
             }}
           >
@@ -103,6 +103,7 @@ const DashboardPage = (props: Props) => {
                   <TableHeader>
                     <tr>
                       <TableHeaderColumn colSpan={2}>NAME</TableHeaderColumn>
+                      <TableHeaderColumn>CREATOR</TableHeaderColumn>
                       <TableHeaderColumn>TYPE</TableHeaderColumn>
                       <TableHeaderColumn>STATUS</TableHeaderColumn>
                       <TableHeaderColumn></TableHeaderColumn>

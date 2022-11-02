@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import styled from "styled-components";
 import { RichInput } from "grindery-ui";
@@ -34,6 +34,7 @@ const OperationSettings = (props: Props) => {
   const { state, onOperationSettingsSave } = useConnectorContext();
   const [error, setError] = useState({ type: "", text: "" });
   const isNewOperation = key === "__new__";
+  const [currentKey, setCurrentKey] = useState(key);
   const { cds } = state;
   const currentOperation =
     (type && cds?.[type].find((op: any) => op.key === key)) || null;
@@ -49,10 +50,28 @@ const OperationSettings = (props: Props) => {
     },
   });
 
+  useEffect(() => {
+    const _currentOperation = {
+      ...((type && cds?.[type].find((op: any) => op.key === key)) || {}),
+    };
+    setOperation({
+      key: _currentOperation?.key || "",
+      name: _currentOperation?.name || "",
+      display: {
+        label: _currentOperation?.display?.label || "",
+        description: _currentOperation?.display?.description || "",
+      },
+      operation: _currentOperation?.operation || {
+        inputFields: [],
+      },
+    });
+    setCurrentKey(key);
+  }, [currentOperation, key, type, cds]);
+
   return (
     <Container>
       <RichInput
-        key={`${key}_key`}
+        key={`${currentKey}_key`}
         label="Key"
         value={operation.key}
         onChange={(value: string) => {
@@ -70,7 +89,7 @@ const OperationSettings = (props: Props) => {
         error={error.type === "key" ? error.text : ""}
       />
       <RichInput
-        key={`${key}_name`}
+        key={`${currentKey}_name`}
         label="Name"
         value={operation.name}
         onChange={(value: string) => {
@@ -91,7 +110,7 @@ const OperationSettings = (props: Props) => {
         error={error.type === "name" ? error.text : ""}
       />
       <RichInput
-        key={`${key}_description`}
+        key={`${currentKey}_description`}
         label="Description"
         value={operation.display?.description || ""}
         onChange={(value: string) => {

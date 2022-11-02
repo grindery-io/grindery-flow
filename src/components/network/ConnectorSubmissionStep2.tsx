@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { RichInput } from "grindery-ui";
 import { StateProps } from "./ConnectorSubmission";
 import Button from "./Button";
+import IconField from "./IconField";
 
 const Container = styled.div`
   max-width: 816px;
@@ -126,26 +127,23 @@ const ConnectorSubmissionStep2 = (props: Props) => {
         error={state.error.type === "description" ? state.error.text : ""}
       />
 
-      <MaxHeightInput>
-        <RichInput
-          label="Connector Icon"
-          placeholder="Image URL or base64 encoded string"
-          onChange={(value: string) => {
-            setState({
-              error: { type: "", text: "" },
-              form: {
-                ...state.form,
-                entry: { ...state.form.entry, icon: value },
-              },
-            });
-          }}
-          value={state.form.entry.icon}
-          options={[]}
-          error={state.error.type === "icon" ? state.error.text : ""}
-          tooltip="Image URL or base64 encoded string. Recommended icon size 24x24px. Allowed formats: PNG or SVG. Must be on transparent background."
-          required
-        />
-      </MaxHeightInput>
+      <IconField
+        label="Connector Icon"
+        onChange={(value: string) => {
+          setState({
+            error: { type: "", text: "" },
+            form: {
+              ...state.form,
+              entry: { ...state.form.entry, icon: value },
+            },
+          });
+        }}
+        value={state.form.entry.icon}
+        error={state.error.type === "icon" ? state.error.text : ""}
+        tooltip="Recommended icon size 24x24px. Allowed formats: PNG or SVG. Must be on transparent background."
+        required
+      />
+
       {state.error.type === "cds" && <Error>{state.error.text}</Error>}
       <ButtonsWrapper>
         <ButtonWrapper>

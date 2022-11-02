@@ -1,6 +1,14 @@
 import React, { createContext, useEffect, useReducer, useState } from "react";
+import axios from "axios";
 import _ from "lodash";
 import { useNavigate } from "react-router";
+import { isLocalOrStaging } from "../constants";
+import { useGrinderyNexus } from "use-grindery-nexus";
+import useWorkspaceContext from "../hooks/useWorkspaceContext";
+import useNetworkContext from "../hooks/useNetworkContext";
+
+const CDS_EDITOR_API_ENDPOINT =
+  "https://nexus-cds-editor-api.herokuapp.com/api";
 
 type StateProps = {
   id: string;
@@ -76,6 +84,9 @@ export const ConnectorContextProvider = ({
   children,
   connector,
 }: ConnectorContextProps) => {
+  const { workspaceToken } = useWorkspaceContext();
+  const { token } = useGrinderyNexus();
+  const { refreshConnectors } = useNetworkContext();
   let navigate = useNavigate();
   const [count, setCount] = useState(0);
   const [state, setState] = useReducer(
@@ -104,15 +115,38 @@ export const ConnectorContextProvider = ({
   );
 
   const saveConnector = async () => {
-    // TODO: save connector to the HubDB
-    setState({
-      isSaving: true,
-    });
-    setTimeout(() => {
+    if (count > 0) {
+      setState({
+        isSaving: true,
+      });
+      let res;
+      try {
+        res = await axios.patch(
+          `${CDS_EDITOR_API_ENDPOINT}/cds`,
+          {
+            id: state.id,
+            cds: JSON.stringify(state.cds),
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${workspaceToken || token?.access_token}`,
+            },
+          }
+        );
+      } catch (err: any) {
+        console.error("saveConnector error => ", err.message);
+
+        setState({
+          isSaving: false,
+        });
+        return;
+      }
+
       setState({
         isSaving: false,
       });
-    }, 1000);
+      refreshConnectors();
+    }
   };
 
   const onConnectorSettingsSave = (data: any) => {
@@ -312,13 +346,13 @@ export const ConnectorContextProvider = ({
   };
 
   useEffect(() => {
-    console.log(`Save connector fired`);
     setCount((count) => count + 1);
+    saveConnector();
   }, [state.cds]);
 
-  console.log(`Save connector fired ${count} times`);
-
-  console.log("connector cds", state.cds);
+  if (isLocalOrStaging) {
+    console.log(`Save connector fired ${count - 1} times`);
+  }
 
   return (
     <ConnectorContext.Provider
