@@ -137,7 +137,7 @@ const RootStack = (props: Props) => {
           element={<WorkflowBuilderPage />}
           key={2}
         ></Route>
-        <Route path="/d-apps" element={<AppsPage />}></Route>
+        <Route path="/connectors" element={<AppsPage />}></Route>
         <Route path="/history" element={<HistoryPage />}></Route>
         {/*<Route path="/transactions" element={<TransactionsPage />}></Route>
         <Route path="/notifications" element={<NotificationsPage />}></Route>*/}

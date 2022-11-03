@@ -8,6 +8,7 @@ import OperationInputFieldRow from "./OperationInputFieldRow";
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+  max-width: 100%;
 `;
 
 const TableHeader = styled.thead`
@@ -46,23 +47,25 @@ const OperationInputFields = (props: Props) => {
   return (
     <>
       {inputFields && inputFields.length > 0 && (
-        <Table>
-          <TableHeader>
-            <tr>
-              <TableHeaderColumn>Label</TableHeaderColumn>
-              <TableHeaderColumn>Key</TableHeaderColumn>
-              <TableHeaderColumn></TableHeaderColumn>
-            </tr>
-          </TableHeader>
-          <tbody>
-            {inputFields.map((inputField: any) => (
-              <OperationInputFieldRow
-                inputKey={inputField.key}
-                key={inputField.key}
-              />
-            ))}
-          </tbody>
-        </Table>
+        <div>
+          <Table>
+            <TableHeader>
+              <tr>
+                <TableHeaderColumn>Label</TableHeaderColumn>
+                <TableHeaderColumn>Key</TableHeaderColumn>
+                <TableHeaderColumn></TableHeaderColumn>
+              </tr>
+            </TableHeader>
+            <tbody>
+              {inputFields.map((inputField: any) => (
+                <OperationInputFieldRow
+                  inputKey={inputField.key}
+                  key={inputField.key}
+                />
+              ))}
+            </tbody>
+          </Table>
+        </div>
       )}
       <ButtonWrapper>
         <Button

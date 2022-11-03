@@ -23,11 +23,15 @@ const Row = styled.tr`
 
 const Column = styled.td`
   padding: 20px 10px;
-
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 0;
   cursor: pointer;
 
   &:last-child {
     cursor: default;
+    max-width: 30px;
   }
 `;
 

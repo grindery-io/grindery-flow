@@ -289,7 +289,7 @@ const ConnectorSubmission = (props: Props) => {
         }
       );
     } catch (err: any) {
-      console.log("err", err);
+      console.error("err", err);
       setState({
         loading: false,
         error: {
