@@ -280,6 +280,7 @@ const ConnectorSubmission = (props: Props) => {
         `${CDS_EDITOR_API_ENDPOINT}/cds`,
         {
           data: state.form,
+          environment: isLocalOrStaging ? "staging" : "production",
         },
         {
           headers: {
@@ -288,7 +289,7 @@ const ConnectorSubmission = (props: Props) => {
         }
       );
     } catch (err: any) {
-      console.log("err", err);
+      console.error("err", err);
       setState({
         loading: false,
         error: {

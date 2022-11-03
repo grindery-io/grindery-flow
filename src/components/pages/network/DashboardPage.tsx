@@ -45,6 +45,7 @@ const PageHeader = styled.div`
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+  max-width: 100%;
 `;
 
 const TableHeader = styled.thead`

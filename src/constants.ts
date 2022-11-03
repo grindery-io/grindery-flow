@@ -117,7 +117,7 @@ export const RIGHTBAR_TABS: {
     name: "APPS",
     icon: ICONS.APPS,
     label: "(d)Apps",
-    path: "/d-apps",
+    path: "/connectors",
   },
   {
     id: 2,

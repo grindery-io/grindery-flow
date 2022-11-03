@@ -17,6 +17,7 @@ const Title = styled.h3`
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+  max-width: 100%;
 `;
 
 const TableHeader = styled.thead`
