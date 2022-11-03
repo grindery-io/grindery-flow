@@ -127,6 +127,7 @@ export const ConnectorContextProvider = ({
           {
             id: state.connector.id,
             cds: JSON.stringify(state.cds),
+            environment: isLocalOrStaging ? "staging" : "production",
           },
           {
             headers: {

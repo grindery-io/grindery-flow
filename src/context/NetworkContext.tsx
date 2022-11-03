@@ -2,6 +2,7 @@
 import axios from "axios";
 import React, { createContext, useEffect, useReducer } from "react";
 import { useGrinderyNexus } from "use-grindery-nexus";
+import { isLocalOrStaging } from "../constants";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";
 
 const CDS_EDITOR_API_ENDPOINT =
@@ -61,11 +62,16 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
     } else {
       let res;
       try {
-        res = await axios.get(`${CDS_EDITOR_API_ENDPOINT}/cds`, {
-          headers: {
-            Authorization: `Bearer ${workspaceToken || userToken}`,
-          },
-        });
+        res = await axios.get(
+          `${CDS_EDITOR_API_ENDPOINT}/cds?environment=${
+            isLocalOrStaging ? "staging" : "production"
+          }`,
+          {
+            headers: {
+              Authorization: `Bearer ${workspaceToken || userToken}`,
+            },
+          }
+        );
       } catch (err) {
         console.error("getConnectors error", err);
       }
@@ -82,11 +88,16 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
     } else {
       let res;
       try {
-        res = await axios.get(`${CDS_EDITOR_API_ENDPOINT}/cds`, {
-          headers: {
-            Authorization: `Bearer ${workspaceToken || token?.access_token}`,
-          },
-        });
+        res = await axios.get(
+          `${CDS_EDITOR_API_ENDPOINT}/cds?environment=${
+            isLocalOrStaging ? "staging" : "production"
+          }`,
+          {
+            headers: {
+              Authorization: `Bearer ${workspaceToken || token?.access_token}`,
+            },
+          }
+        );
       } catch (err) {
         console.error("getConnectors error", err);
         return { success: false };
