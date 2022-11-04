@@ -49,7 +49,9 @@ const ConnectorSubmissionLoading = (props: Props) => {
 
   return (
     <Container>
-      <Title>{!state.error.type ? "Submitting..." : "Submission failed"}</Title>
+      <Title>
+        {!state.error.type ? "Saving..." : "Connector creation failed"}
+      </Title>
       {!state.error.type && (
         <div
           style={{

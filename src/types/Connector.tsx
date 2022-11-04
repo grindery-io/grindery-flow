@@ -3,6 +3,7 @@ export type Connector = {
   name: string;
   version: string;
   platformVersion: string;
+  type: string;
   triggers?: Trigger[];
   actions?: Action[];
   recipes?: Recipe[];
@@ -10,6 +11,9 @@ export type Connector = {
   icon?: string;
   pricing?: string;
   html_url?: string;
+  user?: string;
+  workspace?: string;
+  access?: string;
 };
 
 // Triggers

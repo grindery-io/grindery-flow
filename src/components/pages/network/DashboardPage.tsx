@@ -51,6 +51,7 @@ const Table = styled.table`
 const TableHeader = styled.thead`
   & > tr > th {
     text-align: right;
+    padding-right: 10px;
   }
   & > tr > th:first-child {
     text-align: left;
@@ -79,7 +80,7 @@ const DashboardPage = (props: Props) => {
           <h1>Connectors</h1>
           <Button
             onClick={() => {
-              navigate("/network/connector/new");
+              navigate("/network/connector/__new__");
             }}
           >
             Create Connector
@@ -105,7 +106,7 @@ const DashboardPage = (props: Props) => {
                     <tr>
                       <TableHeaderColumn colSpan={2}>NAME</TableHeaderColumn>
                       <TableHeaderColumn>CREATOR</TableHeaderColumn>
-                      <TableHeaderColumn>TYPE</TableHeaderColumn>
+                      <TableHeaderColumn>ACCESS</TableHeaderColumn>
                       <TableHeaderColumn>STATUS</TableHeaderColumn>
                       <TableHeaderColumn></TableHeaderColumn>
                     </tr>

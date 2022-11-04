@@ -41,7 +41,7 @@ const OperationInputFields = (props: Props) => {
   const { state } = useConnectorContext();
   const inputFields: any[] =
     (type &&
-      state.cds?.[type]?.find((op: any) => op.key === key)?.operation
+      (state.cds?.[type] || []).find((op: any) => op.key === key)?.operation
         ?.inputFields) ||
     [];
   return (

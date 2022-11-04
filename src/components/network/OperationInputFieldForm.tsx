@@ -13,6 +13,7 @@ import CheckBox from "../shared/CheckBox";
 const Container = styled.div`
   & [data-slate-editor="true"][contenteditable="false"] {
     cursor: not-allowed;
+    opacity: 0.75;
   }
 `;
 
@@ -119,7 +120,7 @@ const OperationInputFieldForm = (props: Props) => {
   const [error, setError] = useState({ type: "", text: "" });
   const inputField: any = (
     (type &&
-      state.cds?.[type]?.find((op: any) => op.key === key)?.operation
+      (state.cds?.[type] || []).find((op: any) => op.key === key)?.operation
         ?.inputFields) ||
     []
   ).find((input: any) => input.key === inputKey);

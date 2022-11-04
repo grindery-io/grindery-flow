@@ -96,6 +96,23 @@ const Error = styled.div`
   padding: 0;
 `;
 
+const RightWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  gap: 10px;
+`;
+
+const AppType = styled.span`
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 120%;
+  letter-spacing: 0.03333em;
+  color: rgb(117, 135, 150);
+`;
+
 type Props = {
   item: any;
   showWorkflows?: boolean;
@@ -104,7 +121,7 @@ type Props = {
 };
 
 const AppRow = (props: Props) => {
-  const { client } = useAppContext();
+  const { client, user } = useAppContext();
   const { token } = useGrinderyNexus();
   const { workspaceToken } = useWorkspaceContext();
   const { item, showWorkflows, showMenu, onClick } = props;
@@ -194,22 +211,54 @@ const AppRow = (props: Props) => {
     setLoading(false);
   };
 
+  const menuItems = [
+    {
+      key: "clone",
+      label: "Clone connector",
+      onClick: handleCloneClick,
+    },
+  ];
+
+  if (item.access && item.access === "Private" && item.user === user) {
+    menuItems.push({
+      key: "edit",
+      label: "Edit connector",
+      onClick: async () => {
+        navigate(`/network/connector/${item.key}`);
+      },
+    });
+  }
+
   return (
     <>
       <DataBox
-        onClick={onClick ? onClick : undefined}
         key={item.key}
         size="small"
         LeftComponent={
-          <AppTitleWrapper>
+          <AppTitleWrapper
+            onClick={onClick ? onClick : undefined}
+            style={{ cursor: onClick ? "pointer" : "default" }}
+          >
             <AppIconWrapper>
               <AppIcon src={item.icon} alt={item.name} />
             </AppIconWrapper>
-            <Title>{item.name}</Title>
+            <div>
+              <Title>{item.name}</Title>
+              <AppType>
+                {item.access ? (
+                  <>
+                    {item.access === "Private" && "Private"}
+                    {item.access === "Workspace" && "Private for workspace"}
+                  </>
+                ) : (
+                  "Public"
+                )}
+              </AppType>
+            </div>
           </AppTitleWrapper>
         }
         RightComponent={
-          <>
+          <RightWrapper>
             {showWorkflows && (
               <AppCountersWrapper>
                 <AppCounter>
@@ -220,7 +269,7 @@ const AppRow = (props: Props) => {
                 </AppCounter>
               </AppCountersWrapper>
             )}
-            {showMenu && (
+            {showMenu && item.type && item.type === "web3" && (
               <>
                 <MenuButtonWrapper>
                   <IconButton
@@ -240,17 +289,11 @@ const AppRow = (props: Props) => {
                     vertical: "bottom",
                     horizontal: "left",
                   }}
-                  items={[
-                    {
-                      key: "clone",
-                      label: "Clone",
-                      onClick: handleCloneClick,
-                    },
-                  ]}
+                  items={menuItems}
                 />
               </>
             )}
-          </>
+          </RightWrapper>
         }
       />
       <Dialog
@@ -277,17 +320,6 @@ const AppRow = (props: Props) => {
             error={error.type === "username" ? error.text : ""}
           />
         </div>
-        {loading && (
-          <div
-            style={{
-              textAlign: "center",
-              color: "#8C30F5",
-              margin: "20px",
-            }}
-          >
-            <CircularProgress color="inherit" />
-          </div>
-        )}
         {error.type === "submit" && <Error>{error.text}</Error>}
         <Button
           disabled={loading}

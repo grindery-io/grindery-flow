@@ -20,6 +20,15 @@ const Wrapper = styled.div`
     &:hover {
       box-shadow: 0px 4px 8px rgba(106, 71, 147, 0.1);
     }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+
+      &:hover {
+        box-shadow: 0px 4px 8px rgba(106, 71, 147, 0);
+      }
+    }
   }
 `;
 
@@ -27,13 +36,14 @@ type Props = {
   children: React.ReactNode;
   onClick: () => void;
   style?: any;
+  disabled?: boolean;
 };
 
 const Button = (props: Props) => {
-  const { children, onClick, style } = props;
+  const { children, onClick, style, disabled } = props;
   return (
     <Wrapper>
-      <button style={style || {}} onClick={onClick}>
+      <button style={style || {}} onClick={onClick} disabled={disabled}>
         {children}
       </button>
     </Wrapper>

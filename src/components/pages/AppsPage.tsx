@@ -6,6 +6,7 @@ import useAppContext from "../../hooks/useAppContext";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../hooks/useWindowSize";
 import AppRow from "../shared/AppRow";
+import Button from "../shared/Button";
 
 const RootWrapper = styled.div`
   @media (min-width: ${SCREEN.TABLET}) {
@@ -95,6 +96,21 @@ const AppsWrapper = styled.div`
   gap: 10px;
 `;
 
+const ButtonsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+
+  & button {
+    margin: 0;
+    font-size: 14px;
+    padding: 8px 24px !important;
+  }
+`;
+
 type Props = {};
 
 const AppsPage = (props: Props) => {
@@ -105,8 +121,11 @@ const AppsPage = (props: Props) => {
   const [tab, setTab] = useState(0);
   const { size } = useWindowSize();
 
-  const filteredItems = items.filter((item) =>
-    item.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+  const filteredItems = items.filter(
+    (item) =>
+      item &&
+      item.name &&
+      item.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
   );
 
   /*const handleSearchChange = (e: string) => {
@@ -135,7 +154,7 @@ const AppsPage = (props: Props) => {
           onChange={(index: number) => {
             setTab(index);
           }}
-          options={["Used", "All"]}
+          options={["Used", "Public", "Private", "All"]}
           orientation="horizontal"
           activeIndicatorColor="#A963EF"
           activeColor="#8C30F5"
@@ -167,11 +186,30 @@ const AppsPage = (props: Props) => {
                     navigate("/workflows?search=" + item.name);
                   }}
                   showWorkflows
+                  showMenu
                 />
               ))}
             </>
           )}
           {tab === 1 && (
+            <>
+              {allConnectors
+                .filter((item) => !item.access || item.access === "Public")
+                .map((item) => (
+                  <AppRow item={item} key={item.key} showMenu />
+                ))}
+            </>
+          )}
+          {tab === 2 && (
+            <>
+              {allConnectors
+                .filter((item) => item.access && item.access === "Private")
+                .map((item) => (
+                  <AppRow item={item} key={item.key} showMenu />
+                ))}
+            </>
+          )}
+          {tab === 3 && (
             <>
               {allConnectors.map((item) => (
                 <AppRow item={item} key={item.key} showMenu />
@@ -179,6 +217,16 @@ const AppsPage = (props: Props) => {
             </>
           )}
         </AppsWrapper>
+        <ButtonsWrapper>
+          <Button
+            value="Create New Connector"
+            onClick={() => {
+              navigate(`/network/connector/__new__`);
+            }}
+            variant="outlined"
+            color="primary"
+          />
+        </ButtonsWrapper>
       </Wrapper>
     </RootWrapper>
   );

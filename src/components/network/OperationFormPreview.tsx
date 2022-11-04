@@ -95,7 +95,9 @@ const OperationFormPreview = (props: Props) => {
   const { cds } = state;
   const { addressBook, setAddressBook } = useAddressBook(user);
   const operation =
-    (type && cds?.[type]?.find((op: any) => op.key === key)?.operation) || {};
+    (type &&
+      (cds?.[type] || []).find((op: any) => op.key === key)?.operation) ||
+    {};
   const inputFields = operation?.inputFields || [];
 
   const chains = BLOCKCHAINS;

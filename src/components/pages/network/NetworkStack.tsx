@@ -28,7 +28,7 @@ const DevStack = (props: Props) => {
               element={<Navigate to="/network" replace />}
             ></Route>
             <Route
-              path="/connector/new"
+              path="/connector/__new__"
               element={<CreateConnectorPage />}
             ></Route>
             <Route

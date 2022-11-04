@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { CircularProgress } from "grindery-ui";
+import { Dialog, CircularProgress } from "grindery-ui";
 import Button from "../../network/Button";
-import { useNavigate } from "react-router";
 import useConnectorContext from "../../../hooks/useConnectorContext";
 import RadioButton from "../../network/RadioButton";
 import useWorkspaceContext from "../../../hooks/useWorkspaceContext";
-import ConnectorContributor from "../../network/ConnectorContributor";
+import { useNavigate } from "react-router";
 
 const Title = styled.h3`
   font-weight: 700;
@@ -96,15 +95,39 @@ const Table = styled.table`
   }
 `;
 
+const PublishingText = styled.p`
+  margin: 0 0 20px;
+  padding: 0;
+  text-align: center;
+`;
+
+const NotValidMessage = styled.p`
+  font-size: 16px;
+  margin: 20px 0;
+  text-align: left;
+  color: #ff5858;
+
+  & span {
+    color: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`;
+
 type Props = {};
 
 const ConnectorPublishingPage = (props: Props) => {
+  const { state, setState, publishConnector } = useConnectorContext();
   let navigate = useNavigate();
-  const { state } = useConnectorContext();
-  const { cds } = state;
+  const { connector, cds } = state;
   const { workspace } = useWorkspaceContext();
   const { id } = state;
-  const [type, setType] = useState("Private");
+  const isValid =
+    cds &&
+    cds.name &&
+    cds.key &&
+    cds.icon &&
+    (cds.type === "web2" || cds.type === "web3");
 
   return id ? (
     <div>
@@ -119,9 +142,14 @@ const ConnectorPublishingPage = (props: Props) => {
             <RadioWrapper>
               <RadioButton
                 label="Private"
-                selected={type === "Private"}
+                selected={cds?.access === "Private"}
                 onChange={() => {
-                  setType("Private");
+                  setState({
+                    cds: {
+                      ...state.cds,
+                      access: "Private",
+                    },
+                  });
                 }}
                 description="Only you will be able to use Connector"
               />
@@ -129,9 +157,14 @@ const ConnectorPublishingPage = (props: Props) => {
               {workspace !== "personal" && (
                 <RadioButton
                   label="Workspace"
-                  selected={type === "Workspace"}
+                  selected={cds?.access === "Workspace"}
                   onChange={() => {
-                    setType("Workspace");
+                    setState({
+                      cds: {
+                        ...state.cds,
+                        access: "Workspace",
+                      },
+                    });
                   }}
                   description="Connector will be available for all members of the workspace"
                 />
@@ -139,9 +172,14 @@ const ConnectorPublishingPage = (props: Props) => {
 
               <RadioButton
                 label="Public"
-                selected={type === "Public"}
+                selected={!cds?.access || cds?.access === "Public"}
                 onChange={() => {
-                  setType("Public");
+                  setState({
+                    cds: {
+                      ...state.cds,
+                      access: "Public",
+                    },
+                  });
                 }}
                 description="Connector will be available for all Nexus users"
               />
@@ -163,11 +201,11 @@ const ConnectorPublishingPage = (props: Props) => {
                   </tr>
                   <tr>
                     <td>Description</td>
-                    <td>{cds.description}</td>
+                    <td>{cds.description || ""}</td>
                   </tr>
                   <tr>
                     <td>Access</td>
-                    <td>{type}</td>
+                    <td>{cds?.access || "Public"}</td>
                   </tr>
                   {state.connector?.values?.contract_address && (
                     <tr>
@@ -177,41 +215,65 @@ const ConnectorPublishingPage = (props: Props) => {
                   )}
                   <tr>
                     <td>Number of triggers</td>
-                    <td>{cds.triggers.length}</td>
+                    <td>{(cds.triggers || []).length}</td>
                   </tr>
                   <tr>
                     <td>Number of actions</td>
-                    <td>{cds.actions.length}</td>
+                    <td>{(cds.actions || []).length}</td>
                   </tr>
-                  {state.connector?.values?.contributor && (
-                    <tr>
-                      <td>Creator</td>
-                      <td>
-                        <ConnectorContributor
-                          contributor={state.connector?.values?.contributor}
-                        />
-                      </td>
-                    </tr>
-                  )}
                 </tbody>
               </Table>
             </ConnectorDetails>
           </CardContent>
         </Card>
+        {!isValid && (
+          <NotValidMessage>
+            Please, configure connector before publishing.{" "}
+            <span
+              onClick={() => {
+                navigate(`/network/connector/${id}/settings`);
+              }}
+            >
+              Settings
+            </span>{" "}
+            is a good place to start.
+          </NotValidMessage>
+        )}
         <Button
           onClick={() => {
-            alert("Not implemented yet");
+            publishConnector();
           }}
+          disabled={
+            !isValid ||
+            state.isPublishing ||
+            connector?.values?.status?.name === "Published"
+          }
         >
-          Submit Connector
+          {connector?.values?.status?.name === "Published"
+            ? "Published"
+            : "Publish Connector"}
         </Button>
+
+        <Dialog open={state.isPublishing} onClose={() => {}} maxWidth={"350px"}>
+          <div
+            style={{
+              textAlign: "center",
+              color: "#ffb930",
+              width: "100%",
+              margin: "40px 0",
+            }}
+          >
+            <CircularProgress color="inherit" />
+          </div>
+          <PublishingText>Publishing...</PublishingText>
+        </Dialog>
       </div>
     </div>
   ) : (
     <div
       style={{
         textAlign: "center",
-        color: "#8C30F5",
+        color: "#ffb930",
         width: "100%",
         margin: "40px 0",
       }}

@@ -91,17 +91,20 @@ const ConnectorDrawerHeader = (props: Props) => {
         <ConnectorName>
           <h2>{cds?.name}</h2>
           <p>
-            <span>{connector.values.type} </span>
+            <span>{cds?.access || "Public"} </span>
           </p>
         </ConnectorName>
       </ConnectorHeader>
       <PublishButton>
         <Button
+          disabled={connector?.values?.status?.name === "Published"}
           onClick={() => {
             navigate(`/network/connector/${id}/publish`);
           }}
         >
-          Publish
+          {connector?.values?.status?.name === "Published"
+            ? "Published"
+            : "Publish"}
         </Button>
       </PublishButton>
     </Container>

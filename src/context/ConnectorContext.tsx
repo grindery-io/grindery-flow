@@ -15,6 +15,7 @@ type StateProps = {
   cds: any;
   connector: any;
   isSaving: boolean;
+  isPublishing: boolean;
   confirm: {
     message: string;
     opened: boolean;
@@ -26,6 +27,7 @@ type StateProps = {
     message: string;
     severity: string;
     onClose: () => void;
+    duration?: number;
   };
 };
 
@@ -33,6 +35,7 @@ type ContextProps = {
   state: StateProps;
   setState: React.Dispatch<Partial<StateProps>>;
   saveConnector: () => void;
+  publishConnector: () => void;
   onConnectorSettingsSave: (data: any) => void;
   onOperationSettingsSave: (type: any, operation: any) => void;
   onOperationDelete: (type: any, operationKey: string) => void;
@@ -56,6 +59,7 @@ const defaultContext = {
     cds: null,
     connector: null,
     isSaving: false,
+    isPublishing: false,
     confirm: {
       message: "",
       opened: false,
@@ -71,6 +75,7 @@ const defaultContext = {
   },
   setState: () => {},
   saveConnector: () => {},
+  publishConnector: () => {},
   onConnectorSettingsSave: () => {},
   onOperationSettingsSave: () => {},
   onOperationDelete: () => {},
@@ -100,6 +105,7 @@ export const ConnectorContextProvider = ({
       cds: cds,
       connector: connector || null,
       isSaving: false,
+      isPublishing: false,
       confirm: {
         message: "",
         opened: false,
@@ -140,15 +146,131 @@ export const ConnectorContextProvider = ({
 
         setState({
           isSaving: false,
+          snackbar: {
+            opened: true,
+            message: `Saving failed. ${
+              err?.response?.data?.message ||
+              err?.response?.data?.error ||
+              err?.message ||
+              "Please, try again later"
+            }.`,
+            severity: "error",
+            duration: 5000,
+            onClose: () => {
+              setState({
+                snackbar: {
+                  opened: false,
+                  message: "",
+                  severity: "error",
+                  onClose: () => {},
+                },
+              });
+            },
+          },
         });
         return;
       }
 
       setState({
         isSaving: false,
+        snackbar: {
+          opened: true,
+          message: `Connector saved`,
+          severity: "success",
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "success",
+                onClose: () => {},
+              },
+            });
+          },
+        },
       });
       refreshConnectors();
     }
+  };
+
+  const publishConnector = async () => {
+    setState({
+      isPublishing: true,
+    });
+    let res;
+    try {
+      res = await axios.post(
+        `${CDS_EDITOR_API_ENDPOINT}/cds/publish/${state.cds.key.toLowerCase()}`,
+        {
+          environment: isLocalOrStaging ? "staging" : "production",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${workspaceToken || token?.access_token}`,
+          },
+        }
+      );
+    } catch (err: any) {
+      console.error("publishConnector error => ", err.message);
+
+      setState({
+        isPublishing: false,
+        snackbar: {
+          opened: true,
+          message: `Publishing failed. ${
+            err?.response?.data?.message ||
+            err?.response?.data?.error ||
+            err?.message ||
+            "Please, try again later"
+          }.`,
+          severity: "error",
+          duration: 5000,
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "error",
+                onClose: () => {},
+              },
+            });
+          },
+        },
+      });
+      return;
+    }
+
+    setState({
+      connector: {
+        ...state.connector,
+        values: {
+          ...state.connector.values,
+          status: {
+            ...state.connector.values.status,
+            id: "5",
+            label: "Published",
+            name: "Published",
+          },
+        },
+      },
+      isPublishing: false,
+      snackbar: {
+        opened: true,
+        message: `Connector published`,
+        severity: "success",
+        duration: 5000,
+        onClose: () => {
+          setState({
+            snackbar: {
+              opened: false,
+              message: "",
+              severity: "success",
+              onClose: () => {},
+            },
+          });
+        },
+      },
+    });
   };
 
   const onConnectorSettingsSave = (data: any) => {
@@ -183,13 +305,13 @@ export const ConnectorContextProvider = ({
   const onOperationSettingsSave = (type: any, operation: any) => {
     if (type) {
       if (operation) {
-        const isNewoperation = !state.cds[type]?.find(
+        const isNewoperation = !(state.cds?.[type] || [])?.find(
           (op: any) => op.key === operation.key
         );
         const operations = isNewoperation
-          ? [...state.cds[type], operation]
+          ? [...(state.cds?.[type] || []), operation]
           : [
-              ...(state.cds[type]?.map((op: any) => {
+              ...((state.cds?.[type] || []).map((op: any) => {
                 if (op.key === operation.key) {
                   return operation;
                 } else {
@@ -244,7 +366,7 @@ export const ConnectorContextProvider = ({
         onConfirm: () => {
           if (type) {
             const newCDS = _.cloneDeep(state.cds);
-            const index = newCDS?.[type]?.findIndex(
+            const index = (newCDS?.[type] || []).findIndex(
               (op: { key: string }) => op.key === operationKey
             );
             newCDS?.[type]?.splice(index, 1);
@@ -269,7 +391,7 @@ export const ConnectorContextProvider = ({
         cds: {
           ...state.cds,
           [type]: [
-            ...(state.cds[type]?.map((op: any) => {
+            ...((state.cds?.[type] || []).map((op: any) => {
               if (op.key === key) {
                 return {
                   ...op,
@@ -321,7 +443,7 @@ export const ConnectorContextProvider = ({
               cds: {
                 ...state.cds,
                 [type]: [
-                  ...(state.cds[type]?.map((op: any) => {
+                  ...((state.cds?.[type] || [])?.map((op: any) => {
                     if (op.key === key) {
                       return {
                         ...op,
@@ -353,7 +475,7 @@ export const ConnectorContextProvider = ({
   }, [state.cds]);
 
   if (isLocalOrStaging) {
-    console.log(`Save connector fired ${count - 1} times`);
+    console.log("connector state", state);
   }
 
   return (
@@ -362,6 +484,7 @@ export const ConnectorContextProvider = ({
         state,
         setState,
         saveConnector,
+        publishConnector,
         onConnectorSettingsSave,
         onOperationSettingsSave,
         onOperationDelete,

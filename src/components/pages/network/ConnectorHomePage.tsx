@@ -58,7 +58,7 @@ type Props = {};
 const ConnectorHomePage = (props: Props) => {
   let navigate = useNavigate();
   const { state } = useConnectorContext();
-  const { cds, id } = state;
+  const { cds, id, connector } = state;
 
   return cds ? (
     <div>
@@ -128,11 +128,14 @@ const ConnectorHomePage = (props: Props) => {
           </CardContent>
           <CardCTA>
             <Button
+              disabled={connector?.values?.status?.name === "Published"}
               onClick={() => {
                 navigate(`/network/connector/${id}/publish`);
               }}
             >
-              Publish Connector
+              {connector?.values?.status?.name === "Published"
+                ? "Published"
+                : "Publish Connector"}
             </Button>
           </CardCTA>
         </Card>

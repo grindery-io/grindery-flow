@@ -55,7 +55,7 @@ const OperationInputFieldRow = (props: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const inputField: any =
     (type &&
-      state.cds?.[type]
+      (state.cds?.[type] || [])
         ?.find((op: any) => op.key === key)
         ?.operation?.inputFields?.find(
           (field: any) => field?.key === inputKey

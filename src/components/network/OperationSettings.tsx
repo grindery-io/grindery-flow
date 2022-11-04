@@ -10,6 +10,7 @@ const Container = styled.div`
 
   & [data-slate-editor="true"][contenteditable="false"] {
     cursor: not-allowed;
+    opacity: 0.75;
   }
 `;
 
@@ -37,7 +38,7 @@ const OperationSettings = (props: Props) => {
   const [currentKey, setCurrentKey] = useState(key);
   const { cds } = state;
   const currentOperation =
-    (type && cds?.[type]?.find((op: any) => op.key === key)) || null;
+    (type && (cds?.[type] || []).find((op: any) => op.key === key)) || null;
   const [operation, setOperation] = useState<any>({
     key: currentOperation?.key || "",
     name: currentOperation?.name || "",
@@ -52,7 +53,8 @@ const OperationSettings = (props: Props) => {
 
   useEffect(() => {
     const _currentOperation = {
-      ...((type && cds?.[type]?.find((op: any) => op.key === key)) || {}),
+      ...((type && (cds?.[type] || []).find((op: any) => op.key === key)) ||
+        {}),
     };
     setOperation({
       key: _currentOperation?.key || "",
@@ -70,6 +72,44 @@ const OperationSettings = (props: Props) => {
 
   return (
     <Container>
+      {cds?.type === "web3" && (
+        <RichInput
+          key={`${currentKey}_signature`}
+          label="Signature"
+          value={
+            operation?.operation?.signature
+              ? Array.isArray(operation?.operation?.signature)
+                ? JSON.stringify(operation?.operation?.signature)
+                : operation?.operation?.signature?.toString() || ""
+              : ""
+          }
+          onChange={async (value: string) => {
+            setError({ type: "", text: "" });
+            let v;
+            try {
+              v = await JSON.parse(value);
+            } catch (err) {
+              v = value;
+            }
+            setOperation({
+              ...operation,
+              operation: {
+                ...(operation?.operation || {}),
+                signature: v,
+              },
+            });
+          }}
+          required
+          tooltip={
+            type === "triggers"
+              ? "Signature of the event. Format of this field depends on the chain that the CDS is created for. For EVM chains the signature is Solidity event declaration including parameter names (which are mapped to input fields by key) e.g Transfer(address indexed from, address indexed to, uint256 value) for ERC20 Transfer event. Multiple signatures may be specified for EVM chains, but indexed parameters must be exactly the same in all signatures."
+              : "Signature of the function including parameter names (which are mapped to input fields by key) e.g function transfer(address to, uint256 value) for ERC20 transfer call."
+          }
+          options={[]}
+          readonly={!!currentOperation?.operation?.signature}
+          error={error.type === "signature" ? error.text : ""}
+        />
+      )}
       <RichInput
         key={`${currentKey}_key`}
         label="Key"
@@ -123,7 +163,6 @@ const OperationSettings = (props: Props) => {
             },
           });
         }}
-        required
         tooltip="Describe clearly the purpose of this operation in a complete sentence. Example: Triggers when a new support ticket is created."
         options={[]}
         error={error.type === "description" ? error.text : ""}
@@ -148,13 +187,14 @@ const OperationSettings = (props: Props) => {
                 });
                 return;
               }
-              if (!operation.display?.description) {
+              if (cds?.type === "web3" && !operation?.operation?.signature) {
                 setError({
-                  type: "description",
-                  text: "Description field is required",
+                  type: "signature",
+                  text: "Signature is required",
                 });
                 return;
               }
+
               onOperationSettingsSave(type, operation);
             }}
           >
