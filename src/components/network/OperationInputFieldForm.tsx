@@ -46,6 +46,18 @@ const CheckboxLabel = styled.label`
   cursor: pointer;
 `;
 
+const AutocompleteWrapper = styled.div`
+  & .MuiOutlinedInput-root {
+    box-shadow: none !important;
+    border: 1px solid #dcdcdc !important;
+  }
+
+  &.has-error .MuiOutlinedInput-root {
+    box-shadow: inset 0px 0px 0px 1px #ff5858 !important;
+    border: 1px solid #ff5858 !important;
+  }
+`;
+
 type Props = {};
 
 const OperationInputFieldForm = (props: Props) => {
@@ -134,20 +146,22 @@ const OperationInputFieldForm = (props: Props) => {
         error={error.type === "helpText" ? error.text : ""}
       />
 
-      <Autocomplete
-        placeholder="Select field type"
-        onChange={(value: string) => {
-          setError({ type: "", text: "" });
-          setData({ ...data, type: value });
-        }}
-        label="Field type"
-        required
-        tooltip="See schema definition for reference: https://github.com/grindery-io/grindery-nexus-schema-v2/tree/master/connectors#fieldschema"
-        value={data.type || ""}
-        size="full"
-        options={typeOptions}
-        error={error.type === "type" ? error.text : ""}
-      />
+      <AutocompleteWrapper className={error.type === "type" ? "has-error" : ""}>
+        <Autocomplete
+          placeholder="Select field type"
+          onChange={(value: string) => {
+            setError({ type: "", text: "" });
+            setData({ ...data, type: value });
+          }}
+          label="Field type"
+          required
+          tooltip="See schema definition for reference: https://github.com/grindery-io/grindery-nexus-schema-v2/tree/master/connectors#fieldschema"
+          value={data.type || ""}
+          size="full"
+          options={typeOptions}
+          error={error.type === "type" ? error.text : ""}
+        />
+      </AutocompleteWrapper>
 
       <RichInput
         value={data.default || ""}
