@@ -181,15 +181,31 @@ const OperationFormPreview = (props: Props) => {
                     </Alert>
                   </AlertWrapper>
                 ) : (
-                  <RichInput
-                    label={field.label || field.key || ""}
-                    key={`input_${field.key}`}
-                    value={field.default || ""}
-                    onChange={() => {}}
-                    options={[]}
-                    required={field.required}
-                    tooltip={field.helpText || ""}
-                  />
+                  <>
+                    {field.choices && field.choices.length > 0 ? (
+                      <Autocomplete
+                        placeholder={field.placeholder || ""}
+                        onChange={() => {}}
+                        label={field.label || field.key || ""}
+                        required={field.required}
+                        tooltip={field.helpText || ""}
+                        value={field.default || ""}
+                        size="full"
+                        options={field.choices}
+                      />
+                    ) : (
+                      <RichInput
+                        label={field.label || field.key || ""}
+                        placeholder={field.placeholder || ""}
+                        key={`input_${field.key}`}
+                        value={field.default || ""}
+                        onChange={() => {}}
+                        options={[]}
+                        required={field.required}
+                        tooltip={field.helpText || ""}
+                      />
+                    )}
+                  </>
                 )}
               </React.Fragment>
             ))}

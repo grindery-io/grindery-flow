@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Autocomplete, RichInput } from "grindery-ui";
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/theme-monokai";
+import "ace-builds/src-noconflict/ext-language_tools";
+import { Autocomplete, RichInput, Tooltip } from "grindery-ui";
 import Button from "./Button";
 import useConnectorContext from "../../hooks/useConnectorContext";
 import { useNavigate, useParams } from "react-router";
@@ -57,6 +61,54 @@ const AutocompleteWrapper = styled.div`
     border: 1px solid #ff5858 !important;
   }
 `;
+const ChoicesWrapper = styled.div`
+  margin-top: 20px;
+`;
+
+const ChoicesLabel = styled.div`
+  margin: 0 0 4px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 6px;
+`;
+
+const ChoicesLabelText = styled.p`
+  font-size: 14px;
+  line-height: 150%;
+  text-align: left;
+  color: #0b0d17;
+  font-style: normal;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+`;
+
+const Info = styled.span`
+  color: #898989;
+  font-size: 14px !important;
+`;
+
+const Required = styled.p`
+  font-size: 14px;
+  color: #898989;
+  line-height: 150%;
+  font-style: normal;
+  font-weight: 400;
+  margin: 0 0 0 auto;
+  padding: 0;
+`;
+
+const Error = styled.p`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  color: #ff5858;
+  margin: 4px 0 0;
+  padding: 0;
+`;
 
 type Props = {};
 
@@ -71,6 +123,10 @@ const OperationInputFieldForm = (props: Props) => {
         ?.inputFields) ||
     []
   ).find((input: any) => input.key === inputKey);
+  const [choices, setChoices] = useState(
+    inputField?.choices ? JSON.stringify(inputField?.choices, null, 2) : ""
+  );
+  const [hasChoices, setHasChoices] = useState(Boolean(inputField?.choices));
   const [data, setData] = useState<any>({
     key: inputField?.key || "",
     label: inputField?.label || "",
@@ -79,6 +135,7 @@ const OperationInputFieldForm = (props: Props) => {
     required: !!inputField?.required,
     computed: !!inputField?.computed,
     type: inputField?.type || "string",
+    placeholder: inputField?.placeholder,
   });
 
   const typeOptions = [
@@ -133,19 +190,6 @@ const OperationInputFieldForm = (props: Props) => {
         tooltip="Enter a user friendly name for this field that describes what to enter. Shown to users inside Nexus. Example: First Name"
         error={error.type === "label" ? error.text : ""}
       />
-      <RichInput
-        value={data.helpText || ""}
-        label="Help Text"
-        options={[]}
-        onChange={(value: string) => {
-          setError({ type: "", text: "" });
-          setData({ ...data, helpText: value });
-        }}
-        placeholder="Enter help text here"
-        tooltip="Describe clearly the purpose of this field in a complete sentence with at least 20 characters. Example: Filter by first name."
-        error={error.type === "helpText" ? error.text : ""}
-      />
-
       <AutocompleteWrapper className={error.type === "type" ? "has-error" : ""}>
         <Autocomplete
           placeholder="Select field type"
@@ -162,7 +206,29 @@ const OperationInputFieldForm = (props: Props) => {
           error={error.type === "type" ? error.text : ""}
         />
       </AutocompleteWrapper>
-
+      <RichInput
+        value={data.helpText || ""}
+        label="Help Text"
+        options={[]}
+        onChange={(value: string) => {
+          setError({ type: "", text: "" });
+          setData({ ...data, helpText: value });
+        }}
+        placeholder="Enter help text here"
+        tooltip="Describe clearly the purpose of this field in a complete sentence with at least 20 characters. Example: Filter by first name."
+        error={error.type === "helpText" ? error.text : ""}
+      />
+      <RichInput
+        value={data.placeholder || ""}
+        label="Placeholder"
+        options={[]}
+        onChange={(value: string) => {
+          setError({ type: "", text: "" });
+          setData({ ...data, placeholder: value });
+        }}
+        placeholder="Enter field placeholder text here"
+        error={error.type === "placeholder" ? error.text : ""}
+      />
       <RichInput
         value={data.default || ""}
         label="Default Text"
@@ -224,6 +290,65 @@ const OperationInputFieldForm = (props: Props) => {
           Hidden
         </CheckboxLabel>
       </CheckboxWrapper>
+      <CheckboxWrapper>
+        <CheckBox
+          isNetwork
+          checked={hasChoices}
+          onChange={() => {
+            setError({ type: "", text: "" });
+            setHasChoices(!hasChoices);
+          }}
+        />
+        <CheckboxLabel
+          onClick={() => {
+            setError({ type: "", text: "" });
+            setHasChoices(!hasChoices);
+          }}
+        >
+          Dropdown
+        </CheckboxLabel>
+      </CheckboxWrapper>
+      {hasChoices && (
+        <ChoicesWrapper>
+          <ChoicesLabel>
+            <ChoicesLabelText>Dropdown Source</ChoicesLabelText>
+
+            <Tooltip title="See schema definition for reference: https://github.com/grindery-io/grindery-nexus-schema-v2/tree/master/connectors#fieldchoiceschema">
+              <Info className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium rich-input__label-tooltip css-kp9ftd-MuiIcon-root">
+                error
+              </Info>
+            </Tooltip>
+
+            <Required>(required)</Required>
+          </ChoicesLabel>
+
+          <AceEditor
+            placeholder={`[{value: "1", label: "One", sample: "1"}]`}
+            mode="json"
+            theme="monokai"
+            name="blah2"
+            onChange={(value: string) => {
+              setChoices(value);
+            }}
+            width="100%"
+            height="200px"
+            wrapEnabled={true}
+            fontSize={14}
+            showPrintMargin={true}
+            showGutter={true}
+            highlightActiveLine={true}
+            value={choices}
+            setOptions={{
+              enableBasicAutocompletion: false,
+              enableLiveAutocompletion: false,
+              enableSnippets: false,
+              showLineNumbers: false,
+              tabSize: 2,
+            }}
+          />
+          {error && error.type === "choices" && <Error>{error.text}</Error>}
+        </ChoicesWrapper>
+      )}
       <ButtonsWrapper>
         <Button
           style={{
@@ -238,7 +363,7 @@ const OperationInputFieldForm = (props: Props) => {
           Cancel
         </Button>
         <Button
-          onClick={() => {
+          onClick={async () => {
             setError({ type: "", text: "" });
             if (!data.type) {
               setError({ type: "type", text: "Field type is required" });
@@ -252,7 +377,25 @@ const OperationInputFieldForm = (props: Props) => {
               setError({ type: "label", text: "Field label is required" });
               return;
             }
-            onInputFieldSave(key || "", type, inputKey || "", data);
+            if (choices) {
+              try {
+                JSON.parse(choices);
+              } catch (err) {
+                setError({ type: "choices", text: "Invalid format" });
+                return;
+              }
+            }
+            if (!choices && hasChoices) {
+              setError({
+                type: "choices",
+                text: "Dropdown source is required",
+              });
+              return;
+            }
+            onInputFieldSave(key || "", type, inputKey || "", {
+              ...data,
+              choices: hasChoices && choices ? JSON.parse(choices) : undefined,
+            });
           }}
         >
           Save
