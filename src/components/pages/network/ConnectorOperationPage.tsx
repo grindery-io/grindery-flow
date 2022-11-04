@@ -71,7 +71,7 @@ const ConnectorOperationPage = (props: Props) => {
   const currentTab = TABS.find((t: any) => t.key === tab)?.value || 0;
   const operation = isNewOperation
     ? newOperation
-    : (type && cds?.[type].find((op: any) => op.key === key)) || null;
+    : (type && cds?.[type]?.find((op: any) => op.key === key)) || null;
 
   useEffect(() => {
     if (!tab || !TABS.map((t: any) => t.key).includes(tab)) {

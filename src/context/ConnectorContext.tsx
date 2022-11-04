@@ -183,19 +183,19 @@ export const ConnectorContextProvider = ({
   const onOperationSettingsSave = (type: any, operation: any) => {
     if (type) {
       if (operation) {
-        const isNewoperation = !state.cds[type].find(
+        const isNewoperation = !state.cds[type]?.find(
           (op: any) => op.key === operation.key
         );
         const operations = isNewoperation
           ? [...state.cds[type], operation]
           : [
-              ...state.cds[type].map((op: any) => {
+              ...(state.cds[type]?.map((op: any) => {
                 if (op.key === operation.key) {
                   return operation;
                 } else {
                   return op;
                 }
-              }),
+              }) || []),
             ];
         setState({
           cds: { ...state.cds, [type]: [...operations] },
@@ -244,10 +244,10 @@ export const ConnectorContextProvider = ({
         onConfirm: () => {
           if (type) {
             const newCDS = _.cloneDeep(state.cds);
-            const index = newCDS?.[type].findIndex(
+            const index = newCDS?.[type]?.findIndex(
               (op: { key: string }) => op.key === operationKey
             );
-            newCDS?.[type].splice(index, 1);
+            newCDS?.[type]?.splice(index, 1);
             setState({
               cds: newCDS,
             });
@@ -269,14 +269,14 @@ export const ConnectorContextProvider = ({
         cds: {
           ...state.cds,
           [type]: [
-            ...state.cds[type].map((op: any) => {
+            ...(state.cds[type]?.map((op: any) => {
               if (op.key === key) {
                 return {
                   ...op,
                   operation: {
                     ...op.operation,
                     inputFields: [
-                      ...op.operation.inputFields.map((field: any) => {
+                      ...(op.operation?.inputFields?.map((field: any) => {
                         if (field.key === inputKey) {
                           return {
                             ...field,
@@ -285,7 +285,7 @@ export const ConnectorContextProvider = ({
                         } else {
                           return field;
                         }
-                      }),
+                      }) || []),
                       ...(inputKey === "__new__" ? [{ ...inputData }] : []),
                     ],
                   },
@@ -293,7 +293,7 @@ export const ConnectorContextProvider = ({
               } else {
                 return op;
               }
-            }),
+            }) || []),
           ],
         },
       });
@@ -321,23 +321,23 @@ export const ConnectorContextProvider = ({
               cds: {
                 ...state.cds,
                 [type]: [
-                  ...state.cds[type].map((op: any) => {
+                  ...(state.cds[type]?.map((op: any) => {
                     if (op.key === key) {
                       return {
                         ...op,
                         operation: {
                           ...op.operation,
                           inputFields: [
-                            ...op.operation.inputFields.filter(
+                            ...(op.operation?.inputFields?.filter(
                               (field: any) => field.key !== inputKey
-                            ),
+                            ) || []),
                           ],
                         },
                       };
                     } else {
                       return op;
                     }
-                  }),
+                  }) || []),
                 ],
               },
             });

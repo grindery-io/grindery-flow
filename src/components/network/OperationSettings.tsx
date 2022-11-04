@@ -37,7 +37,7 @@ const OperationSettings = (props: Props) => {
   const [currentKey, setCurrentKey] = useState(key);
   const { cds } = state;
   const currentOperation =
-    (type && cds?.[type].find((op: any) => op.key === key)) || null;
+    (type && cds?.[type]?.find((op: any) => op.key === key)) || null;
   const [operation, setOperation] = useState<any>({
     key: currentOperation?.key || "",
     name: currentOperation?.name || "",
@@ -52,7 +52,7 @@ const OperationSettings = (props: Props) => {
 
   useEffect(() => {
     const _currentOperation = {
-      ...((type && cds?.[type].find((op: any) => op.key === key)) || {}),
+      ...((type && cds?.[type]?.find((op: any) => op.key === key)) || {}),
     };
     setOperation({
       key: _currentOperation?.key || "",

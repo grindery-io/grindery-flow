@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router";
-import { RichInput, Autocomplete } from "grindery-ui";
+import { RichInput, Autocomplete, Alert } from "grindery-ui";
 import styled from "styled-components";
 import { BLOCKCHAINS, ICONS } from "../../constants";
 import useConnectorContext from "../../hooks/useConnectorContext";
@@ -58,6 +58,31 @@ const InputWrapper = styled.div`
     gap: 6px;
     margin-bottom: 4px;
   }
+`;
+
+const AlertWrapper = styled.div`
+  margin-bottom: 16px;
+`;
+
+const WarningTitle = styled.h4`
+  font-weight: bold !important;
+  font-size: 14px !important;
+  line-height: 150% !important;
+  text-align: left !important;
+  color: #0b0d17 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+`;
+
+const WarningText = styled.p`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  text-align: left;
+  color: #0b0d17;
+  padding: 0;
+  margin: 0;
 `;
 
 type Props = {};
@@ -130,15 +155,43 @@ const OperationFormPreview = (props: Props) => {
           inputFields
             .filter((field: any) => !field.computed)
             .map((field: any) => (
-              <RichInput
-                label={field.label || field.key || ""}
-                key={field.key}
-                value={field.default || ""}
-                onChange={() => {}}
-                options={[]}
-                required={field.required}
-                tooltip={field.helpText || ""}
-              />
+              <React.Fragment>
+                {field.type === "info" ? (
+                  <AlertWrapper>
+                    <Alert
+                      color="warning"
+                      elevation={0}
+                      icon={
+                        <img
+                          src={ICONS.WARNING}
+                          width={20}
+                          height={20}
+                          alt=""
+                        />
+                      }
+                    >
+                      <div style={{ textAlign: "left" }}>
+                        {field.label && (
+                          <WarningTitle>{field.label}</WarningTitle>
+                        )}
+                        {field.helpText && (
+                          <WarningText>{field.helpText}</WarningText>
+                        )}
+                      </div>
+                    </Alert>
+                  </AlertWrapper>
+                ) : (
+                  <RichInput
+                    label={field.label || field.key || ""}
+                    key={`input_${field.key}`}
+                    value={field.default || ""}
+                    onChange={() => {}}
+                    options={[]}
+                    required={field.required}
+                    tooltip={field.helpText || ""}
+                  />
+                )}
+              </React.Fragment>
             ))}
       </div>
     </Container>
