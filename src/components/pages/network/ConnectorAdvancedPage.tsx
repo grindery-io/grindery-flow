@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { CircularProgress } from "grindery-ui";
 import useConnectorContext from "../../../hooks/useConnectorContext";
 import ReactJson from "@silizia/react-json-view";
+import { NOT_ALLOWED } from "../../../context/ConnectorContext";
 
 const Container = styled.div`
   & .react-json-view {
@@ -26,18 +27,84 @@ const ConnectorAdvancedPage = (props: Props) => {
   const { cds } = state;
 
   const addValue = (value: any) => {
+    if (state.connector?.values?.status?.name === "Published") {
+      setState({
+        isSaving: false,
+        snackbar: {
+          opened: true,
+          message: NOT_ALLOWED,
+          severity: "error",
+          duration: 5000,
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "error",
+                onClose: () => {},
+              },
+            });
+          },
+        },
+      });
+      return;
+    }
     setState({
       cds: value,
     });
   };
 
   const editValue = (value: any) => {
+    if (state.connector?.values?.status?.name === "Published") {
+      setState({
+        isSaving: false,
+        snackbar: {
+          opened: true,
+          message: NOT_ALLOWED,
+          severity: "error",
+          duration: 5000,
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "error",
+                onClose: () => {},
+              },
+            });
+          },
+        },
+      });
+      return;
+    }
     setState({
       cds: value,
     });
   };
 
   const deleteValue = (value: any) => {
+    if (state.connector?.values?.status?.name === "Published") {
+      setState({
+        isSaving: false,
+        snackbar: {
+          opened: true,
+          message: NOT_ALLOWED,
+          severity: "error",
+          duration: 5000,
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "error",
+                onClose: () => {},
+              },
+            });
+          },
+        },
+      });
+      return;
+    }
     setState({
       cds: value,
     });

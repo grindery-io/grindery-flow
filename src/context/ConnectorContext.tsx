@@ -7,6 +7,8 @@ import { useGrinderyNexus } from "use-grindery-nexus";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";
 import useNetworkContext from "../hooks/useNetworkContext";
 
+export const NOT_ALLOWED = `Published connector can't be updated. Please, clone the connector and create a new version.`;
+
 const CDS_EDITOR_API_ENDPOINT =
   "https://nexus-cds-editor-api.herokuapp.com/api";
 
@@ -122,6 +124,28 @@ export const ConnectorContextProvider = ({
   );
 
   const saveConnector = async () => {
+    if (state.connector?.values?.status?.name === "Published") {
+      setState({
+        isSaving: false,
+        snackbar: {
+          opened: true,
+          message: NOT_ALLOWED,
+          severity: "error",
+          duration: 5000,
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "error",
+                onClose: () => {},
+              },
+            });
+          },
+        },
+      });
+      return;
+    }
     if (count > 0) {
       setState({
         isSaving: true,
@@ -194,6 +218,28 @@ export const ConnectorContextProvider = ({
   };
 
   const publishConnector = async () => {
+    if (state.connector?.values?.status?.name === "Published") {
+      setState({
+        isSaving: false,
+        snackbar: {
+          opened: true,
+          message: NOT_ALLOWED,
+          severity: "error",
+          duration: 5000,
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "error",
+                onClose: () => {},
+              },
+            });
+          },
+        },
+      });
+      return;
+    }
     setState({
       isPublishing: true,
     });
@@ -274,6 +320,28 @@ export const ConnectorContextProvider = ({
   };
 
   const onConnectorSettingsSave = (data: any) => {
+    if (state.connector?.values?.status?.name === "Published") {
+      setState({
+        isSaving: false,
+        snackbar: {
+          opened: true,
+          message: NOT_ALLOWED,
+          severity: "error",
+          duration: 5000,
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "error",
+                onClose: () => {},
+              },
+            });
+          },
+        },
+      });
+      return;
+    }
     if (data) {
       setState({
         cds: {
@@ -303,6 +371,28 @@ export const ConnectorContextProvider = ({
   };
 
   const onOperationSettingsSave = (type: any, operation: any) => {
+    if (state.connector?.values?.status?.name === "Published") {
+      setState({
+        isSaving: false,
+        snackbar: {
+          opened: true,
+          message: NOT_ALLOWED,
+          severity: "error",
+          duration: 5000,
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "error",
+                onClose: () => {},
+              },
+            });
+          },
+        },
+      });
+      return;
+    }
     if (type) {
       if (operation) {
         const isNewoperation = !(state.cds?.[type] || [])?.find(
@@ -347,6 +437,28 @@ export const ConnectorContextProvider = ({
   };
 
   const onOperationDelete = (type: any, operationKey: string) => {
+    if (state.connector?.values?.status?.name === "Published") {
+      setState({
+        isSaving: false,
+        snackbar: {
+          opened: true,
+          message: NOT_ALLOWED,
+          severity: "error",
+          duration: 5000,
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "error",
+                onClose: () => {},
+              },
+            });
+          },
+        },
+      });
+      return;
+    }
     setState({
       confirm: {
         message: `Are you sure you want to delete this ${
@@ -385,6 +497,28 @@ export const ConnectorContextProvider = ({
     inputKey: string,
     inputData: any
   ) => {
+    if (state.connector?.values?.status?.name === "Published") {
+      setState({
+        isSaving: false,
+        snackbar: {
+          opened: true,
+          message: NOT_ALLOWED,
+          severity: "error",
+          duration: 5000,
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "error",
+                onClose: () => {},
+              },
+            });
+          },
+        },
+      });
+      return;
+    }
     navigate(`/network/connector/${state.id}/${type}/${key}/inputFields`);
     if (type) {
       setState({
@@ -423,6 +557,28 @@ export const ConnectorContextProvider = ({
   };
 
   const onInputFieldDelete = (key: string, type: any, inputKey: string) => {
+    if (state.connector?.values?.status?.name === "Published") {
+      setState({
+        isSaving: false,
+        snackbar: {
+          opened: true,
+          message: NOT_ALLOWED,
+          severity: "error",
+          duration: 5000,
+          onClose: () => {
+            setState({
+              snackbar: {
+                opened: false,
+                message: "",
+                severity: "error",
+                onClose: () => {},
+              },
+            });
+          },
+        },
+      });
+      return;
+    }
     setState({
       confirm: {
         message: "Are you sure you want to delete the input field?",
