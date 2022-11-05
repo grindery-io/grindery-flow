@@ -120,7 +120,7 @@ const ConnectorPublishingPage = (props: Props) => {
   const { state, setState, publishConnector } = useConnectorContext();
   let navigate = useNavigate();
   const { connector, cds } = state;
-  const { workspace } = useWorkspaceContext();
+  const { workspaces, workspace } = useWorkspaceContext();
   const { id } = state;
   const isValid =
     cds &&
@@ -166,7 +166,10 @@ const ConnectorPublishingPage = (props: Props) => {
                       },
                     });
                   }}
-                  description="Connector will be available for all members of the workspace"
+                  description={`Connector will be available for all members of <strong>${
+                    workspaces?.find((ws: any) => ws.key === workspace)
+                      ?.title || ""
+                  }</strong> workspace`}
                 />
               )}
 

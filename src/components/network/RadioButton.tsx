@@ -81,7 +81,10 @@ const RadioButton = (props: Props) => {
       />
       {label && (
         <label>
-          {label} {description && <span>{description}</span>}
+          {label}{" "}
+          {!!description && (
+            <span dangerouslySetInnerHTML={{ __html: description }} />
+          )}
         </label>
       )}
     </Container>
