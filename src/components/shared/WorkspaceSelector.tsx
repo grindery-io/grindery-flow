@@ -74,7 +74,7 @@ const Icon = styled.img`
 const Dropdown = styled.div`
   font-family: Roboto;
   position: absolute;
-  right: 0;
+  left: 0;
   top: 100%;
   padding-top: 4px;
   opacity: 0;
