@@ -37,7 +37,7 @@ const defaultContext = {
 export const NetworkContext = createContext<ContextProps>(defaultContext);
 
 export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
-  const { workspaceToken } = useWorkspaceContext();
+  const { workspaceToken, workspace } = useWorkspaceContext();
   const { token } = useGrinderyNexus();
 
   const [state, setState] = useReducer(
@@ -76,7 +76,12 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
         console.error("getConnectors error", err);
       }
       setState({
-        connectors: res?.data?.result || [],
+        connectors:
+          res?.data?.result?.filter(
+            (connector: any) =>
+              (workspace === "personal" && !connector?.values?.workspace) ||
+              workspace !== "personal"
+          ) || [],
         connectorsLoading: false,
       });
     }
@@ -103,7 +108,12 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
         return { success: false };
       }
       setState({
-        connectors: res?.data?.result || [],
+        connectors:
+          res?.data?.result?.filter(
+            (connector: any) =>
+              (workspace === "personal" && !connector?.values?.workspace) ||
+              workspace !== "personal"
+          ) || [],
       });
       return { success: true };
     }

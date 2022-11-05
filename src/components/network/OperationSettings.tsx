@@ -72,6 +72,24 @@ const OperationSettings = (props: Props) => {
 
   return (
     <Container>
+      <RichInput
+        key={`${currentKey}_key`}
+        label="Key"
+        value={operation.key}
+        onChange={(value: string) => {
+          setError({ type: "", text: "" });
+          setOperation({
+            ...operation,
+            key: value,
+          });
+        }}
+        singleLine
+        required
+        tooltip="Enter a unique word or phrase without spaces to reference this operation inside Nexus. Not seen by users. Example: new_ticket."
+        options={[]}
+        readonly={!isNewOperation}
+        error={error.type === "key" ? error.text : ""}
+      />
       {cds?.type === "web3" && (
         <RichInput
           key={`${currentKey}_signature`}
@@ -99,7 +117,6 @@ const OperationSettings = (props: Props) => {
               },
             });
           }}
-          required
           tooltip={
             type === "triggers"
               ? "Signature of the event. Format of this field depends on the chain that the CDS is created for. For EVM chains the signature is Solidity event declaration including parameter names (which are mapped to input fields by key) e.g Transfer(address indexed from, address indexed to, uint256 value) for ERC20 Transfer event. Multiple signatures may be specified for EVM chains, but indexed parameters must be exactly the same in all signatures."
@@ -110,24 +127,6 @@ const OperationSettings = (props: Props) => {
           error={error.type === "signature" ? error.text : ""}
         />
       )}
-      <RichInput
-        key={`${currentKey}_key`}
-        label="Key"
-        value={operation.key}
-        onChange={(value: string) => {
-          setError({ type: "", text: "" });
-          setOperation({
-            ...operation,
-            key: value,
-          });
-        }}
-        singleLine
-        required
-        tooltip="Enter a unique word or phrase without spaces to reference this operation inside Nexus. Not seen by users. Example: new_ticket."
-        options={[]}
-        readonly={!isNewOperation}
-        error={error.type === "key" ? error.text : ""}
-      />
       <RichInput
         key={`${currentKey}_name`}
         label="Name"
@@ -184,13 +183,6 @@ const OperationSettings = (props: Props) => {
                 setError({
                   type: "name",
                   text: "Name field is required",
-                });
-                return;
-              }
-              if (cds?.type === "web3" && !operation?.operation?.signature) {
-                setError({
-                  type: "signature",
-                  text: "Signature is required",
                 });
                 return;
               }

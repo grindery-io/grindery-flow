@@ -185,7 +185,6 @@ const OperationInputFieldForm = (props: Props) => {
           setError({ type: "", text: "" });
           setData({ ...data, label: value });
         }}
-        required
         placeholder="Field Label"
         singleLine
         tooltip="Enter a user friendly name for this field that describes what to enter. Shown to users inside Nexus. Example: First Name"
@@ -372,10 +371,6 @@ const OperationInputFieldForm = (props: Props) => {
             }
             if (!data.key) {
               setError({ type: "key", text: "Field key is required" });
-              return;
-            }
-            if (!data.label) {
-              setError({ type: "label", text: "Field label is required" });
               return;
             }
             if (choices) {

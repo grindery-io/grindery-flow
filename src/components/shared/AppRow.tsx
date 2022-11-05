@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import {
-  CircularProgress,
-  Dialog,
-  Menu,
-  Text,
-  IconButton,
-  RichInput,
-} from "grindery-ui";
+import { Dialog, Menu, Text, IconButton, RichInput } from "grindery-ui";
 import DataBox from "./DataBox";
 import {
   CDS_EDITOR_API_ENDPOINT,
@@ -123,7 +116,7 @@ type Props = {
 const AppRow = (props: Props) => {
   const { client, user } = useAppContext();
   const { token } = useGrinderyNexus();
-  const { workspaceToken } = useWorkspaceContext();
+  const { workspaceToken, workspace } = useWorkspaceContext();
   const { item, showWorkflows, showMenu, onClick } = props;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [dialogOpened, setDialogOpened] = useState(false);
@@ -219,7 +212,11 @@ const AppRow = (props: Props) => {
     },
   ];
 
-  if (item.access && item.access === "Private" && item.user === user) {
+  if (
+    item.access &&
+    ((item.access === "Private" && item.user === user) ||
+      (item.access === "Workspace" && item.workspace === workspace))
+  ) {
     menuItems.push({
       key: "edit",
       label: "Edit connector",
