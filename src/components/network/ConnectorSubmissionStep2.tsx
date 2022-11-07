@@ -72,26 +72,6 @@ const ConnectorSubmissionStep2 = (props: Props) => {
       <Title>Provide details about Connector and yourself</Title>
 
       <RichInput
-        label="GitHub Username"
-        placeholder="username"
-        onChange={(value: string) => {
-          setState({
-            error: { type: "", text: "" },
-            form: {
-              ...state.form,
-              contributor: { ...state.form.contributor, username: value },
-            },
-          });
-        }}
-        value={state.form.contributor.username}
-        options={[]}
-        singleLine
-        required
-        error={state.error.type === "username" ? state.error.text : ""}
-        tooltip="Create GitHub account at https://github.com/join if you don't have one."
-      />
-
-      <RichInput
         label="Connector Name"
         placeholder="My Connector"
         onChange={(value: string) => {

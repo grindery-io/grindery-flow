@@ -16,6 +16,19 @@ const Wrapper = styled.div`
     color: #0b0d17;
     cursor: pointer;
     transition: all 0.15s ease-in-out;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+
+    & img {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      display: block;
+    }
 
     &:hover {
       box-shadow: 0px 4px 8px rgba(106, 71, 147, 0.1);
@@ -37,14 +50,16 @@ type Props = {
   onClick: () => void;
   style?: any;
   disabled?: boolean;
+  icon?: string;
 };
 
 const Button = (props: Props) => {
-  const { children, onClick, style, disabled } = props;
+  const { children, onClick, style, disabled, icon } = props;
   return (
     <Wrapper>
       <button style={style || {}} onClick={onClick} disabled={disabled}>
-        {children}
+        {icon && <img src={icon} alt="" />}
+        <span>{children}</span>
       </button>
     </Wrapper>
   );

@@ -1,17 +1,10 @@
 import React, { useState } from "react";
-import axios from "axios";
 import styled from "styled-components";
-import { Dialog, Menu, Text, IconButton, RichInput } from "grindery-ui";
+import { Menu, Text, IconButton } from "grindery-ui";
 import DataBox from "./DataBox";
-import {
-  CDS_EDITOR_API_ENDPOINT,
-  ICONS,
-  isLocalOrStaging,
-} from "../../constants";
+import { ICONS } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
-import Button from "./Button";
 import { useNavigate } from "react-router";
-import { useGrinderyNexus } from "use-grindery-nexus";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 
 const AppTitleWrapper = styled.div`
@@ -74,21 +67,6 @@ const MenuButtonWrapper = styled.div`
   }
 `;
 
-const DialogTitle = styled.h3`
-  text-align: center;
-  padding: 0;
-  margin: 0 0 20px;
-`;
-
-const Error = styled.div`
-  text-align: center;
-  width: 100%;
-  max-width: 350px;
-  margin: 20px auto 30px;
-  color: #ff5858;
-  padding: 0;
-`;
-
 const RightWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -114,15 +92,10 @@ type Props = {
 };
 
 const AppRow = (props: Props) => {
-  const { client, user } = useAppContext();
-  const { token } = useGrinderyNexus();
-  const { workspaceToken, workspace } = useWorkspaceContext();
+  const { user } = useAppContext();
+  const { workspace } = useWorkspaceContext();
   const { item, showWorkflows, showMenu, onClick } = props;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [dialogOpened, setDialogOpened] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState({ type: "", text: "" });
   let navigate = useNavigate();
 
   const handleMenuClose = () => {
@@ -133,82 +106,17 @@ const AppRow = (props: Props) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleCloneClick = async () => {
-    setDialogOpened(true);
-  };
-
-  const initClone = async () => {
-    setError({ type: "", text: "" });
-    if (!username) {
-      setError({ type: "username", text: "Username is required" });
-      return;
-    }
-    setLoading(true);
-    let cds;
-    try {
-      cds = await client?.getDriver(
-        item.key,
-        isLocalOrStaging ? "staging" : undefined
-      );
-    } catch (err: any) {
-      console.error("getDriver error", err);
-      setError({
-        type: "submit",
-        text:
-          err?.response?.data?.error ||
-          err?.response?.data?.message ||
-          err?.message ||
-          "Server error",
-      });
-      setLoading(false);
-      return;
-    }
-
-    let res;
-    try {
-      res = await axios.post(
-        `${CDS_EDITOR_API_ENDPOINT}/cds/clone`,
-        {
-          cds: JSON.stringify(cds),
-          username: username,
-          environment: isLocalOrStaging ? "staging" : "production",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${workspaceToken || token?.access_token}`,
-          },
-        }
-      );
-    } catch (err: any) {
-      console.error("cloneCDS error", err);
-      setError({
-        type: "submit",
-        text:
-          err?.response?.data?.error ||
-          err?.response?.data?.message ||
-          err?.message ||
-          "Server error",
-      });
-      setLoading(false);
-      return;
-    }
-    if (res?.data?.key) {
-      setDialogOpened(false);
-      navigate(`/network/connector/${res?.data?.key}`);
-    } else {
-      setError({
-        type: "submit",
-        text: "Server error. Please, try again later.",
-      });
-    }
-    setLoading(false);
-  };
-
   const menuItems = [
     {
       key: "clone",
       label: "Clone connector",
-      onClick: handleCloneClick,
+      onClick: () => {
+        navigate(
+          `/network/clone/${item.key}?source=nexus&name=${encodeURIComponent(
+            item.name
+          )}`
+        );
+      },
     },
   ];
 
@@ -220,7 +128,7 @@ const AppRow = (props: Props) => {
     menuItems.push({
       key: "edit",
       label: "Edit connector",
-      onClick: async () => {
+      onClick: () => {
         navigate(`/network/connector/${item.key}`);
       },
     });
@@ -293,38 +201,6 @@ const AppRow = (props: Props) => {
           </RightWrapper>
         }
       />
-      <Dialog
-        open={dialogOpened}
-        onClose={() => {
-          setDialogOpened(false);
-        }}
-        maxWidth={"500px"}
-      >
-        <DialogTitle>Clone {item.name} connector</DialogTitle>
-        <div style={{ width: "100%", maxWidth: "350px", margin: "0 auto" }}>
-          <RichInput
-            value={username}
-            onChange={(value: string) => {
-              setError({ type: "", text: "" });
-              setUsername(value);
-            }}
-            label="GitHub Username"
-            placeholder="Enter your GitHub Username"
-            options={[]}
-            singleLine
-            required
-            tooltip="Your GitHub profile will be referenced as a creator of the connector."
-            error={error.type === "username" ? error.text : ""}
-          />
-        </div>
-        {error.type === "submit" && <Error>{error.text}</Error>}
-        <Button
-          disabled={loading}
-          loading={loading}
-          value="Clone"
-          onClick={initClone}
-        />
-      </Dialog>
     </>
   );
 };

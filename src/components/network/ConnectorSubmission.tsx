@@ -44,6 +44,10 @@ export type StateProps = {
 
 const ConnectorSubmission = (props: Props) => {
   let navigate = useNavigate();
+  const {
+    state: { blockchains, contributor },
+    refreshConnectors,
+  } = useNetworkContext();
   const [state, setState] = useReducer(
     (state: StateProps, newState: Partial<StateProps>) => ({
       ...state,
@@ -61,7 +65,7 @@ const ConnectorSubmission = (props: Props) => {
           cds: "",
         },
         contributor: {
-          username: "",
+          username: contributor.username || "",
         },
       },
       step: 0,
@@ -73,10 +77,6 @@ const ConnectorSubmission = (props: Props) => {
     }
   );
 
-  const {
-    state: { blockchains },
-    refreshConnectors,
-  } = useNetworkContext();
   const { token } = useGrinderyNexus();
   const { workspaceToken } = useWorkspaceContext();
   const chains = blockchains.map((chain) => ({

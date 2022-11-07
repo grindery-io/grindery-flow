@@ -12,11 +12,21 @@ type StateProps = {
   connectors: any[];
   connectorsLoading: boolean;
   blockchains: any[];
+  contributor: {
+    loading: boolean;
+    id?: string;
+    username?: string;
+    avatar?: string;
+    url?: string;
+    error?: string;
+  };
 };
 
 type ContextProps = {
   state: StateProps;
   refreshConnectors: () => Promise<{ success: boolean }>;
+  cloneConnector: (cds: any) => Promise<string>;
+  connectContributor: (code: string) => void;
 };
 
 type NetworkContextProps = {
@@ -28,10 +38,17 @@ const defaultContext = {
     connectors: [],
     connectorsLoading: true,
     blockchains: [],
+    contributor: {
+      loading: true,
+    },
   },
   refreshConnectors: async () => {
     return { success: false };
   },
+  cloneConnector: async () => {
+    return "";
+  },
+  connectContributor: () => {},
 };
 
 export const NetworkContext = createContext<ContextProps>(defaultContext);
@@ -49,6 +66,9 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
       connectors: [],
       connectorsLoading: true,
       blockchains: [],
+      contributor: {
+        loading: true,
+      },
     }
   );
 
@@ -79,8 +99,9 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
         connectors:
           res?.data?.result?.filter(
             (connector: any) =>
-              (workspace === "personal" && !connector?.values?.workspace) ||
-              workspace !== "personal"
+              ((!workspace || workspace === "personal") &&
+                !connector?.values?.workspace) ||
+              (workspace && workspace !== "personal")
           ) || [],
         connectorsLoading: false,
       });
@@ -139,6 +160,122 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
     }
   };
 
+  const cloneConnector = async (cds: any) => {
+    let res;
+    try {
+      res = await axios.post(
+        `${CDS_EDITOR_API_ENDPOINT}/cds/clone`,
+        {
+          cds: JSON.stringify(cds),
+          username: state.contributor?.username || "",
+          environment: isLocalOrStaging ? "staging" : "production",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${workspaceToken || token?.access_token}`,
+          },
+        }
+      );
+    } catch (err: any) {
+      console.error("cloneCDS error", err);
+      throw new Error(
+        err?.response?.data?.error ||
+          err?.response?.data?.message ||
+          err?.message ||
+          "Server error"
+      );
+    }
+    if (res?.data?.key) {
+      return res.data.key;
+    } else {
+      throw new Error("Server error. Please, try again later.");
+    }
+  };
+
+  const getContributor = async () => {
+    let res;
+    try {
+      res = await axios.get(
+        `${CDS_EDITOR_API_ENDPOINT}/contributor?environment=${
+          isLocalOrStaging ? "staging" : "production"
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${workspaceToken || token?.access_token}`,
+          },
+        }
+      );
+    } catch (err: any) {
+      console.error("getContributor error", err);
+      setState({
+        contributor: {
+          loading: false,
+          error:
+            err?.response?.data?.error ||
+            err?.response?.data?.message ||
+            err?.message ||
+            "Server error",
+        },
+      });
+    }
+
+    setState({
+      contributor: {
+        loading: false,
+        error: undefined,
+        id: res?.data?.id,
+        username: res?.data?.username,
+        avatar: res?.data?.avatar,
+        url: res?.data?.url,
+      },
+    });
+  };
+
+  const connectContributor = async (code: string) => {
+    let res;
+    try {
+      res = await axios.post(
+        `${CDS_EDITOR_API_ENDPOINT}/contributor`,
+        {
+          code,
+          environment: isLocalOrStaging ? "staging" : "production",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${workspaceToken || token?.access_token}`,
+          },
+        }
+      );
+    } catch (err: any) {
+      console.error("connectContributor error", err);
+      setState({
+        contributor: {
+          loading: false,
+          error:
+            err?.response?.data?.error ||
+            err?.response?.data?.message ||
+            err?.message ||
+            "Server error",
+        },
+      });
+    }
+
+    setState({
+      contributor: {
+        loading: false,
+        error: undefined,
+        id: res?.data?.id,
+        username: res?.data?.username,
+        avatar: res?.data?.avatar,
+        url: res?.data?.url,
+      },
+    });
+  };
+
+  useEffect(() => {
+    getContributor();
+  }, []);
+
   useEffect(() => {
     getConnectors(token?.access_token, workspaceToken);
   }, [token?.access_token, workspaceToken]);
@@ -148,7 +285,9 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
   }, [token?.access_token]);
 
   return (
-    <NetworkContext.Provider value={{ state, refreshConnectors }}>
+    <NetworkContext.Provider
+      value={{ state, refreshConnectors, cloneConnector, connectContributor }}
+    >
       {children}
     </NetworkContext.Provider>
   );

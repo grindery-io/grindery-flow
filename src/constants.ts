@@ -89,6 +89,8 @@ export const ICONS: { [key: string]: string } = {
   NETWORK_CHECKBOX_EMPTY: "/images/icons/network-checkbox-empty.svg",
   NETWORK_RADIO_SELECTED: "/images/icons/network-radio-selected.svg",
   NETWORK_RADIO_EMPTY: "/images/icons/network-radio-empty.svg",
+  GITHUB_LOGO_DARK: "/images/icons/github-dark.svg",
+  GITHUB_LOGO_LIGHT: "/images/icons/github-light.svg",
 };
 
 export const RIGHTBAR_TABS: {
