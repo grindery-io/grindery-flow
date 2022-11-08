@@ -96,7 +96,7 @@ const ContributorContainer = (props: Props) => {
       top = window.screen.height / 2 - height / 2;
 
     let windowObjectReference = window.open(
-      `https://github.com/login/oauth/authorize?redirect_uri=${window.location.origin}/github/auth&client_id=f3b76c11b63047fd459c&scope=user`,
+      `https://github.com/login/oauth/authorize?redirect_uri=${window.location.origin}/github/auth&client_id=f3b76c11b63047fd459c&scope=read:user`,
       "_blank",
       "status=no, toolbar=no, menubar=no, width=" +
         width +
