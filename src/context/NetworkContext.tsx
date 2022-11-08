@@ -13,6 +13,7 @@ type StateProps = {
   connectorsLoading: boolean;
   blockchains: any[];
   contributor: {
+    connecting?: boolean;
     loading: boolean;
     id?: string;
     username?: string;
@@ -232,6 +233,12 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
   };
 
   const connectContributor = async (code: string) => {
+    setState({
+      contributor: {
+        connecting: true,
+        loading: false,
+      },
+    });
     let res;
     try {
       res = await axios.post(
@@ -251,6 +258,7 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
       setState({
         contributor: {
           loading: false,
+          connecting: false,
           error:
             err?.response?.data?.error ||
             err?.response?.data?.message ||
@@ -265,6 +273,7 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
       contributor: {
         loading: false,
         error: undefined,
+        connecting: false,
         id: res?.data?.id,
         username: res?.data?.username,
         avatar: res?.data?.avatar,

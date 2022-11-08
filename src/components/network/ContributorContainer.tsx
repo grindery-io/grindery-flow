@@ -66,6 +66,13 @@ const ButtonsWrapper = styled.div`
   }
 `;
 
+const Loading = styled.div`
+  text-align: center;
+  color: #ffb930;
+  width: 100%;
+  margin: 0 0 32px;
+`;
+
 type Props = {
   children: React.ReactNode;
 };
@@ -135,6 +142,11 @@ const ContributorContainer = (props: Props) => {
             <Description>
               Connect GitHub account to be able to create and clone Connectors
             </Description>
+            {contributor.connecting && (
+              <Loading>
+                <CircularProgress color="inherit" />
+              </Loading>
+            )}
             {contributor.error && <Error>{contributor.error}</Error>}
             <ButtonsWrapper>
               <Button
