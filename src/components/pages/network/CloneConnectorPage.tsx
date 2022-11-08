@@ -101,9 +101,20 @@ const CloneConnectorPage = (props: Props) => {
         return;
       }
     } else {
-      cds = state.connectors.find(
-        (connector: any) => JSON.parse(connector.values?.cds || {})?.key === key
+      cds = JSON.parse(
+        state.connectors.find(
+          (connector: any) => JSON.parse(connector?.values?.cds)?.key === key
+        )?.values?.cds
       );
+    }
+
+    if (!cds) {
+      setError({
+        type: "submit",
+        text: "Connector not found",
+      });
+      setLoading(false);
+      return;
     }
 
     let clonedKey;
