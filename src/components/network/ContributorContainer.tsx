@@ -111,7 +111,9 @@ const ContributorContainer = (props: Props) => {
     window.addEventListener("message", receiveMessage, false);
   };
 
-  return contributor.loading ? (
+  return <>{children}</>;
+
+  /*return contributor.loading ? (
     <>
       <div
         style={{
@@ -148,7 +150,7 @@ const ContributorContainer = (props: Props) => {
         </Container>
       )}
     </>
-  );
+  );*/
 };
 
 export default ContributorContainer;
