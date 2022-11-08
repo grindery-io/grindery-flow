@@ -16,6 +16,7 @@ const NexusStack = (props: Props) => {
         <EarlyAccessModal />
         <Routes>
           <Route path="/auth" element={<AuthPage />}></Route>
+          <Route path="/github/auth" element={<AuthPage />}></Route>
           <Route path="/network/*" element={<NetworkStack />} />
           <Route path="*" element={<RootStack />}></Route>
         </Routes>
