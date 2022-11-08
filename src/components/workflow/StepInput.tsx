@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import _ from "lodash";
-import { CircularProgress } from "grindery-ui";
+import { CircularProgress, Alert } from "grindery-ui";
 import { BLOCKCHAINS, ICONS, isLocalOrStaging } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import WorkflowInputField from "./WorkflowInputField";
@@ -86,6 +86,30 @@ const Button = styled.button`
 const ButtonWrapper = styled.div`
   text-align: right;
   padding-bottom: 12px;
+`;
+
+const AlertWrapper = styled.div`
+  margin-bottom: 16px;
+`;
+
+const WarningTitle = styled.h4`
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 150%;
+  text-align: left;
+  color: #0b0d17;
+  padding: 0;
+  margin: 0;
+`;
+
+const WarningText = styled.p`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  text-align: left;
+  color: #0b0d17;
+  padding: 0;
+  margin: 0;
 `;
 
 type Props = {
@@ -383,6 +407,21 @@ const StepInput = ({ outputFields }: Props) => {
       </Header>
       {activeRow === 2 && (
         <Content>
+          {operation.display.instructions && (
+            <AlertWrapper>
+              <Alert color="info" elevation={0}>
+                <div style={{ textAlign: "left" }}>
+                  <WarningTitle>Instructions</WarningTitle>
+                  <WarningText
+                    dangerouslySetInnerHTML={{
+                      __html: operation.display.instructions,
+                    }}
+                  />
+                </div>
+              </Alert>
+            </AlertWrapper>
+          )}
+
           <div>
             {(operation?.operation?.type === "blockchain:event" ||
               operation?.operation?.type === "blockchain:call") &&

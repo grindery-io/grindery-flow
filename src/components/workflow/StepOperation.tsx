@@ -1,6 +1,7 @@
 import React from "react";
+import _ from "lodash";
 import styled from "styled-components";
-import { Select } from "grindery-ui";
+import { Select, Autocomplete } from "grindery-ui";
 import { ICONS } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
@@ -86,20 +87,35 @@ const StepOperation = (props: Props) => {
 
   const isAppSelected = Boolean(connector);
 
-  const options =
+  const operations =
     type === "trigger"
-      ? connector?.triggers?.map((availableTrigger) => ({
+      ? connector?.triggers?.map((availableTrigger, i) => ({
           value: availableTrigger.key,
           label: availableTrigger.display?.label,
           icon: availableTrigger.display?.icon || connector?.icon || "",
           description: availableTrigger.display?.description,
+          group: availableTrigger.display?.featured ? "Featured" : "Others",
         }))
       : connector?.actions?.map((availableAction) => ({
           value: availableAction.key,
           label: availableAction.display?.label,
           icon: availableAction.display?.icon || connector?.icon || "",
           description: availableAction.display?.description,
+          group: availableAction.display?.featured ? "Featured" : "Others",
         }));
+
+  const options = [
+    ..._.orderBy(
+      operations?.filter((op: any) => op.group === "Featured"),
+      [(op: any) => op.label.toLowerCase()],
+      ["asc"]
+    ),
+    ..._.orderBy(
+      operations?.filter((op: any) => op.group === "Others"),
+      [(op: any) => op.label.toLowerCase()],
+      ["asc"]
+    ),
+  ];
 
   const value = operation?.key;
 
@@ -148,21 +164,61 @@ const StepOperation = (props: Props) => {
       </Header>
       {activeRow <= 0 && (
         <Content>
-          <Select
-            label={type === "trigger" ? "Event" : "Action"}
-            type="default"
-            placeholder={
-              type === "trigger" ? "Select a Trigger" : "Select an action"
-            }
-            onChange={handleOperationChange}
-            options={options}
-            value={value}
-            tooltip={
-              type === "trigger"
-                ? "This is the what will start your workflow."
-                : "This is performed when the workflow runs."
-            }
-          />
+          {options.filter((op: any) => op.group === "Featured").length > 0 ? (
+            <Autocomplete
+              label={type === "trigger" ? "Event" : "Action"}
+              placeholder={
+                type === "trigger" ? "Select a Trigger" : "Select an action"
+              }
+              onChange={handleOperationChange}
+              options={options}
+              value={value}
+              tooltip={
+                type === "trigger"
+                  ? "This is the what will start your workflow."
+                  : "This is performed when the workflow runs."
+              }
+            />
+          ) : (
+            <>
+              {options.length > 4 ? (
+                <Autocomplete
+                  label={type === "trigger" ? "Event" : "Action"}
+                  placeholder={
+                    type === "trigger" ? "Select a Trigger" : "Select an action"
+                  }
+                  onChange={handleOperationChange}
+                  options={options.map((op: any) => ({
+                    ...op,
+                    group: undefined,
+                  }))}
+                  value={value}
+                  tooltip={
+                    type === "trigger"
+                      ? "This is the what will start your workflow."
+                      : "This is performed when the workflow runs."
+                  }
+                />
+              ) : (
+                <Select
+                  label={type === "trigger" ? "Event" : "Action"}
+                  type="default"
+                  placeholder={
+                    type === "trigger" ? "Select a Trigger" : "Select an action"
+                  }
+                  onChange={handleOperationChange}
+                  options={options}
+                  value={value}
+                  tooltip={
+                    type === "trigger"
+                      ? "This is the what will start your workflow."
+                      : "This is performed when the workflow runs."
+                  }
+                />
+              )}
+            </>
+          )}
+
           <ButtonWrapper>
             <Button
               disabled={!Boolean(selectedOperationKey)}

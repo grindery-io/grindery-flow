@@ -81,6 +81,16 @@ const OperationRow = (props: Props) => {
       >
         {operation.key || ""}
       </Column>
+      <Column
+        style={{ width: "80px" }}
+        onClick={() => {
+          navigate(
+            `/network/connector/${id}/${type}/${operation.key}/settings`
+          );
+        }}
+      >
+        {operation.display.featured ? "Yes" : "No"}
+      </Column>
       <Column style={{ textAlign: "right", width: "30px" }}>
         <MenuButtonWrapper>
           <IconButton onClick={handleMenuOpen} icon={ICONS.DOTS_HORIZONTAL} />

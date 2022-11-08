@@ -156,6 +156,7 @@ const OperationInputFieldForm = (props: Props) => {
     { value: "mac", label: "Mac address" },
     { value: "url", label: "URL address" },
     { value: "uuid", label: "UUID" },
+    { value: "info", label: "Information message" },
     { value: "evmAddress", label: "EVM blockchain address" },
     { value: "flowAddress", label: "Flow blckchain address" },
   ];

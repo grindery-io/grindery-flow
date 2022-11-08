@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 import { Navigate, useNavigate, useParams } from "react-router";
 import styled from "styled-components";
 import useConnectorContext from "../../../hooks/useConnectorContext";
@@ -101,11 +102,23 @@ const ConnectorOperationsPage = (props: Props) => {
               <tr>
                 <TableHeaderColumn>Label</TableHeaderColumn>
                 <TableHeaderColumn>Key</TableHeaderColumn>
+                <TableHeaderColumn>Featured</TableHeaderColumn>
                 <TableHeaderColumn></TableHeaderColumn>
               </tr>
             </TableHeader>
             <tbody>
-              {cds?.[type].map((op: any) => (
+              {[
+                ..._.orderBy(
+                  (cds?.[type] || []).filter((op: any) => op.display.featured),
+                  [(op: any) => op.display.label?.toLowerCase()],
+                  ["asc"]
+                ),
+                ..._.orderBy(
+                  (cds?.[type] || []).filter((op: any) => !op.display.featured),
+                  [(op: any) => op.display.label?.toLowerCase()],
+                  ["asc"]
+                ),
+              ].map((op: any) => (
                 <OperationRow operation={op} key={op.key} />
               ))}
             </tbody>

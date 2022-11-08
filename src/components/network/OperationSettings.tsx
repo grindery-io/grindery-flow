@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { RichInput } from "grindery-ui";
 import Button from "./Button";
 import useConnectorContext from "../../hooks/useConnectorContext";
+import CheckBox from "../shared/CheckBox";
 
 const Container = styled.div`
   margin-top: 20px;
@@ -28,6 +29,37 @@ const ButtonsRight = styled.div`
   margin-left: auto;
 `;
 
+const CheckboxWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 10px;
+  margin-top: 25px;
+  margin-bottom: 15px;
+`;
+
+const CheckboxLabel = styled.label`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  color: #0b0d17;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 8px;
+
+  & span {
+    font-size: 12px;
+    line-height: 150%;
+    color: #898989;
+  }
+`;
+
 type Props = {};
 
 const OperationSettings = (props: Props) => {
@@ -45,6 +77,8 @@ const OperationSettings = (props: Props) => {
     display: {
       label: currentOperation?.display?.label || "",
       description: currentOperation?.display?.description || "",
+      instructions: currentOperation?.display?.instructions || "",
+      featured: Boolean(currentOperation?.display?.featured),
     },
     operation: currentOperation?.operation || {
       inputFields: [],
@@ -62,6 +96,8 @@ const OperationSettings = (props: Props) => {
       display: {
         label: _currentOperation?.display?.label || "",
         description: _currentOperation?.display?.description || "",
+        instructions: _currentOperation?.display?.instructions || "",
+        featured: Boolean(_currentOperation?.display?.featured),
       },
       operation: _currentOperation?.operation || {
         inputFields: [],
@@ -166,6 +202,61 @@ const OperationSettings = (props: Props) => {
         options={[]}
         error={error.type === "description" ? error.text : ""}
       />
+      <RichInput
+        key={`${currentKey}_instructions`}
+        label="Instructions"
+        value={operation.display?.description || ""}
+        onChange={(value: string) => {
+          setError({ type: "", text: "" });
+          setOperation({
+            ...operation,
+            display: {
+              ...operation.display,
+              instructions: value,
+            },
+          });
+        }}
+        tooltip={`Short instructions for how to use this ${
+          type === "triggers" ? "trigger" : "action"
+        }`}
+        options={[]}
+        error={error.type === "instructions" ? error.text : ""}
+      />
+
+      <CheckboxWrapper>
+        <CheckBox
+          isNetwork
+          checked={operation.display.featured}
+          onChange={() => {
+            setError({ type: "", text: "" });
+            setOperation({
+              ...operation,
+              display: {
+                ...operation.display,
+                featured: !operation.display.featured,
+              },
+            });
+          }}
+        />
+        <CheckboxLabel
+          onClick={() => {
+            setError({ type: "", text: "" });
+            setOperation({
+              ...operation,
+              display: {
+                ...operation.display,
+                featured: !operation.display.featured,
+              },
+            });
+          }}
+        >
+          Featured{" "}
+          <span>
+            Featured {type} will be listed higher in the workflow builder UI
+            then the rest.
+          </span>
+        </CheckboxLabel>
+      </CheckboxWrapper>
 
       <ButtonsWrapper>
         <ButtonsRight>

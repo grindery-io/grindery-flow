@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 import { useLocation, useNavigate } from "react-router";
 import { Drawer } from "grindery-ui";
 import styled from "styled-components";
@@ -154,7 +155,22 @@ const ConnectorDrawer = (props: Props) => {
               </span>
               {cds?.triggers && cds?.triggers.length > 0 && (
                 <ul>
-                  {cds?.triggers.map((trigger: any) => (
+                  {[
+                    ..._.orderBy(
+                      (cds?.triggers || []).filter(
+                        (op: any) => op.display.featured
+                      ),
+                      [(op: any) => op.display.label?.toLowerCase()],
+                      ["asc"]
+                    ),
+                    ..._.orderBy(
+                      (cds?.triggers || []).filter(
+                        (op: any) => !op.display.featured
+                      ),
+                      [(op: any) => op.display.label?.toLowerCase()],
+                      ["asc"]
+                    ),
+                  ].map((trigger: any) => (
                     <li key={trigger.key}>
                       <span
                         className={
@@ -195,7 +211,22 @@ const ConnectorDrawer = (props: Props) => {
               </span>
               {cds?.actions && cds?.actions.length > 0 && (
                 <ul>
-                  {cds?.actions.map((action: any) => (
+                  {[
+                    ..._.orderBy(
+                      (cds?.actions || []).filter(
+                        (op: any) => op.display.featured
+                      ),
+                      [(op: any) => op.display.label?.toLowerCase()],
+                      ["asc"]
+                    ),
+                    ..._.orderBy(
+                      (cds?.actions || []).filter(
+                        (op: any) => !op.display.featured
+                      ),
+                      [(op: any) => op.display.label?.toLowerCase()],
+                      ["asc"]
+                    ),
+                  ].map((action: any) => (
                     <li key={action.key}>
                       <span
                         className={

@@ -302,9 +302,9 @@ export const ConnectorContextProvider = ({
       isPublishing: false,
       snackbar: {
         opened: true,
-        message: `Connector published`,
+        message: `Connector published. It will appear in the workflow builder UI in 2-5 minutes.`,
         severity: "success",
-        duration: 5000,
+        duration: 6000,
         onClose: () => {
           setState({
             snackbar: {
