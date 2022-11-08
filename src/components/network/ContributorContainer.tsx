@@ -39,12 +39,21 @@ const Description = styled.p`
   line-height: 150%;
   text-align: center;
   color: #0b0d17;
-  margin: 0;
+  margin: 0 0 32px;
+  padding: 0;
+`;
+
+const Error = styled.p`
+  text-align: center;
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto 32px;
+  color: #ff5858;
   padding: 0;
 `;
 
 const ButtonsWrapper = styled.div`
-  margin: 32px 0 0;
+  margin: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -126,6 +135,7 @@ const ContributorContainer = (props: Props) => {
             <Description>
               Connect GitHub account to be able to create and clone Connectors
             </Description>
+            {contributor.error && <Error>{contributor.error}</Error>}
             <ButtonsWrapper>
               <Button
                 icon={ICONS.GITHUB_LOGO_LIGHT}
