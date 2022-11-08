@@ -258,6 +258,7 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
             "Server error",
         },
       });
+      return;
     }
 
     setState({
