@@ -20,7 +20,7 @@ type WorkflowStepContextProps = {
   operationAuthenticationIsRequired: boolean;
   inputError: string;
   errors: any;
-  operationIsTested: boolean;
+  operationIsTested: boolean | string;
   savedCredentials: any[];
   setConnector: (connector: Connector | null) => void;
   setActiveRow: (row: number) => void;
@@ -28,7 +28,7 @@ type WorkflowStepContextProps = {
   getConnector: (key: string) => void;
   setInputError: (a: string) => void;
   setErrors: (a: any) => void;
-  setOperationIsTested: (a: boolean) => void;
+  setOperationIsTested: (a: boolean | string) => void;
   setSavedCredentials: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
@@ -83,8 +83,8 @@ export const WorkflowStepContextProvider = ({
   const [operation, setOperation] = useState<
     null | undefined | Trigger | Action
   >(null);
-  const [operationIsTested, setOperationIsTested] = useState(
-    key ? true : false
+  const [operationIsTested, setOperationIsTested] = useState<boolean | string>(
+    key ? "skipped" : false
   );
   const [savedCredentials, setSavedCredentials] = useState<any[]>([]);
 

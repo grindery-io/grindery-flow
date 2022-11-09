@@ -72,11 +72,26 @@ const Button = styled.button`
     border-color: #dcdcdc;
     cursor: not-allowed;
   }
+
+  &.outlined {
+    background: transparent;
+    color: #0b0d17;
+  }
 `;
 
 const ButtonWrapper = styled.div`
-  text-align: right;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 20px;
   padding-bottom: 12px;
+`;
+
+const SuccessButtonWrapper = styled.div`
+  text-align: center;
+  margin-top: 10px;
 `;
 
 const TableWrapper = styled.div`
@@ -225,6 +240,7 @@ const StepTest = ({ outputFields }: Props) => {
     operation,
     operationIsConfigured,
     operationIsAuthenticated,
+    operationIsTested,
     setOperationIsTested,
   } = useWorkflowStepContext();
   const { workflow, updateWorkflow, loading, setLoading } =
@@ -234,10 +250,10 @@ const StepTest = ({ outputFields }: Props) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const operationIsTested =
+  /*const operationIsTested =
     type === "trigger"
       ? workflow.system?.trigger?.tested
-      : workflow.system?.actions?.[index]?.tested;
+      : workflow.system?.actions?.[index]?.tested;*/
 
   /*const options = _.flatten([
     ...(outputFields.map((out) => out?.operation?.sample) || []),
@@ -339,6 +355,14 @@ const StepTest = ({ outputFields }: Props) => {
     testWorkflowAction(index);
   };
 
+  const handleSkipClick = () => {
+    setOperationIsTested("skipped");
+  };
+
+  const handleTestClick = () => {
+    setOperationIsTested(false);
+  };
+
   return operation && operationIsAuthenticated && operationIsConfigured ? (
     <Container>
       <Header
@@ -360,25 +384,58 @@ const StepTest = ({ outputFields }: Props) => {
       {activeRow === 3 && (
         <Content>
           {operationIsTested ? (
-            <SuccessWrapper>
-              <SuccessIcons>
-                <IconWrapper>
-                  <img src={logoSquare} alt="" />
-                </IconWrapper>
-                <ArrowIcon src={ICONS.ARROW_RIGHT_BLACK} alt="" />
-                <IconWrapper>
-                  <img src={connector?.icon} alt="" />
-                </IconWrapper>
-              </SuccessIcons>
-              <SuccessTitle>
-                {type === "trigger" ? "" : "Action success!"}
-              </SuccessTitle>
-              <SuccessDescription>
-                {type === "trigger"
-                  ? ""
-                  : "Now you can save this workflow or add another action."}
-              </SuccessDescription>
-            </SuccessWrapper>
+            <>
+              {operationIsTested === "skipped" ? (
+                <>
+                  <SuccessWrapper>
+                    <SuccessIcons>
+                      <IconWrapper>
+                        <img src={logoSquare} alt="" />
+                      </IconWrapper>
+                      <ArrowIcon src={ICONS.ARROW_RIGHT_BLACK} alt="" />
+                      <IconWrapper>
+                        <img src={connector?.icon} alt="" />
+                      </IconWrapper>
+                    </SuccessIcons>
+                    <SuccessTitle>
+                      {type === "trigger"
+                        ? "You skipped the trigger test"
+                        : "You skipped the action test"}
+                    </SuccessTitle>
+                    <SuccessDescription>
+                      {type === "trigger"
+                        ? "If you change your mind, you may test your trigger again later."
+                        : "If you change your mind, you may test your action again later."}
+                    </SuccessDescription>
+                    <SuccessButtonWrapper>
+                      <Button disabled={loading} onClick={handleTestClick}>
+                        Test {type === "trigger" ? "trigger" : "action"}
+                      </Button>
+                    </SuccessButtonWrapper>
+                  </SuccessWrapper>
+                </>
+              ) : (
+                <SuccessWrapper>
+                  <SuccessIcons>
+                    <IconWrapper>
+                      <img src={logoSquare} alt="" />
+                    </IconWrapper>
+                    <ArrowIcon src={ICONS.ARROW_RIGHT_BLACK} alt="" />
+                    <IconWrapper>
+                      <img src={connector?.icon} alt="" />
+                    </IconWrapper>
+                  </SuccessIcons>
+                  <SuccessTitle>
+                    {type === "trigger" ? "" : "Action success!"}
+                  </SuccessTitle>
+                  <SuccessDescription>
+                    {type === "trigger"
+                      ? ""
+                      : "Now you can save this workflow or add another action."}
+                  </SuccessDescription>
+                </SuccessWrapper>
+              )}
+            </>
           ) : (
             <>
               <TableWrapper>
@@ -437,6 +494,9 @@ const StepTest = ({ outputFields }: Props) => {
                 </div>
               )}
               <ButtonWrapper>
+                <Button onClick={handleSkipClick} className="outlined">
+                  Skip test
+                </Button>
                 <Button disabled={loading} onClick={handleContinueClick}>
                   Send test!
                 </Button>
