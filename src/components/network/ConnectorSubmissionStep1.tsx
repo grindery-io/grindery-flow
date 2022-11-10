@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { RichInput, CircularProgress } from "grindery-ui";
 import { StateProps } from "./ConnectorSubmission";
 import Button from "./Button";
+import useNetworkContext from "../../hooks/useNetworkContext";
 
 const Container = styled.div`
   max-width: 816px;
@@ -95,8 +96,30 @@ type Props = {
 const ConnectorSubmissionStep1 = (props: Props) => {
   const { state, setState, onSubmit } = props;
   const [isEditing, setIsEditing] = useState(false);
+  const {
+    state: { blockchains },
+  } = useNetworkContext();
+  const chains = blockchains.map((chain) => ({
+    value: chain.id,
+    label: chain.values.name || "",
+    icon: chain.values.icon || "",
+    id: chain.values.chain_id,
+  }));
+  const isEVM =
+    state.form.entry.blockchain &&
+    chains
+      .find((chain: any) => chain.value === state.form.entry.blockchain)
+      ?.id?.startsWith("eip155");
 
-  return (
+  useEffect(() => {
+    if (!isEVM) {
+      setState({
+        step: 2,
+      });
+    }
+  }, [isEVM]);
+
+  return isEVM ? (
     <Container>
       {state.loading ? (
         <div
@@ -200,7 +223,7 @@ const ConnectorSubmissionStep1 = (props: Props) => {
         </>
       )}
     </Container>
-  );
+  ) : null;
 };
 
 export default ConnectorSubmissionStep1;

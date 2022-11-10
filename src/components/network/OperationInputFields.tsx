@@ -75,7 +75,7 @@ const OperationInputFields = (props: Props) => {
             );
           }}
         >
-          Add User Input Feild
+          Add User Input Field
         </Button>
       </ButtonWrapper>
     </>

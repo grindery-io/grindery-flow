@@ -62,6 +62,7 @@ const AutocompleteWrapper = styled.div`
     border: 1px solid #ff5858 !important;
   }
 `;
+
 const ChoicesWrapper = styled.div`
   margin-top: 20px;
 `;

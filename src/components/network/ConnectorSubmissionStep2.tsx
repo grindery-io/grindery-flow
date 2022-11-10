@@ -4,6 +4,7 @@ import { RichInput } from "grindery-ui";
 import { StateProps } from "./ConnectorSubmission";
 import Button from "./Button";
 import IconField from "./IconField";
+import useNetworkContext from "../../hooks/useNetworkContext";
 
 const Container = styled.div`
   max-width: 816px;
@@ -66,7 +67,21 @@ type Props = {
 
 const ConnectorSubmissionStep2 = (props: Props) => {
   const { state, setState, onSubmit } = props;
+  const {
+    state: { blockchains },
+  } = useNetworkContext();
 
+  const chains = blockchains.map((chain) => ({
+    value: chain.id,
+    label: chain.values.name || "",
+    icon: chain.values.icon || "",
+    id: chain.values.chain_id,
+  }));
+  const isEVM =
+    state.form.entry.blockchain &&
+    chains
+      .find((chain: any) => chain.value === state.form.entry.blockchain)
+      ?.id?.startsWith("eip155");
   return (
     <Container>
       <Title>Provide details about Connector and yourself</Title>
@@ -134,7 +149,7 @@ const ConnectorSubmissionStep2 = (props: Props) => {
               color: "#0B0D17",
             }}
             onClick={() => {
-              setState({ step: state.step - 1 });
+              setState({ step: isEVM ? state.step - 1 : state.step - 2 });
             }}
           >
             Back

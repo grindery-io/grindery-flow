@@ -147,11 +147,16 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
     } else {
       let res;
       try {
-        res = await axios.get(`${CDS_EDITOR_API_ENDPOINT}/blockchains`, {
-          headers: {
-            Authorization: `Bearer ${workspaceToken || userToken}`,
-          },
-        });
+        res = await axios.get(
+          `${CDS_EDITOR_API_ENDPOINT}/blockchains?environment=${
+            isLocalOrStaging ? "staging" : "production"
+          }`,
+          {
+            headers: {
+              Authorization: `Bearer ${workspaceToken || userToken}`,
+            },
+          }
+        );
       } catch (err) {
         console.error("getConnectors error", err);
       }

@@ -125,9 +125,12 @@ const convertImgToBase64Wrapper = (url) => {
 };
 
 export const getCDS = async (ABI, name, icon) => {
-  const parsedInput = JSON.parse(ABI);
-  if (!Array.isArray(parsedInput)) {
-    throw Error("Invalid ABI");
+  let parsedInput = [];
+  if (ABI) {
+    parsedInput = JSON.parse(ABI);
+    if (!Array.isArray(parsedInput)) {
+      throw Error("Invalid ABI");
+    }
   }
 
   const key = name
@@ -157,6 +160,7 @@ export const getCDS = async (ABI, name, icon) => {
     name: name || "Connector " + new Date().toISOString(),
     version: "1.0.0",
     platformVersion: "1.0.0",
+    type: "web3",
     triggers: parsedInput
       .filter((x) => x.type === "event")
       .map((x) => ({

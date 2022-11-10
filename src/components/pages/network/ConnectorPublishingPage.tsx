@@ -122,12 +122,9 @@ const ConnectorPublishingPage = (props: Props) => {
   const { connector, cds } = state;
   const { workspaces, workspace } = useWorkspaceContext();
   const { id } = state;
-  const isValid =
-    cds &&
-    cds.name &&
-    cds.key &&
-    cds.icon &&
-    (cds.type === "web2" || cds.type === "web3");
+  const isValid = cds && cds.name && cds.key && cds.icon;
+  const hasTriggers = cds.triggers && cds.triggers.length > 0;
+  const hasActions = cds.triggers && cds.triggers.length > 0;
 
   return id ? (
     <div>
@@ -229,7 +226,7 @@ const ConnectorPublishingPage = (props: Props) => {
             </ConnectorDetails>
           </CardContent>
         </Card>
-        {!isValid && (
+        {!isValid ? (
           <NotValidMessage>
             Please, configure connector before publishing.{" "}
             <span
@@ -241,6 +238,22 @@ const ConnectorPublishingPage = (props: Props) => {
             </span>{" "}
             is a good place to start.
           </NotValidMessage>
+        ) : (
+          <>
+            {!hasTriggers && !hasActions && (
+              <NotValidMessage>
+                Please, add at least one{" "}
+                <span
+                  onClick={() => {
+                    navigate(`/network/connector/${id}`);
+                  }}
+                >
+                  trigger or action
+                </span>{" "}
+                before publishing.
+              </NotValidMessage>
+            )}
+          </>
         )}
         <Button
           onClick={() => {
@@ -248,6 +261,7 @@ const ConnectorPublishingPage = (props: Props) => {
           }}
           disabled={
             !isValid ||
+            (!hasTriggers && !hasActions) ||
             state.isPublishing ||
             connector?.values?.status?.name === "Published"
           }

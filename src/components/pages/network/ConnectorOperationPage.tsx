@@ -6,10 +6,12 @@ import { SCREEN } from "../../../constants";
 import OperationFieldsEditor from "../../network/OperationFieldsEditor";
 import useConnectorContext from "../../../hooks/useConnectorContext";
 import OperationSettings from "../../network/OperationSettings";
+import OperationMethod from "../../network/OperationMethod";
 
 const TABS = [
   { key: "settings", value: 0, title: "Settings" },
-  { key: "inputFields", value: 1, title: "Input Fields" },
+  { key: "operation", value: 1, title: "Operation" },
+  { key: "inputFields", value: 2, title: "Input Fields" },
 ];
 
 const Title = styled.h3`
@@ -24,9 +26,11 @@ const Title = styled.h3`
 const TabsWrapper = styled.div`
   margin-bottom: 0px;
 
-  &.isNewOperation button:nth-child(2) {
-      cursor: not-allowed !important;
-    }
+  &.isNewOperation button {
+    cursor: not-allowed !important;
+  }
+  &.isNewOperation button:first-child {
+    cursor: pointer !important;
   }
 
   & .MuiTabs-root {
@@ -107,6 +111,7 @@ const ConnectorOperationPage = (props: Props) => {
       </TabsWrapper>
 
       {tab === "settings" && <OperationSettings />}
+      {tab === "operation" && <OperationMethod />}
       {tab === "inputFields" && <OperationFieldsEditor />}
     </div>
   ) : (

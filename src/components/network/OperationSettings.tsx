@@ -126,43 +126,6 @@ const OperationSettings = (props: Props) => {
         readonly={!isNewOperation}
         error={error.type === "key" ? error.text : ""}
       />
-      {cds?.type === "web3" && (
-        <RichInput
-          key={`${currentKey}_signature`}
-          label="Signature"
-          value={
-            operation?.operation?.signature
-              ? Array.isArray(operation?.operation?.signature)
-                ? JSON.stringify(operation?.operation?.signature)
-                : operation?.operation?.signature?.toString() || ""
-              : ""
-          }
-          onChange={async (value: string) => {
-            setError({ type: "", text: "" });
-            let v;
-            try {
-              v = await JSON.parse(value);
-            } catch (err) {
-              v = value;
-            }
-            setOperation({
-              ...operation,
-              operation: {
-                ...(operation?.operation || {}),
-                signature: v,
-              },
-            });
-          }}
-          tooltip={
-            type === "triggers"
-              ? "Signature of the event. Format of this field depends on the chain that the CDS is created for. For EVM chains the signature is Solidity event declaration including parameter names (which are mapped to input fields by key) e.g Transfer(address indexed from, address indexed to, uint256 value) for ERC20 Transfer event. Multiple signatures may be specified for EVM chains, but indexed parameters must be exactly the same in all signatures."
-              : "Signature of the function including parameter names (which are mapped to input fields by key) e.g function transfer(address to, uint256 value) for ERC20 transfer call."
-          }
-          options={[]}
-          readonly={!!currentOperation?.operation?.signature}
-          error={error.type === "signature" ? error.text : ""}
-        />
-      )}
       <RichInput
         key={`${currentKey}_name`}
         label="Name"

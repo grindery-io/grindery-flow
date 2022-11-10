@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import { CircularProgress } from "grindery-ui";
 import { getCDS } from "../../helpers/cds";
 import ConnectorSubmissionProgress from "./ConnectorSubmissionProgress";
 import ConnectorSubmissionStep1 from "./ConnectorSubmissionStep1";
@@ -86,6 +87,12 @@ const ConnectorSubmission = (props: Props) => {
     id: chain.values.chain_id,
   }));
 
+  const isEVM =
+    state.form.entry.blockchain &&
+    chains
+      .find((chain: any) => chain.value === state.form.entry.blockchain)
+      ?.id?.startsWith("eip155");
+
   const getABI = async (blockchain: string, addressContract: string) => {
     const chain = chains.find((c) => c.value === blockchain);
     if (chain) {
@@ -124,44 +131,53 @@ const ConnectorSubmission = (props: Props) => {
 
       return;
     }
+    if (isEVM) {
+      setState({ loading: true });
 
-    setState({ loading: true });
-
-    getABI(state.form.entry.blockchain, state.form.entry.contract)
-      .then((v) => {
-        if (
-          v &&
-          v.data &&
-          v.data.result &&
-          v.data.result !== "Invalid Address format" &&
-          v.data.result !== "Max rate limit reached"
-        ) {
-          setState({
-            loading: false,
-            form: {
-              ...state.form,
-              entry: {
-                ...state.form.entry,
-                abi: (v && v.data && v.data.result) || "",
+      getABI(state.form.entry.blockchain, state.form.entry.contract)
+        .then((v) => {
+          if (
+            v &&
+            v.data &&
+            v.data.result &&
+            v.data.result !== "Invalid Address format" &&
+            v.data.result !== "Max rate limit reached"
+          ) {
+            setState({
+              loading: false,
+              form: {
+                ...state.form,
+                entry: {
+                  ...state.form.entry,
+                  abi: (v && v.data && v.data.result) || "",
+                },
               },
-            },
-            step: 1,
-          });
-        } else {
+              step: 1,
+            });
+          } else {
+            setState({
+              loading: false,
+              form: { ...state.form, entry: { ...state.form.entry, abi: "" } },
+              step: 1,
+            });
+          }
+        })
+        .catch((err) => {
           setState({
             loading: false,
             form: { ...state.form, entry: { ...state.form.entry, abi: "" } },
             step: 1,
           });
-        }
-      })
-      .catch((err) => {
-        setState({
-          loading: false,
-          form: { ...state.form, entry: { ...state.form.entry, abi: "" } },
-          step: 1,
         });
+    } else {
+      setState({
+        form: {
+          ...state.form,
+          entry: { ...state.form.entry, abi: JSON.stringify([]) },
+        },
+        step: 1,
       });
+    }
   };
 
   const validateStep1 = () => {
@@ -351,7 +367,7 @@ const ConnectorSubmission = (props: Props) => {
     console.log("connector submission state", state);
   }
 
-  return (
+  return chains && chains.length > 0 ? (
     <Container>
       <ConnectorSubmissionProgress state={state} setState={setState} />
       {state.step === 0 && (
@@ -379,6 +395,17 @@ const ConnectorSubmission = (props: Props) => {
         <ConnectorSubmissionLoading state={state} setState={setState} />
       )}
     </Container>
+  ) : (
+    <div
+      style={{
+        textAlign: "center",
+        color: "#ffb930",
+        width: "100%",
+        margin: "120px 0 60px",
+      }}
+    >
+      <CircularProgress color="inherit" />
+    </div>
   );
 };
 

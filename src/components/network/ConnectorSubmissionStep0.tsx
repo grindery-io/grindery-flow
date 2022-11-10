@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 import styled from "styled-components";
 import { Autocomplete, RichInput } from "grindery-ui";
 import { StateProps } from "./ConnectorSubmission";
@@ -41,12 +42,22 @@ const ConnectorSubmissionStep0 = (props: Props) => {
   const {
     state: { blockchains },
   } = useNetworkContext();
-  const chains = blockchains.map((chain) => ({
-    value: chain.id,
-    label: chain.values.name || "",
-    icon: chain.values.icon || "",
-    id: chain.values.chain_id,
-  }));
+  const chains = _.orderBy(
+    blockchains.map((chain) => ({
+      value: chain.id,
+      label: chain.values.name || "",
+      icon: chain.values.icon || "",
+      id: chain.values.chain_id,
+    })),
+    [(chain: any) => chain.label?.toLowerCase()],
+    ["asc"]
+  );
+
+  const isEVM =
+    state.form.entry.blockchain &&
+    chains
+      .find((chain: any) => chain.value === state.form.entry.blockchain)
+      ?.id?.startsWith("eip155");
 
   return (
     <Container>
