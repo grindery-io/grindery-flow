@@ -168,7 +168,7 @@ const OperationSettings = (props: Props) => {
       <RichInput
         key={`${currentKey}_instructions`}
         label="Instructions"
-        value={operation.display?.description || ""}
+        value={operation.display?.instructions || ""}
         onChange={(value: string) => {
           setError({ type: "", text: "" });
           setOperation({
