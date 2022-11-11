@@ -1,4 +1,5 @@
 // @ts-nocheck
+/* eslint-disable */
 import Validator from "fastest-validator";
 
 const validator = new Validator({
@@ -13,7 +14,7 @@ const validator = new Validator({
 validator.add("address", function ({ schema, messages }, path, context) {
   return {
     source: `
-              if (value && !/^0x[a-fA-F0-9]{40}$/g.test(value) && !/^0x[a-zA-Z0-9]{16}$/g.test(value) && !/^[a-zA-Z0-9]{16}$/g.test(value) && value !== '0x0')
+              if (value && !/^0x[a-fA-F0-9]{40}$/g.test(value) && !/^0x[a-zA-Z0-9]{16}$/g.test(value) && !/^[a-zA-Z0-9]{16}$/g.test(value) && value !== '0x0' && !/\{\{\s*([^}]+?)\s*\}\}/.test(value))
                   ${this.makeError({
                     type: "address",
                     actual: "value",
@@ -35,7 +36,7 @@ validator.add("address", function ({ schema, messages }, path, context) {
 validator.add("evmAddress", function ({ schema, messages }, path, context) {
   return {
     source: `
-            if (value && !/^0x[a-fA-F0-9]{40}$/g.test(value) && value !== '0x0')
+            if (value && !/^0x[a-fA-F0-9]{40}$/g.test(value) && value !== '0x0' && !/\{\{\s*([^}]+?)\s*\}\}/.test(value))
                 ${this.makeError({
                   type: "evmAddress",
                   actual: "value",
@@ -57,7 +58,7 @@ validator.add("evmAddress", function ({ schema, messages }, path, context) {
 validator.add("flowAddress", function ({ schema, messages }, path, context) {
   return {
     source: `
-              if (value && !/^0x[a-zA-Z0-9]{16}$/g.test(value) && !/^[a-zA-Z0-9]{16}$/g.test(value) && value !== '0x0')
+              if (value && !/^0x[a-zA-Z0-9]{16}$/g.test(value) && !/^[a-zA-Z0-9]{16}$/g.test(value) && value !== '0x0' && !/\{\{\s*([^}]+?)\s*\}\}/.test(value))
                   ${this.makeError({
                     type: "flowAddress",
                     actual: "value",
