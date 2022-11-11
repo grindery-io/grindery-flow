@@ -150,9 +150,9 @@ export const ConnectorContextProvider = ({
       setState({
         isSaving: true,
       });
-      let res;
+
       try {
-        res = await axios.patch(
+        await axios.patch(
           `${CDS_EDITOR_API_ENDPOINT}/cds`,
           {
             id: state.connector.id,
@@ -243,9 +243,9 @@ export const ConnectorContextProvider = ({
     setState({
       isPublishing: true,
     });
-    let res;
+
     try {
-      res = await axios.post(
+      await axios.post(
         `${CDS_EDITOR_API_ENDPOINT}/cds/publish/${state.cds.key.toLowerCase()}`,
         {
           environment: isLocalOrStaging ? "staging" : "production",
@@ -628,6 +628,7 @@ export const ConnectorContextProvider = ({
   useEffect(() => {
     setCount((count) => count + 1);
     saveConnector();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.cds]);
 
   if (isLocalOrStaging) {

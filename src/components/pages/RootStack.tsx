@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Drawer, Snackbar, CircularProgress } from "grindery-ui";
 import { Route, Routes, Navigate, useMatch } from "react-router-dom";

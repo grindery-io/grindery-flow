@@ -361,6 +361,7 @@ const ConnectorSubmission = (props: Props) => {
     if (state.step && state.step === 3) {
       submitCDS();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.step]);
 
   if (isLocalOrStaging) {

@@ -53,12 +53,6 @@ const ConnectorSubmissionStep0 = (props: Props) => {
     ["asc"]
   );
 
-  const isEVM =
-    state.form.entry.blockchain &&
-    chains
-      .find((chain: any) => chain.value === state.form.entry.blockchain)
-      ?.id?.startsWith("eip155");
-
   return (
     <Container>
       <Title>Let's get started</Title>

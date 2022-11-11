@@ -127,7 +127,6 @@ const StepInput = ({ outputFields }: Props) => {
     operationIsConfigured,
     operationIsAuthenticated,
     setConnector,
-    inputError,
     setInputError,
     errors,
     setErrors,

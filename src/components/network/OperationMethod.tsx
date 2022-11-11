@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { RichInput, Autocomplete } from "grindery-ui";
 import Button from "./Button";
 import useConnectorContext from "../../hooks/useConnectorContext";
-import CheckBox from "../shared/CheckBox";
 
 const Container = styled.div`
   margin-top: 20px;
@@ -27,37 +26,6 @@ const ButtonsWrapper = styled.div`
 
 const ButtonsRight = styled.div`
   margin-left: auto;
-`;
-
-const CheckboxWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  gap: 10px;
-  margin-top: 25px;
-  margin-bottom: 15px;
-`;
-
-const CheckboxLabel = styled.label`
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 150%;
-  color: #0b0d17;
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  gap: 8px;
-
-  & span {
-    font-size: 12px;
-    line-height: 150%;
-    color: #898989;
-  }
 `;
 
 const AutocompleteWrapper = styled.div`

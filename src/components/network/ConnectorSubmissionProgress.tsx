@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import useNetworkContext from "../../hooks/useNetworkContext";
-import StepsDivider from "../workflow/StepsDivider";
 import { StateProps } from "./ConnectorSubmission";
 
 const Container = styled.div`

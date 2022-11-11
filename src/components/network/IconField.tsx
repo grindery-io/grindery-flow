@@ -140,6 +140,7 @@ const IconField = (props: Props) => {
 
   useEffect(() => {
     onChange(icon);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [icon]);
 
   return (

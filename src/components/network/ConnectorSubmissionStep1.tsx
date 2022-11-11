@@ -117,6 +117,7 @@ const ConnectorSubmissionStep1 = (props: Props) => {
         step: 2,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEVM]);
 
   return isEVM ? (

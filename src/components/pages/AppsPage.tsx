@@ -116,7 +116,7 @@ type Props = {};
 const AppsPage = (props: Props) => {
   const { apps, connectors } = useAppContext();
   const items = apps;
-  const [searchTerm, setSearchTerm] = useState("");
+  const searchTerm = "";
   let navigate = useNavigate();
   const [tab, setTab] = useState(0);
   const { size } = useWindowSize();
@@ -176,7 +176,7 @@ const AppsPage = (props: Props) => {
           </SearchInputWrapper>
         </SearchWrapper>*/}
         <AppsWrapper>
-          {tab == 0 && (
+          {tab === 0 && (
             <>
               {filteredItems.map((item) => (
                 <AppRow

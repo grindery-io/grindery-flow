@@ -31,16 +31,6 @@ const ButtonWrapper = styled.div`
   text-align: center;
 `;
 
-const MaxHeightInput = styled.div`
-  & .rich-input-box {
-    max-height: 150px;
-    overflow: auto;
-  }
-  & .rich-input div[data-slate-editor="true"] {
-    overflow: auto !important;
-  }
-`;
-
 const ButtonsWrapper = styled.div`
   display: flex;
   flex-direction: row;

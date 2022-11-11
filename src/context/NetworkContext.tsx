@@ -320,14 +320,17 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
 
   useEffect(() => {
     getContributor();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getConnectors(token?.access_token, workspaceToken);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token?.access_token, workspaceToken]);
 
   useEffect(() => {
     getChains(token?.access_token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token?.access_token]);
 
   return (

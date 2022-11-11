@@ -40,7 +40,7 @@ const ConnectorContributor = (props: Props) => {
         <a
           href={contributor?.[0]?.values?.github_url}
           target="_blank"
-          rel="nofollow"
+          rel="noreferrer"
         >
           {contributor?.[0]?.values?.avatar_url && (
             <Avatar>
