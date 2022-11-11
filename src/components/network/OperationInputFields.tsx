@@ -4,7 +4,6 @@ import Button from "./Button";
 import useConnectorContext from "../../hooks/useConnectorContext";
 import { useNavigate, useParams } from "react-router";
 import OperationInputFieldRow from "./OperationInputFieldRow";
-import useNetworkContext from "../../hooks/useNetworkContext";
 
 const Table = styled.table`
   width: 100%;
