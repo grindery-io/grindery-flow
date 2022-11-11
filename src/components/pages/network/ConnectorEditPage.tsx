@@ -10,9 +10,9 @@ import ConnectorDrawer from "../../network/ConnectorDrawer";
 import ConnectorContextProvider from "../../../context/ConnectorContext";
 import ConnectorOperationsPage from "./ConnectorOperationsPage";
 import ConnectorAdvancedPage from "./ConnectorAdvancedPage";
-import ConfirmModal from "../../network/ConfirmModal";
-import SnackbarContainer from "../../network/SnackbarContainer";
 import ConnectorPublishingPage from "./ConnectorPublishingPage";
+import SnackbarProvider from "../../network/SnackbarProvider";
+import ConfirmProvider from "../../network/ConfirmProvider";
 
 const Container = styled.div`
   margin-left: 305px;
@@ -51,8 +51,8 @@ const ConnectorEditPage = (props: Props) => {
 
   return connector ? (
     <ConnectorContextProvider connector={connector}>
-      <ConfirmModal>
-        <SnackbarContainer>
+      <ConfirmProvider>
+        <SnackbarProvider>
           <Container>
             <ConnectorDrawer />
             <Content>
@@ -77,8 +77,8 @@ const ConnectorEditPage = (props: Props) => {
               </Routes>
             </Content>
           </Container>
-        </SnackbarContainer>
-      </ConfirmModal>
+        </SnackbarProvider>
+      </ConfirmProvider>
     </ConnectorContextProvider>
   ) : (
     <Navigate to="/network" replace />

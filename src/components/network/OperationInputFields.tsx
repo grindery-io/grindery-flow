@@ -4,6 +4,7 @@ import Button from "./Button";
 import useConnectorContext from "../../hooks/useConnectorContext";
 import { useNavigate, useParams } from "react-router";
 import OperationInputFieldRow from "./OperationInputFieldRow";
+import useNetworkContext from "../../hooks/useNetworkContext";
 
 const Table = styled.table`
   width: 100%;
@@ -39,11 +40,13 @@ const OperationInputFields = (props: Props) => {
   let { id, type, key } = useParams();
   let navigate = useNavigate();
   const { state } = useConnectorContext();
+
   const inputFields: any[] =
     (type &&
       (state.cds?.[type] || []).find((op: any) => op.key === key)?.operation
         ?.inputFields) ||
     [];
+
   return (
     <>
       {inputFields && inputFields.length > 0 && (

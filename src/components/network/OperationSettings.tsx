@@ -5,6 +5,7 @@ import { RichInput } from "grindery-ui";
 import Button from "./Button";
 import useConnectorContext from "../../hooks/useConnectorContext";
 import CheckBox from "../shared/CheckBox";
+import useNetworkContext from "../../hooks/useNetworkContext";
 
 const Container = styled.div`
   margin-top: 20px;
@@ -69,6 +70,21 @@ const OperationSettings = (props: Props) => {
   const isNewOperation = key === "__new__";
   const [currentKey, setCurrentKey] = useState(key);
   const { cds } = state;
+  const {
+    state: { blockchains },
+  } = useNetworkContext();
+  const chains = blockchains.map((chain) => ({
+    value: chain.id,
+    label: chain.values.name || "",
+    id: chain.values.chain_id,
+  }));
+
+  const chain =
+    chains.find(
+      (c: any) => c.value === state.connector?.values?.blockchain?.[0]?.id || ""
+    )?.id || "";
+
+  const isEvm = chain.startsWith("eip155:");
   const currentOperation =
     (type && (cds?.[type] || []).find((op: any) => op.key === key)) || null;
   const [operation, setOperation] = useState<any>({
@@ -81,7 +97,18 @@ const OperationSettings = (props: Props) => {
       featured: Boolean(currentOperation?.display?.featured),
     },
     operation: currentOperation?.operation || {
-      inputFields: [],
+      inputFields: !isEvm
+        ? [
+            {
+              key: "_grinderyChain",
+              label: "Blockchain",
+              type: "string",
+              required: true,
+              default: chain,
+              computed: true,
+            },
+          ]
+        : [],
     },
   });
 
@@ -100,11 +127,22 @@ const OperationSettings = (props: Props) => {
         featured: Boolean(_currentOperation?.display?.featured),
       },
       operation: _currentOperation?.operation || {
-        inputFields: [],
+        inputFields: !isEvm
+          ? [
+              {
+                key: "_grinderyChain",
+                label: "Blockchain",
+                type: "string",
+                required: true,
+                default: chain,
+                computed: true,
+              },
+            ]
+          : [],
       },
     });
     setCurrentKey(key);
-  }, [currentOperation, key, type, cds]);
+  }, [currentOperation, key, type, cds, isEvm, chain]);
 
   return (
     <Container>

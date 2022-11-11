@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { ICONS } from "../../constants";
 import ConnectorContributor from "./ConnectorContributor";
 import useNetworkContext from "../../hooks/useNetworkContext";
+import Confirm from "./Confirm";
 
 const Row = styled.tr`
   border: 1px solid #dcdcdc;
@@ -80,6 +81,12 @@ const ConnectorRow = (props: Props) => {
   let navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const cds = JSON.parse(connector?.values?.cds || "");
+  const [confirm, setConfirm] = useState({
+    message: "",
+    opened: false,
+    onClose: () => {},
+    onConfirm: () => {},
+  });
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -114,13 +121,27 @@ const ConnectorRow = (props: Props) => {
       key: "delete",
       label: "Delete",
       onClick: () => {
-        if (
-          window.confirm(
-            `Are you sure you want to delete ${cds.name} connector? You won't be able to restore it.`
-          )
-        ) {
-          deleteConnector(cds.key);
-        }
+        setConfirm({
+          message: `Are you sure you want to delete ${cds.name} connector? You won't be able to restore it.`,
+          opened: true,
+          onClose: () => {
+            setConfirm({
+              message: "",
+              opened: false,
+              onClose: () => {},
+              onConfirm: () => {},
+            });
+          },
+          onConfirm: () => {
+            deleteConnector(cds.key);
+            setConfirm({
+              message: "",
+              opened: false,
+              onClose: () => {},
+              onConfirm: () => {},
+            });
+          },
+        });
       },
     });
   }
@@ -184,6 +205,7 @@ const ConnectorRow = (props: Props) => {
           }}
           items={menuItems}
         />
+        <Confirm state={confirm} />
       </Column>
     </Row>
   );
