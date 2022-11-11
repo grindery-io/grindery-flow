@@ -28,6 +28,7 @@ type ContextProps = {
   refreshConnectors: () => Promise<{ success: boolean }>;
   cloneConnector: (cds: any) => Promise<string>;
   connectContributor: (code: string) => void;
+  deleteConnector: (key: string) => void;
 };
 
 type NetworkContextProps = {
@@ -50,6 +51,7 @@ const defaultContext = {
     return "";
   },
   connectContributor: () => {},
+  deleteConnector: () => {},
 };
 
 export const NetworkContext = createContext<ContextProps>(defaultContext);
@@ -287,6 +289,35 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
     });
   };
 
+  const deleteConnector = async (key: string) => {
+    let res;
+    try {
+      res = await axios.delete(
+        `${CDS_EDITOR_API_ENDPOINT}/cds/${key}?environment=${
+          isLocalOrStaging ? "staging" : "production"
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${workspaceToken || token?.access_token}`,
+          },
+        }
+      );
+    } catch (err: any) {
+      console.error("deleteConnector error", err);
+      throw new Error(
+        err?.response?.data?.error ||
+          err?.response?.data?.message ||
+          err?.message ||
+          "Server error"
+      );
+    }
+    if (res?.data?.success) {
+      refreshConnectors();
+    } else {
+      throw new Error("Server error. Please, try again later.");
+    }
+  };
+
   useEffect(() => {
     getContributor();
   }, []);
@@ -301,7 +332,13 @@ export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
 
   return (
     <NetworkContext.Provider
-      value={{ state, refreshConnectors, cloneConnector, connectContributor }}
+      value={{
+        state,
+        refreshConnectors,
+        cloneConnector,
+        connectContributor,
+        deleteConnector,
+      }}
     >
       {children}
     </NetworkContext.Provider>

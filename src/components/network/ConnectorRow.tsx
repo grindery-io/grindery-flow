@@ -4,6 +4,7 @@ import { Menu, IconButton } from "grindery-ui";
 import styled from "styled-components";
 import { ICONS } from "../../constants";
 import ConnectorContributor from "./ConnectorContributor";
+import useNetworkContext from "../../hooks/useNetworkContext";
 
 const Row = styled.tr`
   border: 1px solid #dcdcdc;
@@ -75,6 +76,7 @@ type Props = {
 
 const ConnectorRow = (props: Props) => {
   const { connector } = props;
+  const { deleteConnector } = useNetworkContext();
   let navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const cds = JSON.parse(connector?.values?.cds || "");
@@ -107,15 +109,21 @@ const ConnectorRow = (props: Props) => {
     },
   ];
 
-  /*if (connector?.values?.status?.name !== "Published") {
+  if (connector?.values?.status?.name !== "Published") {
     menuItems.push({
       key: "delete",
       label: "Delete",
       onClick: () => {
-        alert("Not implemented yet");
+        if (
+          window.confirm(
+            `Are you sure you want to delete ${cds.name} connector? You won't be able to restore it.`
+          )
+        ) {
+          deleteConnector(cds.key);
+        }
       },
     });
-  }*/
+  }
 
   return (
     <Row key={cds.key}>

@@ -134,7 +134,7 @@ export const getCDS = async (ABI, name, icon) => {
   }
 
   const key = name
-    ? slugify(name)
+    ? slugify(name.trim())
     : slugify("connector_" + new Date().toISOString());
 
   let isKeyExists;
