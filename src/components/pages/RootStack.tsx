@@ -21,6 +21,9 @@ import Button from "../shared/Button";
 import WorkspaceCreatePage from "./WorkspaceCreatePage";
 import WorkspaceEditPage from "./WorkspaceEditPage";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
+import NotificationsContextProvider from "../../context/NotificationsContext";
+import NotificationsModal from "../shared/NotificationsModal";
+import CreateNexusNotificationPage from "./CreateNexusNotificationPage";
 
 const DrawerWrapper = styled.div`
   @media (min-width: ${SCREEN.TABLET}) {
@@ -105,49 +108,63 @@ const RootStack = (props: Props) => {
       return <WelcomePage />;
     }
 
-    return isWorkspaceSwitching ? (
-      <div style={{ textAlign: "center", margin: "50px auto" }}>
-        <CircularProgress />
-      </div>
-    ) : (
-      <Routes>
-        <Route path="/" element={<Navigate to="/workflows" replace />}></Route>
-        {/*<Route path="/dashboard" element={<DashboardPage />}></Route>*/}
-        <Route
-          path="/workflows"
-          element={
-            !workflows || workflows.length < 1 ? (
-              <CreateWorkflowPage />
-            ) : (
-              <WorkflowsPage />
-            )
-          }
-        ></Route>
-        <Route
-          path="/workflows/create"
-          element={<CreateWorkflowPage />}
-        ></Route>
-        <Route
-          path="/workflows/new"
-          element={<WorkflowBuilderPage />}
-          key={1}
-        ></Route>
-        <Route
-          path="/workflows/edit/:key"
-          element={<WorkflowBuilderPage />}
-          key={2}
-        ></Route>
-        <Route path="/connectors" element={<AppsPage />}></Route>
-        <Route path="/history" element={<HistoryPage />}></Route>
-        {/*<Route path="/transactions" element={<TransactionsPage />}></Route>
+    return (
+      <NotificationsContextProvider>
+        <NotificationsModal />
+        {isWorkspaceSwitching ? (
+          <div style={{ textAlign: "center", margin: "50px auto" }}>
+            <CircularProgress />
+          </div>
+        ) : (
+          <Routes>
+            <Route
+              path="/"
+              element={<Navigate to="/workflows" replace />}
+            ></Route>
+            {/*<Route path="/dashboard" element={<DashboardPage />}></Route>*/}
+            <Route
+              path="/workflows"
+              element={
+                !workflows || workflows.length < 1 ? (
+                  <CreateWorkflowPage />
+                ) : (
+                  <WorkflowsPage />
+                )
+              }
+            ></Route>
+            <Route
+              path="/workflows/create"
+              element={<CreateWorkflowPage />}
+            ></Route>
+            <Route
+              path="/workflows/new"
+              element={<WorkflowBuilderPage />}
+              key={1}
+            ></Route>
+            <Route
+              path="/workflows/edit/:key"
+              element={<WorkflowBuilderPage />}
+              key={2}
+            ></Route>
+            <Route path="/connectors" element={<AppsPage />}></Route>
+            <Route path="/history" element={<HistoryPage />}></Route>
+            {/*<Route path="/transactions" element={<TransactionsPage />}></Route>
         <Route path="/notifications" element={<NotificationsPage />}></Route>*/}
-        <Route path="/settings" element={<SettingsPage />}></Route>
-        <Route path="/workspaces/new" element={<WorkspaceCreatePage />} />
-        <Route path="/workspaces/manage" element={<WorkspaceEditPage />} />
-        <Route path="*" element={<Navigate to="/workflows" replace />}></Route>
-      </Routes>
+            <Route path="/settings" element={<SettingsPage />}></Route>
+            <Route path="/workspaces/new" element={<WorkspaceCreatePage />} />
+            <Route path="/workspaces/manage" element={<WorkspaceEditPage />} />
+            <Route
+              path="/nexus-notifications"
+              element={<CreateNexusNotificationPage />}
+            />
+            <Route
+              path="*"
+              element={<Navigate to="/workflows" replace />}
+            ></Route>
+          </Routes>
+        )}
+      </NotificationsContextProvider>
     );
-    /**/
   };
 
   const handleOpen = () => {

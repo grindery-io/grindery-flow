@@ -96,7 +96,7 @@ const DropdownContent = styled.div`
   box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.04);
   border-radius: 10px;
   padding: 10px;
-  max-height: 400px;
+  max-height: 350px;
   overflow: auto;
 `;
 
@@ -112,7 +112,7 @@ const DropdownItem = styled.div`
   gap: 8px;
   cursor: pointer;
   padding: 8px;
-  max-width: 220px;
+  max-width: 240px;
 
   .avatar {
     background: #f4f5f7;

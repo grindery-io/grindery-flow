@@ -5,6 +5,7 @@ import { useMatch, useNavigate } from "react-router-dom";
 import { ICONS, RIGHTBAR_TABS, SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import useWindowSize from "../../hooks/useWindowSize";
+import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 
 const Wrapper = styled.div`
   display: flex;
@@ -126,6 +127,7 @@ type Props = {};
 const SidebarTabs = (props: Props) => {
   const { user, appOpened, setAppOpened } = useAppContext();
   const { size, width } = useWindowSize();
+  const { workspace } = useWorkspaceContext();
   let navigate = useNavigate();
   const isMatchingWorkflowNew = useMatch("/workflows/new");
   const isMatchingWorkflowEdit = useMatch("/workflows/edit/:key");
@@ -187,7 +189,9 @@ const SidebarTabs = (props: Props) => {
             }
           }
         }}
-        options={RIGHTBAR_TABS.map((tab) => (
+        options={RIGHTBAR_TABS.filter(
+          (tab) => !tab.access || tab.access === workspace
+        ).map((tab) => (
           <>
             <img
               src={tab.icon}

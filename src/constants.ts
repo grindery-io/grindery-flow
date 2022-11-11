@@ -33,6 +33,7 @@ export const ICONS: { [key: string]: string } = {
   CREATE_WITHDRAW: "/images/icons/create-withdraw.svg",
   CREATE_DEPOSIT: "/images/icons/create-deposit.svg",
   CREATE_ALERT: "/images/icons/create-alert.svg",
+  CREATE_ALERT_BLACK: "/images/icons/create-alert-black.svg",
   ARROW_RIGHT: "/images/icons/arrow-right.svg",
   ARROW_RIGHT_BLACK: "/images/icons/arrow-right-black.svg",
   CLOSE: "/images/icons/close.svg",
@@ -99,6 +100,7 @@ export const RIGHTBAR_TABS: {
   id: number;
   label: string;
   path: string;
+  access?: string;
 }[] = [
   /*{
     id: 0,
@@ -134,6 +136,14 @@ export const RIGHTBAR_TABS: {
     icon: ICONS.SETTINGS,
     label: "Settings",
     path: "/settings",
+  },
+  {
+    id: 4,
+    name: "CREATE_NOTIFICATION",
+    icon: ICONS.CREATE_ALERT_BLACK,
+    label: "Nexus Notifications",
+    path: "/nexus-notifications",
+    access: "ws-98833cd6-7f21-425b-b01c-c534e1c53875",
   },
   /*{
     id: 4,
