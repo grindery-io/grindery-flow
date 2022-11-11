@@ -98,6 +98,9 @@ const OperationFormPreview = (props: Props) => {
     (type &&
       (cds?.[type] || []).find((op: any) => op.key === key)?.operation) ||
     {};
+  const display =
+    (type && (cds?.[type] || []).find((op: any) => op.key === key)?.display) ||
+    {};
   const inputFields = operation?.inputFields || [];
 
   const chains = BLOCKCHAINS;
@@ -112,6 +115,20 @@ const OperationFormPreview = (props: Props) => {
         <h3>Set up {type === "triggers" ? "trigger" : "action"}</h3>
       </div>
       <div style={{ width: "100%" }}>
+        {display?.instructions && (
+          <AlertWrapper>
+            <Alert color="info" elevation={0}>
+              <div style={{ textAlign: "left" }}>
+                <WarningTitle>Instructions</WarningTitle>
+                <WarningText
+                  dangerouslySetInnerHTML={{
+                    __html: display.instructions,
+                  }}
+                />
+              </div>
+            </Alert>
+          </AlertWrapper>
+        )}
         {(operation?.type === "blockchain:event" ||
           operation?.type === "blockchain:call") &&
           inputFields.filter(
