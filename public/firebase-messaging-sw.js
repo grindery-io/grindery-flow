@@ -20,11 +20,6 @@ firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message ",
-    payload
-  );
-
   const notificationTitle =
     (payload.data && payload.data.title) ||
     (payload.notification && payload.notification.title) ||
@@ -37,13 +32,15 @@ messaging.onBackgroundMessage((payload) => {
     icon:
       (payload.data && payload.data.icon) ||
       "https://nexus.grindery.org/logo192.png",
+    data: {
+      url: (payload.data && payload.data.url) || "",
+    },
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
 
   function handleClick(event) {
     event.notification.close();
-    console.log("clicked notification payload", event.notification.data);
     // Open the url you set on notification.data
     if (event.notification.data && event.notification.data.url) {
       clients.openWindow(event.notification.data.url);

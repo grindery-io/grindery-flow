@@ -19,7 +19,7 @@ type ContextProps = {
   requestNotificationsPermission: () => void;
   isUserUnSubscribed: (userId: string) => boolean;
   isUserSubscribed: (userId: string) => boolean;
-  sendNotification: (title?: string, body?: string) => void;
+  sendNotification: (title?: string, body?: string, url?: string) => void;
   dismissNotifications: (userId: string) => void;
 };
 
@@ -158,7 +158,11 @@ export const NotificationsContextProvider = ({
     }
   };
 
-  const sendNotification = async (title?: string, body?: string) => {
+  const sendNotification = async (
+    title?: string,
+    body?: string,
+    url?: string
+  ) => {
     if (!workspace || workspace !== "ws-98833cd6-7f21-425b-b01c-c534e1c53875") {
       setState({
         error:
@@ -176,6 +180,7 @@ export const NotificationsContextProvider = ({
         {
           title: title || "Demo notification",
           body: body || "Browser notification successfully received!",
+          data: JSON.stringify({ url }),
           topic: sendNotificationsAction.input.topic,
         },
         isLocalOrStaging ? "staging" : "production"

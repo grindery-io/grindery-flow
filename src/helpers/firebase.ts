@@ -35,9 +35,18 @@ onMessage(messaging, (payload) => {
     icon:
       (payload.data && payload.data.icon) ||
       "https://nexus.grindery.org/logo192.png",
+    data: {
+      url: (payload.data && payload.data.url) || "",
+    },
   };
 
-  new Notification(notificationTitle, notificationOptions);
+  const notification = new Notification(notificationTitle, notificationOptions);
+  notification.onclick = (event: any) => {
+    if (event.target?.data?.url) {
+      event.preventDefault(); // prevent the browser from focusing the Notification's tab
+      window.open(event.target?.data?.url, "_blank");
+    }
+  };
 });
 
 // Request permissions to receive notifications

@@ -68,6 +68,7 @@ const CreateNexusNotificationPage = (props: Props) => {
   const [form, setForm] = useState({
     title: "",
     body: "",
+    url: "",
   });
   const [error, setError] = useState({
     type: "",
@@ -131,6 +132,23 @@ const CreateNexusNotificationPage = (props: Props) => {
           {form.body.length}/{maxBodyLength}
         </Counter>
       </InputWrapper>
+      <InputWrapper>
+        <RichInput
+          key={`${key}_url`}
+          label="Notification link"
+          value={form.url}
+          onChange={(value: string) => {
+            setError({ type: "", text: "" });
+            setForm({
+              ...form,
+              url: value,
+            });
+          }}
+          options={[]}
+          tooltip="An URL where user will be redirected when clicked on a notification."
+          error={error.type === "url" ? error.text : ""}
+        />
+      </InputWrapper>
       <Buttons>
         <Button
           loading={state.sending}
@@ -162,10 +180,24 @@ const CreateNexusNotificationPage = (props: Props) => {
               return;
             }
 
-            sendNotification(form.title, form.body);
+            if (
+              form.url &&
+              !/https:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(
+                form.url
+              )
+            ) {
+              setError({
+                type: "url",
+                text: `Must be a valid HTTPS URL`,
+              });
+              return;
+            }
+
+            sendNotification(form.title, form.body, form.url);
             setForm({
               title: "",
               body: "",
+              url: "",
             });
             setKey(key + 1);
           }}
