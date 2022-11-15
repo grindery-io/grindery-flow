@@ -141,8 +141,8 @@ export const RIGHTBAR_TABS: {
     id: 4,
     name: "CREATE_NOTIFICATION",
     icon: ICONS.CREATE_ALERT_BLACK,
-    label: "Nexus Notifications",
-    path: "/nexus-notifications",
+    label: "Notifications",
+    path: "/notifications/send",
     access: "ws-98833cd6-7f21-425b-b01c-c534e1c53875",
   },
   /*{

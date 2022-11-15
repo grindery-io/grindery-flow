@@ -79,10 +79,10 @@ const NotificationsModal = (props: Props) => {
 
   return state.browserIsSupported && user && isShowing ? (
     <Container>
-      <Title>Subscribe to Nexus updates</Title>
+      <Title>Get Alerts from Nexus!</Title>
       <Description>
-        Nexus would like to send you push notifications about new features and
-        important updates.
+        Nexus can send you alerts when your workflows fail, bug fixes become
+        available and new features are released.
       </Description>
       <Buttons>
         <Button

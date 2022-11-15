@@ -154,7 +154,7 @@ const RootStack = (props: Props) => {
             <Route path="/workspaces/new" element={<WorkspaceCreatePage />} />
             <Route path="/workspaces/manage" element={<WorkspaceEditPage />} />
             <Route
-              path="/nexus-notifications"
+              path="/notifications/send"
               element={<CreateNexusNotificationPage />}
             />
             <Route
