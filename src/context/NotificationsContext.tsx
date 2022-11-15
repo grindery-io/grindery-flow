@@ -85,7 +85,9 @@ export const NotificationsContextProvider = ({
     connector: "firebaseCloudMessagingConnector",
     operation: "subscribeDeviceToTopic",
     input: {
-      topic: "grindery-nexus-updates",
+      topic: isLocalOrStaging
+        ? "grindery-nexus-updates-staging"
+        : "grindery-nexus-updates",
       tokens: [""],
     },
   };
@@ -95,7 +97,9 @@ export const NotificationsContextProvider = ({
     connector: "firebaseCloudMessagingConnector",
     operation: "sendMessageToDevices",
     input: {
-      topic: "grindery-nexus-updates",
+      topic: isLocalOrStaging
+        ? "grindery-nexus-updates-staging"
+        : "grindery-nexus-updates",
     },
   };
 
