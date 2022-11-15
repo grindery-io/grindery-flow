@@ -124,7 +124,7 @@ const ConnectorPublishingPage = (props: Props) => {
   const { id } = state;
   const isValid = cds && cds.name && cds.key && cds.icon;
   const hasTriggers = cds.triggers && cds.triggers.length > 0;
-  const hasActions = cds.triggers && cds.triggers.length > 0;
+  const hasActions = cds.actions && cds.actions.length > 0;
 
   return id ? (
     <div>
