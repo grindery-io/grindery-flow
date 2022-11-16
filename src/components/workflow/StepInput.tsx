@@ -301,9 +301,9 @@ const StepInput = ({ outputFields }: Props) => {
                             inputFields:
                               res.inputFields || trig.operation.inputFields,
                             outputFields:
-                              res.outputFields ||
-                              trig.operation.outputFields ||
-                              [],
+                              res.outputFields && res.outputFields.length > 0
+                                ? res.outputFields
+                                : trig.operation.outputFields || [],
                             sample: res.sample || trig.operation.sample || {},
                           },
                         };
@@ -322,9 +322,9 @@ const StepInput = ({ outputFields }: Props) => {
                             inputFields:
                               res.inputFields || act.operation.inputFields,
                             outputFields:
-                              res.outputFields ||
-                              act.operation.outputFields ||
-                              [],
+                              res.outputFields && res.outputFields.length > 0
+                                ? res.outputFields
+                                : act.operation.outputFields || [],
                             sample: res.sample || act.operation.sample || {},
                           },
                         };
