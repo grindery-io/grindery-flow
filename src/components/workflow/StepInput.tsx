@@ -147,7 +147,7 @@ const StepInput = ({ outputFields }: Props) => {
               getOutputOptions(
                 out.operation,
                 out.connector,
-                out.type,
+                out.type || out.operation.type,
                 out.index
               )
             ),
