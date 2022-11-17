@@ -152,8 +152,9 @@ const AppRow = (props: Props) => {
               <AppType>
                 {item.access ? (
                   <>
-                    {item.access === "Private" && "Private"}
+                    {item.access === "Public" && "Public"}
                     {item.access === "Workspace" && "Private for workspace"}
+                    {item.access === "Private" && "Private"}
                   </>
                 ) : (
                   "Public"
