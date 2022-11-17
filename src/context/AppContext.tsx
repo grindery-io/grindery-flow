@@ -346,14 +346,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
   useEffect(() => {
     setWorkflowExecutions([]);
-    if (workflows && workflows.length > 0) {
-      workflows.forEach((workflow) => {
-        if (workflow.key) {
-          getWorkflowHistory(workflow.key, addExecutions);
-        }
-      });
-    }
-  }, [workflows, addExecutions, getWorkflowHistory]);
+  }, [workspace]);
 
   useEffect(() => {
     if (user && accessAllowed && client && workspace) {
