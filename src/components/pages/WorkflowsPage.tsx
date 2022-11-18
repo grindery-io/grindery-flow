@@ -226,7 +226,7 @@ const WorkflowsPage = (props: Props) => {
       <SearchWrapper>
         <SearchInputWrapper>
           <TextInput
-            placeholder={"Workflows"}
+            placeholder={"Search Workflows"}
             value={searchTerm}
             onChange={handleSearchChange}
             size="small"
