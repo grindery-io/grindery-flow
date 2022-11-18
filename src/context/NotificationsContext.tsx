@@ -118,13 +118,18 @@ export const NotificationsContextProvider = ({
     );
   };
 
-  const dismissNotifications = (userID: string) => {
+  const dismissNotifications = async (userID: string) => {
     localStorage.setItem(
       `gr_nexus_updates_canceled_${
         isLocalOrStaging ? "staging_" : "production_"
       }${userID}`,
       "yes"
     );
+    try {
+      await client?.saveNotificationsState("Not Allowed");
+    } catch (err) {
+      console.error("saveNotificationsState error", err);
+    }
   };
 
   const subscribeUserToUpdates = async (
@@ -158,6 +163,12 @@ export const NotificationsContextProvider = ({
           error = err.message;
         }
         console.error("subscribeUserToUpdates error:", error);
+      }
+
+      try {
+        await client?.saveNotificationsState("Allowed");
+      } catch (err) {
+        console.error("saveNotificationsState error", err);
       }
     }
   };

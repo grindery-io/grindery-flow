@@ -18,7 +18,7 @@
     "buffer": "^6.0.3",
     "fastest-validator": "^1.12.0",
     "firebase": "^9.14.0",
-    "grindery-nexus-client": "^0.7.0",
+    "grindery-nexus-client": "^0.8.0",
     "grindery-ui": "^0.9.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.3",
