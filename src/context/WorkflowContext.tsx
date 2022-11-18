@@ -33,7 +33,7 @@ const blankWorkflow: Workflow = {
     },
   ],
   creator: "",
-  state: "on",
+  state: "off",
   source: isLocalOrStaging
     ? "urn:grindery-staging:nexus"
     : "urn:grindery:nexus",
@@ -155,7 +155,7 @@ export const WorkflowContextProvider = ({
       },
     ],
     creator: user || "",
-    state: "on",
+    state: "off",
     source: isLocalOrStaging
       ? "urn:grindery-staging:nexus"
       : "urn:grindery:nexus",
@@ -462,7 +462,7 @@ export const WorkflowContextProvider = ({
         },
       ],
       creator: user || "",
-      state: "on",
+      state: "off",
       source: isLocalOrStaging
         ? "urn:grindery-staging:nexus"
         : "urn:grindery:nexus",
