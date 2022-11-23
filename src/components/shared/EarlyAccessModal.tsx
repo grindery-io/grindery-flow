@@ -176,7 +176,7 @@ const EarlyAccessModal = (props: Props) => {
     });
     if (res) {
       setSuccess(
-        "We've sent you an email with a personal link, to complete the process and get early access to our platfrom please go to your email and click on the link to verify it's you.\n\nYour request will be manually reviewed. We'll notify you by email as soon as we have an available opening."
+        "We've sent you an email with a personal link, to complete the process and get early access to our platfrom please go to your email and click on the link to verify it's you."
       );
       //"Your request will be manually reviewed. We'll notify you by email as soon as we have an available opening."
     }
