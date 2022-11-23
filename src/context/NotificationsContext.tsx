@@ -166,7 +166,10 @@ export const NotificationsContextProvider = ({
       }
 
       try {
-        await client?.saveNotificationsState("Allowed");
+        await client?.saveNotificationsState(
+          "Allowed",
+          state.notificationsToken
+        );
       } catch (err) {
         console.error("saveNotificationsState error", err);
       }

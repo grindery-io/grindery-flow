@@ -61,13 +61,12 @@ const Buttons = styled.div`
 type Props = {};
 
 const NotificationsModal = (props: Props) => {
-  const { user } = useAppContext();
+  const { user, accessAllowed } = useAppContext();
   const {
     requestNotificationsPermission,
     dismissNotifications,
     isUserUnSubscribed,
     isUserSubscribed,
-    sendNotification,
     state,
   } = useNotificationsContext();
 
@@ -77,7 +76,7 @@ const NotificationsModal = (props: Props) => {
     setIsShowing(user && !isUserUnSubscribed(user) && !isUserSubscribed(user));
   }, [user]);
 
-  return state.browserIsSupported && user && isShowing ? (
+  return state.browserIsSupported && user && isShowing && accessAllowed ? (
     <Container>
       <Title>Get Alerts from Nexus!</Title>
       <Description>
