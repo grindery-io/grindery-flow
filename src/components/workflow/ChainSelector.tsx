@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Autocomplete } from "grindery-ui";
 import { BLOCKCHAINS } from "../../constants";
+import useAppContext from "../../hooks/useAppContext";
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -21,9 +22,10 @@ type Props = {
 };
 
 const ChainSelector = (props: Props) => {
+  const { evmChains } = useAppContext();
   const { onChange, value, errors, setErrors } = props;
 
-  const options = BLOCKCHAINS;
+  const options = [...evmChains, ...BLOCKCHAINS];
 
   const error =
     (errors &&

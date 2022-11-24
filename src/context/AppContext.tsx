@@ -14,6 +14,7 @@ import useWindowSize from "../hooks/useWindowSize";
 import { validator } from "../helpers/validator";
 import { Operation } from "../types/Workflow";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";
+import { Chain } from "../types/Chain";
 
 type ContextProps = {
   user: any;
@@ -53,6 +54,7 @@ type ContextProps = {
     client: NexusClient | null
   ) => void;
   getConnector: (key: string) => void;
+  evmChains: Chain[];
 };
 
 type AppContextProps = {
@@ -85,6 +87,7 @@ export const AppContext = createContext<ContextProps>({
   access_token: undefined,
   moveWorkflowToWorkspace: defaultFunc,
   getConnector: defaultFunc,
+  evmChains: [],
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -97,6 +100,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   // Dev mode state
   const cachedDevMode = localStorage.getItem("gr_dev_mode");
   const [devMode, setDevMode] = useState(cachedDevMode === "true");
+
+  const [evmChains, setEvmChains] = useState<Chain[]>([]);
 
   // Auth hook
   const { user, disconnect, token } = useGrinderyNexus();
@@ -350,6 +355,27 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     }
   };
 
+  const getChains = async (nexusClient: NexusClient) => {
+    let res;
+    try {
+      res = await nexusClient.listChains(
+        "evm",
+        isLocalOrStaging ? "staging" : "production"
+      );
+    } catch (err) {
+      console.error("getChains error: ", err);
+      setEvmChains([]);
+      return;
+    }
+    setEvmChains(res);
+  };
+
+  useEffect(() => {
+    if (client) {
+      getChains(client);
+    }
+  }, [client]);
+
   useEffect(() => {
     setWorkflowExecutions([]);
   }, [workspace]);
@@ -435,6 +461,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         access_token,
         moveWorkflowToWorkspace,
         getConnector,
+        evmChains,
       }}
     >
       {children}

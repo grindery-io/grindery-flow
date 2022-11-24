@@ -134,7 +134,7 @@ const StepInput = ({ outputFields }: Props) => {
   } = useWorkflowStepContext();
   const { workflow, updateWorkflow, loading, setLoading, setActiveStep } =
     useWorkflowContext();
-  const { user, client } = useAppContext();
+  const { user, client, evmChains } = useAppContext();
   const { addressBook, setAddressBook } = useAddressBook(user);
   const [gas, setGas] = useState("0.001");
 
@@ -177,7 +177,7 @@ const StepInput = ({ outputFields }: Props) => {
         ]);
 
   const gasToken = workflow.actions[index]?.input._grinderyChain
-    ? BLOCKCHAINS.find(
+    ? evmChains.find(
         (chain) => chain.value === workflow.actions[index]?.input._grinderyChain
       ) || ""
     : "";

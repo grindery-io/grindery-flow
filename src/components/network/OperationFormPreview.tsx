@@ -89,7 +89,7 @@ type Props = {};
 
 const OperationFormPreview = (props: Props) => {
   const { type, key } = useParams();
-  const { user } = useAppContext();
+  const { user, evmChains } = useAppContext();
   const { state } = useConnectorContext();
   const [chain, setChain] = useState("");
   const { cds } = state;
@@ -103,7 +103,7 @@ const OperationFormPreview = (props: Props) => {
     {};
   const inputFields = operation?.inputFields || [];
 
-  const chains = BLOCKCHAINS;
+  const chains = [...evmChains, ...BLOCKCHAINS];
 
   return (
     <Container>

@@ -98,7 +98,7 @@ const WorkflowInputField = ({
   errors,
   setErrors,
 }: Props) => {
-  const { user, client } = useAppContext();
+  const { user, client, evmChains } = useAppContext();
   const { updateWorkflow, workflow, setLoading } = useWorkflowContext();
   const { connector, setConnector, operation, setOperationIsTested } =
     useWorkflowStepContext();
@@ -338,7 +338,11 @@ const WorkflowInputField = ({
         return field.choices ? (
           <Autocomplete {...commonProps} size="full" options={fieldOptions} />
         ) : field.key === "_grinderyChain" ? (
-          <Autocomplete {...commonProps} size="full" options={BLOCKCHAINS} />
+          <Autocomplete
+            {...commonProps}
+            size="full"
+            options={[...evmChains, BLOCKCHAINS]}
+          />
         ) : (
           <RichInput
             {...commonProps}
