@@ -22,6 +22,11 @@ const Container = styled.div`
   }
 `;
 
+const Containerinner = styled.div`
+  border-radius: 16px;
+  overflow: hidden;
+`;
+
 type Props = {
   outputFields: any[];
 };
@@ -42,19 +47,21 @@ const WorkflowStep = ({ outputFields }: Props) => {
               : "none",
         }}
       >
-        <StepHeader />
-        <StepApp />
-        {activeStep === step && (
-          <>
-            <StepOperation />
-            {operation && <StepAuthentication />}
+        <Containerinner>
+          <StepHeader />
+          <StepApp />
+          {activeStep === step && (
+            <>
+              <StepOperation />
+              {operation && <StepAuthentication />}
 
-            {operation && operationIsAuthenticated && (
-              <StepInput outputFields={outputFields} />
-            )}
-            {type === "action" && <StepTest outputFields={outputFields} />}
-          </>
-        )}
+              {operation && operationIsAuthenticated && (
+                <StepInput outputFields={outputFields} />
+              )}
+              {type === "action" && <StepTest outputFields={outputFields} />}
+            </>
+          )}
+        </Containerinner>
       </Container>
       <AddActionButton prevStep={step} />
     </>
