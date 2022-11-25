@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
+import { Snackbar } from "grindery-ui";
 import styled from "styled-components";
 import useAppContext from "../../hooks/useAppContext";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
@@ -41,13 +42,20 @@ const Button = styled.button`
 type Props = {};
 
 const WorkflowSave = (props: Props) => {
-  const { workflow, workflowReadyToSave, saveWorkflow } = useWorkflowContext();
+  const { workflow, saveWorkflow, workflowReadyToSave, updateWorkflow } =
+    useWorkflowContext();
   const { editWorkflow } = useAppContext();
   const { key } = useParams();
-  let navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    opened: false,
+    message: "",
+    severity: "suscess",
+  });
 
   const handleClick = async () => {
     if (key) {
+      setLoading(true);
       const wf = { ...workflow };
       delete wf.signature;
       delete wf.system;
@@ -55,10 +63,22 @@ const WorkflowSave = (props: Props) => {
       editWorkflow(
         {
           ...wf,
+          state: wf.state === "on" && workflowReadyToSave ? "on" : "off",
           signature: JSON.stringify(wf),
         },
-        true
+        false,
+        () => {
+          setSnackbar({
+            opened: true,
+            message: "Workflow updated",
+            severity: "success",
+          });
+          setLoading(false);
+        }
       );
+      updateWorkflow({
+        state: wf.state === "on" && workflowReadyToSave ? "on" : "off",
+      });
     } else {
       saveWorkflow();
     }
@@ -66,9 +86,23 @@ const WorkflowSave = (props: Props) => {
 
   return (
     <Container>
-      <Button onClick={handleClick} disabled={!workflowReadyToSave}>
+      <Button disabled={loading} onClick={handleClick}>
         Save workflow
       </Button>
+      <Snackbar
+        open={snackbar.opened}
+        handleClose={() => {
+          setSnackbar({
+            opened: false,
+            message: "",
+            severity: snackbar.severity,
+          });
+        }}
+        message={snackbar.message}
+        hideCloseButton
+        autoHideDuration={2000}
+        severity={snackbar.severity}
+      />
     </Container>
   );
 };

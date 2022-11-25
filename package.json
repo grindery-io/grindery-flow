@@ -1,6 +1,6 @@
 {
   "name": "grindery-nexus-frontend",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "private": true,
   "dependencies": {
     "@silizia/react-json-view": "^2.0.0",

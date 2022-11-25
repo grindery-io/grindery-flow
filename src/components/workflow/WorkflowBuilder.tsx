@@ -6,6 +6,7 @@ import WorkflowStep from "./WorkflowStep";
 import WorkflowStepContextProvider from "../../context/WorkflowStepContext";
 import WorkflowName from "./WorkflowName";
 import WorkflowSave from "./WorkflowSave";
+import WorkflowState from "./WorkflowState";
 
 const Wrapper = styled.div`
   max-width: 816px;
@@ -41,6 +42,7 @@ const WorkflowBuilder = (props: Props) => {
   return (
     <>
       <WorkflowName />
+      <WorkflowState />
       <Wrapper>
         <WorkflowStepContextProvider
           type="trigger"

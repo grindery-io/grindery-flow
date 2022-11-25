@@ -51,7 +51,7 @@ type WorkflowContextProps = {
   setError: (a: string) => void;
   setSuccess: (a: string) => void;
   setWorkflow: (a: any) => void;
-  saveWorkflow: () => void;
+  saveWorkflow: (callback?: () => void) => void;
   resetWorkflow: () => void;
   updateWorkflow: (a: any) => void;
   triggers: {
@@ -470,7 +470,7 @@ export const WorkflowContextProvider = ({
     setActiveStep(1);
   };
 
-  const saveWorkflow = async () => {
+  const saveWorkflow = async (callback?: () => void) => {
     if (workflow) {
       const readyWorkflow = {
         ...workflow,
@@ -493,8 +493,12 @@ export const WorkflowContextProvider = ({
         });
       if (res) {
         getWorkflowsList();
-        resetWorkflow();
-        navigate("/workflows");
+        if (!callback) {
+          resetWorkflow();
+          navigate("/workflows");
+        } else {
+          callback();
+        }
       }
       setLoading(false);
     }

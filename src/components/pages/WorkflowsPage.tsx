@@ -309,13 +309,17 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
   };
 
   const handleStateChange = () => {
-    setEnabled(item.state === "on" ? false : true);
-    const wf = { ...item, state: item.state === "off" ? "on" : "off" };
-    delete wf.signature;
-    editWorkflow({
-      ...wf,
-      signature: JSON.stringify(wf),
-    });
+    if (item.state === "on") {
+      setEnabled(false);
+      const wf = { ...item, state: "off" };
+      delete wf.signature;
+      editWorkflow({
+        ...wf,
+        signature: JSON.stringify(wf),
+      });
+    } else {
+      navigate(`/workflows/edit/${item.key}`);
+    }
   };
 
   const handleMenuClose = () => {
@@ -435,7 +439,7 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
             }}
             items={[
               {
-                key: "1",
+                key: "rename",
                 label: "Rename",
                 onClick: handleTitleClick,
               },
@@ -443,6 +447,11 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
                 key: "edit",
                 label: "Edit",
                 onClick: handleEditClick,
+              },
+              {
+                key: "delete",
+                label: "Delete",
+                onClick: handleDelete,
               },
               ...(workspaces && workspaces.length > 1
                 ? [
@@ -466,11 +475,6 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
                     },
                   ]
                 : []),
-              {
-                key: "2",
-                label: "Delete",
-                onClick: handleDelete,
-              },
             ]}
           />
         </ItemActionsWrapper>

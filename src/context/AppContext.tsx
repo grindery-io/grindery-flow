@@ -34,7 +34,11 @@ type ContextProps = {
     a: string,
     b: (c: WorkflowExecutionLog[]) => void
   ) => void;
-  editWorkflow: (a: Workflow, b?: boolean) => void;
+  editWorkflow: (
+    workflow: Workflow,
+    redirect?: boolean,
+    callback?: () => void
+  ) => void;
   accessAllowed: boolean;
   validator: any;
   verifying: boolean;
@@ -253,7 +257,11 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     [getWorkflowExecution, client]
   );
 
-  const editWorkflow = async (workflow: Workflow, redirect?: boolean) => {
+  const editWorkflow = async (
+    workflow: Workflow,
+    redirect?: boolean,
+    callback?: () => void
+  ) => {
     const res = await client
       ?.updateWorkflow(workflow.key, workflow)
       .catch((err) => {
@@ -265,6 +273,10 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     }
     if (redirect) {
       navigate("/workflows");
+    } else {
+      if (callback) {
+        callback();
+      }
     }
   };
 
