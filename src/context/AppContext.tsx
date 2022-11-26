@@ -243,7 +243,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     ) => {
       //const res = await getWorkflowExecutions(workflowKey);
       const executions = await client
-        ?.getWorkflowExecutions(workflowKey)
+        ?.getWorkflowExecutions(workflowKey, undefined, undefined, 10)
         .catch((err) => {
           console.error("getWorkflowExecutions error:", err.message);
         });

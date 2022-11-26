@@ -1,20 +1,15 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import _ from "lodash";
-import { TextInput, Tabs, Tooltip } from "grindery-ui";
+import { IconButton, TextInput, Tabs, Tooltip } from "grindery-ui";
 import { useSearchParams } from "react-router-dom";
 import DataBox from "../shared/DataBox";
 import { ICONS, SCREEN } from "../../constants";
 import useWindowSize from "../../hooks/useWindowSize";
 import useAppContext from "../../hooks/useAppContext";
 import { WorkflowExecutionLog } from "../../types/Workflow";
+import Button from "../shared/Button";
 
 const statusIconMapping: { [key: string]: string } = {
   Executed: ICONS.EXECUTED,
@@ -72,6 +67,11 @@ const SearchWrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 5px;
+
+  .MuiIconButton-root img {
+    width: 16px !important;
+    height: 16px !important;
+  }
 `;
 
 const SearchInputWrapper = styled.div`
@@ -268,6 +268,17 @@ const HistoryPage = (props: Props) => {
     [setWorkflowExecutions]
   );
 
+  const handleRefreshClick = () => {
+    setWorkflowExecutions([]);
+    if (workflows && workflows.length > 0) {
+      workflows.forEach((workflow) => {
+        if (workflow.key) {
+          getWorkflowHistory(workflow.key, addExecutions);
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     setWorkflowExecutions([]);
     if (workflows && workflows.length > 0) {
@@ -308,6 +319,17 @@ const HistoryPage = (props: Props) => {
               icon="search"
             />
           </SearchInputWrapper>
+          <div style={{ marginLeft: "8px", marginTop: "5px" }}>
+            <Tooltip title="Refresh">
+              <div>
+                <IconButton
+                  color=""
+                  onClick={handleRefreshClick}
+                  icon={ICONS.REFRESH}
+                />
+              </div>
+            </Tooltip>
+          </div>
         </SearchWrapper>
         <ItemsWrapper>
           {filteredItems.map((item, i) => (

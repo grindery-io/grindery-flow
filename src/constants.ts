@@ -54,6 +54,7 @@ export const ICONS: { [key: string]: string } = {
   CHECKBOX_EMPTY: "/images/icons/checkbox-empty.svg",
   TRASH: "/images/icons/trash.svg",
   DOTS_HORIZONTAL: "/images/icons/dots-horizontal.svg",
+  REFRESH: "/images/icons/refresh.svg",
   // CHAINS
   CHAIN_ETHEREUM: "/images/icons/ethereum.svg",
   CHAIN_ARBITRUM: "/images/icons/arbitrum.svg",
