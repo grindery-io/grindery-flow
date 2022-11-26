@@ -9,7 +9,6 @@ import { ICONS, SCREEN } from "../../constants";
 import useWindowSize from "../../hooks/useWindowSize";
 import useAppContext from "../../hooks/useAppContext";
 import { WorkflowExecutionLog } from "../../types/Workflow";
-import Button from "../shared/Button";
 
 const statusIconMapping: { [key: string]: string } = {
   Executed: ICONS.EXECUTED,
@@ -241,13 +240,15 @@ const HistoryPage = (props: Props) => {
           name: connector?.name || "",
           icon: connector?.icon || "",
         }));
+
         return (
           apps.filter(
             (app) =>
               app &&
               app.name &&
               app.name.toLowerCase().includes(searchTerm.toLowerCase())
-          ).length > 0
+          ).length > 0 ||
+          workflow?.title.toLowerCase().includes(searchTerm.toLowerCase())
         );
       }),
     [
