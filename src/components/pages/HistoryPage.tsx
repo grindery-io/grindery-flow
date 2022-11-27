@@ -320,7 +320,7 @@ const HistoryPage = (props: Props) => {
               icon="search"
             />
           </SearchInputWrapper>
-          <div style={{ marginLeft: "8px", marginTop: "5px" }}>
+          <div style={{ marginLeft: "auto", marginTop: "5px" }}>
             <Tooltip title="Refresh">
               <div>
                 <IconButton
