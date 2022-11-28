@@ -24,7 +24,7 @@ const Wrapper = styled.div`
   width: 435px;
   max-width: 100vw;
   box-sizing: border-box;
-  z-index: 2;
+  z-index: 1201;
   @media (min-width: ${SCREEN.TABLET}) {
     width: 100%;
     top: 0;
