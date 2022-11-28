@@ -16,7 +16,7 @@ const UserContainer = styled.div`
 const UserWrapper = styled.div`
   border: 1px solid #dcdcdc;
   border-radius: 34px;
-  padding: 8px 12px 8px 8px;
+  padding: 7px 12px 7px 8px;
   display: flex;
   align-items: center;
   justify-content: flex-start;

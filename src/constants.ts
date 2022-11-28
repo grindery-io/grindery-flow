@@ -366,3 +366,30 @@ export const isLocalOrStaging =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1" ||
   window.location.hostname === "nexus-staging.grindery.org";
+
+export const GRINDERY_APPS = [
+  {
+    url: "https://flow.grindery.org/",
+    name: "Flow",
+    description: "Create workflows witn no-code",
+    target: "_blank",
+  },
+  {
+    url: "https://ping.grindery.org/",
+    name: "Ping",
+    description: "Receive blockchain notifications",
+    target: "_blank",
+  },
+  {
+    url: "https://api.grindery.org/",
+    name: "API",
+    description: "Your gateway to web3 no-code",
+    target: "_blank",
+  },
+  {
+    url: "https://cds.grindery.org/",
+    name: "CDS",
+    description: "Create Connector Description Schema files",
+    target: "_blank",
+  },
+];

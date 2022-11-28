@@ -55,6 +55,24 @@ const Disclaimer = styled.div`
   margin: 0 auto;
 `;
 
+const LogoWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+`;
+
+const Title = styled.h1`
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 150%;
+  color: #0b0d17;
+  margin: 0;
+  padding: 0;
+`;
+
 type Props = {};
 
 const SignInPage = (props: Props) => {
@@ -96,16 +114,19 @@ const SignInPage = (props: Props) => {
   return (
     <Container>
       <Wrapper>
-        <Logo variant="horizontal" width="200px" />
+        <LogoWrapper>
+          <Logo variant="square" width="40px" />
+          <Title>Flow</Title>
+        </LogoWrapper>
         {!user ? (
           <>
             <Desc>
-              Grindery Nexus is the easiest way for people and organizations to
-              connect Apps and dApps across chains and protocols.
+              We are the easiest way for people and organizations to connect
+              Apps and dApps across chains and protocols.
             </Desc>
             <ConnectButton />
             <Disclaimer>
-              Grindery Ping uses{" "}
+              Grindery Flow uses{" "}
               <a href="https://metamask.io/" target="_blank" rel="noreferrer">
                 MetaMask
               </a>{" "}

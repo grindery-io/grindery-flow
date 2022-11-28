@@ -1,13 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-import { IconButton } from "grindery-ui";
+import { IconButton, AppsMenu } from "grindery-ui";
 import useAppContext from "../../hooks/useAppContext";
 import Logo from "./Logo";
-import { ICONS, SCREEN } from "../../constants";
+import { GRINDERY_APPS, ICONS, SCREEN } from "../../constants";
 import useWindowSize from "../../hooks/useWindowSize";
 import { useMatch, useNavigate } from "react-router-dom";
 import UserMenu from "./UserMenu";
 import WorkspaceSelector from "./WorkspaceSelector";
+import { useGrinderyNexus } from "use-grindery-nexus";
 
 const Wrapper = styled.div`
   border-bottom: 1px solid #dcdcdc;
@@ -32,7 +33,7 @@ const Wrapper = styled.div`
 `;
 
 const UserWrapper = styled.div`
-  margin-left: auto;
+  margin-left: 0;
   order: 4;
   @media (min-width: ${SCREEN.TABLET}) {
     order: 4;
@@ -87,9 +88,39 @@ const WorkspaceSelectorWrapper = styled.div`
   }
 `;
 
+const AppsMenuWrapper = styled.div`
+  margin-left: auto;
+  order: 3;
+  @media (min-width: ${SCREEN.TABLET}) {
+    order: 3;
+  }
+`;
+
+const ConnectWrapper = styled.div`
+  order: 4;
+
+  & button {
+    background: #0b0d17;
+    border-radius: 5px;
+    box-shadow: none;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 150%;
+    color: #ffffff;
+    padding: 8px 24px;
+    cursor: pointer;
+    border: none;
+
+    &:hover {
+      box-shadow: 0px 4px 8px rgba(106, 71, 147, 0.1);
+    }
+  }
+`;
+
 type Props = {};
 
 const AppHeader = (props: Props) => {
+  const { connect } = useGrinderyNexus();
   const { user, setAppOpened, appOpened } = useAppContext();
   const { size, width } = useWindowSize();
   let navigate = useNavigate();
@@ -123,7 +154,7 @@ const AppHeader = (props: Props) => {
               navigate("/");
             }}
           >
-            Grindery Nexus
+            Flow
           </CompanyNameWrapper>
         </>
       ) : (
@@ -134,6 +165,20 @@ const AppHeader = (props: Props) => {
         <WorkspaceSelectorWrapper>
           <WorkspaceSelector />
         </WorkspaceSelectorWrapper>
+      )}
+      <AppsMenuWrapper>
+        <AppsMenu apps={GRINDERY_APPS} />
+      </AppsMenuWrapper>
+      {!user && (
+        <ConnectWrapper>
+          <button
+            onClick={() => {
+              connect();
+            }}
+          >
+            Connect wallet
+          </button>
+        </ConnectWrapper>
       )}
       {user && (
         <UserWrapper>

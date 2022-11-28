@@ -6156,10 +6156,10 @@ grindery-nexus-client@^0.9.1:
     axios "^0.27.2"
     lodash "^4.17.21"
 
-grindery-ui@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.9.0.tgz#6e77605a0be7a36363ffc9182f6be05e363094d5"
-  integrity sha512-eusElGxOfUi9hROCRcwHmE9VSteIhFo+w1f2jOJaEOjOHHj50CResDbvi8o28cMVCPOop8clz6T/F5yFdTuHWw==
+grindery-ui@^0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/grindery-ui/-/grindery-ui-0.10.1.tgz#acfb0d5724fe22bd592bb35ed2d2d3e5274d1a36"
+  integrity sha512-WyjNmWtzcFhOXPZ2RR2l7MYeaD0H3AGcL8ggFz1Gz5V9lYaPSVbdwYmJAABBJxKfva4AkQYoeOQyVvmJEimpLQ==
   dependencies:
     "@emotion/react" "^11.9.0"
     "@emotion/styled" "^11.8.1"
