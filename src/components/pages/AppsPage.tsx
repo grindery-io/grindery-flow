@@ -222,7 +222,7 @@ const AppsPage = (props: Props) => {
             value="Create New Connector"
             onClick={() => {
               window.open(
-                "https://cds.grindery.org/connector/__new__",
+                "https://network.grindery.org/connector/__new__",
                 "_blank"
               );
             }}
