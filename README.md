@@ -1,6 +1,6 @@
-# Grindery Nexus Frontend
+# Grindery Flow Frontend
 
-Live URL: [https://nexus.grindery.org/](https://nexus.grindery.org/)
+Live URL: [https://flow.grindery.org/](https://flow.grindery.org/)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -29,4 +29,4 @@ The `master` branch is deployed automatically:
 1. Merge your changes into the `master` branch
 2. Push branch to GitHub
 
-**Deployment URL: https://nexus.grindery.org/**
+**Deployment URL: https://flow.grindery.org/**

@@ -221,7 +221,10 @@ const AppsPage = (props: Props) => {
           <Button
             value="Create New Connector"
             onClick={() => {
-              navigate(`/network/connector/__new__`);
+              window.open(
+                "https://cds.grindery.org/connector/__new__",
+                "_blank"
+              );
             }}
             variant="outlined"
             color="primary"

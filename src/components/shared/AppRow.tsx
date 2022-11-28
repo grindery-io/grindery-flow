@@ -111,10 +111,11 @@ const AppRow = (props: Props) => {
       key: "clone",
       label: "Clone connector",
       onClick: () => {
-        navigate(
-          `/network/clone/${item.key}?source=nexus&name=${encodeURIComponent(
-            item.name
-          )}`
+        window.open(
+          `https://cds.grindery.org/clone/${
+            item.key
+          }?source=nexus&name=${encodeURIComponent(item.name)}`,
+          "_blank"
         );
       },
     },
@@ -129,7 +130,7 @@ const AppRow = (props: Props) => {
       key: "edit",
       label: "Edit connector",
       onClick: () => {
-        navigate(`/network/connector/${item.key}`);
+        window.open(`https://cds.grindery.org/connector/${item.key}`, "_blank");
       },
     });
   }
