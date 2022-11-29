@@ -113,7 +113,10 @@ const WorkflowInputField = ({
   const fieldOptions = inputField.choices?.map((choice) => ({
     value: typeof choice !== "string" ? choice.value : choice,
     label: typeof choice !== "string" ? choice.label : choice,
-    icon: currentConnector ? currentConnector.icon || "" : "",
+    icon:
+      (typeof choice !== "string" && choice.icon) ||
+      currentConnector?.icon ||
+      "",
   }));
 
   const booleanOptions = [

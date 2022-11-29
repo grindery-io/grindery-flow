@@ -6,7 +6,7 @@ const Container = styled.div`
   position: fixed;
   left: 76px;
   top: 25px;
-  z-index: 99;
+  z-index: 1220;
   font-weight: 700;
   font-size: 20px;
   line-height: 130%;

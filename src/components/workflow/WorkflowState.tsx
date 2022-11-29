@@ -6,9 +6,9 @@ import useWorkflowContext from "../../hooks/useWorkflowContext";
 
 const Container = styled.div`
   position: fixed;
-  right: 175px;
-  top: 20px;
-  z-index: 99;
+  right: 220px;
+  top: 18px;
+  z-index: 1220;
 
   & .MuiButtonBase-root.MuiSwitch-switchBase.Mui-checked {
     transform: translateX(28px) !important;

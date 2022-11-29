@@ -157,7 +157,8 @@ export const WorkflowStepContextProvider = ({
   const getConnector = async (key: string) => {
     const res = await client?.getDriver(
       key,
-      isLocalOrStaging ? "staging" : undefined
+      isLocalOrStaging ? "staging" : undefined,
+      false
     );
     if (res) {
       setConnector(res);
@@ -166,6 +167,8 @@ export const WorkflowStepContextProvider = ({
       setSavedCredentials([]);
     }
   };
+
+  console.log(`step ${step} connector`, connector);
 
   const listCredentials = async () => {
     const res = await client?.listAuthCredentials(
