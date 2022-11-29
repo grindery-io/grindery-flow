@@ -403,11 +403,11 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   }, [user, accessAllowed, client, workspace]);
 
   useEffect(() => {
-    if (user) {
+    if (user && client) {
       verifyUser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, client]);
 
   // verify user on success authentication
   useEffect(() => {
