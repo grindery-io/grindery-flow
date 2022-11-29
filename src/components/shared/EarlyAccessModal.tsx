@@ -163,17 +163,19 @@ const EarlyAccessModal = (props: Props) => {
   const requestEarlyAccess = async () => {
     setLoading(true);
     setError("");
-    const res = await client?.requestEarlyAccess(email).catch((err) => {
-      console.error(
-        "or_requestEarlyAccess error",
-        err.response.data.error.message
-      );
-      setError(
-        err.response.data.error.message || "Server error, please, try again"
-      );
+    const res = await client
+      ?.requestEarlyAccess(email, "https://flow.grindery.org")
+      .catch((err) => {
+        console.error(
+          "or_requestEarlyAccess error",
+          err.response.data.error.message
+        );
+        setError(
+          err.response.data.error.message || "Server error, please, try again"
+        );
 
-      setLoading(false);
-    });
+        setLoading(false);
+      });
     if (res) {
       setSuccess(
         "We've sent you an email with a personal link, to complete the process and get early access to our platfrom please go to your email and click on the link to verify it's you."
