@@ -209,8 +209,8 @@ const EarlyAccessModal = (props: Props) => {
             <>
               <FormTitle>Get early access!</FormTitle>
               <FormDesc>
-                Grindery Nexus is currently in private beta. If you would like
-                to get early access please provide us with an email address to
+                Grindery Flow is currently in private beta. If you would like to
+                get early access please provide us with an email address to
                 notify you as soon as a slot become available
               </FormDesc>
               <TextInput
