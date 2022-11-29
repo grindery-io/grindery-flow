@@ -194,7 +194,7 @@ const WorkflowsPage = (props: Props) => {
           triggerAppName:
             connectors.find((c) => c.key === item.trigger.connector)?.name ||
             null,
-          actionsAppName: item.actions
+          actionsAppName: (item.actions || [])
             .map(
               (action: any) =>
                 connectors.find((a) => a.key === action.connector)?.name
@@ -280,13 +280,13 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
   const triggerAppName =
     connectors.find((t) => t.key === item.trigger.connector)?.name || null;
 
-  const actionsIcons = item.actions
+  const actionsIcons = (item.actions || [])
     .map(
       (action: any) => connectors.find((a) => a.key === action.connector)?.icon
     )
     .filter((a: any) => a);
 
-  const actionsAppName = item.actions
+  const actionsAppName = (item.actions || [])
     .map(
       (action: any) => connectors.find((a) => a.key === action.connector)?.name
     )
@@ -459,7 +459,7 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
                       key: "move",
                       label: "Move to workspace",
                       children: [
-                        ...workspaces
+                        ...(workspaces || [])
                           .filter((ws) => ws.key !== workspace)
                           .map((ws) => ({
                             key: ws.key,
