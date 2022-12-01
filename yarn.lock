@@ -6148,10 +6148,10 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, 
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
 
-grindery-nexus-client@^0.9.3:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/grindery-nexus-client/-/grindery-nexus-client-0.9.3.tgz#6ad0fa4c07a31a3990fca20a6f9e349c5c7b41da"
-  integrity sha512-1NPGzJ9XnyGYgXaHpt7ZvajdN9zOAJICjEgSEzB51j1niZpyWpkv0j9ugS8l3/6CLq2/DeKmYflvCMjJldKbTw==
+grindery-nexus-client@^0.9.5:
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/grindery-nexus-client/-/grindery-nexus-client-0.9.5.tgz#9b3f6aa6b6f25592f965a73532b802ed7a1b0ff8"
+  integrity sha512-NhdA2EcsXjId82nDdlNzaQ/uyxMtz07Njon4i7YwWL26Z/bxAkFtD9+J9gwunehW4kcUj9O0MBvKrM7DTG2isg==
   dependencies:
     axios "^0.27.2"
     lodash "^4.17.21"
