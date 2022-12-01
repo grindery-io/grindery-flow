@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Menu, Text, IconButton } from "grindery-ui";
 import DataBox from "./DataBox";
-import { ICONS } from "../../constants";
+import { ICONS, isLocalOrStaging } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import { useNavigate } from "react-router";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
@@ -112,7 +112,9 @@ const AppRow = (props: Props) => {
       label: "Clone connector",
       onClick: () => {
         window.open(
-          `https://network.grindery.org/clone/${
+          `https://network${
+            isLocalOrStaging ? "-staging" : ""
+          }.grindery.org/clone/${
             item.key
           }?source=nexus&name=${encodeURIComponent(item.name)}`,
           "_blank"
@@ -131,7 +133,9 @@ const AppRow = (props: Props) => {
       label: "Edit connector",
       onClick: () => {
         window.open(
-          `https://network.grindery.org/connector/${item.key}`,
+          `https://network${
+            isLocalOrStaging ? "-staging" : ""
+          }.grindery.org/connector/${item.key}`,
           "_blank"
         );
       },

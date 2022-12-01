@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Tabs } from "grindery-ui";
-import { NOT_READY_ACTIONS, NOT_READY_TRIGGERS, SCREEN } from "../../constants";
+import {
+  isLocalOrStaging,
+  NOT_READY_ACTIONS,
+  NOT_READY_TRIGGERS,
+  SCREEN,
+} from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -222,7 +227,9 @@ const AppsPage = (props: Props) => {
             value="Create New Connector"
             onClick={() => {
               window.open(
-                "https://network.grindery.org/connector/__new__",
+                `https://network${
+                  isLocalOrStaging ? "-staging" : ""
+                }.grindery.org/connector/__new__`,
                 "_blank"
               );
             }}
