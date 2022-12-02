@@ -1,5 +1,9 @@
 # Grindery Flow Frontend
 
+<p align="center">
+    <img src="./public/images/welcome.svg?raw=true" alt="Grindery Flow welcome image" />
+</p>
+
 Live URL: [https://flow.grindery.org/](https://flow.grindery.org/)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
