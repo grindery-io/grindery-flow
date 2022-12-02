@@ -168,8 +168,6 @@ export const WorkflowStepContextProvider = ({
     }
   };
 
-  console.log(`step ${step} connector`, connector);
-
   const listCredentials = async () => {
     const res = await client?.listAuthCredentials(
       connector?.key || "",

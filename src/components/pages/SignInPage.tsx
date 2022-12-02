@@ -5,29 +5,24 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import ConnectButton from "../shared/ConnectButton";
 import { SCREEN } from "../../constants";
 import Logo from "../shared/Logo";
-import EarlyAccessModal from "../shared/EarlyAccessModal";
-import useAppContext from "../../hooks/useAppContext";
+import SignInForm from "../shared/SignInForm";
+import useSignInContext from "../../hooks/useSignInContext";
 
 const Container = styled.div`
-  @media (min-width: ${SCREEN.TABLET}) {
-    padding: 60px 106px;
-    margin: 40px 20px 0;
-  }
+  padding: 80px 20px 60px;
 `;
 
 const Wrapper = styled.div`
-  padding: 24px 20px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
   flex-wrap: nowrap;
-  min-height: calc(100vh - 150px);
+  min-height: calc(100vh - 140px);
   @media (min-width: ${SCREEN.TABLET}) {
-    padding: 40px 0;
     margin: 0;
-    height: calc(100vh - 280px);
-    max-height: calc(100vh - 350px);
+    height: calc(100vh - 180px);
+    max-height: calc(100vh - 140px);
     min-height: auto;
   }
 `;
@@ -79,7 +74,7 @@ type Props = {};
 
 const SignInPage = (props: Props) => {
   const { user, code, disconnect } = useGrinderyNexus();
-  const { accessAllowed, verifying } = useAppContext();
+  const { accessAllowed, verifying } = useSignInContext();
   let [searchParams] = useSearchParams();
   let navigate = useNavigate();
   const redirect_uri = searchParams.get("redirect_uri");
@@ -111,7 +106,7 @@ const SignInPage = (props: Props) => {
         } else {
           navigate("/dashboard");
         }
-      }, 1000);
+      }, 3000);
     }
   }, [
     user,
@@ -165,7 +160,7 @@ const SignInPage = (props: Props) => {
           <>
             {user && emailSubmitted && <Desc>Redirecting...</Desc>}
             {user && !accessAllowed && !verifying && (
-              <EarlyAccessModal
+              <SignInForm
                 onSubmit={() => {
                   setEmailSubmitted(true);
                 }}

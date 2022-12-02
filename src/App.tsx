@@ -4,19 +4,24 @@ import GrinderyNexusContextProvider from "use-grindery-nexus";
 import { ThemeProvider } from "grindery-ui";
 import SignInPage from "./components/pages/SignInPage";
 import NexusStack from "./components/pages/NexusStack";
-import AppContextProvider from "./context/AppContext";
+import SignInContextProvider from "./context/SignInContext";
 
 function App() {
   return (
     <ThemeProvider>
       <GrinderyNexusContextProvider>
         <BrowserRouter>
-          <AppContextProvider>
-            <Routes>
-              <Route path="/sign-in" element={<SignInPage />}></Route>
-              <Route path="*" element={<NexusStack />}></Route>
-            </Routes>
-          </AppContextProvider>
+          <Routes>
+            <Route
+              path="/sign-in"
+              element={
+                <SignInContextProvider>
+                  <SignInPage />
+                </SignInContextProvider>
+              }
+            ></Route>
+            <Route path="*" element={<NexusStack />}></Route>
+          </Routes>
         </BrowserRouter>
       </GrinderyNexusContextProvider>
     </ThemeProvider>
