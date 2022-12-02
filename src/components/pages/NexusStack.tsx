@@ -1,5 +1,4 @@
 import React from "react";
-import AppContextProvider from "../../context/AppContext";
 import { Route, Routes } from "react-router-dom";
 import RootStack from "./RootStack";
 import AuthPage from "./AuthPage";
@@ -12,15 +11,13 @@ type Props = {};
 const NexusStack = (props: Props) => {
   return (
     <WorkspaceContextProvider>
-      <AppContextProvider>
-        <EarlyAccessModal />
-        <Routes>
-          <Route path="/auth" element={<AuthPage />}></Route>
-          <Route path="/github/auth" element={<AuthPage />}></Route>
-          <Route path="/network/*" element={<NetworkStack />} />
-          <Route path="*" element={<RootStack />}></Route>
-        </Routes>
-      </AppContextProvider>
+      <EarlyAccessModal />
+      <Routes>
+        <Route path="/auth" element={<AuthPage />}></Route>
+        <Route path="/github/auth" element={<AuthPage />}></Route>
+        <Route path="/network/*" element={<NetworkStack />} />
+        <Route path="*" element={<RootStack />}></Route>
+      </Routes>
     </WorkspaceContextProvider>
   );
 };

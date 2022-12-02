@@ -134,7 +134,9 @@ const SuccessMessage = styled.div`
   white-space: pre-wrap;
 `;
 
-type Props = {};
+type Props = {
+  onSubmit?: () => void;
+};
 
 const EarlyAccessModal = (props: Props) => {
   const { user, accessAllowed, verifying, client } = useAppContext();
@@ -180,6 +182,9 @@ const EarlyAccessModal = (props: Props) => {
       setSuccess(
         "We've sent you an email with a personal link, to complete the process and get early access to our platfrom please go to your email and click on the link to verify it's you."
       );
+      if (props.onSubmit) {
+        props.onSubmit();
+      }
       //"Your request will be manually reviewed. We'll notify you by email as soon as we have an available opening."
     }
 

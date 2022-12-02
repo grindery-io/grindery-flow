@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useGrinderyNexus } from "use-grindery-nexus";
 import styled from "styled-components";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ConnectButton from "../shared/ConnectButton";
 import { SCREEN } from "../../constants";
 import Logo from "../shared/Logo";
+import EarlyAccessModal from "../shared/EarlyAccessModal";
+import useAppContext from "../../hooks/useAppContext";
 
 const Container = styled.div`
   @media (min-width: ${SCREEN.TABLET}) {
@@ -77,11 +79,13 @@ type Props = {};
 
 const SignInPage = (props: Props) => {
   const { user, code, disconnect } = useGrinderyNexus();
+  const { accessAllowed, verifying } = useAppContext();
   let [searchParams] = useSearchParams();
   let navigate = useNavigate();
   const redirect_uri = searchParams.get("redirect_uri");
   const response_type = searchParams.get("response_type");
   const state = searchParams.get("state");
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
 
   useEffect(() => {
     if (user && !code) {
@@ -90,7 +94,7 @@ const SignInPage = (props: Props) => {
   }, [user, code]);
 
   useEffect(() => {
-    if (user && code) {
+    if (user && code && emailSubmitted && !verifying) {
       setTimeout(() => {
         if (
           response_type &&
@@ -109,7 +113,21 @@ const SignInPage = (props: Props) => {
         }
       }, 1000);
     }
-  }, [user, redirect_uri, navigate, code, response_type]);
+  }, [
+    user,
+    redirect_uri,
+    navigate,
+    code,
+    response_type,
+    emailSubmitted,
+    verifying,
+  ]);
+
+  useEffect(() => {
+    if (accessAllowed) {
+      setEmailSubmitted(true);
+    }
+  }, [accessAllowed]);
 
   return (
     <Container>
@@ -130,13 +148,30 @@ const SignInPage = (props: Props) => {
               <a href="https://metamask.io/" target="_blank" rel="noreferrer">
                 MetaMask
               </a>{" "}
+              and{" "}
+              <a
+                href="https://developers.flow.com/tools/fcl-js"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Flow Client Library
+              </a>{" "}
               to authenticate users.
             </Disclaimer>
           </>
         ) : user && !code ? (
           <Desc>Loading...</Desc>
         ) : (
-          <Desc>Redirecting...</Desc>
+          <>
+            {user && emailSubmitted && <Desc>Redirecting...</Desc>}
+            {user && !accessAllowed && !verifying && (
+              <EarlyAccessModal
+                onSubmit={() => {
+                  setEmailSubmitted(true);
+                }}
+              />
+            )}
+          </>
         )}
       </Wrapper>
     </Container>
