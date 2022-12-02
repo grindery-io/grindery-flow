@@ -1,14 +1,16 @@
-# Grindery Flow Frontend
+# Grindery Flow
 
 <p align="center">
     <img src="./public/images/welcome.svg?raw=true" alt="Grindery Flow welcome image" />
 </p>
 
+Grindery Flow is the easiest way for people and organizations to connect Apps and dApps across chains and protocols.
+
 Live URL: [https://flow.grindery.org/](https://flow.grindery.org/)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Development
 
-## Available Scripts
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 In the project directory, you can run:
 
