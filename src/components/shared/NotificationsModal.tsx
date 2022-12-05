@@ -78,9 +78,9 @@ const NotificationsModal = (props: Props) => {
 
   return state.browserIsSupported && user && isShowing && accessAllowed ? (
     <Container>
-      <Title>Get Alerts from Nexus!</Title>
+      <Title>Get Alerts from Grindery!</Title>
       <Description>
-        Nexus can send you alerts when your workflows fail, bug fixes become
+        Grindery can send you alerts when your workflows fail, bug fixes become
         available and new features are released.
       </Description>
       <Buttons>
