@@ -129,9 +129,6 @@ const SignInForm = (props: Props) => {
       setSuccess(
         `We just sent a confirmation email to ${email}. Please check your email and confirm to activate your account.`
       );
-      if (props.onSubmit) {
-        props.onSubmit();
-      }
     }
 
     setLoading(false);
@@ -155,6 +152,16 @@ const SignInForm = (props: Props) => {
               />
               <FormTitle>Thank you!</FormTitle>
               <SuccessMessage>{success}</SuccessMessage>
+              {props.onSubmit && (
+                <Button
+                  value="Continue"
+                  onClick={() => {
+                    if (props.onSubmit) {
+                      props.onSubmit();
+                    }
+                  }}
+                />
+              )}
             </>
           ) : (
             <>

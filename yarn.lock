@@ -6148,12 +6148,13 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, 
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
 
-grindery-nexus-client@^0.9.5:
-  version "0.9.5"
-  resolved "https://registry.yarnpkg.com/grindery-nexus-client/-/grindery-nexus-client-0.9.5.tgz#9b3f6aa6b6f25592f965a73532b802ed7a1b0ff8"
-  integrity sha512-NhdA2EcsXjId82nDdlNzaQ/uyxMtz07Njon4i7YwWL26Z/bxAkFtD9+J9gwunehW4kcUj9O0MBvKrM7DTG2isg==
+grindery-nexus-client@^0.9.6:
+  version "0.9.6"
+  resolved "https://registry.yarnpkg.com/grindery-nexus-client/-/grindery-nexus-client-0.9.6.tgz#0d1b2e6cc76ca68d1575516034d168ed8f9b2494"
+  integrity sha512-mRYkd5Fc6wX5zp5ZtbR3XCNYdkPitK/wuuA/Y5v6pcKmbQo3tS0EqSWLQf2bZmre0ceeGiPhx6DGapZEsMBHpg==
   dependencies:
     axios "^0.27.2"
+    jwt-decode "^3.1.2"
     lodash "^4.17.21"
 
 grindery-ui@^0.10.1:
@@ -7406,6 +7407,11 @@ jszip@^3.10.0:
     pako "~1.0.2"
     readable-stream "~2.3.6"
     setimmediate "^1.0.5"
+
+jwt-decode@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-3.1.2.tgz#3fb319f3675a2df0c2895c8f5e9fa4b67b04ed59"
+  integrity sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==
 
 kind-of@^6.0.2:
   version "6.0.3"

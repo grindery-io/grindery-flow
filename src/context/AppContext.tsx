@@ -188,14 +188,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
     setConnectors(
       _.orderBy(
-        (stagedCdss.length > 0 ? stagedCdss : cdss).filter(
-          (cds: Connector) =>
-            cds &&
-            (!cds.access ||
-              cds.access === "Public" ||
-              (cds.access === "Private" && cds.user === user) ||
-              (cds.access === "Workspace" && cds.workspace === workspace))
-        ),
+        stagedCdss.length > 0 ? stagedCdss : cdss,
+
         [(cds) => cds.name.toLowerCase()],
         ["asc"]
       )

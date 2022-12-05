@@ -106,7 +106,7 @@ const SignInPage = (props: Props) => {
         } else {
           navigate("/dashboard");
         }
-      }, 3000);
+      }, 200);
     }
   }, [
     user,
@@ -159,7 +159,7 @@ const SignInPage = (props: Props) => {
         ) : (
           <>
             {user && emailSubmitted && <Desc>Redirecting...</Desc>}
-            {user && !accessAllowed && !verifying && (
+            {user && !accessAllowed && !verifying && !emailSubmitted && (
               <SignInForm
                 onSubmit={() => {
                   setEmailSubmitted(true);
