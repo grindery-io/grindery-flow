@@ -191,7 +191,7 @@ const RootStack = (props: Props) => {
                 {renderContent()}
               </ContentWrapper>
             )}
-            {user && (
+            {user && !isMatchingWorkflowNew && !isMatchingWorkflowEdit && (
               <TabsWrapper
                 style={{
                   maxWidth:

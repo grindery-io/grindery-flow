@@ -3,12 +3,17 @@ import styled from "styled-components";
 import { Switch, Snackbar } from "grindery-ui";
 import useAppContext from "../../hooks/useAppContext";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
+import { SCREEN } from "../../constants";
 
 const Container = styled.div`
   position: fixed;
-  right: 220px;
+  right: 140px;
   top: 18px;
   z-index: 1220;
+
+  @media (min-width: ${SCREEN.TABLET}) {
+    right: 180px;
+  }
 
   & .MuiButtonBase-root.MuiSwitch-switchBase.Mui-checked {
     transform: translateX(28px) !important;

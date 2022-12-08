@@ -1,39 +1,54 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { SCREEN } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 
 const Container = styled.div`
-  position: fixed;
-  left: 76px;
-  top: 25px;
-  z-index: 1220;
+  position: relative;
+  margin: 20px;
   font-weight: 700;
   font-size: 20px;
   line-height: 130%;
   color: #0b0d17;
+  overflow: auto;
 
   span {
-    white-space: nowrap;
     font-weight: 700;
     font-size: 20px;
     line-height: 130%;
     color: #0b0d17;
+    overflow: initial;
+  }
+
+  @media (min-width: ${SCREEN.TABLET}) {
+    position: fixed;
+    top: 25px;
+    left: 76px;
+    z-index: 1220;
+    margin: 0px;
+    overflow: initial;
+
+    span {
+      white-space: nowrap;
+    }
   }
 `;
 const InputWrapper = styled.div`
   position: relative;
-  &:hover:after,
-  &:focus-within:after {
-    content: "";
-    display: block;
-    width: 12px;
-    height: 12px;
-    position: absolute;
-    right: 1px;
-    background-image: url(/images/icons/pencil.svg);
-    background-position: center center;
-    background-repeat: no-repeat;
-    top: 7px;
+  @media (min-width: ${SCREEN.TABLET}) {
+    &:hover:after,
+    &:focus-within:after {
+      content: "";
+      display: block;
+      width: 12px;
+      height: 12px;
+      position: absolute;
+      right: 1px;
+      background-image: url(/images/icons/pencil.svg);
+      background-position: center center;
+      background-repeat: no-repeat;
+      top: 7px;
+    }
   }
 `;
 const Input = styled.input`

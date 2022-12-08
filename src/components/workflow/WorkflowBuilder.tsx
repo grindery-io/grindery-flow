@@ -17,6 +17,8 @@ const Wrapper = styled.div`
   align-items: center;
   jsutify-content: flex-start;
   flex-wrap: nowrap;
+  margin: 0 auto;
+  padding: 0 16px 16px;
 
   @media (min-width: ${SCREEN.TABLET}) {
     padding: 0 0 16px;

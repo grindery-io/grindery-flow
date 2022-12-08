@@ -14,9 +14,11 @@ import AppRow from "../shared/AppRow";
 import Button from "../shared/Button";
 
 const RootWrapper = styled.div`
+  max-width: calc(100vw - 60px);
   @media (min-width: ${SCREEN.TABLET}) {
     margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
+    max-width: auto;
   }
   @media (min-width: ${SCREEN.DESKTOP}) {
     margin: 20px 20px 0;
