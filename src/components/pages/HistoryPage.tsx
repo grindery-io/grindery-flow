@@ -16,9 +16,11 @@ const statusIconMapping: { [key: string]: string } = {
 };
 
 const RootWrapper = styled.div`
+  max-width: 100%;
   @media (min-width: ${SCREEN.TABLET}) {
     margin: 40px 20px 0;
     border: 1px solid #dcdcdc;
+    max-width: auto;
   }
   @media (min-width: ${SCREEN.DESKTOP}) {
     margin: 20px 20px 0;
@@ -115,7 +117,8 @@ const ItemTitleWrapper = styled.div`
   justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 4px;
-  min-width: 70px;
+  min-width: 20px;
+  overflow: hidden;
 
   @media (min-width: ${SCREEN.TABLET}) {
     gap: 8px;
@@ -150,6 +153,7 @@ const ItemAppsWrapper = styled.div`
   flex-wrap: nowrap;
   gap: 4px;
   margin-left: 0;
+  overflow: hidden;
 `;
 
 const ItemWorkflowName = styled.div`
@@ -158,9 +162,6 @@ const ItemWorkflowName = styled.div`
   font-size: 12px;
   line-height: 160%;
   color: #000000;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   max-width: calc(100% - 64px);
 `;
 
@@ -183,11 +184,20 @@ const ItemDate = styled.div`
   line-height: 150%;
   color: #758796;
   margin-left: 10px;
-  min-width: 110px;
+  min-width: 60px;
+  @media (min-width: ${SCREEN.TABLET}) {
+    min-width: 110px;
+  }
 `;
 
 const TitleWrapper = styled.div`
-  margin-right: 8px;
+  display: none;
+
+  @media (min-width: ${SCREEN.TABLET}) {
+    display: block;
+    margin-right: 8px;
+    overflow: hidden;
+  }
 `;
 
 type Props = {};

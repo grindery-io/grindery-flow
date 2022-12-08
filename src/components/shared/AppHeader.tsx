@@ -81,38 +81,51 @@ const BackWrapper = styled.div`
 `;
 
 const WorkspaceSelectorWrapper = styled.div`
-  margin-left: 20px;
   order: 2;
+  margin-left: 5px;
   @media (min-width: ${SCREEN.TABLET}) {
     order: 3;
+    margin-left: 20px;
   }
 `;
 
 const AppsMenuWrapper = styled.div`
   margin-left: auto;
   order: 3;
+
+  @media (max-width: ${SCREEN.TABLET}) {
+    & .apps-menu__dropdown {
+      min-width: 220px;
+      max-width: 220px;
+    }
+  }
+
   @media (min-width: ${SCREEN.TABLET}) {
     order: 3;
   }
 `;
 
 const ConnectWrapper = styled.div`
-  order: 4;
+  display: none;
+  @media (min-width: ${SCREEN.TABLET}) {
+    order: 4;
+    display: block;
 
-  & button {
-    background: #0b0d17;
-    border-radius: 5px;
-    box-shadow: none;
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 150%;
-    color: #ffffff;
-    padding: 8px 24px;
-    cursor: pointer;
-    border: none;
+    & button {
+      background: #0b0d17;
+      border-radius: 5px;
+      box-shadow: none;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 150%;
+      color: #ffffff;
+      padding: 8px 24px;
+      cursor: pointer;
+      border: none;
 
-    &:hover {
-      box-shadow: 0px 4px 8px rgba(106, 71, 147, 0.1);
+      &:hover {
+        box-shadow: 0px 4px 8px rgba(106, 71, 147, 0.1);
+      }
     }
   }
 `;
@@ -166,10 +179,13 @@ const AppHeader = (props: Props) => {
           <WorkspaceSelector />
         </WorkspaceSelectorWrapper>
       )}
-      <AppsMenuWrapper>
-        <AppsMenu apps={GRINDERY_APPS} />
-      </AppsMenuWrapper>
-      {!user && (
+      {!matchNewWorfklow && (
+        <AppsMenuWrapper>
+          <AppsMenu apps={GRINDERY_APPS} />
+        </AppsMenuWrapper>
+      )}
+
+      {!user && "ethereum" in window && (
         <ConnectWrapper>
           <button
             onClick={() => {
@@ -181,7 +197,7 @@ const AppHeader = (props: Props) => {
         </ConnectWrapper>
       )}
       {user && (
-        <UserWrapper>
+        <UserWrapper style={{ marginLeft: matchNewWorfklow ? "auto" : 0 }}>
           <UserMenu />
         </UserWrapper>
       )}

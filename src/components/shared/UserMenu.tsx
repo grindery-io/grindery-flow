@@ -8,6 +8,7 @@ import { useGrinderyNexus } from "use-grindery-nexus";
 import { Snackbar } from "grindery-ui";
 import { useNavigate } from "react-router-dom";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
+import useWindowSize from "../../hooks/useWindowSize";
 
 const UserContainer = styled.div`
   position: relative;
@@ -130,6 +131,7 @@ const UserMenu = (props: Props) => {
   const { workspace } = useWorkspaceContext();
   const [copied, setCopied] = useState(false);
   let navigate = useNavigate();
+  const { width } = useWindowSize();
 
   return address ? (
     <UserContainer>
@@ -151,9 +153,9 @@ const UserMenu = (props: Props) => {
             <Jdenticon size="20" value={encodeURIComponent(address)} />
           </UserStatus>
           <UserId className={mode}>
-            {address.substring(0, 6) +
+            {address.substring(0, width > 576 ? 6 : 4) +
               "..." +
-              address.substring(address.length - 4)}
+              address.substring(address.length - (width > 576 ? 4 : 2))}
           </UserId>
         </UserWrapper>
 
