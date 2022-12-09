@@ -10516,10 +10516,10 @@ use-composed-ref@^1.3.0:
   resolved "https://registry.yarnpkg.com/use-composed-ref/-/use-composed-ref-1.3.0.tgz#3d8104db34b7b264030a9d916c5e94fbe280dbda"
   integrity sha512-GLMG0Jc/jiKov/3Ulid1wbv3r54K9HlMW29IWcDFPEqFkSO2nS0MuefWgMJpeHQ9YJeXDL3ZUF+P3jdXlZX/cQ==
 
-use-grindery-nexus@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/use-grindery-nexus/-/use-grindery-nexus-0.4.2.tgz#a6b7bb22e16f95c47aff45ecb929a03cb3ecb653"
-  integrity sha512-9KRvJeKs+ssT5DsoofYsb2IxC2jGzvlDKnqee/H6I9cdzU5lke4UovXi0W6dpg/0LnGDK6zKMthGaPrzlxoBHw==
+use-grindery-nexus@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/use-grindery-nexus/-/use-grindery-nexus-0.4.3.tgz#95bdd8b304d96cf3530656566fe1576db5cb26fe"
+  integrity sha512-F9UwLusXsHxTeZlcDmG7yx85IgdrVfaMLqtctXEmtwGgx9mHIqymOF2R0ZPij9/RU5SCpvuFX/JsFQ+969HvPA==
   dependencies:
     "@onflow/fcl" "^1.2.1"
     bignumber.js "^9.0.2"
