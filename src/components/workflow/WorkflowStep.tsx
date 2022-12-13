@@ -24,7 +24,6 @@ const Container = styled.div`
 
 const Containerinner = styled.div`
   border-radius: 16px;
-  overflow: hidden;
 `;
 
 type Props = {

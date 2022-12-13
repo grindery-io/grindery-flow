@@ -129,17 +129,19 @@ const SignInPage = (props: Props) => {
       <Wrapper>
         <LogoWrapper>
           <Logo variant="square" width="40px" />
-          <Title>Flow</Title>
+          <Title>Gateway</Title>
         </LogoWrapper>
         {!user ? (
           <>
             <Desc>
-              We are the easiest way for people and organizations to connect
-              Apps and dApps across chains and protocols.
+              Grindery Gateway allows you to implement Zapier workflows that
+              read and write data from over 10 blockchains without a single line
+              of code and without having any tokens. The easiest way to Web3 is
+              just one click away!
             </Desc>
             <ConnectButton />
             <Disclaimer>
-              Grindery Flow uses{" "}
+              Grindery Gateway uses{" "}
               <a href="https://metamask.io/" target="_blank" rel="noreferrer">
                 MetaMask
               </a>{" "}
