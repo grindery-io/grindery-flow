@@ -113,7 +113,11 @@ const SignInForm = (props: Props) => {
     setLoading(true);
     setError("");
     const res = await client
-      ?.requestEarlyAccess(email, "https://flow.grindery.org")
+      ?.requestEarlyAccess(
+        email,
+        "https://nexus.grindery.org/sign-in",
+        "Requested to Gateway"
+      )
       .catch((err) => {
         console.error(
           "or_requestEarlyAccess error",
