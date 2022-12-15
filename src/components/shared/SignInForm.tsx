@@ -115,7 +115,7 @@ const SignInForm = (props: Props) => {
     const res = await client
       ?.requestEarlyAccess(
         email,
-        "https://nexus.grindery.org/sign-in",
+        "nexus.grindery.org/sign-in",
         "Requested to Gateway"
       )
       .catch((err) => {
