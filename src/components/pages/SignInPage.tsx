@@ -7,6 +7,7 @@ import { SCREEN } from "../../constants";
 import Logo from "../shared/Logo";
 import SignInForm from "../shared/SignInForm";
 import useSignInContext from "../../hooks/useSignInContext";
+import ConnectMetamask from "../shared/ConnectMetamask";
 
 const Container = styled.div`
   padding: 80px 20px 60px;
@@ -139,19 +140,11 @@ const SignInPage = (props: Props) => {
               of code and without having any tokens. The easiest way to Web3 is
               just one click away!
             </Desc>
-            <ConnectButton />
+            <ConnectMetamask />
             <Disclaimer>
               Grindery Gateway uses{" "}
               <a href="https://metamask.io/" target="_blank" rel="noreferrer">
                 MetaMask
-              </a>{" "}
-              and{" "}
-              <a
-                href="https://developers.flow.com/tools/fcl-js"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Flow Client Library
               </a>{" "}
               to authenticate users.
             </Disclaimer>
