@@ -6,7 +6,7 @@ import { ICONS, isLocalOrStaging } from "../../constants";
 import useWorkflowContext from "../../hooks/useWorkflowContext";
 import useAppContext from "../../hooks/useAppContext";
 import { Field } from "../../types/Connector";
-import { replaceTokens } from "../../helpers/utils";
+import { flattenObject, replaceTokens } from "../../helpers/utils";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 import logoSquare from "../../assets/images/nexus-square.svg";
 
@@ -87,6 +87,8 @@ const ButtonWrapper = styled.div`
   flex-wrap: nowrap;
   gap: 20px;
   padding-bottom: 12px;
+  position: relative;
+  z-index: 2;
 `;
 
 const SuccessButtonWrapper = styled.div`
@@ -242,10 +244,11 @@ const StepTest = ({ outputFields }: Props) => {
     operationIsAuthenticated,
     operationIsTested,
     setOperationIsTested,
+    setConnector,
   } = useWorkflowStepContext();
   const { workflow, updateWorkflow, loading, setLoading } =
     useWorkflowContext();
-  const { client } = useAppContext();
+  const { client, access_token } = useAppContext();
   const index = step - 2;
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -287,7 +290,12 @@ const StepTest = ({ outputFields }: Props) => {
     }
   }
 
-  const values = replaceTokens(workflow.actions[index]?.input || {}, context);
+  const values = replaceTokens(
+    (type === "action"
+      ? workflow.actions[index]?.input
+      : workflow.trigger.input) || {},
+    context
+  );
 
   const rows =
     operation?.operation?.inputFields?.map((field: Field) => {
@@ -308,6 +316,110 @@ const StepTest = ({ outputFields }: Props) => {
     }) ||
     [];
 
+  const testWorkflowTrigger = async () => {
+    if (workflow) {
+      if (workflow.trigger) {
+        setError(null);
+        setSuccess(null);
+        setLoading(true);
+
+        // set ws connection
+        const ws = new WebSocket("wss://orchestrator.grindery.org");
+
+        // authenticate
+        const authRequestId = new Date();
+        ws.onopen = () => {
+          ws.send(
+            JSON.stringify({
+              jsonrpc: "2.0",
+              method: "authenticate",
+              params: {
+                token: access_token || "",
+              },
+              id: authRequestId,
+            })
+          );
+        };
+
+        // listen for ws messages
+        ws.onmessage = (event) => {
+          const res = JSON.parse(event.data);
+
+          // send test request
+          if (res && res.result) {
+            ws.send(
+              JSON.stringify({
+                jsonrpc: "2.0",
+                method: "testTrigger",
+                params: {
+                  trigger: {
+                    type: "trigger",
+                    connector: workflow.trigger.connector || "",
+                    operation: workflow.trigger.operation || "",
+                    input: workflow.trigger.input || {},
+                  },
+                  environment: isLocalOrStaging ? "staging" : "production",
+                },
+                id: new Date(),
+              })
+            );
+          }
+
+          // handle test response
+          if (res && res.method && res.method === "notifySignal") {
+            const payload = flattenObject(res.params?.payload || {});
+            setSuccess("Test trigger detected!");
+            setOperationIsTested(true);
+
+            // set output sample
+            if (connector) {
+              setConnector({
+                ...connector,
+                triggers: [
+                  ...(connector.triggers || []).map((trig) => {
+                    if (trig.key === operation?.key && trig.operation) {
+                      return {
+                        ...trig,
+                        operation: {
+                          ...trig.operation,
+                          outputFields: [
+                            ...(trig.operation.outputFields || []),
+                            ...Object.keys(payload)
+                              .filter(
+                                (key) =>
+                                  (
+                                    trig.operation?.outputFields?.filter(
+                                      (out) => out && out.key === key
+                                    ) || []
+                                  ).length < 1
+                              )
+                              .map((key) => ({
+                                key: key || "",
+                                label: key || "",
+                                type: "string",
+                              })),
+                          ],
+                          sample: payload || trig.operation.sample || {},
+                        },
+                      };
+                    } else {
+                      return trig;
+                    }
+                  }),
+                ],
+                actions: [...(connector.actions || [])],
+              });
+            }
+
+            // Close ws connection
+            ws.close();
+            setLoading(false);
+          }
+        };
+      }
+    }
+  };
+
   const testWorkflowAction = async (index: number) => {
     if (workflow) {
       if (workflow.actions && workflow.actions[index]) {
@@ -327,6 +439,46 @@ const StepTest = ({ outputFields }: Props) => {
           });
 
         if (res) {
+          // set output sample
+          if (connector) {
+            setConnector({
+              ...connector,
+              triggers: [...(connector.triggers || [])],
+              actions: [
+                ...(connector.actions || []).map((act) => {
+                  if (act.key === operation?.key && act.operation) {
+                    return {
+                      ...act,
+                      operation: {
+                        ...act.operation,
+                        outputFields: [
+                          ...(act.operation.outputFields || []),
+                          ...Object.keys(res)
+                            .filter(
+                              (key) =>
+                                (
+                                  act.operation?.outputFields?.filter(
+                                    (out) => out && out.key === key
+                                  ) || []
+                                ).length < 1
+                            )
+                            .map((key) => ({
+                              key: key || "",
+                              label: key || "",
+                              type: "string",
+                            })),
+                        ],
+                        sample: res || act.operation.sample || {},
+                      },
+                    };
+                  } else {
+                    return act;
+                  }
+                }),
+              ],
+            });
+          }
+
           setSuccess("Test action sent!");
           setOperationIsTested(true);
         } else {
@@ -352,11 +504,16 @@ const StepTest = ({ outputFields }: Props) => {
   };
 
   const handleContinueClick = () => {
-    testWorkflowAction(index);
+    if (type === "action") {
+      testWorkflowAction(index);
+    } else {
+      testWorkflowTrigger();
+    }
   };
 
   const handleSkipClick = () => {
     setOperationIsTested("skipped");
+    setLoading(false);
   };
 
   const handleTestClick = () => {
@@ -426,11 +583,13 @@ const StepTest = ({ outputFields }: Props) => {
                     </IconWrapper>
                   </SuccessIcons>
                   <SuccessTitle>
-                    {type === "trigger" ? "" : "Action success!"}
+                    {type === "trigger"
+                      ? "Trigger event detected!"
+                      : "Action success!"}
                   </SuccessTitle>
                   <SuccessDescription>
                     {type === "trigger"
-                      ? ""
+                      ? "Now you can add an action."
                       : "Now you can save this workflow or add another action."}
                   </SuccessDescription>
                 </SuccessWrapper>
@@ -480,25 +639,32 @@ const StepTest = ({ outputFields }: Props) => {
                 </AlertWrapper>
               )}
               {loading && (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "32px",
-                    left: 0,
-                    textAlign: "center",
-                    color: "#8C30F5",
-                    width: "100%",
-                  }}
-                >
-                  <CircularProgress color="inherit" />
-                </div>
+                <>
+                  {type === "trigger" && (
+                    <div style={{ textAlign: "center", margin: "0 0 20px" }}>
+                      Grindery Flow is now waiting for a trigger event...
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: "32px",
+                      left: 0,
+                      textAlign: "center",
+                      color: "#8C30F5",
+                      width: "100%",
+                    }}
+                  >
+                    <CircularProgress color="inherit" />
+                  </div>
+                </>
               )}
               <ButtonWrapper>
                 <Button onClick={handleSkipClick} className="outlined">
                   Skip test
                 </Button>
                 <Button disabled={loading} onClick={handleContinueClick}>
-                  Send test!
+                  {type === "trigger" ? "Test" : "Send test"}
                 </Button>
               </ButtonWrapper>
             </>

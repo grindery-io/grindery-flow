@@ -228,9 +228,9 @@ const StepInput = ({ outputFields }: Props) => {
 
     if (typeof validated === "boolean") {
       setActiveRow(activeRow + 1);
-      if (type === "trigger") {
+      /*if (type === "trigger") {
         setActiveStep((activeStep: number) => activeStep + 1);
-      }
+      }*/
     } else {
       setErrors(validated);
       setInputError("Please complete all required fields.");
