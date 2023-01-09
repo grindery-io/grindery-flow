@@ -256,7 +256,6 @@ export const NOT_READY_TRIGGERS = [
   "parcel",
   "snapshot",
   "superfluid",
-  "syndicate",
   "xmtp",
 ];
 
