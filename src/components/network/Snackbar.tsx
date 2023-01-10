@@ -20,7 +20,7 @@ const Snackbar = (props: Props) => {
       handleClose={state.onClose}
       message={state.message}
       hideCloseButton
-      autoHideDuration={state.duration || 2000}
+      autoHideDuration={state.duration || null}
       severity={state.severity || "success"}
     />
   );

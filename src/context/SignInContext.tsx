@@ -7,6 +7,9 @@ type ContextProps = {
   accessAllowed: boolean;
   verifying: boolean;
   client: NexusClient | null;
+  isOptedIn: boolean;
+  chekingOptIn: boolean;
+  setIsOptedIn: (a: boolean) => void;
 };
 
 type SignInContextProps = {
@@ -18,27 +21,43 @@ export const SignInContext = createContext<ContextProps>({
   accessAllowed: false,
   verifying: true,
   client: null,
+  isOptedIn: false,
+  chekingOptIn: true,
+  setIsOptedIn: () => {},
 });
 
 export const SignInContextProvider = ({ children }: SignInContextProps) => {
   const { user, token } = useGrinderyNexus();
 
   const [accessAllowed, setAccessAllowed] = useState<boolean>(false);
+  const [isOptedIn, setIsOptedIn] = useState<boolean>(false);
 
   // verification state
   const [verifying, setVerifying] = useState<boolean>(true);
+
+  const [chekingOptIn, setChekingOptIn] = useState<boolean>(true);
 
   // Nexus API client
   const [client, setClient] = useState<NexusClient | null>(null);
 
   const verifyUser = async () => {
     setVerifying(true);
-    const res = await client?.isAllowedUser("gateway").catch((err) => {
-      console.error("isAllowedUser error:", err.message);
+    const res = await client?.isUserHasEmail().catch((err) => {
+      console.error("isUserHasEmail error:", err.message);
       setAccessAllowed(false);
     });
     if (res) {
       setAccessAllowed(true);
+      const optinRes = await client?.isAllowedUser().catch((err) => {
+        console.error("isAllowedUser error:", err.message);
+        setIsOptedIn(false);
+      });
+      if (optinRes) {
+        setIsOptedIn(true);
+      } else {
+        setIsOptedIn(false);
+      }
+      setChekingOptIn(false);
     } else {
       setAccessAllowed(false);
     }
@@ -73,6 +92,9 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
         accessAllowed,
         verifying,
         client,
+        isOptedIn,
+        chekingOptIn,
+        setIsOptedIn,
       }}
     >
       {children}

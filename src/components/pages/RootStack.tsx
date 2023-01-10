@@ -95,7 +95,15 @@ const OpenButtonWrapper = styled.div`
 type Props = {};
 
 const RootStack = (props: Props) => {
-  const { workflows, user, appOpened, setAppOpened } = useAppContext();
+  const {
+    workflows,
+    user,
+    appOpened,
+    setAppOpened,
+    isOptedIn,
+    chekingOptIn,
+    setIsOptedIn,
+  } = useAppContext();
   const { isSuccess, setIsSuccess, isWorkspaceSwitching } =
     useWorkspaceContext();
   const { size, width } = useWindowSize();
@@ -243,6 +251,19 @@ const RootStack = (props: Props) => {
         autoHideDuration={5000}
         severity="success"
       />
+      {size === "desktop" && (
+        <Snackbar
+          open={!chekingOptIn && !isOptedIn}
+          handleClose={(event: any, reason: any) => {
+            if (reason === "clickaway") {
+              return;
+            }
+            setIsOptedIn(true);
+          }}
+          message="We've sent you a confirmation email. Please check your email and confirm to activate your account."
+          severity="warning"
+        />
+      )}
     </>
   );
 };

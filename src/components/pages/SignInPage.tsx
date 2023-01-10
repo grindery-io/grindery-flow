@@ -8,6 +8,7 @@ import Logo from "../shared/Logo";
 import SignInForm from "../shared/SignInForm";
 import useSignInContext from "../../hooks/useSignInContext";
 import ConnectMetamask from "../shared/ConnectMetamask";
+import ConfirmEmailMessage from "../shared/ConfirmEmailMessage";
 
 const Container = styled.div`
   padding: 80px 20px 60px;
@@ -75,7 +76,8 @@ type Props = {};
 
 const SignInPage = (props: Props) => {
   const { user, code, disconnect } = useGrinderyNexus();
-  const { accessAllowed, verifying } = useSignInContext();
+  const { accessAllowed, verifying, chekingOptIn, isOptedIn, setIsOptedIn } =
+    useSignInContext();
   let [searchParams] = useSearchParams();
   let navigate = useNavigate();
   const redirect_uri = searchParams.get("redirect_uri");
@@ -90,7 +92,15 @@ const SignInPage = (props: Props) => {
   }, [user, code]);
 
   useEffect(() => {
-    if (user && code && emailSubmitted && !verifying) {
+    if (
+      user &&
+      code &&
+      emailSubmitted &&
+      !verifying &&
+      !chekingOptIn &&
+      isOptedIn
+    ) {
+      //window.open("https://gateway.grindery.org/", "_blank", "noreferrer");
       setTimeout(() => {
         if (
           response_type &&
@@ -107,7 +117,7 @@ const SignInPage = (props: Props) => {
         } else {
           navigate("/dashboard");
         }
-      }, 200);
+      }, 300);
     }
   }, [
     user,
@@ -117,6 +127,8 @@ const SignInPage = (props: Props) => {
     response_type,
     emailSubmitted,
     verifying,
+    chekingOptIn,
+    isOptedIn,
   ]);
 
   useEffect(() => {
@@ -153,7 +165,9 @@ const SignInPage = (props: Props) => {
           <Desc>Loading...</Desc>
         ) : (
           <>
-            {user && emailSubmitted && <Desc>Redirecting...</Desc>}
+            {user && emailSubmitted && !chekingOptIn && isOptedIn && (
+              <Desc>Redirecting...</Desc>
+            )}
             {user && !accessAllowed && !verifying && !emailSubmitted && (
               <SignInForm
                 onSubmit={() => {
@@ -161,6 +175,17 @@ const SignInPage = (props: Props) => {
                 }}
               />
             )}
+            {user &&
+              accessAllowed &&
+              !chekingOptIn &&
+              !isOptedIn &&
+              emailSubmitted && (
+                <ConfirmEmailMessage
+                  onContinue={() => {
+                    setIsOptedIn(true);
+                  }}
+                />
+              )}
           </>
         )}
       </Wrapper>

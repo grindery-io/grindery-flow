@@ -59,6 +59,9 @@ type ContextProps = {
   ) => void;
   getConnector: (key: string) => void;
   evmChains: Chain[];
+  isOptedIn: boolean;
+  chekingOptIn: boolean;
+  setIsOptedIn: (a: boolean) => void;
 };
 
 type AppContextProps = {
@@ -92,6 +95,9 @@ export const AppContext = createContext<ContextProps>({
   moveWorkflowToWorkspace: defaultFunc,
   getConnector: defaultFunc,
   evmChains: [],
+  isOptedIn: false,
+  chekingOptIn: true,
+  setIsOptedIn: () => {},
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -123,6 +129,10 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   // User id
   //const [user, setUser] = useState<any>(null);
   const [accessAllowed, setAccessAllowed] = useState<boolean>(false);
+
+  const [isOptedIn, setIsOptedIn] = useState<boolean>(false);
+
+  const [chekingOptIn, setChekingOptIn] = useState<boolean>(true);
 
   // user's workflows list
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
@@ -276,15 +286,25 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
   const verifyUser = async () => {
     setVerifying(true);
-    const res = await client?.isAllowedUser("flow").catch((err) => {
-      console.error("isAllowedUser error:", err.message);
+    const res = await client?.isUserHasEmail().catch((err) => {
+      console.error("isUserHasEmail error:", err.message);
       setAccessAllowed(false);
     });
     if (res) {
       setAccessAllowed(true);
+      const optinRes = await client?.isAllowedUser().catch((err) => {
+        console.error("isAllowedUser error:", err.message);
+        setIsOptedIn(false);
+      });
+      if (optinRes) {
+        setIsOptedIn(true);
+      } else {
+        setIsOptedIn(false);
+      }
     } else {
       setAccessAllowed(false);
     }
+    setChekingOptIn(false);
     setVerifying(false);
   };
 
@@ -468,6 +488,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         moveWorkflowToWorkspace,
         getConnector,
         evmChains,
+        isOptedIn,
+        chekingOptIn,
+        setIsOptedIn,
       }}
     >
       {children}

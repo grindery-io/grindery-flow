@@ -97,14 +97,6 @@ const WelcomePage = (props: Props) => {
           <a href="https://metamask.io/" target="_blank" rel="noreferrer">
             MetaMask
           </a>{" "}
-          and{" "}
-          <a
-            href="https://developers.flow.com/tools/fcl-js"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Flow Client Library
-          </a>{" "}
           to authenticate users.
         </Disclaimer>
       </Wrapper>
