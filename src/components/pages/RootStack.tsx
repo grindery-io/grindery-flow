@@ -103,6 +103,7 @@ const RootStack = (props: Props) => {
     isOptedIn,
     chekingOptIn,
     setIsOptedIn,
+    accessAllowed,
   } = useAppContext();
   const { isSuccess, setIsSuccess, isWorkspaceSwitching } =
     useWorkspaceContext();
@@ -253,7 +254,7 @@ const RootStack = (props: Props) => {
       />
       {size === "desktop" && (
         <Snackbar
-          open={!chekingOptIn && !isOptedIn}
+          open={accessAllowed && !chekingOptIn && !isOptedIn}
           handleClose={(event: any, reason: any) => {
             if (reason === "clickaway") {
               return;
@@ -262,6 +263,7 @@ const RootStack = (props: Props) => {
           }}
           message="We've sent you a confirmation email. Please check your email and confirm to activate your account."
           severity="warning"
+          autoHideDuration={null}
         />
       )}
     </>
