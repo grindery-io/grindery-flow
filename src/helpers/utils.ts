@@ -134,6 +134,8 @@ export const getValidationScheme = (inputFields: Field[]) => {
         return "string";
       case "info":
         return "string";
+      case "boolean":
+        return "string";
       default:
         return type;
     }
