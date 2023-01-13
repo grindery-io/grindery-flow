@@ -18,16 +18,6 @@ const FormContent = styled.div`
   color: #000000;
 `;
 
-const FormTitle = styled.h2`
-  font-weight: 700;
-  font-size: 40px;
-  line-height: 130%;
-  text-align: center;
-  color: #000000;
-  margin: 0 0 10px;
-  padding: 0;
-`;
-
 const SuccessMessage = styled.div`
   font-weight: 400;
   font-size: 20px;
@@ -72,7 +62,11 @@ const ConfirmEmailMessage = (props: Props) => {
           )}
           <p style={{ fontSize: "14px", textAlign: "center" }}>
             Chat with us on{" "}
-            <a href="https://discord.gg/PCMTWg3KzE" target="_blank">
+            <a
+              href="https://discord.gg/vueMMKeC9g"
+              target="_blank"
+              rel="noreferrer"
+            >
               Discord
             </a>{" "}
             if you need any help.

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useGrinderyNexus } from "use-grindery-nexus";
 import styled from "styled-components";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import ConnectButton from "../shared/ConnectButton";
 import { SCREEN } from "../../constants";
 import Logo from "../shared/Logo";
 import SignInForm from "../shared/SignInForm";
 import useSignInContext from "../../hooks/useSignInContext";
 import ConnectMetamask from "../shared/ConnectMetamask";
 import ConfirmEmailMessage from "../shared/ConfirmEmailMessage";
+import SelectWorkspace from "../shared/SelectWorkspace";
 
 const Container = styled.div`
   padding: 80px 20px 60px;
@@ -76,8 +76,14 @@ type Props = {};
 
 const SignInPage = (props: Props) => {
   const { user, code, disconnect } = useGrinderyNexus();
-  const { accessAllowed, verifying, chekingOptIn, isOptedIn, setIsOptedIn } =
-    useSignInContext();
+  const {
+    accessAllowed,
+    verifying,
+    chekingOptIn,
+    isOptedIn,
+    setIsOptedIn,
+    authCode,
+  } = useSignInContext();
   let [searchParams] = useSearchParams();
   let navigate = useNavigate();
   const redirect_uri = searchParams.get("redirect_uri");
@@ -89,17 +95,10 @@ const SignInPage = (props: Props) => {
     if (user && !code) {
       disconnect();
     }
-  }, [user, code]);
+  }, [user, code, disconnect]);
 
   useEffect(() => {
-    if (
-      user &&
-      code &&
-      emailSubmitted &&
-      !verifying &&
-      !chekingOptIn &&
-      isOptedIn
-    ) {
+    if (user && authCode) {
       //window.open("https://gateway.grindery.org/", "_blank", "noreferrer");
       setTimeout(() => {
         if (
@@ -113,23 +112,13 @@ const SignInPage = (props: Props) => {
         ) {
           window.location.href = `${redirect_uri}${
             /\?/.test(redirect_uri) ? "&" : "?"
-          }code=${code}${state ? "&state=" + state : ""}`;
+          }code=${authCode}${state ? "&state=" + state : ""}`;
         } else {
           navigate("/dashboard");
         }
       }, 300);
     }
-  }, [
-    user,
-    redirect_uri,
-    navigate,
-    code,
-    response_type,
-    emailSubmitted,
-    verifying,
-    chekingOptIn,
-    isOptedIn,
-  ]);
+  }, [user, redirect_uri, navigate, response_type, authCode, state]);
 
   useEffect(() => {
     if (accessAllowed) {
@@ -161,21 +150,19 @@ const SignInPage = (props: Props) => {
               to authenticate users.
             </Disclaimer>
           </>
-        ) : user && !code ? (
-          <Desc>Loading...</Desc>
         ) : (
           <>
-            {user && emailSubmitted && !chekingOptIn && isOptedIn && (
-              <Desc>Redirecting...</Desc>
-            )}
-            {user && !accessAllowed && !verifying && !emailSubmitted && (
+            {authCode && <Desc>Redirecting...</Desc>}
+
+            {!authCode && !accessAllowed && !verifying && !emailSubmitted && (
               <SignInForm
                 onSubmit={() => {
                   setEmailSubmitted(true);
                 }}
               />
             )}
-            {user &&
+
+            {!authCode &&
               accessAllowed &&
               !chekingOptIn &&
               !isOptedIn &&
@@ -186,6 +173,9 @@ const SignInPage = (props: Props) => {
                   }}
                 />
               )}
+            {!authCode &&
+              ((accessAllowed && isOptedIn) ||
+                (!accessAllowed && emailSubmitted)) && <SelectWorkspace />}
           </>
         )}
       </Wrapper>

@@ -1,6 +1,8 @@
 import React, { useState, createContext, useEffect } from "react";
 import { useGrinderyNexus } from "use-grindery-nexus";
 import NexusClient from "grindery-nexus-client";
+import { Workspace } from "./WorkspaceContext";
+import axios from "axios";
 
 type ContextProps = {
   user: any;
@@ -9,7 +11,13 @@ type ContextProps = {
   client: NexusClient | null;
   isOptedIn: boolean;
   chekingOptIn: boolean;
+  workspaces: Workspace[];
+  workspace: Workspace | null;
+  authCode: string;
+  authCodeLoading: boolean;
   setIsOptedIn: (a: boolean) => void;
+  setWorkspace: (a: Workspace | null) => void;
+  getAuthCode: () => void;
 };
 
 type SignInContextProps = {
@@ -23,7 +31,13 @@ export const SignInContext = createContext<ContextProps>({
   client: null,
   isOptedIn: false,
   chekingOptIn: true,
+  workspaces: [],
+  workspace: null,
+  authCode: "",
+  authCodeLoading: false,
   setIsOptedIn: () => {},
+  setWorkspace: () => {},
+  getAuthCode: () => {},
 });
 
 export const SignInContextProvider = ({ children }: SignInContextProps) => {
@@ -37,8 +51,20 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
 
   const [chekingOptIn, setChekingOptIn] = useState<boolean>(true);
 
+  // Selected workspace
+  const [workspace, setWorkspace] = useState<Workspace | null>(null);
+
+  // List of workspaces
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+
   // Nexus API client
   const [client, setClient] = useState<NexusClient | null>(null);
+
+  // Auth code
+  const [authCode, setAuthCode] = useState<string>("");
+
+  // Auth code
+  const [authCodeLoading, setAuthCodeLoading] = useState<boolean>(false);
 
   const verifyUser = async () => {
     setVerifying(true);
@@ -62,12 +88,45 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
       setAccessAllowed(false);
     }
     setVerifying(false);
+    listWorkspaces();
   };
 
   const initClient = (accessToken: string) => {
     const nexus = new NexusClient();
     nexus.authenticate(accessToken);
     setClient(nexus);
+  };
+
+  // Get list of user's workspaces
+  const listWorkspaces = async () => {
+    const spaces = await client?.listWorkspaces();
+    setWorkspaces([
+      { key: "personal", title: "My workspace" },
+      ...(spaces || []),
+    ]);
+  };
+
+  const getAuthCode = async () => {
+    setAuthCodeLoading(true);
+    const res = await axios
+      .post(
+        `https://orchestrator.grindery.org/oauth/get-login-code`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${
+              workspace?.token || token?.access_token || ""
+            }`,
+          },
+        }
+      )
+      .catch((error) => {
+        console.log("getAuthCode error: ", error.message);
+      });
+    if (res?.data?.code) {
+      setAuthCode(res.data.code);
+    }
+    setAuthCodeLoading(false);
   };
 
   useEffect(() => {
@@ -94,7 +153,13 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
         client,
         isOptedIn,
         chekingOptIn,
+        workspaces,
+        workspace,
+        authCode,
+        authCodeLoading,
         setIsOptedIn,
+        setWorkspace,
+        getAuthCode,
       }}
     >
       {children}
