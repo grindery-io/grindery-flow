@@ -8,7 +8,7 @@ import SignInForm from "../shared/SignInForm";
 import useSignInContext from "../../hooks/useSignInContext";
 import ConnectMetamask from "../shared/ConnectMetamask";
 import ConfirmEmailMessage from "../shared/ConfirmEmailMessage";
-import SelectWorkspace from "../shared/SelectWorkspace";
+import WorkspaceSelectorMini from "../shared/WorkspaceSelectorMini";
 
 const Container = styled.div`
   padding: 80px 20px 60px;
@@ -175,7 +175,9 @@ const SignInPage = (props: Props) => {
               )}
             {!authCode &&
               ((accessAllowed && isOptedIn) ||
-                (!accessAllowed && emailSubmitted)) && <SelectWorkspace />}
+                (!accessAllowed && emailSubmitted)) && (
+                <WorkspaceSelectorMini />
+              )}
           </>
         )}
       </Wrapper>
