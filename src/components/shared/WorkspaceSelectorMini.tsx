@@ -204,8 +204,8 @@ const WorkspaceSelectorMini = (props: Props) => {
     workspaces,
     workspace,
     setWorkspace,
-    getAuthCode,
     authCodeLoading,
+    setWorkspaceSelected,
   } = useSignInContext();
   const [selectorOpened, setSelectorOpened] = useState(false);
 
@@ -272,7 +272,7 @@ const WorkspaceSelectorMini = (props: Props) => {
             disabled={!workspace || authCodeLoading}
             value="Continue"
             onClick={() => {
-              getAuthCode();
+              setWorkspaceSelected(true);
             }}
             loading={authCodeLoading}
           />

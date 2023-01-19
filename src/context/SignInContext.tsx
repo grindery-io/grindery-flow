@@ -15,9 +15,11 @@ type ContextProps = {
   workspace: Workspace | null;
   authCode: string;
   authCodeLoading: boolean;
+  workspaceSelected: boolean;
   setIsOptedIn: (a: boolean) => void;
   setWorkspace: (a: Workspace | null) => void;
   getAuthCode: () => void;
+  setWorkspaceSelected: (a: boolean) => void;
 };
 
 type SignInContextProps = {
@@ -35,9 +37,11 @@ export const SignInContext = createContext<ContextProps>({
   workspace: null,
   authCode: "",
   authCodeLoading: false,
+  workspaceSelected: false,
   setIsOptedIn: () => {},
   setWorkspace: () => {},
   getAuthCode: () => {},
+  setWorkspaceSelected: () => {},
 });
 
 export const SignInContextProvider = ({ children }: SignInContextProps) => {
@@ -56,6 +60,10 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
 
   // List of workspaces
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+
+  const [workspaceSelected, setWorkspaceSelected] = useState(false);
+
+  const [workspacesLoaded, setWorkspacesLoaded] = useState(false);
 
   // Nexus API client
   const [client, setClient] = useState<NexusClient | null>(null);
@@ -104,6 +112,7 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
       { key: "personal", title: "My workspace" },
       ...(spaces || []),
     ]);
+    setWorkspacesLoaded(true);
   };
 
   const getAuthCode = async () => {
@@ -144,6 +153,20 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, token?.access_token]);
 
+  useEffect(() => {
+    if (workspacesLoaded && workspaces.length === 1) {
+      setWorkspace(workspaces[0]);
+      setWorkspaceSelected(true);
+    }
+  }, [workspacesLoaded, workspaces]);
+
+  useEffect(() => {
+    if (workspaceSelected && workspacesLoaded) {
+      getAuthCode();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workspaceSelected, workspacesLoaded]);
+
   return (
     <SignInContext.Provider
       value={{
@@ -157,9 +180,11 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
         workspace,
         authCode,
         authCodeLoading,
+        workspaceSelected,
         setIsOptedIn,
         setWorkspace,
         getAuthCode,
+        setWorkspaceSelected,
       }}
     >
       {children}

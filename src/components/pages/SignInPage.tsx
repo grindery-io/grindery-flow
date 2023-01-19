@@ -83,6 +83,7 @@ const SignInPage = (props: Props) => {
     isOptedIn,
     setIsOptedIn,
     authCode,
+    workspaces,
   } = useSignInContext();
   let [searchParams] = useSearchParams();
   let navigate = useNavigate();
@@ -173,7 +174,8 @@ const SignInPage = (props: Props) => {
                   }}
                 />
               )}
-            {!authCode &&
+            {workspaces.length > 1 &&
+              !authCode &&
               ((accessAllowed && isOptedIn) ||
                 (!accessAllowed && emailSubmitted)) && (
                 <WorkspaceSelectorMini />
