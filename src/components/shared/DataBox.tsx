@@ -130,6 +130,7 @@ const DataBox = (props: Props) => {
               {!!BottomLeftComponent && (
                 <div
                   style={{
+                    maxWidth: "100%",
                     marginRight: "auto",
                   }}
                 >

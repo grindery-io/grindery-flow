@@ -9,6 +9,7 @@ import { ICONS, SCREEN } from "../../constants";
 import useWindowSize from "../../hooks/useWindowSize";
 import useAppContext from "../../hooks/useAppContext";
 import { WorkflowExecutionLog } from "../../types/Workflow";
+import { WorkflowExecutionRow } from "../shared/WorkflowExecutionRow";
 
 const statusIconMapping: { [key: string]: string } = {
   Executed: ICONS.EXECUTED,
@@ -284,7 +285,7 @@ const HistoryPage = (props: Props) => {
     if (workflows && workflows.length > 0) {
       workflows.forEach((workflow) => {
         if (workflow.key) {
-          getWorkflowHistory(workflow.key, addExecutions);
+          getWorkflowHistory(workflow.key, addExecutions, 10);
         }
       });
     }
@@ -295,7 +296,7 @@ const HistoryPage = (props: Props) => {
     if (workflows && workflows.length > 0) {
       workflows.forEach((workflow) => {
         if (workflow.key) {
-          getWorkflowHistory(workflow.key, addExecutions);
+          getWorkflowHistory(workflow.key, addExecutions, 10);
         }
       });
     }
@@ -356,7 +357,7 @@ type WorkflowExecutionRowProps = {
   item: WorkflowExecutionLog[];
 };
 
-const WorkflowExecutionRow = (props: WorkflowExecutionRowProps) => {
+const WorkflowExecutionRowBackup = (props: WorkflowExecutionRowProps) => {
   const { workflows, connectors } = useAppContext();
   const { item } = props;
   const [showError, setShowError] = useState(false);

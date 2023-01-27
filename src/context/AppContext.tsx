@@ -28,7 +28,8 @@ type ContextProps = {
   getWorkflowsList: () => void;
   getWorkflowHistory: (
     a: string,
-    b: (c: WorkflowExecutionLog[]) => void
+    b: (c: WorkflowExecutionLog[]) => void,
+    c?: number
   ) => void;
   getWorkflowExecution: (
     a: string,
@@ -243,11 +244,12 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const getWorkflowHistory = useCallback(
     async (
       workflowKey: string,
-      callback: (newItems: WorkflowExecutionLog[]) => void
+      callback: (newItems: WorkflowExecutionLog[]) => void,
+      limit?: number
     ) => {
       //const res = await getWorkflowExecutions(workflowKey);
       const executions = await client
-        ?.getWorkflowExecutions(workflowKey, undefined, undefined, 10)
+        ?.getWorkflowExecutions(workflowKey, undefined, undefined, limit)
         .catch((err) => {
           console.error("getWorkflowExecutions error:", err.message);
         });

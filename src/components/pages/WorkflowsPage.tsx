@@ -354,6 +354,10 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
     navigate("/workflows/edit/" + item.key, { replace: true });
   };
 
+  const handleHistoryClick = () => {
+    navigate("/workflows/history/" + item.key, { replace: true });
+  };
+
   useEffect(() => {
     if (editTitle && inputEl.current) {
       inputEl.current.select();
@@ -447,6 +451,11 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
                 key: "edit",
                 label: "Edit",
                 onClick: handleEditClick,
+              },
+              {
+                key: "history",
+                label: "History",
+                onClick: handleHistoryClick,
               },
               {
                 key: "delete",

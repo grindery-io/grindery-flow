@@ -24,6 +24,8 @@ import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 import NotificationsContextProvider from "../../context/NotificationsContext";
 import NotificationsModal from "../shared/NotificationsModal";
 import CreateNexusNotificationPage from "./CreateNexusNotificationPage";
+import WorkflowHistoryPage from "./WorkflowHistoryPage";
+import WorkflowHistoryLogPage from "./WorkflowHistoryLogPage";
 
 const DrawerWrapper = styled.div`
   @media (min-width: ${SCREEN.TABLET}) {
@@ -154,6 +156,11 @@ const RootStack = (props: Props) => {
               path="/workflows/edit/:key"
               element={<WorkflowBuilderPage />}
               key={2}
+            ></Route>
+            <Route
+              path="/workflows/history/:key"
+              element={<WorkflowHistoryPage />}
+              key={3}
             ></Route>
             <Route path="/connectors" element={<AppsPage />}></Route>
             <Route path="/history" element={<HistoryPage />}></Route>
