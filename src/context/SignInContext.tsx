@@ -3,6 +3,7 @@ import { useGrinderyNexus } from "use-grindery-nexus";
 import NexusClient from "grindery-nexus-client";
 import { Workspace } from "./WorkspaceContext";
 import axios from "axios";
+import { log } from "console";
 
 type ContextProps = {
   user: any;
@@ -16,6 +17,7 @@ type ContextProps = {
   authCode: string;
   authCodeLoading: boolean;
   workspaceSelected: boolean;
+  workspacesLoaded: boolean;
   setIsOptedIn: (a: boolean) => void;
   setWorkspace: (a: Workspace | null) => void;
   getAuthCode: () => void;
@@ -38,6 +40,7 @@ export const SignInContext = createContext<ContextProps>({
   authCode: "",
   authCodeLoading: false,
   workspaceSelected: false,
+  workspacesLoaded: false,
   setIsOptedIn: () => {},
   setWorkspace: () => {},
   getAuthCode: () => {},
@@ -130,7 +133,7 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
         }
       )
       .catch((error) => {
-        console.log("getAuthCode error: ", error.message);
+        console.error("getAuthCode error: ", error.message);
       });
     if (res?.data?.code) {
       setAuthCode(res.data.code);
@@ -154,18 +157,11 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
   }, [user, token?.access_token]);
 
   useEffect(() => {
-    if (workspacesLoaded && workspaces.length === 1) {
-      setWorkspace(workspaces[0]);
-      setWorkspaceSelected(true);
-    }
-  }, [workspacesLoaded, workspaces]);
-
-  useEffect(() => {
     if (workspaceSelected && workspacesLoaded) {
       getAuthCode();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [workspaceSelected, workspacesLoaded]);
+  }, [workspaceSelected, workspacesLoaded, token?.access_token]);
 
   return (
     <SignInContext.Provider
@@ -181,6 +177,7 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
         authCode,
         authCodeLoading,
         workspaceSelected,
+        workspacesLoaded,
         setIsOptedIn,
         setWorkspace,
         getAuthCode,

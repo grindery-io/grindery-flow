@@ -174,8 +174,7 @@ const SignInPage = (props: Props) => {
                   }}
                 />
               )}
-            {workspaces.length > 1 &&
-              !authCode &&
+            {!authCode &&
               ((accessAllowed && isOptedIn) ||
                 (!accessAllowed && emailSubmitted)) && (
                 <WorkspaceSelectorMini />

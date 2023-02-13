@@ -9,6 +9,8 @@ import { Snackbar } from "grindery-ui";
 import { useNavigate } from "react-router-dom";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 import useWindowSize from "../../hooks/useWindowSize";
+import useAppContext from "../../hooks/useAppContext";
+//import useInterval from "../../hooks/useInterval";
 
 const UserContainer = styled.div`
   position: relative;
@@ -128,10 +130,26 @@ const UserMenu = (props: Props) => {
   const mode = props.mode || "light";
   const { address, disconnect } = useGrinderyNexus();
   const [menuOpened, setMenuOpened] = useState(false);
-  const { workspace } = useWorkspaceContext();
+  const { workspace, workspaceToken } = useWorkspaceContext();
+  //const { client, access_token } = useAppContext();
   const [copied, setCopied] = useState(false);
   let navigate = useNavigate();
   const { width } = useWindowSize();
+
+  // Poll engine api to check user session expiration
+  /*useInterval(async () => {
+    const currentToken = workspaceToken || access_token || "";
+    if (currentToken) {
+      let workspaces;
+      try {
+        workspaces = await client?.listWorkspaces();
+      } catch (error: any) {
+        console.error("session error", error.message || "Session expired");
+        return;
+      }
+      console.log("session ok");
+    }
+  }, 20000);*/
 
   return address ? (
     <UserContainer>

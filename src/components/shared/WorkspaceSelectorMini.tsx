@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Autocomplete } from "grindery-ui";
 import Button from "./Button";
@@ -206,13 +206,22 @@ const WorkspaceSelectorMini = (props: Props) => {
     setWorkspace,
     authCodeLoading,
     setWorkspaceSelected,
+    workspacesLoaded,
   } = useSignInContext();
   const [selectorOpened, setSelectorOpened] = useState(false);
 
   const handleSelectorClick = () => {
     setSelectorOpened(!selectorOpened);
   };
-  return (
+
+  useEffect(() => {
+    if (workspacesLoaded && workspaces.length === 1) {
+      setWorkspace(workspaces[0]);
+      setWorkspaceSelected(true);
+    }
+  }, [workspacesLoaded, workspaces]);
+
+  return workspaces && workspaces.length > 1 ? (
     <Wrapper>
       <FormWrapper>
         <FormContent>
@@ -279,7 +288,7 @@ const WorkspaceSelectorMini = (props: Props) => {
         </FormContent>
       </FormWrapper>
     </Wrapper>
-  );
+  ) : null;
 };
 
 export default WorkspaceSelectorMini;

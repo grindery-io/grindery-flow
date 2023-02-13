@@ -6,6 +6,7 @@ import useAppContext from "../../hooks/useAppContext";
 import Button from "./Button";
 import CheckBox from "./CheckBox";
 import useSignInContext from "../../hooks/useSignInContext";
+import { validateEmail } from "../../helpers/utils";
 
 const Wrapper = styled.div`
   max-width: 740px;
@@ -96,6 +97,10 @@ const SignInForm = (props: Props) => {
   const validate = () => {
     if (!email) {
       setError("Email is required");
+      return;
+    }
+    if (!validateEmail(email)) {
+      setError("Email is not valid");
       return;
     }
     if (!consent) {
