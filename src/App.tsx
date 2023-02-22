@@ -5,6 +5,9 @@ import { ThemeProvider } from "grindery-ui";
 import SignInPage from "./components/pages/SignInPage";
 import NexusStack from "./components/pages/NexusStack";
 import SignInContextProvider from "./context/SignInContext";
+import CompleteConnectorAuth from "./components/pages/CompleteConnectorAuth";
+import WorkspaceContextProvider from "./context/WorkspaceContext";
+import AppContextProvider from "./context/AppContext";
 
 function App() {
   return (
@@ -12,6 +15,16 @@ function App() {
       <GrinderyNexusContextProvider>
         <BrowserRouter>
           <Routes>
+            <Route
+              path="/complete_auth"
+              element={
+                <WorkspaceContextProvider>
+                  <AppContextProvider>
+                    <CompleteConnectorAuth />
+                  </AppContextProvider>
+                </WorkspaceContextProvider>
+              }
+            ></Route>
             <Route
               path="/sign-in"
               element={
