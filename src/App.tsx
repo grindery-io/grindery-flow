@@ -16,7 +16,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route
-              path="/complete_auth"
+              path="/complete_auth/:space"
               element={
                 <WorkspaceContextProvider>
                   <AppContextProvider>
