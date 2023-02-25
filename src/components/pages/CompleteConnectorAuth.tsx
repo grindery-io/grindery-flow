@@ -6,7 +6,6 @@ import { CircularProgress } from "grindery-ui";
 import { getParameterByName } from "../../helpers/utils";
 import useAppContext from "../../hooks/useAppContext";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
-import Logo from "../shared/Logo";
 import { ICONS } from "../../constants";
 
 const GET_OAUTH_TOKEN_ENDPOINT =
