@@ -15,9 +15,9 @@ const GET_OAUTH_TOKEN_ENDPOINT =
 const MESSAGES = {
   DEFAULT: "Authenticating, please wait...",
   ERROR:
-    "Server error. Please, try to reload the page. Or close the window, return to Zapier and sign-in again.",
+    "Server error. Please, try to reload the page.\nOr close the window, return to Zapier and sign-in again.",
   SUCCESS:
-    "Authentication complete. You can close this window and return to Zapier.",
+    "Authentication complete.\nYou can close this window and return to Zapier.",
 };
 
 const Container = styled.div`
@@ -36,9 +36,10 @@ const Content = styled.div`
   text-align: center;
 
   & p {
-    margin: 0 0 20px;
+    margin: 20px 0 0;
     padding: 0;
     text-align: center;
+    white-space: pre-wrap;
   }
 
   & img {
@@ -47,25 +48,6 @@ const Content = styled.div`
     height: 32px;
     margin: 0 auto;
   }
-`;
-
-const LogoWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: nowrap;
-  gap: 10px;
-  margin: 0 0 30px;
-`;
-
-const Title = styled.h1`
-  font-weight: 700;
-  font-size: 22px;
-  line-height: 150%;
-  color: #0b0d17;
-  margin: 0;
-  padding: 0;
 `;
 
 type Props = {};
@@ -121,14 +103,10 @@ const CompleteConnectorAuth = (props: Props) => {
   return (
     <Container>
       <Content>
-        <LogoWrapper>
-          <Logo variant="square" width="40px" />
-          <Title>Gateway</Title>
-        </LogoWrapper>
-        <p>{message}</p>
         {message === MESSAGES.DEFAULT && <CircularProgress />}
         {message === MESSAGES.ERROR && <img src={ICONS.ERROR} alt="" />}
         {message === MESSAGES.SUCCESS && <img src={ICONS.EXECUTED} alt="" />}
+        <p>{message}</p>
       </Content>
     </Container>
   );
