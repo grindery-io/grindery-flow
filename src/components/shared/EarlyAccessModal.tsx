@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { TextInput } from "grindery-ui";
+import { Select, RichInput } from "grindery-ui";
 import styled from "styled-components";
 import { ICONS } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import Button from "./Button";
 import CheckBox from "./CheckBox";
+import { validateEmail } from "../../helpers/utils";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -18,7 +19,7 @@ const Wrapper = styled.div`
   align-items: stretch;
   justify-content: flex-end;
   flex-wrap: nowrap;
-  z-index: 9999;
+  z-index: 1300;
 `;
 
 const FormWrapper = styled.div`
@@ -150,39 +151,58 @@ const EarlyAccessModal = (props: Props) => {
   } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [interest, setInterest] = useState([""]);
+  const [skill, setSkill] = useState([""]);
   const [consent, setConsent] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState({ type: "", text: "" });
   const [success, setSuccess] = useState("");
 
   const validate = () => {
     if (!email) {
-      setError("Email is required");
+      setError({ type: "email", text: "Email is required" });
+      return;
+    }
+    if (!validateEmail(email)) {
+      setError({ type: "email", text: "Email is not valid" });
       return;
     }
     if (!consent) {
-      setError("Please, agree with our Terms of Service and Privacy Policy");
+      setError({
+        type: "consent",
+        text: "Please, agree with our Terms of Service and Privacy Policy",
+      });
       return;
     }
     requestEarlyAccess();
   };
 
   const handleEmailChange = (value: string) => {
+    setError({ type: "", text: "" });
     setEmail(value || "");
   };
 
   const requestEarlyAccess = async () => {
     setLoading(true);
-    setError("");
+    setError({ type: "", text: "" });
     const res = await client
-      ?.requestEarlyAccess(email, "flow.grindery.org", "Requested to Flow")
+      ?.requestEngine("or_requestEarlyAccess", {
+        email,
+        source: "nexus.grindery.org/sign-in",
+        app: "Requested to Gateway",
+        interest: interest.join(";"),
+        skill: skill.join(";"),
+      })
       .catch((err) => {
         console.error(
           "or_requestEarlyAccess error",
           err.response.data.error.message
         );
-        setError(
-          err.response.data.error.message || "Server error, please, try again"
-        );
+        setError({
+          type: "server",
+          text:
+            err.response.data.error.message ||
+            "Server error, please, try again",
+        });
 
         setLoading(false);
       });
@@ -233,13 +253,64 @@ const EarlyAccessModal = (props: Props) => {
                 Please provide your email address so we can activate your
                 account.
               </FormDesc>
-              <TextInput
-                label="Email *"
+              <RichInput
+                label="Email"
                 placeholder=""
                 value={email}
                 onChange={handleEmailChange}
-                size="small"
+                error={error.type === "email" && error.text ? error.text : ""}
+                required
+                options={[]}
               />
+
+              <Select
+                options={[
+                  {
+                    value: "dApp2Zapier",
+                    label: "Connect a specific dApp to Zapier",
+                  },
+                  {
+                    value: "MyDapp2Zapier",
+                    label: "Publish my dApp on Zapier",
+                  },
+                  { value: "Learn", label: "Browse and learn" },
+                  { value: "else", label: "Something else" },
+                ]}
+                type={"default"}
+                multiple={true}
+                value={interest}
+                onChange={(value: string[]) => {
+                  setError({ type: "", text: "" });
+                  setInterest(value);
+                }}
+                label="What brings you here?"
+                placeholder=""
+                texthelper="When we know what you are trying to do we can help you and personalize information and emails for you!"
+              ></Select>
+              <Select
+                options={[
+                  {
+                    value: "web3",
+                    label: "I'm a web3 buildler",
+                  },
+                  {
+                    value: "zapier",
+                    label: "I'm a Zapier guru",
+                  },
+                  { value: "code", label: "I'm a coding wizard" },
+                  { value: "human", label: "I'm only human" },
+                ]}
+                type={"default"}
+                multiple={true}
+                value={skill}
+                onChange={(value: string[]) => {
+                  setError({ type: "", text: "" });
+                  setSkill(value);
+                }}
+                label="What describes your best?"
+                placeholder=""
+                texthelper="When we better understand your skills we can show you the right tutorials and courses."
+              ></Select>
               <CheckboxWrapper>
                 <CheckBox
                   checked={consent}
@@ -268,7 +339,9 @@ const EarlyAccessModal = (props: Props) => {
                   </a>
                 </CheckboxLabel>
               </CheckboxWrapper>
-              {error && <ErrorWrapper>{error}</ErrorWrapper>}
+              {error &&
+                (error.type === "server" || error.type === "consent") &&
+                error.text && <ErrorWrapper>{error.text}</ErrorWrapper>}
               <Button
                 value="Continue"
                 onClick={() => {
