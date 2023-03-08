@@ -6,16 +6,20 @@ type Props = {
   onChange: (a: boolean) => void;
   style?: any;
   isNetwork?: boolean;
+  tabIndex?: number;
+  onKeyDown?: (event: React.KeyboardEvent) => void;
 };
 
 const CheckBox = (props: Props) => {
-  const { checked, onChange, style, isNetwork } = props;
+  const { checked, onChange, style, isNetwork, tabIndex, onKeyDown } = props;
   return (
     <div
       onClick={() => {
         onChange(!checked);
       }}
       style={{ cursor: "pointer", ...style }}
+      tabIndex={tabIndex}
+      onKeyDown={onKeyDown}
     >
       <img
         src={

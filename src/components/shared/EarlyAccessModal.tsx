@@ -135,6 +135,27 @@ const SuccessMessage = styled.div`
   white-space: pre-wrap;
 `;
 
+const CheckboxTitle = styled.p`
+  font-size: 14px;
+  line-height: 150%;
+  text-align: left;
+  color: rgb(11, 13, 23);
+  font-style: normal;
+  font-weight: 400;
+  margin: 20px 0 2px;
+  padding: 0;
+`;
+const CheckboxSubTitle = styled.p`
+  font-size: 12px;
+  line-height: 150%;
+  text-align: left;
+  color: rgb(11, 13, 23);
+  font-style: normal;
+  font-weight: 400;
+  margin: 0 0 6px;
+  padding: 0;
+`;
+
 type Props = {
   onSubmit?: () => void;
 };
@@ -156,6 +177,8 @@ const EarlyAccessModal = (props: Props) => {
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState({ type: "", text: "" });
   const [success, setSuccess] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
 
   const validate = () => {
     if (!email) {
@@ -189,6 +212,8 @@ const EarlyAccessModal = (props: Props) => {
         email,
         source: "nexus.grindery.org/sign-in",
         app: "Requested to Gateway",
+        firstname,
+        lastname,
         interest: interest.join(";"),
         skill: skill.join(";"),
       })
@@ -263,55 +288,117 @@ const EarlyAccessModal = (props: Props) => {
                 options={[]}
               />
 
-              <Select
-                options={[
-                  {
-                    value: "dApp2Zapier",
-                    label: "Connect a specific dApp to Zapier",
-                  },
-                  {
-                    value: "MyDapp2Zapier",
-                    label: "Publish my dApp on Zapier",
-                  },
-                  { value: "Learn", label: "Browse and learn" },
-                  { value: "else", label: "Something else" },
-                ]}
-                type={"default"}
-                multiple={true}
-                value={interest}
-                onChange={(value: string[]) => {
-                  setError({ type: "", text: "" });
-                  setInterest(value);
+              <RichInput
+                label="First Name"
+                value={firstname}
+                onChange={(value: string) => {
+                  setFirstname(value);
                 }}
-                label="What brings you here?"
-                placeholder=""
-                texthelper="When we know what you are trying to do we can help you and personalize information and emails for you!"
-              ></Select>
-              <Select
-                options={[
-                  {
-                    value: "web3",
-                    label: "I'm a web3 buildler",
-                  },
-                  {
-                    value: "zapier",
-                    label: "I'm a Zapier guru",
-                  },
-                  { value: "code", label: "I'm a coding wizard" },
-                  { value: "human", label: "I'm only human" },
-                ]}
-                type={"default"}
-                multiple={true}
-                value={skill}
-                onChange={(value: string[]) => {
-                  setError({ type: "", text: "" });
-                  setSkill(value);
+                options={[]}
+              />
+              <RichInput
+                label="Last Name"
+                value={lastname}
+                onChange={(value: string) => {
+                  setLastname(value);
                 }}
-                label="What describes your best?"
-                placeholder=""
-                texthelper="When we better understand your skills we can show you the right tutorials and courses."
-              ></Select>
-              <CheckboxWrapper>
+                options={[]}
+              />
+              <CheckboxTitle>What brings you here?</CheckboxTitle>
+              <CheckboxSubTitle>
+                When we know what you are trying to do we can help you and
+                personalize information and emails for you!
+              </CheckboxSubTitle>
+              {[
+                {
+                  value: "dApp2Zapier",
+                  label: "Connect a specific dApp to Zapier",
+                },
+                {
+                  value: "MyDapp2Zapier",
+                  label: "Publish my dApp on Zapier",
+                },
+                { value: "Learn", label: "Browse and learn" },
+                { value: "else", label: "Something else" },
+              ].map((option) => (
+                <CheckboxWrapper>
+                  <CheckBox
+                    checked={interest.includes(option.value)}
+                    onChange={(val) => {
+                      if (val) {
+                        setInterest([...interest, option.value]);
+                      } else {
+                        setInterest([
+                          ...interest.filter((i: string) => i !== option.value),
+                        ]);
+                      }
+                    }}
+                  />
+                  <CheckboxLabel
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      if (interest.includes(option.value)) {
+                        setInterest([
+                          ...interest.filter((i: string) => i !== option.value),
+                        ]);
+                      } else {
+                        setInterest([...interest, option.value]);
+                      }
+                    }}
+                  >
+                    {option.label}
+                  </CheckboxLabel>
+                </CheckboxWrapper>
+              ))}
+
+              <CheckboxTitle>What describes you best?</CheckboxTitle>
+              <CheckboxSubTitle>
+                When we better understand your skills we can show you the right
+                tutorials and courses.
+              </CheckboxSubTitle>
+              {[
+                {
+                  value: "web3",
+                  label: "I'm a web3 buildler",
+                },
+                {
+                  value: "zapier",
+                  label: "I'm a Zapier guru",
+                },
+                { value: "code", label: "I'm a coding wizard" },
+                { value: "human", label: "I'm only human" },
+              ].map((option) => (
+                <CheckboxWrapper>
+                  <CheckBox
+                    checked={skill.includes(option.value)}
+                    onChange={(val) => {
+                      if (val) {
+                        setSkill([...skill, option.value]);
+                      } else {
+                        setSkill([
+                          ...skill.filter((i: string) => i !== option.value),
+                        ]);
+                      }
+                    }}
+                  />
+                  <CheckboxLabel
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      if (skill.includes(option.value)) {
+                        setSkill([
+                          ...skill.filter((i: string) => i !== option.value),
+                        ]);
+                      } else {
+                        setSkill([...skill, option.value]);
+                      }
+                    }}
+                  >
+                    {option.label}
+                  </CheckboxLabel>
+                </CheckboxWrapper>
+              ))}
+
+              <CheckboxWrapper style={{ marginTop: "40px" }}>
                 <CheckBox
                   checked={consent}
                   onChange={(val) => {

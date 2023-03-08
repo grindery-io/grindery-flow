@@ -11,7 +11,7 @@ import ConfirmEmailMessage from "../shared/ConfirmEmailMessage";
 import WorkspaceSelectorMini from "../shared/WorkspaceSelectorMini";
 
 const Container = styled.div`
-  padding: 80px 20px 60px;
+  padding: 60px 20px 20px;
 `;
 
 const Wrapper = styled.div`
@@ -23,9 +23,7 @@ const Wrapper = styled.div`
   min-height: calc(100vh - 140px);
   @media (min-width: ${SCREEN.TABLET}) {
     margin: 0;
-    height: calc(100vh - 180px);
-    max-height: calc(100vh - 140px);
-    min-height: auto;
+    min-height: calc(100vh - 180px);
   }
 `;
 
