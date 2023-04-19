@@ -288,22 +288,6 @@ const EarlyAccessModal = (props: Props) => {
                 options={[]}
               />
 
-              <RichInput
-                label="First Name"
-                value={firstname}
-                onChange={(value: string) => {
-                  setFirstname(value);
-                }}
-                options={[]}
-              />
-              <RichInput
-                label="Last Name"
-                value={lastname}
-                onChange={(value: string) => {
-                  setLastname(value);
-                }}
-                options={[]}
-              />
               <CheckboxTitle>What brings you here?</CheckboxTitle>
               <CheckboxSubTitle>
                 When we know what you are trying to do we can help you and
