@@ -249,7 +249,7 @@ const StepTest = ({ outputFields }: Props) => {
   const { client, access_token } = useAppContext();
   const index = step - 2;
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  //const [success, setSuccess] = useState<string | null>(null);
 
   /*const operationIsTested =
     type === "trigger"
@@ -318,7 +318,7 @@ const StepTest = ({ outputFields }: Props) => {
     if (workflow) {
       if (workflow.trigger) {
         setError(null);
-        setSuccess(null);
+        //setSuccess(null);
         setLoading(true);
 
         // set ws connection
@@ -361,7 +361,7 @@ const StepTest = ({ outputFields }: Props) => {
           // handle test response
           if (res && res.method && res.method === "notifySignal") {
             const payload = flattenObject(res.params?.payload || {});
-            setSuccess("Test trigger detected!");
+            //setSuccess("Test trigger detected!");
             setOperationIsTested(true);
 
             // set output sample
@@ -417,7 +417,7 @@ const StepTest = ({ outputFields }: Props) => {
     if (workflow) {
       if (workflow.actions && workflow.actions[index]) {
         setError(null);
-        setSuccess(null);
+        //setSuccess(null);
         setLoading(true);
         const res = await client
           ?.testAction(
@@ -472,7 +472,7 @@ const StepTest = ({ outputFields }: Props) => {
             });
           }
 
-          setSuccess("Test action sent!");
+          //setSuccess("Test action sent!");
           setOperationIsTested(true);
         } else {
           setOperationIsTested(false);
