@@ -15,6 +15,7 @@ import { validator } from "../helpers/validator";
 import { Operation } from "../types/Workflow";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";
 import { Chain } from "../types/Chain";
+import { sendTwitterConversion } from "../utils/twitterTracking";
 
 type ContextProps = {
   user: any;
@@ -310,9 +311,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     setVerifying(false);
   };
 
-  const addExecutions = useCallback((newItems: WorkflowExecutionLog[]) => {
+  /*const addExecutions = useCallback((newItems: WorkflowExecutionLog[]) => {
     setWorkflowExecutions((items) => [...items, newItems]);
-  }, []);
+  }, []);*/
 
   const getApps = (workflowsList: Workflow[], connectorsList: Connector[]) => {
     if (workflowsList && workflowsList.length > 0) {
@@ -460,6 +461,12 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       }
     }
   }, [workspaceToken, token]);
+
+  useEffect(() => {
+    if (user) {
+      sendTwitterConversion("tw-ofep3-ofep7");
+    }
+  }, [user]);
 
   return (
     <AppContext.Provider
