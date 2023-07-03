@@ -8,13 +8,8 @@ import SignInContextProvider from "./context/SignInContext";
 import CompleteConnectorAuth from "./components/pages/CompleteConnectorAuth";
 import WorkspaceContextProvider from "./context/WorkspaceContext";
 import AppContextProvider from "./context/AppContext";
-import { initTwitter } from "./utils/twitterTracking";
 
 function App() {
-  useEffect(() => {
-    initTwitter();
-  }, []);
-
   return (
     <ThemeProvider>
       <GrinderyNexusContextProvider>
