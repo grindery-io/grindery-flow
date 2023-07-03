@@ -8,8 +8,13 @@ import SignInContextProvider from "./context/SignInContext";
 import CompleteConnectorAuth from "./components/pages/CompleteConnectorAuth";
 import WorkspaceContextProvider from "./context/WorkspaceContext";
 import AppContextProvider from "./context/AppContext";
+import { sendTwitterConversion } from "./utils/twitterTracking";
 
 function App() {
+  useEffect(() => {
+    sendTwitterConversion("tw-ofep3-ofep4");
+  }, []);
+
   return (
     <ThemeProvider>
       <GrinderyNexusContextProvider>
