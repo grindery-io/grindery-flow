@@ -100,6 +100,11 @@ const LogoWrapper = styled.div`
   flex-wrap: nowrap;
   gap: 10px;
   margin-bottom: 24px;
+
+  img {
+    width: 120px;
+    height: 120px;
+  }
 `;
 
 type Props = {};
