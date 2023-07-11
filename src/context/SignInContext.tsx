@@ -4,6 +4,7 @@ import NexusClient from "grindery-nexus-client";
 import { Workspace } from "./WorkspaceContext";
 import axios from "axios";
 import { sendTwitterConversion } from "../utils/twitterTracking";
+import { sendGoogleEvent } from "../utils/googleTracking";
 
 type ContextProps = {
   user: any;
@@ -165,6 +166,11 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
 
   useEffect(() => {
     if (user) {
+      sendGoogleEvent({
+        event: "registration",
+        authentication_method: "wallet",
+        user_id: user,
+      });
       sendTwitterConversion("tw-ofep3-ofep7");
     }
   }, [user]);
