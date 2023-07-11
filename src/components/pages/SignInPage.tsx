@@ -11,7 +11,7 @@ import ConfirmEmailMessage from "../shared/ConfirmEmailMessage";
 import WorkspaceSelectorMini from "../shared/WorkspaceSelectorMini";
 
 const Container = styled.div`
-  padding: 60px 20px 20px;
+  padding: 0;
 `;
 
 const Wrapper = styled.div`
@@ -21,9 +21,53 @@ const Wrapper = styled.div`
   justify-content: center;
   flex-wrap: nowrap;
   min-height: calc(100vh - 140px);
+  max-width: 470px;
+  margin: 0 auto;
   @media (min-width: ${SCREEN.TABLET}) {
-    margin: 0;
+    margin: 0 auto;
     min-height: calc(100vh - 180px);
+  }
+`;
+
+const TopSection = styled.div`
+  padding: 64px 40px 32px;
+  background: #fff;
+`;
+
+const BottomSection = styled.div`
+  padding: 32px 40px 64px;
+  background: #e0edee;
+
+  h2 {
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%;
+    margin: 0 0 24px;
+    padding: 0;
+  }
+
+  ol {
+    margin: 0 0 24px;
+    padding: 0 0 0 20px;
+
+    li {
+      padding: 0;
+      margin: 0;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%;
+    }
+  }
+
+  p {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+    margin: 0;
+    padding: 0;
   }
 `;
 
@@ -34,11 +78,7 @@ const Desc = styled.p`
   text-align: center;
   color: #0b0d17;
   padding: 0;
-  margin: 25px 0 15px;
-  @media (min-width: ${SCREEN.TABLET}) {
-    max-width: 576px;
-    margin: 25px auto 15px;
-  }
+  margin: 0 0 14px;
 `;
 
 const Disclaimer = styled.div`
@@ -49,7 +89,7 @@ const Disclaimer = styled.div`
   color: #0b0d17;
   opacity: 0.5;
   max-width: 500px;
-  margin: 0 auto;
+  margin: 14px auto 0;
 `;
 
 const LogoWrapper = styled.div`
@@ -59,15 +99,7 @@ const LogoWrapper = styled.div`
   justify-content: center;
   flex-wrap: nowrap;
   gap: 10px;
-`;
-
-const Title = styled.h1`
-  font-weight: 700;
-  font-size: 22px;
-  line-height: 150%;
-  color: #0b0d17;
-  margin: 0;
-  padding: 0;
+  margin-bottom: 24px;
 `;
 
 type Props = {};
@@ -128,56 +160,71 @@ const SignInPage = (props: Props) => {
   return (
     <Container>
       <Wrapper>
-        <LogoWrapper>
-          <Logo variant="square" width="40px" />
-          <Title>Gateway</Title>
-        </LogoWrapper>
-        {!user ? (
-          <>
-            <Desc>
-              Grindery Gateway allows you to implement Zapier workflows that
-              read and write data from over 10 blockchains without a single line
-              of code and without having any tokens. The easiest way to Web3 is
-              just one click away!
-            </Desc>
-            <ConnectMetamask />
-            <Disclaimer>
-              Grindery Gateway uses{" "}
-              <a href="https://metamask.io/" target="_blank" rel="noreferrer">
-                MetaMask
-              </a>{" "}
-              to authenticate users.
-            </Disclaimer>
-          </>
-        ) : (
-          <>
-            {authCode && <Desc>Redirecting...</Desc>}
+        <TopSection>
+          <LogoWrapper>
+            <img
+              src="/images/grindery-iso-square-dark.svg"
+              alt="Grindery logo"
+            />
+          </LogoWrapper>
+          {!user ? (
+            <>
+              <Desc>
+                Grindery Gateway allows you to exchange data on over a dozen
+                blockchains without a single line of code.
+              </Desc>
+              <ConnectMetamask />
+              <Disclaimer>
+                Grindery Gateway uses{" "}
+                <a href="https://metamask.io/" target="_blank" rel="noreferrer">
+                  MetaMask
+                </a>{" "}
+                to authenticate users.
+              </Disclaimer>
+            </>
+          ) : (
+            <>
+              {authCode && <Desc>Redirecting...</Desc>}
 
-            {!authCode && !accessAllowed && !verifying && !emailSubmitted && (
-              <SignInForm
-                onSubmit={() => {
-                  setEmailSubmitted(true);
-                }}
-              />
-            )}
-
-            {!authCode &&
-              accessAllowed &&
-              !chekingOptIn &&
-              !isOptedIn &&
-              emailSubmitted && (
-                <ConfirmEmailMessage
-                  onContinue={() => {
-                    setIsOptedIn(true);
+              {!authCode && !accessAllowed && !verifying && !emailSubmitted && (
+                <SignInForm
+                  onSubmit={() => {
+                    setEmailSubmitted(true);
                   }}
                 />
               )}
-            {!authCode &&
-              ((accessAllowed && isOptedIn) ||
-                (!accessAllowed && emailSubmitted)) && (
-                <WorkspaceSelectorMini />
-              )}
-          </>
+
+              {!authCode &&
+                accessAllowed &&
+                !chekingOptIn &&
+                !isOptedIn &&
+                emailSubmitted && (
+                  <ConfirmEmailMessage
+                    onContinue={() => {
+                      setIsOptedIn(true);
+                    }}
+                  />
+                )}
+              {!authCode &&
+                ((accessAllowed && isOptedIn) ||
+                  (!accessAllowed && emailSubmitted)) && (
+                  <WorkspaceSelectorMini />
+                )}
+            </>
+          )}
+        </TopSection>
+        {!user && (
+          <BottomSection>
+            <h2>Kickstart Steps</h2>
+            <ol>
+              <li>Create an account</li>
+              <li>Confirm your email to activate it</li>
+              <li>Build your workflows!</li>
+            </ol>
+            <p>
+              To get support check links in the email or use the in-app chat
+            </p>
+          </BottomSection>
         )}
       </Wrapper>
     </Container>

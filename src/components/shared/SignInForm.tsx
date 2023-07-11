@@ -27,7 +27,7 @@ const FormContent = styled.div`
 
 const FormTitle = styled.h2`
   font-weight: 700;
-  font-size: 40px;
+  font-size: 20px;
   line-height: 130%;
   text-align: center;
   color: #000000;
@@ -37,7 +37,7 @@ const FormTitle = styled.h2`
 
 const FormDesc = styled.p`
   font-weight: 400;
-  font-size: 20px;
+  font-size: 14px;
   line-height: 130%;
   text-align: center;
   color: #000000;
@@ -74,7 +74,7 @@ const ErrorWrapper = styled.p`
 
 const SuccessMessage = styled.div`
   font-weight: 400;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 130%;
   text-align: center;
   color: #000000;
@@ -227,16 +227,6 @@ const SignInForm = (props: Props) => {
         <FormContent>
           {success ? (
             <>
-              <img
-                src="/images/thank-you.png"
-                alt="thank you"
-                style={{
-                  marginBottom: "10px",
-                  width: "604px",
-                  maxWidth: "100%",
-                  height: "auto",
-                }}
-              />
               <FormTitle>Thank you!</FormTitle>
               <SuccessMessage>{success}</SuccessMessage>
               {props.onSubmit && (
