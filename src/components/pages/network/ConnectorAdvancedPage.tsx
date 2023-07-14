@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { CircularProgress } from "grindery-ui";
 import useConnectorContext from "../../../hooks/useConnectorContext";
-import ReactJson from "@silizia/react-json-view";
 import { NOT_ALLOWED } from "../../../context/ConnectorContext";
 
 const Container = styled.div`
@@ -113,20 +112,7 @@ const ConnectorAdvancedPage = (props: Props) => {
   return cds ? (
     <Container>
       <Title>Edit Connector Source Code</Title>
-      <div>
-        {cds && (
-          <ReactJson
-            src={cds}
-            onAdd={(add) => addValue(add.updated_src)}
-            onEdit={(edit) => editValue(edit.updated_src)}
-            onDelete={(edit) => deleteValue(edit.updated_src)}
-            theme={"monokai"}
-            collapsed={3}
-            collapseStringsAfterLength={30}
-            displayDataTypes={false}
-          />
-        )}
-      </div>
+      <div></div>
     </Container>
   ) : (
     <div
