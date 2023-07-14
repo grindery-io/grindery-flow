@@ -114,7 +114,7 @@ const AppRow = (props: Props) => {
         window.open(
           `https://network${
             isLocalOrStaging ? "-staging" : ""
-          }.grindery.org/clone/${
+          }.grindery.io/clone/${
             item.key
           }?source=nexus&name=${encodeURIComponent(item.name)}`,
           "_blank"
@@ -135,7 +135,7 @@ const AppRow = (props: Props) => {
         window.open(
           `https://network${
             isLocalOrStaging ? "-staging" : ""
-          }.grindery.org/connector/${item.key}`,
+          }.grindery.io/connector/${item.key}`,
           "_blank"
         );
       },

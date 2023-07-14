@@ -135,7 +135,7 @@ const SignInPage = (props: Props) => {
 
   useEffect(() => {
     if (user && authCode) {
-      //window.open("https://gateway.grindery.org/", "_blank", "noreferrer");
+      //window.open("https://gateway.grindery.io/", "_blank", "noreferrer");
       setTimeout(() => {
         if (
           response_type &&

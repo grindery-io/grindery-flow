@@ -364,30 +364,30 @@ export const HS_FORM_ID = "80ae7474-b232-4eb8-bad7-a4b2d651d643";
 export const isLocalOrStaging =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1" ||
-  window.location.hostname === "nexus-staging.grindery.org" ||
-  window.location.hostname === "flow-staging.grindery.org";
+  window.location.hostname === "nexus-staging.grindery.io" ||
+  window.location.hostname === "flow-staging.grindery.io";
 
 export const GRINDERY_APPS = [
   {
-    url: "https://flow.grindery.org/",
+    url: "https://flow.grindery.io/",
     name: "Flow",
     description: "Create workflows witn no-code",
     target: "_blank",
   },
   {
-    url: "https://ping.grindery.org/",
+    url: "https://ping.grindery.io/",
     name: "Ping",
     description: "Receive blockchain notifications",
     target: "_blank",
   },
   {
-    url: "https://gateway.grindery.org/",
+    url: "https://gateway.grindery.io/",
     name: "Gateway",
     description: "Your gateway to web3 no-code",
     target: "_blank",
   },
   {
-    url: "https://network.grindery.org/",
+    url: "https://network.grindery.io/",
     name: "CDS",
     description: "Create Connector Description Schema files",
     target: "_blank",
