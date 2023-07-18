@@ -23,6 +23,7 @@ const Title = styled.h1`
 type Props = {};
 
 const AuthPage = (props: Props) => {
+  const bc = new BroadcastChannel("grindery-connector-authentication");
   const receiveMessage = (e: { origin: any; data: any }) => {
     if (e.origin === window.location.origin) {
       const { data } = e;
@@ -33,18 +34,9 @@ const AuthPage = (props: Props) => {
   };
 
   useEffect(() => {
-    if (window && window.opener) {
-      window.opener.postMessage(
-        { gr_url: window.location.href },
-        window.location.origin
-      );
+    bc.postMessage({ gr_url: window.location.href });
 
-      window.addEventListener(
-        "message",
-        (event) => receiveMessage(event),
-        false
-      );
-    }
+    bc.onmessage = (e) => receiveMessage(e);
   }, []);
 
   return (

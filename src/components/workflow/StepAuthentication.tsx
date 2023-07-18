@@ -128,7 +128,7 @@ const StepAuthentication = (props: Props) => {
     setActiveRow(1);
   };
 
-  const receiveMessage = (e: any) => {
+  const receiveMessage = (e: any, bc: any) => {
     if (e.origin === window.location.origin) {
       const { data } = e;
 
@@ -169,8 +169,10 @@ const StepAuthentication = (props: Props) => {
             });
         }
 
-        e.source.postMessage({ gr_close: true }, window.location.origin);
-        window.removeEventListener("message", receiveMessage, false);
+        //e.source.postMessage({ gr_close: true }, window.location.origin);
+        bc.postMessage({ gr_close: true });
+        bc.close();
+        //window.removeEventListener("message", receiveMessage, false);
       }
     }
   };
@@ -191,7 +193,7 @@ const StepAuthentication = (props: Props) => {
     }
     setOperationIsTested(false);
     if (connector?.authentication?.type === "oauth2") {
-      window.removeEventListener("message", receiveMessage, false);
+      //window.removeEventListener("message", receiveMessage, false);
       const width = 375,
         height = 500,
         left = window.screen.width / 2 - width / 2,
@@ -212,7 +214,11 @@ const StepAuthentication = (props: Props) => {
           left
       );
       windowObjectReference?.focus();
-      window.addEventListener("message", receiveMessage, false);
+      //window.addEventListener("message", receiveMessage, false);
+      const bc = new BroadcastChannel("grindery-connector-authentication");
+      bc.onmessage = (event) => {
+        receiveMessage(event, bc);
+      };
     }
   };
 
@@ -231,7 +237,6 @@ const StepAuthentication = (props: Props) => {
                   ? workflow.trigger.input
                   : workflow.actions[index].input) || {},
               authentication: token,
-              cdsName: connector?.key || "",
             }),
             isLocalOrStaging ? "staging" : undefined
           )
