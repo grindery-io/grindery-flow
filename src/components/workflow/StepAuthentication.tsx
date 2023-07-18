@@ -231,6 +231,7 @@ const StepAuthentication = (props: Props) => {
                   ? workflow.trigger.input
                   : workflow.actions[index].input) || {},
               authentication: token,
+              cdsName: connector?.key || "",
             }),
             isLocalOrStaging ? "staging" : undefined
           )

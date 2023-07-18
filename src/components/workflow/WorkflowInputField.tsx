@@ -221,6 +221,7 @@ const WorkflowInputField = ({
                 key: operation.key,
                 fieldData: workflowStep.input || {},
                 authentication: workflowStep.authentication,
+                cdsName: currentConnector?.key || "",
               }),
               isLocalOrStaging ? "staging" : undefined
             )

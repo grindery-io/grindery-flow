@@ -277,6 +277,7 @@ const StepInput = ({ outputFields }: Props) => {
               key: operation.key,
               fieldData: workflowStep.input || {},
               authentication: workflowStep.authentication,
+              cdsName: connector?.key || "",
             }),
             isLocalOrStaging ? "staging" : undefined
           )
