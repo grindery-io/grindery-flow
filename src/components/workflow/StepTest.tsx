@@ -352,12 +352,7 @@ const StepTest = ({ outputFields }: Props) => {
                 jsonrpc: "2.0",
                 method: "testTrigger",
                 params: {
-                  trigger: {
-                    type: "trigger",
-                    connector: workflow.trigger.connector || "",
-                    operation: workflow.trigger.operation || "",
-                    input: workflow.trigger.input || {},
-                  },
+                  trigger: workflow.trigger,
                   environment: isLocalOrStaging ? "staging" : "production",
                 },
                 id: new Date(),
