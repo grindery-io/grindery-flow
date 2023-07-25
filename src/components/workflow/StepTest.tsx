@@ -354,6 +354,9 @@ const StepTest = ({ outputFields }: Props) => {
                 params: {
                   trigger: workflow.trigger,
                   environment: isLocalOrStaging ? "staging" : "production",
+                  source: isLocalOrStaging
+                    ? "urn:grindery-staging:nexus"
+                    : "urn:grindery:nexus",
                 },
                 id: new Date(),
               })
@@ -425,7 +428,10 @@ const StepTest = ({ outputFields }: Props) => {
           ?.testAction(
             workflow.actions[index],
             values,
-            isLocalOrStaging ? "staging" : undefined
+            isLocalOrStaging ? "staging" : undefined,
+            isLocalOrStaging
+              ? "urn:grindery-staging:nexus"
+              : "urn:grindery:nexus"
           )
           .catch((err) => {
             console.error("testAction error:", err.message);

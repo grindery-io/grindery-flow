@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { RichInput, Select } from "grindery-ui";
 import styled from "styled-components";
-import { ICONS } from "../../constants";
+import { ICONS, isLocalOrStaging } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import Button from "./Button";
 import CheckBox from "./CheckBox";
@@ -194,6 +194,9 @@ const SignInForm = (props: Props) => {
         lastname,
         interest: interest.join(";"),
         skill: skill.join(";"),
+        trackSource: isLocalOrStaging
+          ? "urn:grindery-staging:nexus"
+          : "urn:grindery:nexus",
       })
       .catch((err) => {
         console.error(
