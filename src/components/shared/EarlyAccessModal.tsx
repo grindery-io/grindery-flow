@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Select, RichInput } from "grindery-ui";
 import Cookies from "js-cookie";
 import styled from "styled-components";
-import { ICONS } from "../../constants";
+import { ICONS, isLocalOrStaging } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
 import Button from "./Button";
 import CheckBox from "./CheckBox";
@@ -219,6 +219,9 @@ const EarlyAccessModal = (props: Props) => {
         skill: skill.join(";"),
         hutk: Cookies.get("hubspotutk") || "",
         pageName: document.getElementsByTagName("title")[0].innerHTML || "",
+        trackSource: isLocalOrStaging
+          ? "urn:grindery-staging:nexus"
+          : "urn:grindery:nexus",
       })
       .catch((err) => {
         console.error(
