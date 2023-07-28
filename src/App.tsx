@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import GrinderyNexusContextProvider from "use-grindery-nexus";
 import { ThemeProvider } from "grindery-ui";
@@ -8,8 +8,13 @@ import SignInContextProvider from "./context/SignInContext";
 import CompleteConnectorAuth from "./components/pages/CompleteConnectorAuth";
 import WorkspaceContextProvider from "./context/WorkspaceContext";
 import AppContextProvider from "./context/AppContext";
+import { sendTwitterConversion } from "./utils/twitterTracking";
 
 function App() {
+  useEffect(() => {
+    sendTwitterConversion("tw-ofep3-ofep4");
+  }, []);
+
   return (
     <ThemeProvider>
       <GrinderyNexusContextProvider>

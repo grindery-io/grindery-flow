@@ -31,7 +31,7 @@ messaging.onBackgroundMessage((payload) => {
       "",
     icon:
       (payload.data && payload.data.icon) ||
-      "https://flow.grindery.org/logo192.png",
+      "https://flow.grindery.io/logo192.png",
     data: {
       url: (payload.data && payload.data.url) || "",
     },

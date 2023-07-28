@@ -3,7 +3,8 @@ import { useGrinderyNexus } from "use-grindery-nexus";
 import NexusClient from "grindery-nexus-client";
 import { Workspace } from "./WorkspaceContext";
 import axios from "axios";
-import { log } from "console";
+import { sendTwitterConversion } from "../utils/twitterTracking";
+import { sendGoogleEvent } from "../utils/googleTracking";
 
 type ContextProps = {
   user: any;
@@ -162,6 +163,17 @@ export const SignInContextProvider = ({ children }: SignInContextProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspaceSelected, workspacesLoaded, token?.access_token]);
+
+  useEffect(() => {
+    if (user) {
+      sendGoogleEvent({
+        event: "registration",
+        authentication_method: "wallet",
+        user_id: user,
+      });
+      sendTwitterConversion("tw-ofep3-ofep7");
+    }
+  }, [user]);
 
   return (
     <SignInContext.Provider

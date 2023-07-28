@@ -231,7 +231,7 @@ const AppsPage = (props: Props) => {
               window.open(
                 `https://network${
                   isLocalOrStaging ? "-staging" : ""
-                }.grindery.org/connector/__new__`,
+                }.grindery.io/connector/__new__`,
                 "_blank"
               );
             }}

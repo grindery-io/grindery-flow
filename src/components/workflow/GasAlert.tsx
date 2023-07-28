@@ -43,7 +43,8 @@ const GasAlert = (props: Props) => {
       setDroneAddress("");
       return;
     }
-    const address = res?.data?.droneAddress || res?.data?.result?.payload?.droneAddress || "";
+    const address =
+      res?.data?.droneAddress || res?.data?.result?.payload?.droneAddress || "";
 
     setDroneAddress(address);
   };

@@ -129,8 +129,6 @@ const StepAuthentication = (props: Props) => {
   };
 
   const receiveMessage = (e: any, bc: any) => {
-    console.log("receiveMessage", e);
-
     if (e.origin === window.location.origin) {
       const { data } = e;
 
