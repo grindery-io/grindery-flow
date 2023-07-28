@@ -1,8 +1,7 @@
 import React from "react";
-import styled from "styled-components";
 import { ICONS } from "../../constants";
 import Button from "./Button";
-import { useGrinderyLogin } from "use-grindery-login";
+import { useGrinderyNexus } from "use-grindery-nexus";
 import AlertBox from "./AlertBox";
 
 declare global {
@@ -11,16 +10,10 @@ declare global {
   }
 }
 
-const FlowConnectButtonWrapper = styled.div`
-  .MuiButton-root {
-    margin-top: 0 !important;
-  }
-`;
-
 type Props = {};
 
-const ConnectButton = (props: Props) => {
-  const { connect, user } = useGrinderyLogin();
+const ConnectMetamaskOld = (props: Props) => {
+  const { connect, user } = useGrinderyNexus();
 
   return user ? null : (
     <>
@@ -77,18 +70,8 @@ const ConnectButton = (props: Props) => {
           </AlertBox>
         </div>
       )}
-      {/*<FlowConnectButtonWrapper>
-        <Button
-          onClick={() => {
-            connectFlow();
-          }}
-          icon={ICONS.FLOW_LOGO}
-          value="Connect Flow Wallet"
-          hideIconBorder
-        />
-        </FlowConnectButtonWrapper>*/}
     </>
   );
 };
 
-export default ConnectButton;
+export default ConnectMetamaskOld;

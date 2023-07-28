@@ -1,7 +1,7 @@
 //import NexusClient from "grindery-nexus-client";
 import axios from "axios";
 import React, { createContext, useEffect, useReducer } from "react";
-import { useGrinderyNexus } from "use-grindery-nexus";
+import { useGrinderyLogin } from "use-grindery-login";
 import { isLocalOrStaging } from "../constants";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";
 
@@ -58,7 +58,7 @@ export const NetworkContext = createContext<ContextProps>(defaultContext);
 
 export const NetworkContextProvider = ({ children }: NetworkContextProps) => {
   const { workspaceToken, workspace } = useWorkspaceContext();
-  const { token } = useGrinderyNexus();
+  const { token } = useGrinderyLogin();
 
   const [state, setState] = useReducer(
     (state: StateProps, newState: Partial<StateProps>) => ({

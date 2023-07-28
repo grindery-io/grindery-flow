@@ -1,7 +1,7 @@
 import React from "react";
 import { ICONS } from "../../constants";
 import Button from "./Button";
-import { useGrinderyNexus } from "use-grindery-nexus";
+import { useGrinderyLogin } from "use-grindery-login";
 import AlertBox from "./AlertBox";
 
 declare global {
@@ -13,7 +13,7 @@ declare global {
 type Props = {};
 
 const ConnectMetamask = (props: Props) => {
-  const { connect, user } = useGrinderyNexus();
+  const { connect, user } = useGrinderyLogin();
 
   return user ? null : (
     <>

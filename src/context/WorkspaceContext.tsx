@@ -1,6 +1,6 @@
 import NexusClient from "grindery-nexus-client";
 import React, { useState, createContext, useEffect } from "react";
-import { useGrinderyNexus } from "use-grindery-nexus";
+import { useGrinderyLogin } from "use-grindery-login";
 import { defaultFunc, replaceTokens } from "../helpers/utils";
 
 export type Workspace = {
@@ -90,7 +90,7 @@ export const WorkspaceContextProvider = ({
   children,
 }: WorkspaceContextProps) => {
   // App main context
-  const { user, token } = useGrinderyNexus();
+  const { user, token } = useGrinderyLogin();
 
   // Is workspace switching
   const [client, setClient] = useState<NexusClient | null>(null);

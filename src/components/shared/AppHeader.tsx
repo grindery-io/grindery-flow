@@ -8,7 +8,7 @@ import useWindowSize from "../../hooks/useWindowSize";
 import { useMatch, useNavigate } from "react-router-dom";
 import UserMenu from "./UserMenu";
 import WorkspaceSelector from "./WorkspaceSelector";
-import { useGrinderyNexus } from "use-grindery-nexus";
+import { useGrinderyLogin } from "use-grindery-login";
 
 const Wrapper = styled.div`
   border-bottom: 1px solid #dcdcdc;
@@ -133,7 +133,7 @@ const ConnectWrapper = styled.div`
 type Props = {};
 
 const AppHeader = (props: Props) => {
-  const { connect } = useGrinderyNexus();
+  const { connect } = useGrinderyLogin();
   const { user, setAppOpened, appOpened } = useAppContext();
   const { size, width } = useWindowSize();
   let navigate = useNavigate();
