@@ -1,6 +1,6 @@
 import React, { useState, createContext, useEffect, useCallback } from "react";
 import _ from "lodash";
-import { useGrinderyNexus } from "use-grindery-nexus";
+import { useGrinderyLogin } from "use-grindery-login";
 import NexusClient, {
   WorkflowExecution,
   WorkflowExecutionLog,
@@ -117,7 +117,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const [evmChains, setEvmChains] = useState<Chain[]>([]);
 
   // Auth hook
-  const { user, disconnect, token } = useGrinderyNexus();
+  const { user, disconnect, token } = useGrinderyLogin();
 
   const access_token = token?.access_token;
 

@@ -4,7 +4,7 @@ import _ from "lodash";
 import { Alert } from "grindery-ui";
 import { ICONS } from "../../constants";
 import GasInput from "./GasInput";
-import { useGrinderyNexus } from "use-grindery-nexus";
+import { useGrinderyLogin } from "use-grindery-login";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 import axios from "axios";
 
@@ -21,7 +21,7 @@ type Props = {
 
 const GasAlert = (props: Props) => {
   const { gasToken, chain, gas, onChange } = props;
-  const { token } = useGrinderyNexus();
+  const { token } = useGrinderyLogin();
   const { workspaceToken } = useWorkspaceContext();
   const [droneAddress, setDroneAddress] = useState("");
 

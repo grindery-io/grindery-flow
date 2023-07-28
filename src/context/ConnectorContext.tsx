@@ -3,7 +3,7 @@ import axios from "axios";
 import _ from "lodash";
 import { useNavigate } from "react-router";
 import { isLocalOrStaging } from "../constants";
-import { useGrinderyNexus } from "use-grindery-nexus";
+import { useGrinderyLogin } from "use-grindery-login";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";
 import useNetworkContext from "../hooks/useNetworkContext";
 
@@ -92,7 +92,7 @@ export const ConnectorContextProvider = ({
   connector,
 }: ConnectorContextProps) => {
   const { workspaceToken } = useWorkspaceContext();
-  const { token } = useGrinderyNexus();
+  const { token } = useGrinderyLogin();
   const { refreshConnectors } = useNetworkContext();
   let navigate = useNavigate();
   const [count, setCount] = useState(0);

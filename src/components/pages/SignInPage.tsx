@@ -6,9 +6,9 @@ import { SCREEN } from "../../constants";
 import Logo from "../shared/Logo";
 import SignInForm from "../shared/SignInForm";
 import useSignInContext from "../../hooks/useSignInContext";
-import ConnectMetamask from "../shared/ConnectMetamask";
 import ConfirmEmailMessage from "../shared/ConfirmEmailMessage";
 import WorkspaceSelectorMini from "../shared/WorkspaceSelectorMini";
+import ConnectMetamaskOld from "../shared/ConnectMetamaskOld";
 
 const Container = styled.div`
   padding: 0;
@@ -178,7 +178,7 @@ const SignInPage = (props: Props) => {
                 Grindery Gateway allows you to exchange data on over a dozen
                 blockchains without a single line of code.
               </Desc>
-              <ConnectMetamask />
+              <ConnectMetamaskOld />
               <Disclaimer>
                 Grindery Gateway uses{" "}
                 <a href="https://metamask.io/" target="_blank" rel="noreferrer">
