@@ -86,14 +86,14 @@ const WelcomePage = (props: Props) => {
     <Container>
       <Wrapper>
         <Img src="/images/welcome.svg" alt="Welcome" />
-        <Title>Welcome to Flow</Title>
+        <Title>Welcome to Grindery App</Title>
         <Desc>
           We are the easiest way for people and organizations to connect Apps
           and dApps across chains and protocols.
         </Desc>
         <ConnectButton />
         <Disclaimer>
-          Grindery Flow uses{" "}
+          Grindery App uses{" "}
           <a href="https://metamask.io/" target="_blank" rel="noreferrer">
             MetaMask
           </a>{" "}

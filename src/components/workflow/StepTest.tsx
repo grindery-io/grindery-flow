@@ -641,7 +641,7 @@ const StepTest = ({ outputFields }: Props) => {
                 <>
                   {type === "trigger" && (
                     <div style={{ textAlign: "center", margin: "0 0 20px" }}>
-                      Grindery Flow is now waiting for a trigger event...
+                      Grindery App is now waiting for a trigger event...
                     </div>
                   )}
                   <div

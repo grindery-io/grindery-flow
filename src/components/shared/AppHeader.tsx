@@ -167,7 +167,7 @@ const AppHeader = (props: Props) => {
               navigate("/");
             }}
           >
-            Flow
+            Grindery
           </CompanyNameWrapper>
         </>
       ) : (

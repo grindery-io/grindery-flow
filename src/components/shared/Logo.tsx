@@ -28,7 +28,7 @@ const Logo = (props: Props) => {
     <div>
       <img
         src={returnSrc()}
-        alt="Grindery Flow logo"
+        alt="Grindery App logo"
         style={{
           display: "block",
           margin: "0 auto",

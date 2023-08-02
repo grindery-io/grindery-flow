@@ -44,7 +44,7 @@ const AuthPage = (props: Props) => {
       <div style={{ padding: "50px 20px 50px", textAlign: "center" }}>
         <LogoWrapper>
           <Logo variant="square" width="40px" />
-          <Title>Flow</Title>
+          <Title>Grindery</Title>
         </LogoWrapper>
       </div>
       <div style={{ padding: "0 20px 50px", textAlign: "center" }}>

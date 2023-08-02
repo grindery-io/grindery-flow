@@ -371,7 +371,7 @@ export const isLocalOrStaging =
 export const GRINDERY_APPS = [
   {
     url: "https://flow.grindery.io/",
-    name: "Flow",
+    name: "Grindery App",
     description: "Create workflows witn no-code",
     target: "_blank",
   },
