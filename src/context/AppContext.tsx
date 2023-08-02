@@ -15,8 +15,6 @@ import { validator } from "../helpers/validator";
 import { Operation } from "../types/Workflow";
 import useWorkspaceContext from "../hooks/useWorkspaceContext";
 import { Chain } from "../types/Chain";
-import { sendTwitterConversion } from "../utils/twitterTracking";
-import { sendGoogleEvent } from "../utils/googleTracking";
 
 type ContextProps = {
   user: any;
@@ -27,6 +25,7 @@ type ContextProps = {
   workflows: Workflow[];
   setWorkflows: (a: Workflow[]) => void;
   connectors: Connector[];
+  userProps: any;
   getWorkflowsList: () => void;
   getWorkflowHistory: (
     a: string,
@@ -65,6 +64,7 @@ type ContextProps = {
   isOptedIn: boolean;
   chekingOptIn: boolean;
   setIsOptedIn: (a: boolean) => void;
+  setUserProps: (a: any) => void;
 };
 
 type AppContextProps = {
@@ -101,6 +101,8 @@ export const AppContext = createContext<ContextProps>({
   isOptedIn: false,
   chekingOptIn: true,
   setIsOptedIn: () => {},
+  userProps: {},
+  setUserProps: () => {},
 });
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
@@ -156,6 +158,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
   // Nexus API client
   const [client, setClient] = useState<NexusClient | null>(null);
+
+  const [userProps, setUserProps] = useState<any>({});
 
   // change current active tab
   const changeTab = (name: string, query = "") => {
@@ -295,6 +299,12 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       setAccessAllowed(false);
     });
     if (res) {
+      const props = await client?.getUserProps().catch((err) => {
+        console.error("getUserProps error:", err.message);
+        setUserProps("");
+      });
+      setUserProps(props || {});
+
       setAccessAllowed(true);
       const optinRes = await client?.isAllowedUser().catch((err) => {
         console.error("isAllowedUser error:", err.message);
@@ -495,6 +505,8 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         isOptedIn,
         chekingOptIn,
         setIsOptedIn,
+        userProps,
+        setUserProps,
       }}
     >
       {children}

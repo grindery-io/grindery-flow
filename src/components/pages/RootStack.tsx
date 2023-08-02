@@ -26,6 +26,7 @@ import NotificationsModal from "../shared/NotificationsModal";
 import CreateNexusNotificationPage from "./CreateNexusNotificationPage";
 import WorkflowHistoryPage from "./WorkflowHistoryPage";
 import WorkflowHistoryLogPage from "./WorkflowHistoryLogPage";
+import AccountPage from "./AccountPage";
 
 const DrawerWrapper = styled.div`
   @media (min-width: ${SCREEN.TABLET}) {
@@ -173,6 +174,7 @@ const RootStack = (props: Props) => {
               path="/notifications/send"
               element={<CreateNexusNotificationPage />}
             />
+            <Route path="/account" element={<AccountPage />} />
             <Route
               path="*"
               element={<Navigate to="/workflows" replace />}

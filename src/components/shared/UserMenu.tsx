@@ -131,6 +131,7 @@ const UserMenu = (props: Props) => {
   const { address, disconnect } = useGrinderyLogin();
   const [menuOpened, setMenuOpened] = useState(false);
   const { workspace, workspaceToken } = useWorkspaceContext();
+  const { userProps } = useAppContext();
   //const { client, access_token } = useAppContext();
   const [copied, setCopied] = useState(false);
   let navigate = useNavigate();
@@ -191,6 +192,16 @@ const UserMenu = (props: Props) => {
                 <span>{"Copy wallet addres"}</span>
               </button>
             </CopyToClipboard>
+            {userProps && userProps.email && (
+              <button
+                onClick={() => {
+                  navigate("/account");
+                }}
+              >
+                <img src={ICONS.ACCOUNT} alt="" />
+                <span>Account details</span>
+              </button>
+            )}
             {workspace && workspace !== "personal" && (
               <button
                 onClick={() => {
