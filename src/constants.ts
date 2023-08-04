@@ -366,7 +366,10 @@ export const isLocalOrStaging =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1" ||
   window.location.hostname === "nexus-staging.grindery.io" ||
-  window.location.hostname === "flow-staging.grindery.io";
+  window.location.hostname === "flow-staging.grindery.io" ||
+  window.location.hostname === "nexus-staging.grindery.org" ||
+  window.location.hostname === "flow-staging.grindery.org" ||
+  window.location.hostname === "app-staging.grindery.io";
 
 export const GRINDERY_APPS = [
   {
