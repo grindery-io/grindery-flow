@@ -1,11 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { Menu, IconButton, TextInput, Switch, Button } from "grindery-ui";
+import {
+  Menu,
+  IconButton,
+  TextInput,
+  Switch,
+  Button,
+  Tooltip,
+} from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import useAppContext from "../../hooks/useAppContext";
 import { ICONS, SCREEN } from "../../constants";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
+import useWindowSize from "../../hooks/useWindowSize";
 
 const Wrapper = styled.div`
   display: flex;
@@ -194,6 +202,7 @@ const WorkflowsPage = (props: Props) => {
   const { workflows, connectors } = useAppContext();
   const items = workflows || [];
   let [searchParams] = useSearchParams();
+  const { size, width } = useWindowSize();
   const [searchTerm, setSearchTerm] = useState(
     searchParams.get("search") || ""
   );
@@ -246,14 +255,30 @@ const WorkflowsPage = (props: Props) => {
             type="search"
           />
         </SearchInputWrapper>
-        <Button
-          value="Create flow"
-          onClick={() => {
-            navigate("/flows/new", { replace: true });
-          }}
-          icon={ICONS.PLUS_WHITE}
-          color="primary"
-        />
+        {width >= parseInt(SCREEN.TABLET.replace("px", "")) ? (
+          <Button
+            value="Create flow"
+            onClick={() => {
+              navigate("/flows/new", { replace: true });
+            }}
+            icon={ICONS.PLUS_WHITE}
+            color="primary"
+          />
+        ) : (
+          <div style={{ marginLeft: "auto", marginTop: "5px" }}>
+            <Tooltip title="Refresh">
+              <div>
+                <IconButton
+                  color=""
+                  onClick={() => {
+                    navigate("/flows/new", { replace: true });
+                  }}
+                  icon={ICONS.PLUS}
+                />
+              </div>
+            </Tooltip>
+          </div>
+        )}
       </SearchWrapper>
       <ItemsWrapper>
         {filteredItems.map((item) => (
