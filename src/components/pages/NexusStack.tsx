@@ -4,7 +4,6 @@ import RootStack from "./RootStack";
 import AuthPage from "./AuthPage";
 import WorkspaceContextProvider from "../../context/WorkspaceContext";
 import AppContextProvider from "../../context/AppContext";
-import UserAuthController from "../shared/UserAuthController";
 
 type Props = {};
 
@@ -14,14 +13,7 @@ const NexusStack = (props: Props) => {
       <AppContextProvider>
         <Routes>
           <Route path="/auth" element={<AuthPage />}></Route>
-          <Route
-            path="*"
-            element={
-              <UserAuthController>
-                <RootStack />
-              </UserAuthController>
-            }
-          ></Route>
+          <Route path="*" element={<RootStack />}></Route>
         </Routes>
       </AppContextProvider>
     </WorkspaceContextProvider>
