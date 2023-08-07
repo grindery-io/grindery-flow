@@ -70,7 +70,7 @@ const WorkflowSave = (props: Props) => {
         () => {
           setSnackbar({
             opened: true,
-            message: "Workflow updated",
+            message: "Flow updated",
             severity: "success",
           });
           setLoading(false);

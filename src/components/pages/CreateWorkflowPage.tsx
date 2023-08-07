@@ -77,15 +77,13 @@ const CreateWorkflowPage = (props: Props) => {
   return (
     <Container>
       <Wrapper>
-        <Title>Create your first workflow</Title>
+        <Title>Create your first flow</Title>
         <Img src="/images/create-workflow.svg" alt="Create workflow" />
-        <Desc>
-          Create workflows to connect a Web2 to a Web3 App or viceversa.
-        </Desc>
+        <Desc>Create flows to connect a Web2 to a Web3 App or viceversa.</Desc>
         <Button
-          value="Create workflow"
+          value="Create flow"
           onClick={() => {
-            navigate("/workflows/new", { replace: true });
+            navigate("/flows/new", { replace: true });
           }}
           icon={ICONS.PLUS_WHITE}
           hideIconBorder

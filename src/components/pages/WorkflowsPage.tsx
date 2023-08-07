@@ -226,7 +226,7 @@ const WorkflowsPage = (props: Props) => {
       <SearchWrapper>
         <SearchInputWrapper>
           <TextInput
-            placeholder={"Search Workflows"}
+            placeholder={"Search Flows"}
             value={searchTerm}
             onChange={handleSearchChange}
             size="small"
@@ -237,7 +237,7 @@ const WorkflowsPage = (props: Props) => {
         <IconButton
           color=""
           onClick={() => {
-            navigate("/workflows/new", { replace: true });
+            navigate("/flows/new", { replace: true });
           }}
           icon={ICONS.PLUS}
         />
@@ -333,7 +333,7 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
   const handleDelete = () => {
     if (
       window.confirm(
-        "Are you sure you want to delete the workflow?\nIt will be disabled and you won't be able to restore it."
+        "Are you sure you want to delete the flow?\nIt will be disabled and you won't be able to restore it."
       )
     ) {
       deleteWorkflow(user, item.key);
@@ -347,15 +347,15 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
     try {
       await moveWorkflowToWorkspace(item.key, workspaceKey, client);
     } catch (err) {}
-    setIsSuccess(`Workflow successfully moved to ${workspaceTitle}.`);
+    setIsSuccess(`Flow successfully moved to ${workspaceTitle}.`);
   };
 
   const handleEditClick = async () => {
-    navigate("/workflows/edit/" + item.key, { replace: true });
+    navigate("/flows/edit/" + item.key, { replace: true });
   };
 
   const handleHistoryClick = () => {
-    navigate("/workflows/history/" + item.key, { replace: true });
+    navigate("/flows/history/" + item.key, { replace: true });
   };
 
   useEffect(() => {

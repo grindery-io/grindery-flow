@@ -137,8 +137,8 @@ const AppHeader = (props: Props) => {
   const { user, setAppOpened, appOpened } = useAppContext();
   const { size, width } = useWindowSize();
   let navigate = useNavigate();
-  const isMatchingWorkflowNew = useMatch("/workflows/new");
-  const isMatchingWorkflowEdit = useMatch("/workflows/edit/:key");
+  const isMatchingWorkflowNew = useMatch("/flows/new");
+  const isMatchingWorkflowEdit = useMatch("/flows/edit/:key");
   const matchNewWorfklow = isMatchingWorkflowNew || isMatchingWorkflowEdit;
 
   const handleClose = () => {
@@ -146,7 +146,7 @@ const AppHeader = (props: Props) => {
   };
 
   const handleBack = () => {
-    navigate("/workflows");
+    navigate("/flows");
   };
 
   return (

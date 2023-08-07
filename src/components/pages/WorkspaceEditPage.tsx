@@ -38,7 +38,7 @@ const STRINGS = {
     },
   },
   SECTION_TITLE_2: "Moderation",
-  SECTION_DESCRIPTION_2: "Who can manage this Workspace and create Workflows?",
+  SECTION_DESCRIPTION_2: "Who can manage this Workspace and create Flows?",
   SUBMIT_BUTTON: "Save Workspace",
   DELETE_BUTTON: "Delete Workspace",
   LEAVE_BUTTON: "Leave Workspace",

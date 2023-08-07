@@ -589,7 +589,7 @@ const StepTest = ({ outputFields }: Props) => {
                   <SuccessDescription>
                     {type === "trigger"
                       ? "Now you can add an action."
-                      : "Now you can save this workflow or add another action."}
+                      : "Now you can save this flow or add another action."}
                   </SuccessDescription>
                 </SuccessWrapper>
               )}

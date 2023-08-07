@@ -107,7 +107,7 @@ const OperationFormPreview = (props: Props) => {
 
   return (
     <Container>
-      <h4>Workflow editor preview</h4>
+      <h4>Flow editor preview</h4>
       <IconWrapper>
         <img src={cds.icon || ICONS.NEXUS_SQUARE} alt="" />
       </IconWrapper>

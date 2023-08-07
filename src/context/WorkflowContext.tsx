@@ -17,7 +17,7 @@ import useWorkspaceContext from "../hooks/useWorkspaceContext";
 
 // empty workflow declaration
 const blankWorkflow: Workflow = {
-  title: "Name your workflow",
+  title: "Name your flow",
   trigger: {
     type: "trigger",
     connector: "",
@@ -139,7 +139,7 @@ export const WorkflowContextProvider = ({
 
   // workflow state
   const [workflow, setWorkflow] = useState<Workflow>({
-    title: "Name your workflow",
+    title: "Name your flow",
     trigger: {
       type: "trigger",
       connector: "",
@@ -446,7 +446,7 @@ export const WorkflowContextProvider = ({
   // reset current workflow
   const resetWorkflow = () => {
     setWorkflow({
-      title: "Name your workflow",
+      title: "Name your flow",
       trigger: {
         type: "trigger",
         connector: "",
@@ -495,7 +495,7 @@ export const WorkflowContextProvider = ({
         getWorkflowsList();
         if (!callback) {
           resetWorkflow();
-          navigate("/workflows");
+          navigate("/flows");
         } else {
           callback();
         }

@@ -95,7 +95,7 @@ const WorkflowName = (props: Props) => {
   const handleBlur = () => {
     if (!workflow.title) {
       updateWorkflow({
-        title: "Name your workflow",
+        title: "Name your flow",
       });
     }
   };

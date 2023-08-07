@@ -66,14 +66,14 @@ const WorkflowState = (props: Props) => {
       });
       setSnackbar({
         opened: true,
-        message: "Workflow disabled",
+        message: "Flow disabled",
         severity: "success",
       });
     } else {
       if (!workflowReadyToSave) {
         setSnackbar({
           opened: true,
-          message: "Please, complete all workflow steps to enable it.",
+          message: "Please, complete all flow steps to enable it.",
           severity: "error",
         });
       } else {
@@ -88,7 +88,7 @@ const WorkflowState = (props: Props) => {
         });
         setSnackbar({
           opened: true,
-          message: "Workflow enabled",
+          message: "Flow enabled",
           severity: "success",
         });
       }

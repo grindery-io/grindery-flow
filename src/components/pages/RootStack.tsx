@@ -111,8 +111,8 @@ const RootStack = (props: Props) => {
   const { isSuccess, setIsSuccess, isWorkspaceSwitching } =
     useWorkspaceContext();
   const { size, width } = useWindowSize();
-  const isMatchingWorkflowNew = useMatch("/workflows/new");
-  const isMatchingWorkflowEdit = useMatch("/workflows/edit/:key");
+  const isMatchingWorkflowNew = useMatch("/flows/new");
+  const isMatchingWorkflowEdit = useMatch("/flows/edit/:key");
   const matchNewWorfklow = isMatchingWorkflowNew || isMatchingWorkflowEdit;
 
   const renderContent = () => {
@@ -129,13 +129,10 @@ const RootStack = (props: Props) => {
           </div>
         ) : (
           <Routes>
-            <Route
-              path="/"
-              element={<Navigate to="/workflows" replace />}
-            ></Route>
+            <Route path="/" element={<Navigate to="/flows" replace />}></Route>
             {/*<Route path="/dashboard" element={<DashboardPage />}></Route>*/}
             <Route
-              path="/workflows"
+              path="/flows"
               element={
                 !workflows || workflows.length < 1 ? (
                   <CreateWorkflowPage />
@@ -145,21 +142,21 @@ const RootStack = (props: Props) => {
               }
             ></Route>
             <Route
-              path="/workflows/create"
+              path="/flows/create"
               element={<CreateWorkflowPage />}
             ></Route>
             <Route
-              path="/workflows/new"
+              path="/flows/new"
               element={<WorkflowBuilderPage />}
               key={1}
             ></Route>
             <Route
-              path="/workflows/edit/:key"
+              path="/flows/edit/:key"
               element={<WorkflowBuilderPage />}
               key={2}
             ></Route>
             <Route
-              path="/workflows/history/:key"
+              path="/flows/history/:key"
               element={<WorkflowHistoryPage />}
               key={3}
             ></Route>
@@ -175,10 +172,7 @@ const RootStack = (props: Props) => {
               element={<CreateNexusNotificationPage />}
             />
             <Route path="/account" element={<AccountPage />} />
-            <Route
-              path="*"
-              element={<Navigate to="/workflows" replace />}
-            ></Route>
+            <Route path="*" element={<Navigate to="/flows" replace />}></Route>
           </Routes>
         )}
       </NotificationsContextProvider>

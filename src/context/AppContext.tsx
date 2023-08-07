@@ -284,7 +284,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       await getWorkflowsList();
     }
     if (redirect) {
-      navigate("/workflows");
+      navigate("/flows");
     } else {
       if (callback) {
         callback();
@@ -441,7 +441,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   useEffect(() => {
     if (user && token?.access_token) {
       initClient(token?.access_token);
-      //navigate("/workflows");
+      //navigate("/flows");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, token?.access_token]);

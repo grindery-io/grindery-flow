@@ -115,8 +115,8 @@ export const RIGHTBAR_TABS: {
     id: 0,
     name: "WORKFLOWS",
     icon: ICONS.WORKFLOWS,
-    label: "Workflows",
-    path: "/workflows",
+    label: "Flows",
+    path: "/flows",
   },
   {
     id: 1,

@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 const STRINGS = {
   TITLE: "Create New Workspace",
   DESCRIPTION:
-    "Grindery Nexus is a free, open-source platform to connect Apps and dApps across chains and protocols. Create your own Workspace now to collaborate with teams and organize your Workflow lists.",
+    "Grindery Nexus is a free, open-source platform to connect Apps and dApps across chains and protocols. Create your own Workspace now to collaborate with teams and organize your Flows lists.",
   SECTION_TITLE_1: "Profile",
   FIELDS: {
     AVATAR: {
@@ -51,7 +51,7 @@ const STRINGS = {
   SECTION_DESCRIPTION_2:
     "The admin is the account that will be able to edit/manage a Workspace as well as invite and/or remove members and admins of a Workspace. Additional Workspace admins can be added later.",
   SECTION_TITLE_3: "Moderation",
-  SECTION_DESCRIPTION_3: "Who can manage this Workspace and create Workflows?",
+  SECTION_DESCRIPTION_3: "Who can manage this Workspace and create Flows?",
   SUBMIT_BUTTON: "Create Workspace",
 };
 

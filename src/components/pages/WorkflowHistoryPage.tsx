@@ -81,7 +81,7 @@ const WorkflowHistoryPage = (props: Props) => {
       <Wrapper>
         <div>
           <Title>{workflows.find((wf) => wf.key === key)?.title || ""}</Title>
-          <Subtitle>Workflow history</Subtitle>
+          <Subtitle>Flow history</Subtitle>
         </div>
         {items.map((item, i) => (
           <WorkflowExecutionRow

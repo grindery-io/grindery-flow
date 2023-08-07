@@ -9,8 +9,8 @@ type Props = {};
 const WorkflowBuilderPage = (props: Props) => {
   const { connectors } = useAppContext();
 
-  const isMatchingWorkflowNew = useMatch("/workflows/new");
-  const isMatchingWorkflowEdit = useMatch("/workflows/edit/:key");
+  const isMatchingWorkflowNew = useMatch("/flows/new");
+  const isMatchingWorkflowEdit = useMatch("/flows/edit/:key");
   const matchNewWorfklow = isMatchingWorkflowNew || isMatchingWorkflowEdit;
 
   if (!connectors || !connectors.length) {

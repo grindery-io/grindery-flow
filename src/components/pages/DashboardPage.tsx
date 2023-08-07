@@ -165,7 +165,7 @@ const DashboardPage = (props: Props) => {
             style={{ cursor: "pointer" }}
           >
             <Icon src={ICONS.WORKFLOWS} alt="Workflows icon" />
-            <TitleText>Workflows</TitleText>
+            <TitleText>Flows</TitleText>
           </Title>
         }
         RightComponent={
@@ -174,7 +174,7 @@ const DashboardPage = (props: Props) => {
               color=""
               icon={ICONS.PLUS_SMALL}
               onClick={() => {
-                navigate("/workflows/new", { replace: true });
+                navigate("/flows/new", { replace: true });
               }}
             />
           </IconButtonWrapper>

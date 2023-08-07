@@ -190,7 +190,7 @@ const AppsPage = (props: Props) => {
                   item={item}
                   key={item.key}
                   onClick={() => {
-                    navigate("/workflows?search=" + item.name);
+                    navigate("/flows?search=" + item.name);
                   }}
                   showWorkflows
                   showMenu
