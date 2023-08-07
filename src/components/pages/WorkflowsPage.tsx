@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { Menu, IconButton, TextInput, Switch } from "grindery-ui";
+import { Menu, IconButton, TextInput, Switch, Button } from "grindery-ui";
 import DataBox from "../shared/DataBox";
 import useAppContext from "../../hooks/useAppContext";
 import { ICONS, SCREEN } from "../../constants";
@@ -48,6 +48,18 @@ const SearchWrapper = styled.div`
   @media (min-width: ${SCREEN.TABLET}) {
     .MuiIconButton-root {
       margin-left: auto;
+    }
+  }
+
+  & .MuiButton-root {
+    max-width: 200px;
+    margin-left: auto;
+
+    & img {
+      padding: 0;
+      background-color: transparent;
+      border-radius: 0px;
+      border: none;
     }
   }
 `;
@@ -234,12 +246,13 @@ const WorkflowsPage = (props: Props) => {
             type="search"
           />
         </SearchInputWrapper>
-        <IconButton
-          color=""
+        <Button
+          value="Create flow"
           onClick={() => {
             navigate("/flows/new", { replace: true });
           }}
-          icon={ICONS.PLUS}
+          icon={ICONS.PLUS_WHITE}
+          color="primary"
         />
       </SearchWrapper>
       <ItemsWrapper>

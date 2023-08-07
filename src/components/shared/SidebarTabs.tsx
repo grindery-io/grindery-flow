@@ -153,7 +153,7 @@ const SidebarTabs = (props: Props) => {
             : "60px",
       }}
     >
-      {user && size === "desktop" && appOpened && (
+      {/*user && size === "desktop" && appOpened && (
         <ButtonWrapper>
           <Button
             value="Create flow"
@@ -175,7 +175,7 @@ const SidebarTabs = (props: Props) => {
             }}
           />
         </IconButtonWrapper>
-      )}
+          )*/}
       <Tabs
         value={path}
         onChange={(index: number) => {
