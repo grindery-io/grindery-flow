@@ -456,6 +456,11 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
             }}
             items={[
               {
+                key: "deploy",
+                label: "Deploy to IPFS (coming soon)",
+                onClick: () => {},
+              },
+              {
                 key: "rename",
                 label: "Rename",
                 onClick: handleTitleClick,
@@ -465,15 +470,11 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
                 label: "Edit",
                 onClick: handleEditClick,
               },
+
               {
                 key: "history",
                 label: "History",
                 onClick: handleHistoryClick,
-              },
-              {
-                key: "delete",
-                label: "Delete",
-                onClick: handleDelete,
               },
               ...(workspaces && workspaces.length > 1
                 ? [
@@ -497,6 +498,11 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
                     },
                   ]
                 : []),
+              {
+                key: "delete",
+                label: "Delete",
+                onClick: handleDelete,
+              },
             ]}
           />
         </ItemActionsWrapper>
