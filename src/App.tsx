@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import GrinderyLoginProvider from "use-grindery-login";
-import { ThemeProvider } from "grindery-ui";
+import { ThemeProvider, CircularProgress } from "grindery-ui";
 import NexusStack from "./components/pages/NexusStack";
 import CompleteConnectorAuth from "./components/pages/CompleteConnectorAuth";
 import WorkspaceContextProvider from "./context/WorkspaceContext";
@@ -16,7 +16,13 @@ function App() {
 
   return (
     <ThemeProvider>
-      <GrinderyLoginProvider>
+      <GrinderyLoginProvider
+        loader={
+          <div style={{ textAlign: "center", margin: "80px auto" }}>
+            <CircularProgress />
+          </div>
+        }
+      >
         <BrowserRouter>
           <Routes>
             <Route

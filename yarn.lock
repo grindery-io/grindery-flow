@@ -10402,10 +10402,10 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
-use-grindery-login@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/use-grindery-login/-/use-grindery-login-0.1.1.tgz#f8de5f1d36b270807e9cbae0fbd6a3526b04ec10"
-  integrity sha512-06OsdaRBpCSSxcsxxAUQWnk7akzKw1imgwr05/D79LtOP4JFAD5Q2I/neqcBzpfHc2NwUoKwj8G770Tt1hlzjA==
+use-grindery-login@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/use-grindery-login/-/use-grindery-login-0.2.0.tgz#b397fde00d1b84617c2a49518ddf8a2f6b1d760e"
+  integrity sha512-F2KOq9XZ4Pzn/iOxV+mm6bqmIUJIXdci4D4h2r+hgHlVbJIJJcXw+0wH5uDDNJ4xcGxpjXMAZFDz2es28BwO4Q==
 
 use-grindery-nexus@^0.4.3:
   version "0.4.3"
