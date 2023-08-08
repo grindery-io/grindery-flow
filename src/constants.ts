@@ -145,13 +145,21 @@ export const RIGHTBAR_TABS: {
   },
   {
     id: 5,
+    name: "BILLING",
+    icon: ICONS.WALLET,
+    label: "Billing",
+    path: "/billing",
+    disabled: true,
+  },
+  {
+    id: 6,
     name: "SETTINGS",
     icon: ICONS.SETTINGS,
     label: "Settings",
     path: "/settings",
   },
   {
-    id: 6,
+    id: 7,
     name: "CREATE_NOTIFICATION",
     icon: ICONS.CREATE_ALERT_BLACK,
     label: "Notifications",
