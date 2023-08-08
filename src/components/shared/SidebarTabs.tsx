@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { IconButton, Tabs, Button } from "grindery-ui";
+import { IconButton, Tabs, Button, Tooltip } from "grindery-ui";
 import { useMatch, useNavigate } from "react-router-dom";
 import { ICONS, RIGHTBAR_TABS, SCREEN } from "../../constants";
 import useAppContext from "../../hooks/useAppContext";
@@ -122,6 +122,14 @@ const IconButtonWrapper = styled.div`
   }
 `;
 
+const TabOption = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+`;
+
 type Props = {};
 
 const SidebarTabs = (props: Props) => {
@@ -176,10 +184,14 @@ const SidebarTabs = (props: Props) => {
           />
         </IconButtonWrapper>
           )*/}
+
       <Tabs
         value={path}
         onChange={(index: number) => {
           if (user) {
+            if (RIGHTBAR_TABS[index].disabled) {
+              return;
+            }
             navigate(RIGHTBAR_TABS[index].path, { replace: true });
             if (
               width >= parseInt(SCREEN.TABLET.replace("px", "")) &&
@@ -192,14 +204,16 @@ const SidebarTabs = (props: Props) => {
         options={RIGHTBAR_TABS.filter(
           (tab) => !tab.access || tab.access === workspace
         ).map((tab) => (
-          <>
-            <img
-              src={tab.icon}
-              alt={tab.name}
-              style={{ opacity: path !== tab.id ? "0.2" : 1 }}
-            />
-            <p>{tab.label}</p>
-          </>
+          <Tooltip title={tab.disabled ? "Coming soon" : null}>
+            <TabOption>
+              <img
+                src={tab.icon}
+                alt={tab.name}
+                style={{ opacity: path !== tab.id ? "0.2" : 1 }}
+              />
+              <p style={{ opacity: tab.disabled ? "0.5" : 1 }}>{tab.label}</p>
+            </TabOption>
+          </Tooltip>
         ))}
         orientation="vertical"
         activeIndicatorColor="#0B0D17"

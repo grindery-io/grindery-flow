@@ -94,6 +94,7 @@ export const ICONS: { [key: string]: string } = {
   GITHUB_LOGO_DARK: "/images/icons/github-dark.svg",
   GITHUB_LOGO_LIGHT: "/images/icons/github-light.svg",
   ACCOUNT: "/images/icons/account.svg",
+  AGENTS: "/images/icons/agents.svg",
 };
 
 export const RIGHTBAR_TABS: {
@@ -103,44 +104,54 @@ export const RIGHTBAR_TABS: {
   label: string;
   path: string;
   access?: string;
+  disabled?: boolean;
 }[] = [
-  /*{
+  {
     id: 0,
-    name: "DASHBOARD",
+    name: "Agents",
+    icon: ICONS.AGENTS,
+    label: "Agents",
+    path: "/agents",
+    disabled: true,
+  },
+  {
+    id: 1,
+    name: "Dashboard",
     icon: ICONS.DASHBOARD,
     label: "Dashboard",
     path: "/dashboard",
-  },*/
+    disabled: true,
+  },
   {
-    id: 0,
+    id: 2,
     name: "WORKFLOWS",
     icon: ICONS.WORKFLOWS,
     label: "Flows",
     path: "/flows",
   },
   {
-    id: 1,
+    id: 3,
     name: "APPS",
     icon: ICONS.APPS,
     label: "Connectors",
     path: "/connectors",
   },
   {
-    id: 2,
+    id: 4,
     name: "HISTORY",
     icon: ICONS.HISTORY,
     label: "History",
     path: "/history",
   },
   {
-    id: 3,
+    id: 5,
     name: "SETTINGS",
     icon: ICONS.SETTINGS,
     label: "Settings",
     path: "/settings",
   },
   {
-    id: 4,
+    id: 6,
     name: "CREATE_NOTIFICATION",
     icon: ICONS.CREATE_ALERT_BLACK,
     label: "Notifications",
