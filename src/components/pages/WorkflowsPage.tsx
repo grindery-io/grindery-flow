@@ -482,8 +482,31 @@ const WorkflowRow = ({ item }: WorkflowRowProps) => {
             items={[
               {
                 key: "deploy",
-                label: "Deploy to IPFS (coming soon)",
-                onClick: () => {},
+                //label: "Deploy to IPFS (coming soon)",
+                Component: (
+                  <p style={{ margin: 0, opacity: "0.5" }}>
+                    Deploy to IPFS{" "}
+                    <span
+                      style={{
+                        marginLeft: "16px",
+                        display: "inline-block",
+                        padding: "2px 6px",
+                        background: "#EBF2FF",
+                        color: "#0057FF",
+                        fontSize: "10px",
+                        fontWeight: "700",
+                        lineHeight: "160%",
+                        borderRadius: "3px",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      coming soon
+                    </span>
+                  </p>
+                ),
+                onClick: () => {
+                  return;
+                },
               },
               {
                 key: "rename",
