@@ -108,18 +108,17 @@ export const RIGHTBAR_TABS: {
 }[] = [
   {
     id: 0,
-    name: "Agents",
-    icon: ICONS.AGENTS,
-    label: "Agents",
-    path: "/agents",
-    disabled: true,
-  },
-  {
-    id: 1,
     name: "Dashboard",
     icon: ICONS.DASHBOARD,
     label: "Dashboard",
     path: "/dashboard",
+  },
+  {
+    id: 1,
+    name: "Agents",
+    icon: ICONS.AGENTS,
+    label: "Agents",
+    path: "/agents",
     disabled: true,
   },
   {

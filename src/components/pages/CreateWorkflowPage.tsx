@@ -77,7 +77,7 @@ const CreateWorkflowPage = (props: Props) => {
   return (
     <Container>
       <Wrapper>
-        <Title>Create your first flow</Title>
+        <Title>Create your flows</Title>
         <Img src="/images/create-workflow.svg" alt="Create workflow" />
         <Desc>Create flows to connect a Web2 to a Web3 App or viceversa.</Desc>
         <Button
