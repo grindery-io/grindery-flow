@@ -27,7 +27,6 @@ import CreateNexusNotificationPage from "./CreateNexusNotificationPage";
 import WorkflowHistoryPage from "./WorkflowHistoryPage";
 //import WorkflowHistoryLogPage from "./WorkflowHistoryLogPage";
 import AccountPage from "./AccountPage";
-import DashboardPagePlaceholder from "./DashboardPagePlaceholder";
 
 const DrawerWrapper = styled.div`
   @media (min-width: ${SCREEN.TABLET}) {
@@ -130,7 +129,10 @@ const RootStack = (props: Props) => {
           </div>
         ) : (
           <Routes>
-            <Route path="/" element={<Navigate to="/flows" replace />}></Route>
+            <Route
+              path="/"
+              element={<Navigate to="/dashboard" replace />}
+            ></Route>
             <Route path="/dashboard" element={<CreateWorkflowPage />}></Route>
             <Route
               path="/flows"
@@ -173,7 +175,10 @@ const RootStack = (props: Props) => {
               element={<CreateNexusNotificationPage />}
             />
             <Route path="/account" element={<AccountPage />} />
-            <Route path="*" element={<Navigate to="/flows" replace />}></Route>
+            <Route
+              path="*"
+              element={<Navigate to="/dashboard" replace />}
+            ></Route>
           </Routes>
         )}
       </NotificationsContextProvider>

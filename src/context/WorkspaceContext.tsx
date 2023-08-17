@@ -2,6 +2,7 @@ import NexusClient from "grindery-nexus-client";
 import React, { useState, createContext, useEffect } from "react";
 import { useGrinderyLogin } from "use-grindery-login";
 import { defaultFunc, replaceTokens } from "../helpers/utils";
+import { isLocalOrStaging } from "../constants";
 
 export type Workspace = {
   key: string;
@@ -96,7 +97,7 @@ export const WorkspaceContextProvider = ({
   const [client, setClient] = useState<NexusClient | null>(null);
 
   // Currently active workspace.
-  const [workspace, setWorkspace] = useState<null | string>(null);
+  const [workspace, setWorkspace] = useState<null | string>("personal");
 
   // List of workspaces
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
@@ -108,7 +109,7 @@ export const WorkspaceContextProvider = ({
   const [isSuccess, setIsSuccess] = useState<string | null>(null);
 
   // Is workspace switching
-  const [isWorkspaceSwitching, setIsWorkspaceSwitching] = useState(false);
+  const [isWorkspaceSwitching, setIsWorkspaceSwitching] = useState(true);
 
   // Workspace token
   const [workspaceToken, setWorkspaceToken] = useState("");
@@ -205,9 +206,6 @@ export const WorkspaceContextProvider = ({
   }, [user, client]);
 
   useEffect(() => {
-    if (!workspace && workspaces && workspaces.length > 0) {
-      setWorkspace(workspaces[0].key);
-    }
     if (workspace && workspaces && workspaces.length > 0) {
       if (!workspaces.find((ws) => ws.key === workspace)) {
         setWorkspace(workspaces[0].key);
@@ -224,9 +222,15 @@ export const WorkspaceContextProvider = ({
 
   useEffect(() => {
     if (workspace) {
+      if (isLocalOrStaging) {
+        console.log("isWorkspaceSwitching", true);
+      }
       setIsWorkspaceSwitching(true);
       setTimeout(() => {
         setIsWorkspaceSwitching(false);
+        if (isLocalOrStaging) {
+          console.log("isWorkspaceSwitching", false);
+        }
       }, 1000);
     }
   }, [workspace]);
@@ -242,6 +246,10 @@ export const WorkspaceContextProvider = ({
       }
     }
   }, [workspace, workspaces]);
+
+  if (isLocalOrStaging) {
+    console.log("workspace", workspace);
+  }
 
   return (
     <WorkspaceContext.Provider

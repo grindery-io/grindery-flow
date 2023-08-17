@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Snackbar, RichInput } from "grindery-ui";
-import ConnectButton from "../shared/ConnectButton";
 import styled from "styled-components";
 import { useGrinderyLogin } from "use-grindery-login";
 import useAppContext from "../../hooks/useAppContext";
-
-import AppHeader from "../shared/AppHeader";
 import { validateEmail } from "../../helpers/utils";
 import CheckBox from "../shared/CheckBox";
 import ConnectMetamask from "../shared/ConnectMetamask";
@@ -405,7 +402,7 @@ const AccountPage = (props: Props) => {
         skill: skill.join(";"),
       });
     } catch (error: any) {
-      console.log("updateUserProps error:", error);
+      console.error("updateUserProps error:", error);
 
       setError(
         error?.message && error.message.includes("A contact with the email")
