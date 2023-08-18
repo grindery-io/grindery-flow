@@ -95,6 +95,7 @@ export const ICONS: { [key: string]: string } = {
   GITHUB_LOGO_LIGHT: "/images/icons/github-light.svg",
   ACCOUNT: "/images/icons/account.svg",
   AGENTS: "/images/icons/agents.svg",
+  CHANNELS: "/images/icons/channels.svg",
 };
 
 export const RIGHTBAR_TABS: {
@@ -123,27 +124,35 @@ export const RIGHTBAR_TABS: {
   },
   {
     id: 2,
+    name: "Channels",
+    icon: ICONS.CHANNELS,
+    label: "Channels",
+    path: "/channels",
+    disabled: true,
+  },
+  {
+    id: 3,
     name: "WORKFLOWS",
     icon: ICONS.WORKFLOWS,
     label: "Flows",
     path: "/flows",
   },
   {
-    id: 3,
+    id: 4,
     name: "APPS",
     icon: ICONS.APPS,
     label: "Connectors",
     path: "/connectors",
   },
   {
-    id: 4,
+    id: 5,
     name: "HISTORY",
     icon: ICONS.HISTORY,
     label: "History",
     path: "/history",
   },
   {
-    id: 5,
+    id: 6,
     name: "BILLING",
     icon: ICONS.WALLET,
     label: "Billing",
@@ -151,14 +160,14 @@ export const RIGHTBAR_TABS: {
     disabled: true,
   },
   {
-    id: 6,
+    id: 7,
     name: "SETTINGS",
     icon: ICONS.SETTINGS,
     label: "Settings",
     path: "/settings",
   },
   {
-    id: 7,
+    id: 8,
     name: "CREATE_NOTIFICATION",
     icon: ICONS.CREATE_ALERT_BLACK,
     label: "Notifications",
