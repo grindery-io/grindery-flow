@@ -42,7 +42,6 @@ const Form = styled.form`
   justify-content: flex-start;
   flex-wrap: nowrap;
   flex-direction: column;
-  gap: 16px;
   width: 100%;
   max-width: 240px;
   margin: 20px auto;
@@ -63,6 +62,11 @@ const InputGroup = styled.div`
   flex-wrap: nowrap;
   flex-direction: column;
   gap: 4px;
+  transition: height 0.2s ease-in-out;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 
   & label {
     font-size: 14px;
@@ -107,6 +111,14 @@ const InputGroup = styled.div`
   }
 `;
 
+const ButtonWrapper = styled.div`
+  margin: 16px 0 0;
+
+  & > div {
+    margin: 0;
+  }
+`;
+
 type Props = {};
 
 const TelegramAuth = (props: Props) => {
@@ -142,63 +154,63 @@ const TelegramAuth = (props: Props) => {
             disabled={loading || phoneSubmitted}
           />
         </InputGroup>
-        {phoneSubmitted && (
-          <InputGroup>
-            <label>Code</label>
-            <input
-              type="text"
-              value={phoneCode}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                handleInputChange("phoneCode", event.target.value);
-              }}
-              disabled={loading || codeSubmitted}
-            />
-          </InputGroup>
-        )}
-        {codeSubmitted && (
-          <InputGroup>
-            <label>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                handleInputChange("password", event.target.value);
-              }}
-              disabled={loading}
-            />
-          </InputGroup>
-        )}
+
+        <InputGroup
+          style={{
+            height: phoneSubmitted ? "69px" : "0px",
+            marginTop: phoneSubmitted ? "16px" : "0px",
+          }}
+        >
+          <label>Code</label>
+          <input
+            type="text"
+            value={phoneCode}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              handleInputChange("phoneCode", event.target.value);
+            }}
+            disabled={loading || codeSubmitted}
+          />
+        </InputGroup>
+
+        <InputGroup
+          style={{
+            height: codeSubmitted ? "69px" : "0px",
+            marginTop: codeSubmitted ? "16px" : "0px",
+          }}
+        >
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              handleInputChange("password", event.target.value);
+            }}
+            disabled={loading}
+          />
+        </InputGroup>
 
         {error && (
           <AlertBox color="error">
-            <p style={{ fontSize: "14px" }}>{error}</p>
+            <p style={{ fontSize: "14px", color: "inherit", marginTop: "2px" }}>
+              {error}
+            </p>
           </AlertBox>
         )}
 
-        {!phoneSubmitted && (
+        <ButtonWrapper>
           <Button
             loading={loading}
             disabled={loading}
-            onClick={submitPhoneNumber}
-            value="Submit"
+            onClick={
+              !phoneSubmitted
+                ? submitPhoneNumber
+                : !codeSubmitted
+                ? submitPhoneCode
+                : submitPassword
+            }
+            value={loading ? "Loading" : "Submit"}
           />
-        )}
-        {phoneSubmitted && !codeSubmitted && (
-          <Button
-            loading={loading}
-            disabled={loading}
-            onClick={submitPhoneCode}
-            value="Submit"
-          />
-        )}
-        {phoneSubmitted && codeSubmitted && (
-          <Button
-            loading={loading}
-            disabled={loading}
-            onClick={submitPassword}
-            value="Submit"
-          />
-        )}
+        </ButtonWrapper>
       </Form>
     </Container>
   );

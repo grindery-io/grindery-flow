@@ -15,6 +15,18 @@ const Row = styled.div`
   align-items: center;
   justify-content: flex-start;
   flex-wrap: nowrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 12px;
+
+    & > div {
+      margin-left: 0 !important;
+      margin-right: auto;
+    }
+  }
 `;
 
 type Props = {

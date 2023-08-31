@@ -12,10 +12,10 @@ const WalletPage = (props: Props) => {
   console.log("telegram_session", telegram_session);
 
   return telegram_session ? (
-    <>
+    <div style={{ textAlign: "center" }}>
       <p style={{ margin: "20px" }}>Welcome back!</p>
       <p style={{ margin: "20px" }}>Your contacts list is empty.</p>
-    </>
+    </div>
   ) : (
     <TelegramAuth />
   );
