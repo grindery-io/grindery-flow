@@ -8,6 +8,7 @@ import WorkspaceContextProvider from "./context/WorkspaceContext";
 import AppContextProvider from "./context/AppContext";
 import { sendTwitterConversion } from "./utils/twitterTracking";
 import SignInPageRedirect from "./components/pages/SignInPageRedirect";
+import WalletPage from "./components/pages/wallet/WalletPage";
 
 function App() {
   useEffect(() => {
@@ -26,6 +27,7 @@ function App() {
       >
         <BrowserRouter>
           <Routes>
+            <Route path="/wallet" element={<WalletPage />} />
             <Route
               path="/complete_auth/:space"
               element={
