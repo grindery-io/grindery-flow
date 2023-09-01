@@ -136,7 +136,9 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
     try {
       console.log("checkTgSession fired");
       const res = await axios.get(
-        `${BOT_API_URL}/v1/telegram/status?request=${state.user.telegram_session}`,
+        `${BOT_API_URL}/v1/telegram/status?session=${encodeURIComponent(
+          state.user.telegram_session
+        )}`,
         {
           headers: {
             Authorization: "Bearer " + token?.access_token,
@@ -316,7 +318,9 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
     try {
       console.log("getTgContacts fired");
       const res = await axios.get(
-        `${BOT_API_URL}/v1/telegram/contacts?request=${state.user.telegram_session}`,
+        `${BOT_API_URL}/v1/telegram/contacts?session=${encodeURIComponent(
+          state.user.telegram_session
+        )}`,
         {
           headers: {
             Authorization: "Bearer " + token?.access_token,
@@ -346,6 +350,8 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
   useEffect(() => {
     getTgContacts();
   }, [getTgContacts]);
+
+  console.log("telegram state", state);
 
   return token?.access_token ? (
     <TelegramContext.Provider
