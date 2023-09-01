@@ -328,7 +328,7 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
         }
       );
       setState({
-        contacts: res.data?.contacts || [],
+        contacts: res.data || [],
       });
     } catch (error) {
       console.log("getTgContacts error", error);
