@@ -1,6 +1,7 @@
 import React from "react";
 import useTelegramContext from "../../../hooks/useTelegramContext";
 import TelegramAuth from "../../wallet/TelegramAuth";
+import TelegramContacts from "../../wallet/TelegramContacts";
 
 type Props = {};
 
@@ -12,24 +13,13 @@ const WalletPage = (props: Props) => {
   } = state;
 
   return telegram_session ? (
-    <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "left" }}>
       {patchwallet_telegram && (
-        <p style={{ margin: "20px" }}>
+        <h2 style={{ margin: "20px" }}>
           Your wallet address: {patchwallet_telegram}
-        </p>
+        </h2>
       )}
-      {contacts && contacts.length > 0 ? (
-        <>
-          <p style={{ margin: "20px" }}>Here is your contacts list:</p>
-          <ul>
-            {contacts.map((contact: any, index) => (
-              <li key={index}>{JSON.stringify(contact)}</li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <p style={{ margin: "20px" }}>Your contacts list is empty.</p>
-      )}
+      <TelegramContacts />
     </div>
   ) : (
     <TelegramAuth />
