@@ -9,32 +9,34 @@ import { WORKFLOW_ENGINE_URL } from "../constants";
 import { CircularProgress } from "grindery-ui";
 import { useGrinderyLogin } from "use-grindery-login";
 
+const BOT_API_URL = "https://bot-auth-api.grindery.org";
+
 export type TelegramAuthUserInput = {
-  phoneNumber: string;
+  phone: string;
   password: string;
-  phoneCode: string;
+  code: string;
 };
 
-export type TelegramUserData = {
+export type UserProps = {
   telegram_session: string;
+  email: string;
 };
 
 type StateProps = {
   loading: boolean;
   input: TelegramAuthUserInput;
   error: string;
-  userData: TelegramUserData;
+  user: UserProps;
   sessionLoading: boolean;
-  phoneSubmitted: boolean;
-  codeSubmitted: boolean;
+  operationId: string;
+  contacts: any[];
 };
 
 type ContextProps = {
   state: StateProps;
   handleInputChange: (name: string, value: string) => void;
-  submitPhoneNumber: () => void;
+  submitPhoneAndPassword: () => void;
   submitPhoneCode: () => void;
-  submitPassword: () => void;
 };
 
 type TelegramContextProps = {
@@ -45,22 +47,22 @@ const defaultContext = {
   state: {
     loading: false,
     input: {
-      phoneNumber: "",
+      phone: "",
       password: "",
-      phoneCode: "",
+      code: "",
     },
     error: "",
-    userData: {
+    user: {
       telegram_session: "",
+      email: "",
     },
     sessionLoading: true,
-    phoneSubmitted: false,
-    codeSubmitted: false,
+    operationId: "",
+    contacts: [],
   },
   handleInputChange: () => {},
-  submitPhoneNumber: () => {},
+  submitPhoneAndPassword: () => {},
   submitPhoneCode: () => {},
-  submitPassword: () => {},
 };
 
 export const TelegramContext = createContext<ContextProps>(defaultContext);
@@ -77,11 +79,12 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
     }
   );
 
-  const checkTelegramSession = useCallback(async () => {
+  const getUser = useCallback(async () => {
     if (!token?.access_token) {
       return;
     }
     try {
+      console.log("getUser fired");
       const response = await axios.post(
         WORKFLOW_ENGINE_URL,
         {
@@ -89,7 +92,7 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
           method: "or_getUserProps",
           id: new Date(),
           params: {
-            props: ["telegram_session"],
+            props: ["email", "telegram_session"],
           },
         },
         {
@@ -98,13 +101,14 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
           },
         }
       );
-      if (response.data.result.telegram_session) {
-        setState({
-          userData: {
-            telegram_session: response.data.result.telegram_session,
-          },
-        });
-      }
+
+      setState({
+        user: {
+          telegram_session: response.data?.result?.telegram_session || "",
+          email: response.data?.result?.email || "",
+        },
+        sessionLoading: Boolean(response.data?.result?.telegram_session),
+      });
     } catch (error: any) {
       console.error(
         "checkTelegramSession error",
@@ -115,10 +119,47 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
         error: error?.response?.data?.error?.message || "Something went wrong",
       });
     }
+  }, [token?.access_token]);
+
+  const checkTgSession = useCallback(async () => {
+    if (
+      !token?.access_token ||
+      !state.user.telegram_session ||
+      !state.sessionLoading
+    ) {
+      return;
+    }
+    try {
+      console.log("checkTgSession fired");
+      const res = await axios.get(
+        `${BOT_API_URL}/v1/telegram/status?request=${encodeURIComponent(
+          state.user.telegram_session
+        )}`,
+        {
+          headers: {
+            Authorization: "Bearer " + token?.access_token,
+          },
+        }
+      );
+      setState({
+        user: {
+          ...state.user,
+          telegram_session: res.data?.status ? state.user.telegram_session : "",
+        },
+      });
+    } catch (error) {
+      console.log("checkTgSession error", error);
+      setState({
+        user: {
+          ...state.user,
+          telegram_session: "",
+        },
+      });
+    }
     setState({
       sessionLoading: false,
     });
-  }, [token?.access_token]);
+  }, [token?.access_token, state.user, state.sessionLoading]);
 
   const handleInputChange = useCallback(
     (name: string, value: string) => {
@@ -133,43 +174,13 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
     [state.input]
   );
 
-  const submitPhoneNumber = useCallback(async () => {
-    if (!state.input.phoneNumber) {
+  const submitPhoneAndPassword = useCallback(async () => {
+    if (!state.input.phone) {
       setState({
         error: "Phone number is required",
       });
       return;
     }
-    setState({
-      loading: true,
-    });
-    setTimeout(() => {
-      setState({
-        phoneSubmitted: true,
-        loading: false,
-      });
-    }, 2000);
-  }, [state.input.phoneNumber]);
-
-  const submitPhoneCode = useCallback(async () => {
-    if (!state.input.phoneCode) {
-      setState({
-        error: "Phone code is required",
-      });
-      return;
-    }
-    setState({
-      loading: true,
-    });
-    setTimeout(() => {
-      setState({
-        codeSubmitted: true,
-        loading: false,
-      });
-    }, 2000);
-  }, [state.input.phoneCode]);
-
-  const submitPassword = useCallback(async () => {
     if (!state.input.password) {
       setState({
         error: "Password is required",
@@ -177,33 +188,172 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
       return;
     }
     setState({
+      error: "",
       loading: true,
     });
-    setTimeout(() => {
-      setState({
-        userData: {
-          ...state.userData,
-          telegram_session: "telegram_session",
+    try {
+      const res = await axios.post(
+        `${BOT_API_URL}/v1/telegram/init`,
+        {
+          phone: state.input.phone,
+          password: state.input.password,
         },
-        loading: false,
+        {
+          headers: {
+            Authorization: "Bearer " + token?.access_token,
+          },
+        }
+      );
+      setState({
+        operationId: res.data?.operationId || "",
       });
-    }, 2000);
-  }, [state.input.password, state.userData]);
+    } catch (error: any) {
+      setState({
+        operationId: "",
+        error: error?.response?.data?.error?.message || "Something went wrong",
+      });
+    }
+    setState({
+      loading: false,
+    });
+  }, [state]);
+
+  const submitPhoneCode = useCallback(async () => {
+    if (!state.input.code) {
+      setState({
+        error: "Phone code is required",
+      });
+      return;
+    }
+    setState({
+      error: "",
+      loading: true,
+    });
+    try {
+      const res = await axios.post(
+        `${BOT_API_URL}/v1/telegram/callback`,
+        {
+          operationId: state.operationId,
+          code: state.input.code,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token?.access_token,
+          },
+        }
+      );
+      setState({
+        user: {
+          ...state.user,
+          telegram_session: res.data?.session || "",
+        },
+      });
+    } catch (error: any) {
+      setState({
+        operationId: "",
+        user: {
+          ...state.user,
+          telegram_session: "",
+        },
+        error: error?.response?.data?.error?.message || "Something went wrong",
+      });
+    }
+    setState({
+      loading: false,
+    });
+  }, [state, token?.access_token]);
+
+  const saveTgSession = useCallback(async () => {
+    if (
+      !state.user.email ||
+      !state.user.telegram_session ||
+      !token?.access_token ||
+      state.sessionLoading
+    ) {
+      return;
+    }
+    try {
+      console.log("saveTgSession fired");
+      await axios.post(
+        WORKFLOW_ENGINE_URL,
+        {
+          jsonrpc: "2.0",
+          method: "or_updateUserProps",
+          id: new Date(),
+          params: {
+            props: {
+              email: state.user.email,
+              telegram_session: state.user.telegram_session,
+            },
+          },
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token?.access_token,
+          },
+        }
+      );
+    } catch (error) {
+      // console.log("saveTgSession error", error);
+    }
+  }, [
+    state.user.email,
+    state.user.telegram_session,
+    token?.access_token,
+    state.sessionLoading,
+  ]);
+
+  const getTgContacts = useCallback(async () => {
+    if (
+      !state.user.telegram_session ||
+      !token?.access_token ||
+      state.sessionLoading
+    ) {
+      return;
+    }
+    try {
+      console.log("getTgContacts fired");
+      const res = await axios.get(
+        `${BOT_API_URL}/v1/telegram/contacts?request=${encodeURIComponent(
+          state.user.telegram_session
+        )}`,
+        {
+          headers: {
+            Authorization: "Bearer " + token?.access_token,
+          },
+        }
+      );
+      setState({
+        contacts: res.data?.contacts || [],
+      });
+    } catch (error) {
+      console.log("getTgContacts error", error);
+    }
+  }, [state.user.telegram_session, token?.access_token, state.sessionLoading]);
 
   useEffect(() => {
-    checkTelegramSession();
-  }, [checkTelegramSession]);
+    getUser();
+  }, [getUser]);
 
-  console.log("telegram state", state);
+  useEffect(() => {
+    checkTgSession();
+  }, [checkTgSession]);
+
+  useEffect(() => {
+    saveTgSession();
+  }, [saveTgSession]);
+
+  useEffect(() => {
+    getTgContacts();
+  }, [getTgContacts]);
 
   return token?.access_token ? (
     <TelegramContext.Provider
       value={{
         state,
         handleInputChange,
-        submitPhoneNumber,
+        submitPhoneAndPassword,
         submitPhoneCode,
-        submitPassword,
       }}
     >
       {state.sessionLoading ? (

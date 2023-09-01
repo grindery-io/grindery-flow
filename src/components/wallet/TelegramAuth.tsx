@@ -43,7 +43,7 @@ const Form = styled.form`
   flex-wrap: nowrap;
   flex-direction: column;
   width: 100%;
-  max-width: 240px;
+  max-width: 260px;
   margin: 20px auto;
 
   & p.error {
@@ -62,7 +62,7 @@ const InputGroup = styled.div`
   flex-wrap: nowrap;
   flex-direction: column;
   gap: 4px;
-  transition: height 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
   overflow: hidden;
   padding: 0;
   margin: 0;
@@ -124,16 +124,14 @@ type Props = {};
 const TelegramAuth = (props: Props) => {
   const {
     state: {
-      input: { phoneCode, phoneNumber, password },
-      phoneSubmitted,
+      input: { code, phone, password },
+      operationId,
       loading,
       error,
-      codeSubmitted,
     },
     handleInputChange,
-    submitPhoneNumber,
+    submitPhoneAndPassword,
     submitPhoneCode,
-    submitPassword,
   } = useTelegramContext();
 
   return (
@@ -147,35 +145,17 @@ const TelegramAuth = (props: Props) => {
           <label>Phone number</label>
           <input
             type="phone"
-            value={phoneNumber}
+            value={phone}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              handleInputChange("phoneNumber", event.target.value);
+              handleInputChange("phone", event.target.value);
             }}
-            disabled={loading || phoneSubmitted}
+            disabled={loading || Boolean(operationId)}
           />
         </InputGroup>
 
         <InputGroup
           style={{
-            height: phoneSubmitted ? "69px" : "0px",
-            marginTop: phoneSubmitted ? "16px" : "0px",
-          }}
-        >
-          <label>Code</label>
-          <input
-            type="text"
-            value={phoneCode}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              handleInputChange("phoneCode", event.target.value);
-            }}
-            disabled={loading || codeSubmitted}
-          />
-        </InputGroup>
-
-        <InputGroup
-          style={{
-            height: codeSubmitted ? "69px" : "0px",
-            marginTop: codeSubmitted ? "16px" : "0px",
+            marginTop: "16px",
           }}
         >
           <label>Password</label>
@@ -184,6 +164,23 @@ const TelegramAuth = (props: Props) => {
             value={password}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               handleInputChange("password", event.target.value);
+            }}
+            disabled={loading || Boolean(operationId)}
+          />
+        </InputGroup>
+
+        <InputGroup
+          style={{
+            height: operationId ? "69px" : "0px",
+            marginTop: operationId ? "16px" : "0px",
+          }}
+        >
+          <label>Code</label>
+          <input
+            type="text"
+            value={code}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              handleInputChange("code", event.target.value);
             }}
             disabled={loading}
           />
@@ -201,13 +198,7 @@ const TelegramAuth = (props: Props) => {
           <Button
             loading={loading}
             disabled={loading}
-            onClick={
-              !phoneSubmitted
-                ? submitPhoneNumber
-                : !codeSubmitted
-                ? submitPhoneCode
-                : submitPassword
-            }
+            onClick={!operationId ? submitPhoneAndPassword : submitPhoneCode}
             value={loading ? "Loading" : "Submit"}
           />
         </ButtonWrapper>
