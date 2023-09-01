@@ -7,13 +7,17 @@ type Props = {};
 const WalletPage = (props: Props) => {
   const { state } = useTelegramContext();
   const {
-    user: { telegram_session },
+    user: { telegram_session, patchwallet_telegram },
     contacts,
   } = state;
 
   return telegram_session ? (
     <div style={{ textAlign: "center" }}>
-      <p style={{ margin: "20px" }}>Welcome back!</p>
+      {patchwallet_telegram && (
+        <p style={{ margin: "20px" }}>
+          Your wallet address: {patchwallet_telegram}
+        </p>
+      )}
       {contacts && contacts.length > 0 ? (
         <>
           <p style={{ margin: "20px" }}>Here is your contacts list:</p>

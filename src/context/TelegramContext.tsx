@@ -20,6 +20,7 @@ export type TelegramAuthUserInput = {
 export type UserProps = {
   telegram_session: string;
   email: string;
+  patchwallet_telegram: string;
 };
 
 type StateProps = {
@@ -55,6 +56,7 @@ const defaultContext = {
     user: {
       telegram_session: "",
       email: "",
+      patchwallet_telegram: "",
     },
     sessionLoading: true,
     operationId: "",
@@ -92,7 +94,7 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
           method: "or_getUserProps",
           id: new Date(),
           params: {
-            props: ["email", "telegram_session"],
+            props: ["email", "telegram_session", "patchwallet_telegram"],
           },
         },
         {
@@ -106,6 +108,8 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
         user: {
           telegram_session: response.data?.result?.telegram_session || "",
           email: response.data?.result?.email || "",
+          patchwallet_telegram:
+            response.data?.result?.patchwallet_telegram || "",
         },
         sessionLoading: Boolean(response.data?.result?.telegram_session),
       });
@@ -132,9 +136,7 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
     try {
       console.log("checkTgSession fired");
       const res = await axios.get(
-        `${BOT_API_URL}/v1/telegram/status?request=${encodeURIComponent(
-          state.user.telegram_session
-        )}`,
+        `${BOT_API_URL}/v1/telegram/status?request=${state.user.telegram_session}`,
         {
           headers: {
             Authorization: "Bearer " + token?.access_token,
@@ -314,9 +316,7 @@ export const TelegramContextProvider = ({ children }: TelegramContextProps) => {
     try {
       console.log("getTgContacts fired");
       const res = await axios.get(
-        `${BOT_API_URL}/v1/telegram/contacts?request=${encodeURIComponent(
-          state.user.telegram_session
-        )}`,
+        `${BOT_API_URL}/v1/telegram/contacts?request=${state.user.telegram_session}`,
         {
           headers: {
             Authorization: "Bearer " + token?.access_token,
