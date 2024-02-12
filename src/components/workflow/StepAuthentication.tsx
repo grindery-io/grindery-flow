@@ -10,11 +10,11 @@ import useAppContext from "../../hooks/useAppContext";
 import useWorkflowStepContext from "../../hooks/useWorkflowStepContext";
 import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 
-const AUTH_ENDPOINT = `https://orchestrator.grindery.org/credentials/${
+const AUTH_ENDPOINT = `https://orchestrator.grindery.com/credentials/${
   isLocalOrStaging ? "staging" : "production"
 }`;
 const GET_OAUTH_TOKEN_ENDPOINT =
-  "https://orchestrator.grindery.org/credentials/auth/complete";
+  "https://orchestrator.grindery.com/credentials/auth/complete";
 
 const Container = styled.div`
   border-top: 1px solid #dcdcdc;

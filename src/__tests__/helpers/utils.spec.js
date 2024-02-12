@@ -9,7 +9,7 @@ import helloWorldConnector from "../../samples/connectors/helloworld.json";
 describe("getParameterByName function", () => {
   test("returns URL parameter value by name", () => {
     const name = "test";
-    const url = "https://nexus.grindery.io?test=1";
+    const url = "https://nexus.grindery.com?test=1";
 
     const output = "1";
 
@@ -18,7 +18,7 @@ describe("getParameterByName function", () => {
 
   test("returns null if parameter not found", () => {
     const name = "test";
-    const url = "https://nexus.grindery.io";
+    const url = "https://nexus.grindery.com";
 
     const output = null;
 
@@ -35,7 +35,7 @@ describe("getParameterByName function", () => {
 
   test("returns empty string if parameter has no value", () => {
     const name = "test";
-    const url = "https://nexus.grindery.io?test=";
+    const url = "https://nexus.grindery.com?test=";
 
     const output = "";
 

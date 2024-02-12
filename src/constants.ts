@@ -5,7 +5,7 @@ export const SCREEN = {
   DESKTOP_XL: "1600px",
 };
 
-export const WORKFLOW_ENGINE_URL = "https://orchestrator.grindery.org";
+export const WORKFLOW_ENGINE_URL = "https://orchestrator.grindery.com";
 
 export const CDS_EDITOR_API_ENDPOINT =
   "https://nexus-cds-editor-api.herokuapp.com/api";
@@ -392,33 +392,33 @@ export const HS_FORM_ID = "80ae7474-b232-4eb8-bad7-a4b2d651d643";
 export const isLocalOrStaging =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1" ||
-  window.location.hostname === "nexus-staging.grindery.io" ||
-  window.location.hostname === "flow-staging.grindery.io" ||
-  window.location.hostname === "nexus-staging.grindery.org" ||
-  window.location.hostname === "flow-staging.grindery.org" ||
-  window.location.hostname === "app-staging.grindery.io";
+  window.location.hostname === "nexus-staging.grindery.com" ||
+  window.location.hostname === "flow-staging.grindery.com" ||
+  window.location.hostname === "nexus-staging.grindery.com" ||
+  window.location.hostname === "flow-staging.grindery.com" ||
+  window.location.hostname === "app-staging.grindery.com";
 
 export const GRINDERY_APPS = [
   {
-    url: "https://flow.grindery.io/",
+    url: "https://flow.grindery.com/",
     name: "Grindery App",
     description: "Create workflows witn no-code",
     target: "_blank",
   },
   {
-    url: "https://ping.grindery.io/",
+    url: "https://ping.grindery.com/",
     name: "Ping",
     description: "Receive blockchain notifications",
     target: "_blank",
   },
   {
-    url: "https://gateway.grindery.io/",
+    url: "https://gateway.grindery.com/",
     name: "Gateway",
     description: "Your gateway to web3 no-code",
     target: "_blank",
   },
   {
-    url: "https://network.grindery.io/",
+    url: "https://network.grindery.com/",
     name: "CDS",
     description: "Create Connector Description Schema files",
     target: "_blank",

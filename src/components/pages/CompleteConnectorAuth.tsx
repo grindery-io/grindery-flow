@@ -9,7 +9,7 @@ import useWorkspaceContext from "../../hooks/useWorkspaceContext";
 import { ICONS } from "../../constants";
 
 const GET_OAUTH_TOKEN_ENDPOINT =
-  "https://orchestrator.grindery.org/credentials/auth/complete";
+  "https://orchestrator.grindery.com/credentials/auth/complete";
 
 const MESSAGES = {
   DEFAULT: "Authenticating, please wait...",

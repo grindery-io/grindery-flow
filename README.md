@@ -6,7 +6,7 @@
 
 Grindery is the easiest way for people and organizations to connect Apps and dApps across chains and protocols.
 
-Live URL: [https://app.grindery.io/](https://app.grindery.io/)
+Live URL: [https://app.grindery.com/](https://app.grindery.com/)
 
 ## Development
 
@@ -35,4 +35,4 @@ The `master` branch is deployed automatically:
 1. Merge your changes into the `master` branch
 2. Push branch to GitHub
 
-**Deployment URL: https://app.grindery.io/**
+**Deployment URL: https://app.grindery.com/**

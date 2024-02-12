@@ -17,8 +17,8 @@ const SignInPageRedirect = (props: Props) => {
     const search = document.location.search;
     window.location.href = `${
       isLocalOrStaging
-        ? "https://login-staging.grindery.io"
-        : "https://login.grindery.io"
+        ? "https://login-staging.grindery.com"
+        : "https://login.grindery.com"
     }${search}`;
   }, []);
   return <></>;
